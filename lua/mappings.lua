@@ -13,6 +13,7 @@ map("n", "<leader>fc", "<cmd> Telescope command_history <CR>", { desc = "list co
 map("n", "<leader>fd", function()
   vim.diagnostic.open_float { border = "rounded" }
 end, { desc = "floating diagnostic" })
+map("n", "<leader>mp", "<cmd> MarkdownPreview <CR>", { desc = "toggle markdown preview server" })
 
 -- visual mode
 map("x", "<", "<gv", { desc = "indent backward and stay in visual mode" })
