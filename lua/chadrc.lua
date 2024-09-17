@@ -18,6 +18,11 @@ M.base46 = {
 }
 
 M.ui = {
+
+  statusline = {
+    theme = "vscode_colored"
+  },
+
   nvdash = {
     load_on_startup = true,
     header = {
