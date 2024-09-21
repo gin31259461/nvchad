@@ -20,7 +20,7 @@ M.base46 = {
 M.ui = {
 
   statusline = {
-    theme = "vscode_colored"
+    theme = "vscode_colored",
   },
 
   nvdash = {
@@ -39,6 +39,10 @@ M.ui = {
       "       ⠻⣿⣿⣿⣿⣶⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⡟⢀⣀⣤⣾⡿⠃     ",
     },
   },
+}
+
+M.mason = {
+  pkgs = require("configs.packages").mason,
 }
 
 return M

@@ -2,13 +2,11 @@
 require("nvchad.configs.lspconfig").defaults()
 
 local lspconfig = require "lspconfig"
-
--- EXAMPLE
-local servers = { "html", "cssls", "ts_ls", "clangd", "pyright" }
+local pkgs = require("configs.packages").lsp
 local nvlsp = require "nvchad.configs.lspconfig"
 
 -- lsps with default config
-for _, lsp in ipairs(servers) do
+for _, lsp in ipairs(pkgs) do
   lspconfig[lsp].setup {
     on_attach = nvlsp.on_attach,
     on_init = nvlsp.on_init,
