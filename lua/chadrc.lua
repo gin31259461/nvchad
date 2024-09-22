@@ -23,6 +23,11 @@ M.ui = {
     theme = "vscode_colored",
   },
 
+  -- Always load tabufline on startup
+  tabufline = {
+    lazyload = false,
+  },
+
   nvdash = {
     load_on_startup = true,
     header = {
