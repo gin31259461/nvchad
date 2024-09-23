@@ -25,4 +25,15 @@ return {
       vim.fn["mkdp#util#install"]()
     end,
   },
+
+  {
+    "folke/which-key.nvim",
+    lazy = false,
+    keys = { "<leader>", "<c-r>", "<c-w>", '"', "'", "`", "c", "v", "g" },
+    cmd = "WhichKey",
+    config = function(_, opts)
+      dofile(vim.g.base46_cache .. "whichkey")
+      require("which-key").setup(opts)
+    end,
+  },
 }
