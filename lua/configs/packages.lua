@@ -11,12 +11,15 @@ local lsp_pkgs = {
   css = { "cssls", "css-lsp" },
   typescript = { "ts_ls", "typescript-language-server" },
   clangd = { "clangd", "clangd" },
+
   pyright = { "pyright", "pyright" },
   python = { "pylsp", "python-lsp-server" },
+
   bash = { "bashls", "bash-language-server" },
+  sql = { "sqls", "sqls" },
 }
 
-local fmt_pkgs = { python = "black", bash = "shfmt" }
+local fmt_pkgs = { python = "ruff", bash = "shfmt", sql = "sqlfluff" }
 
 for v in pairs(lsp_pkgs) do
   table.insert(M.lsp, lsp_pkgs[v][1])
