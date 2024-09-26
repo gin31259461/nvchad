@@ -11,10 +11,7 @@ local lsp_pkgs = {
   css = { "cssls", "css-lsp" },
   typescript = { "ts_ls", "typescript-language-server" },
   clangd = { "clangd", "clangd" },
-
-  pyright = { "pyright", "pyright" },
-  python = { "pylsp", "python-lsp-server" },
-
+  python = { "ruff_lsp", "ruff-lsp" },
   bash = { "bashls", "bash-language-server" },
   sql = { "sqls", "sqls" },
 }
