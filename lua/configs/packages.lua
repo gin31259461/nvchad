@@ -14,17 +14,24 @@ local lsp_pkgs = {
   python = { "ruff_lsp", "ruff-lsp" },
   bash = { "bashls", "bash-language-server" },
   sql = { "sqls", "sqls" },
+  docker = { "dockerls", "dockerfile-language-server" },
+  docker_compose = { "docker_compose_language_service", "docker-compose-language-service" },
 }
 
-local fmt_pkgs = { python = "ruff", bash = "shfmt", sql = "sqlfluff" }
+local formatter_pkgs = { python = "ruff", bash = "shfmt", sql = "sqlfluff" }
+local linter_pkgs = { docker = "hadolint" }
 
 for v in pairs(lsp_pkgs) do
   table.insert(M.lsp, lsp_pkgs[v][1])
   table.insert(M.mason, lsp_pkgs[v][2])
 end
 
-for v in pairs(fmt_pkgs) do
-  table.insert(M.mason, fmt_pkgs[v])
+for v in pairs(formatter_pkgs) do
+  table.insert(M.mason, formatter_pkgs[v])
+end
+
+for v in pairs(linter_pkgs) do
+  table.insert(M.mason, formatter_pkgs[v])
 end
 
 return M
