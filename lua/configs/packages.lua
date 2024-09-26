@@ -11,7 +11,10 @@ local lsp_pkgs = {
   css = { "cssls", "css-lsp" },
   typescript = { "ts_ls", "typescript-language-server" },
   clangd = { "clangd", "clangd" },
-  python = { "ruff_lsp", "ruff-lsp" },
+
+  python = { "pylsp", "python-language-server" },
+  ruff = { "ruff_lsp", "ruff-lsp" },
+
   bash = { "bashls", "bash-language-server" },
   sql = { "sqls", "sqls" },
   docker = { "dockerls", "dockerfile-language-server" },
