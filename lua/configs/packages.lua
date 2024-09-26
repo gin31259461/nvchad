@@ -12,7 +12,7 @@ local lsp_pkgs = {
   typescript = { "ts_ls", "typescript-language-server" },
   clangd = { "clangd", "clangd" },
 
-  python = { "pylsp", "python-language-server" },
+  python = { "pylsp", "python-lsp-server" },
   ruff = { "ruff_lsp", "ruff-lsp" },
 
   bash = { "bashls", "bash-language-server" },
