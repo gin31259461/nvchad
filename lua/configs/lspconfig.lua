@@ -2,8 +2,8 @@
 require("nvchad.configs.lspconfig").defaults()
 
 local lspconfig = require "lspconfig"
-local pkgs = require("configs.packages").lsp
 local nvlsp = require "nvchad.configs.lspconfig"
+local pkgs = require("configs.packages").lsp
 
 -- lsps with default config
 for _, lsp in ipairs(pkgs) do
@@ -19,6 +19,9 @@ lspconfig.pylsp.setup {
   settings = {
     pylsp = {
       plugins = {
+        pylint = {
+          enabled = false,
+        },
         pycodestyle = {
           enabled = false,
         },

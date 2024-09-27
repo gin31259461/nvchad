@@ -11,18 +11,27 @@ local lsp_pkgs = {
   css = { "cssls", "css-lsp" },
   typescript = { "ts_ls", "typescript-language-server" },
   clangd = { "clangd", "clangd" },
+  bash = { "bashls", "bash-language-server" },
+  sql = { "sqls", "sqls" },
+  markdown = { "marksman", "marksman" },
 
+  -- python
   python = { "pylsp", "python-lsp-server" },
   ruff = { "ruff_lsp", "ruff-lsp" },
 
-  bash = { "bashls", "bash-language-server" },
-  sql = { "sqls", "sqls" },
+  -- docker
   docker = { "dockerls", "dockerfile-language-server" },
   docker_compose = { "docker_compose_language_service", "docker-compose-language-service" },
 }
 
 local formatter_pkgs = { python = "ruff", bash = "shfmt", sql = "sqlfluff" }
-local linter_pkgs = { docker = "hadolint" }
+local linter_pkgs = {
+  docker = "hadolint",
+
+  -- markdown
+  markdownlint_cli = "markdownlint-cli2",
+  markdown_toc = "markdown-toc",
+}
 
 for v in pairs(lsp_pkgs) do
   table.insert(M.lsp, lsp_pkgs[v][1])

@@ -10,5 +10,6 @@ return {
     "cpp",
     "python",
     "bash",
+    "markdown",
   },
 }
