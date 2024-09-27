@@ -1,5 +1,6 @@
 local options = {
   events = { "BufWritePost", "BufReadPost", "InsertLeave" },
+
   linters_by_ft = {
     -- Use the "*" filetype to run linters on all filetypes.
     -- ['*'] = { 'global linter' },
@@ -12,6 +13,7 @@ local options = {
     docker = { "hadolint" },
     markdown = { "markdownlint-cli2" },
   },
+
   linters = {
     -- -- Example of using selene only when a selene.toml file is present
     -- selene = {

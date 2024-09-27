@@ -24,6 +24,8 @@ local options = {
     python = { "ruff_fix", "ruff_organize_imports", "ruff_format" },
     sh = { "shfmt" },
     sql = { "sqlfluff" },
+
+    -- web dev
     css = { "prettier" },
     html = { "prettier" },
     typescript = { "prettier" },
