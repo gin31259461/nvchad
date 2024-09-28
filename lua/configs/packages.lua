@@ -17,6 +17,7 @@ local lsp_pkgs = {
 
   -- python
   python = { "pylsp", "python-lsp-server" },
+  pyright = { "pyright", "pyright" },
   ruff = { "ruff_lsp", "ruff-lsp" },
 
   -- docker
