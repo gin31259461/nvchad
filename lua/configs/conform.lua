@@ -26,14 +26,15 @@ local options = {
     sql = { "sqlfluff" },
 
     -- web dev
-    css = { "prettier" },
-    html = { "prettier" },
-    typescript = { "prettier" },
-    javascript = { "prettier" },
+    css = { "deno_fmt" },
+    html = { "deno_fmt" },
+    typescript = { "deno_fmt" },
+    javascript = { "deno_fmt" },
+    json = { "deno_fmt" },
 
     -- markdown
-    ["markdown"] = { "prettier", "markdownlint-cli2", "markdown-toc" },
-    ["markdown.mdx"] = { "prettier", "markdownlint-cli2", "markdown-toc" },
+    ["markdown"] = { "deno_fmt", "markdownlint-cli2", "markdown-toc" },
+    ["markdown.mdx"] = { "deno_fmt", "markdownlint-cli2", "markdown-toc" },
   },
 
   format_on_save = {

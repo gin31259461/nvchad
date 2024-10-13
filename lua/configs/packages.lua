@@ -7,9 +7,6 @@ M.mason = {}
 
 -- { lsp_config_name, pkg_name }
 local lsp_pkgs = {
-  html = { "html", "html-lsp" },
-  css = { "cssls", "css-lsp" },
-  typescript = { "ts_ls", "typescript-language-server" },
   clangd = { "clangd", "clangd" },
   bash = { "bashls", "bash-language-server" },
   sql = { "sqls", "sqls" },
@@ -23,6 +20,12 @@ local lsp_pkgs = {
   -- docker
   docker = { "dockerls", "dockerfile-language-server" },
   docker_compose = { "docker_compose_language_service", "docker-compose-language-service" },
+
+  -- web
+  html = { "html", "html-lsp" },
+  css = { "cssls", "css-lsp" },
+  -- deno support typescript and javascript language server
+  deno = { "denols", "deno" },
 }
 
 local formatter_pkgs = { python = "ruff", bash = "shfmt", sql = "sqlfluff" }

@@ -12,6 +12,9 @@ local options = {
     python = { "ruff" },
     docker = { "hadolint" },
     markdown = { "markdownlint-cli2" },
+
+    typescript = { "deno" },
+    javascript = { "deno" },
   },
 
   linters = {
