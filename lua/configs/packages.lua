@@ -9,7 +9,7 @@ M.mason = {}
 local lsp_pkgs = {
   clangd = { "clangd", "clangd" },
   bash = { "bashls", "bash-language-server" },
-  sql = { "sqls", "sqls" },
+  -- sql = { "sqls", "sqls" },
   markdown = { "marksman", "marksman" },
 
   -- python

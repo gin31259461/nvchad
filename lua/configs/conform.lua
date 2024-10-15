@@ -17,13 +17,15 @@ local options = {
         return #diag > 0
       end,
     },
+    ["sqlfluff"] = {
+      args = { "format", "--dialect=ansi", "-" },
+    },
   },
 
   formatters_by_ft = {
     lua = { "stylua" },
     python = { "ruff_fix", "ruff_organize_imports", "ruff_format" },
     sh = { "shfmt" },
-    sql = { "sqlfluff" },
 
     -- web dev
     css = { "deno_fmt" },
