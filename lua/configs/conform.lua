@@ -19,6 +19,7 @@ local options = {
     },
     ["sqlfluff"] = {
       args = { "format", "--dialect=ansi", "-" },
+      require_cwd = false,
     },
   },
 
