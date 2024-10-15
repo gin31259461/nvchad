@@ -11,5 +11,6 @@ return {
     "python",
     "bash",
     "markdown",
+    "sql",
   },
 }
