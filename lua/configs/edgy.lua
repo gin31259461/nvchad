@@ -14,7 +14,14 @@ local options = {
   bottom = {
     {
       title = "DB Query Result",
+      pinned = true,
       ft = "dbout",
+    },
+  },
+
+  options = {
+    bottom = {
+      size = 30,
     },
   },
 }
