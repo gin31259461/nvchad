@@ -152,6 +152,10 @@ local plugins = {
           vim.wo.foldenable = false
         end,
       })
+
+      vim.filetype.add {
+        pattern = { ["*-[Columns|Primary Keys|Indexes|References|Constraints|Foreign Keys|Describe]-[^%.]*"] = "sql" },
+      }
     end,
   },
 
