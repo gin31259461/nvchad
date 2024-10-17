@@ -26,14 +26,26 @@ local plugins = {
   {
     "nvim-tree/nvim-tree.lua",
     cmd = { "NvimTreeToggle", "NvimTreeFocus" },
-    opts = function()
-      return require "configs.nvimtree"
-    end,
+    opts = require "configs.nvimtree",
   },
 
   {
     "nvim-treesitter/nvim-treesitter",
-    opts = require "configs.treesitter",
+    opts = function(_, opts)
+      -- https://github.com/nvim-treesitter/nvim-treesitter?tab=readme-ov-file#modules
+      opts.ensure_installed = {
+        "html",
+        "css",
+        "javascript",
+        "typescript",
+        "c",
+        "cpp",
+        "python",
+        "bash",
+        "markdown",
+        "sql",
+      }
+    end,
   },
 
   {
