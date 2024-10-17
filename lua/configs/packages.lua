@@ -23,7 +23,7 @@ local lsp_pkgs = {
   -- web
   html = { "html", "html-lsp" },
   css = { "cssls", "css-lsp" },
-  -- deno support typescript and javascript lsp
+  typescirpt = { "ts_ls", "typescript-language-server" },
   deno = { "denols", "deno" },
 }
 
