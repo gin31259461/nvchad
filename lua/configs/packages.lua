@@ -28,7 +28,7 @@ local lsp_pkgs = {
 }
 
 -- formatter and linter
-local other_pkgs = { "ruff", "shfmt", "sqlfluff", "hadolint", "markdownlint-cli2", "markdown-toc" }
+local other_pkgs = { "ruff", "shfmt", "sqlfluff", "hadolint", "markdownlint-cli2", "markdown-toc", "prettier" }
 
 for v in pairs(lsp_pkgs) do
   table.insert(M.lsp, lsp_pkgs[v][1])

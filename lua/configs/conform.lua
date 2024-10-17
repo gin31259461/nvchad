@@ -31,6 +31,8 @@ local options = {
     -- web dev
     css = { "deno_fmt" },
     html = { "deno_fmt" },
+    typescriptreact = { "deno_fmt" },
+    javascriptreact = { "deno_fmt" },
     typescript = { "deno_fmt" },
     javascript = { "deno_fmt" },
     json = { "deno_fmt" },

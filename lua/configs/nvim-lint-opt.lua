@@ -12,6 +12,8 @@ local options = {
     docker = { "hadolint" },
     markdown = { "markdownlint-cli2" },
 
+    typescriptreact = { "deno" },
+    javascriptreact = { "deno" },
     typescript = { "deno" },
     javascript = { "deno" },
   },
