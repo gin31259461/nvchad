@@ -16,6 +16,10 @@ end
 
 -- configuring single server
 lspconfig.pylsp.setup {
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
+
   settings = {
     pylsp = {
       plugins = {
@@ -43,9 +47,17 @@ lspconfig.pylsp.setup {
 }
 
 lspconfig.denols.setup {
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
+
   root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
 }
 
 lspconfig.vtsls.setup {
   root_dir = lspconfig.util.root_pattern "package.json",
+
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
 }
