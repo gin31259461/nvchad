@@ -7,10 +7,6 @@ M.mason = {}
 
 -- alias = { lsp_config_name, pkg_name }
 local lsp_pkgs = {
-  clangd = { "clangd", "clangd" },
-  bash = { "bashls", "bash-language-server" },
-  markdown = { "marksman", "marksman" },
-
   -- python
   python = { "pylsp", "python-lsp-server" },
   pyright = { "pyright", "pyright" },
@@ -23,8 +19,13 @@ local lsp_pkgs = {
   -- web
   html = { "html", "html-lsp" },
   css = { "cssls", "css-lsp" },
-  typescirpt = { "ts_ls", "typescript-language-server" },
+  typescirpt = { "vtsls", "vtsls" },
   deno = { "denols", "deno" },
+
+  -- other
+  clangd = { "clangd", "clangd" },
+  bash = { "bashls", "bash-language-server" },
+  markdown = { "marksman", "marksman" },
 }
 
 -- formatter and linter
