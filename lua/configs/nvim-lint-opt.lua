@@ -12,10 +12,10 @@ local options = {
     docker = { "hadolint" },
     markdown = { "markdownlint-cli2" },
 
-    typescriptreact = { "deno" },
-    javascriptreact = { "deno" },
-    typescript = { "deno" },
-    javascript = { "deno" },
+    typescriptreact = { "eslint_d" },
+    javascriptreact = { "eslint_d" },
+    typescript = { "eslint_d" },
+    javascript = { "eslint_d" },
   },
 
   linters = {
