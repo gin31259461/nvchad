@@ -21,6 +21,9 @@ local options = {
       args = { "format", "--dialect=ansi", "-" },
       require_cwd = false,
     },
+    ["deno_fmt"] = {
+      args = { "fmt", "-" },
+    },
   },
 
   formatters_by_ft = {
