@@ -26,6 +26,7 @@ local lsp_pkgs = {
   clangd = { "clangd", "clangd" },
   bash = { "bashls", "bash-language-server" },
   markdown = { "marksman", "marksman" },
+  prisma = { "prismals", "prisma-language-server" },
 }
 
 -- formatter and linter
