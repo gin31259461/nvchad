@@ -18,6 +18,26 @@ local plugins = {
 
   {
     "neovim/nvim-lspconfig",
+    event = { "BufReadPost", "BufWritePost", "BufNewFile" },
+    dependencies = {
+      "mason.nvim",
+      { "williamboman/mason-lspconfig.nvim", config = function() end },
+      {
+        "yioneko/nvim-vtsls",
+        ft = {
+          "javascript",
+          "javascriptreact",
+          "javascript.jsx",
+          "typescript",
+          "typescriptreact",
+          "typescript.tsx",
+        },
+        keys = {
+          { "<leader>co", "<cmd>VtsExec organize_imports<CR>", desc = "Organize Imports" },
+          { "<leader>cu", "<cmd>VtsExec remove_unused_imports<CR>", desc = "Remove unused imports" },
+        },
+      },
+    },
     config = function()
       require "configs.lspconfig"
     end,
