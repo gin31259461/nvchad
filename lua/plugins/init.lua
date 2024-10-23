@@ -60,7 +60,6 @@ local plugins = {
         "css",
         "javascript",
         "typescript",
-        "jsx",
         "tsx",
         "c",
         "cpp",
