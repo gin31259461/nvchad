@@ -33,8 +33,10 @@ local plugins = {
           "typescript.tsx",
         },
         keys = {
-          { "<leader>co", "<cmd>VtsExec organize_imports<CR>", desc = "Organize Imports" },
+          { "<leader>co", "<cmd>VtsExec organize_imports<CR>", desc = "Organize imports" },
           { "<leader>cu", "<cmd>VtsExec remove_unused_imports<CR>", desc = "Remove unused imports" },
+          { "<leader>cR", "<cmd>VtsExec file_references<CR>", desc = "File References" },
+          { "<leader>cr", "<cmd>VtsExec rename_file<CR>", desc = "Rename file and update all the related paths" },
         },
       },
     },
@@ -66,6 +68,7 @@ local plugins = {
         "bash",
         "markdown",
         "sql",
+        "prisma",
       }
     end,
   },
