@@ -1,33 +1,50 @@
-# NvChad Custom Config
+# NvChad Config
 
 <!-- toc -->
 
-- [Credits](#credits)
-- [Pre-required](#pre-required)
-- [Custom Plugins](#custom-plugins)
+- [Pre-requisites](#pre-requisites)
+- [How to install](#how-to-install)
+- [Uninstall](#uninstall)
 
 <!-- tocstop -->
 
-**This repo is supposed to used as config by NvChad users!**
+## Pre-requisites
 
-- The main nvchad repo (NvChad/NvChad) is used as a plugin by this repo.
-- So you just import its modules , like
-  `require "nvchad.options" , require "nvchad.mappings"`
-- So you can delete the .git from this repo ( when you clone it locally ) or
-  fork it :)
+- `Neovim` >= 0.10
+- `Nerd Font` as terminal font
+  - Make sure the nerd font you set doesn't end with Mono to prevent small icons
+  - Example : JetbrainsMono Nerd Font and not ~~JetbrainsMono Nerd Font Mono~~
+- `Ripgrep` is required for grep searching with Telescope (OPTIONAL)
+- GCC, Windows users must have `mingw` installed and set on path.
+- Make, Windows users must have `GnuWin32` installed and set on path.
+- Delete old neovim folders (check commands below)
 
-## Credits
+## How to install
 
-1. Lazyvim starter <https://github.com/LazyVim/starter> as nvchad's starter was
-   inspired by Lazyvim's . It made a lot of things easier!
+Refer to [NvChad](https://nvchad.com/docs/quickstart/install)
 
-## Pre-required
+```bash
+npm install -g pnpm
 
-1. pnpm
+git clone https://github.com/gin31259461/nvchad.git ~/.config/nvim && nvim
+```
 
-## Custom Plugins
+- Run `:MasonInstallAll` command after lazy.nvim finishes downloading plugins.
+- Run `:Lazy sync` (Notice: may need to run twice)
 
-1. [markdown-preview](https://github.com/iamcco/markdown-preview.nvim)
-2. [render-markdown](https://github.com/MeanderingProgrammer/render-markdown.nvim)
-3. [nvim-lint](https://github.com/mfussenegger/nvim-lint) (with configration of
-   [LazyVim](http://www.lazyvim.org/plugins/linting))
+## Uninstall
+
+```bash
+# Linux / MacOS (unix)
+rm -rf ~/.config/nvim
+rm -rf ~/.local/state/nvim
+rm -rf ~/.local/share/nvim
+
+# Windows CMD
+rd -r ~\AppData\Local\nvim
+rd -r ~\AppData\Local\nvim-data
+
+# Windows PowerShell
+rm -Force ~\AppData\Local\nvim
+rm -Force ~\AppData\Local\nvim-data
+```
