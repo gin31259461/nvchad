@@ -3,13 +3,13 @@ local sql_ft = require("ft").sql_ft
 local plugins = {
   {
     "stevearc/conform.nvim",
-    event = "BufWritePre", -- uncomment for format on save
+    event = { "BufWritePost", "BufReadPost", "InsertLeave" },
     opts = function()
       local opts = require "configs.conform"
 
       for _, ft in ipairs(sql_ft) do
         opts.formatters_by_ft[ft] = opts.formatters_by_ft[ft] or {}
-        table.insert(opts.formatters_by_ft[ft], "sqlfluff")
+        table.insert(opts.formatters_by_ft[ft], "sql_formatter")
       end
 
       return opts
@@ -95,14 +95,14 @@ local plugins = {
 
   {
     "mfussenegger/nvim-lint",
-    event = "VeryLazy",
+    event = { "BufWritePost", "BufReadPost", "InsertLeave" },
     opts = function()
       local opts = require "configs.nvim-lint-opt"
 
-      for _, ft in ipairs(sql_ft) do
-        opts.linters_by_ft[ft] = opts.linters_by_ft[ft] or {}
-        table.insert(opts.linters_by_ft[ft], "sqlfluff")
-      end
+      -- for _, ft in ipairs(sql_ft) do
+      --   opts.linters_by_ft[ft] = opts.linters_by_ft[ft] or {}
+      --   table.insert(opts.linters_by_ft[ft], "sqlfluff")
+      -- end
 
       return opts
     end,
