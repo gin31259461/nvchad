@@ -27,6 +27,7 @@ local lsp_pkgs = {
   bash = { "bashls", "bash-language-server" },
   markdown = { "marksman", "marksman" },
   prisma = { "prismals", "prisma-language-server" },
+  toml = { "taplo", "taplo" },
 }
 
 -- formatter and linter

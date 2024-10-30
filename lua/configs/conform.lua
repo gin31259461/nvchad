@@ -39,6 +39,7 @@ local options = {
     typescript = { "deno_fmt", "eslint_d" },
     javascript = { "deno_fmt", "eslint_d" },
     json = { "deno_fmt" },
+    toml = { "taplo" },
 
     -- markdown
     ["markdown"] = { "deno_fmt", "markdownlint-cli2", "markdown-toc" },
