@@ -22,7 +22,15 @@ local options = {
       require_cwd = false,
     },
     ["deno_fmt"] = {
-      args = { "fmt", "-" },
+      args = function()
+        local current_filetype = vim.bo.filetype
+
+        if current_filetype == "json" then
+          return { "fmt", "--ext=json", "-" }
+        else
+          return { "fmt", "-" }
+        end
+      end,
     },
   },
 

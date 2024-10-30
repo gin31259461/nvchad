@@ -28,6 +28,7 @@ local lsp_pkgs = {
   markdown = { "marksman", "marksman" },
   prisma = { "prismals", "prisma-language-server" },
   toml = { "taplo", "taplo" },
+  json = { "jsonls", "json-lsp" },
 }
 
 -- formatter and linter
