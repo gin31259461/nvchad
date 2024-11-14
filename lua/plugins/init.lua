@@ -160,6 +160,7 @@ local plugins = {
 
   {
     "kristijanhusak/vim-dadbod-ui",
+    event = { "VeryLazy" },
     cmd = { "DBUI", "DBUIToggle", "DBUIAddConnection", "DBUIFindBuffer" },
     dependencies = "vim-dadbod",
     keys = {

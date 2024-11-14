@@ -26,6 +26,10 @@ Refer to [NvChad](https://nvchad.com/docs/quickstart/install)
 ```bash
 npm install -g pnpm
 
+yay -S ttf-firacode-nerd
+
+# set terminal font as FiraCode Nerd Font
+
 git clone https://github.com/gin31259461/nvchad.git ~/.config/nvim && nvim
 ```
 
