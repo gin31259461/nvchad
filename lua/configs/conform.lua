@@ -40,6 +40,20 @@ local options = {
         end
       end,
     },
+    ["prisma_fmt"] = {
+      command = function()
+        local shell = require "shell"
+
+        if shell.is_windows() then
+          return vim.fn.getcwd() .. "/node_modules/.bin/prisma.CMD"
+        end
+      end,
+      condition = function(_, ctx)
+        return vim.bo[ctx.buf].filetype == "prisma"
+      end,
+      args = { "format" },
+      stdin = false,
+    },
   },
 
   formatters_by_ft = {
@@ -56,17 +70,21 @@ local options = {
     javascript = { "deno_fmt", "eslint_d" },
     json = { "deno_fmt" },
     toml = { "taplo" },
+    prisma = { "prisma_fmt" },
 
     -- markdown
     ["markdown"] = { "deno_fmt", "markdownlint-cli2", "markdown-toc" },
     ["markdown.mdx"] = { "deno_fmt", "markdownlint-cli2", "markdown-toc" },
   },
 
-  format_on_save = {
+  format_on_save = function()
+    if vim.bo.filetype == "prisma" then
+      return
+    end
+
     -- These options will be passed to conform.format()
-    timeout_ms = 2000,
-    lsp_fallback = true,
-  },
+    return { timeout_ms = 2000, lsp_fallback = true }
+  end,
 }
 
 return options

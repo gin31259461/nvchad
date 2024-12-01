@@ -10,6 +10,10 @@ map("n", "<", "<<", { desc = "indent backward easily" })
 map("n", ">", ">>", { desc = "indent forward easily" })
 map("n", "<leader>di", "<cmd>Telescope diagnostics<CR>", { desc = "list diagnostics" })
 map("n", "<leader>fc", "<cmd>Telescope command_history<CR>", { desc = "list command historys" })
+map("n", "<leader>fe", function()
+  require("conform").format { lsp_fallback = true }
+  vim.cmd "e!"
+end, { desc = "general format file and force reload" })
 map("n", "<leader>fd", function()
   vim.diagnostic.open_float { border = "rounded" }
 end, { desc = "floating diagnostic" })
