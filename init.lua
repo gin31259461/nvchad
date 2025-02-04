@@ -31,9 +31,7 @@ dofile(vim.g.base46_cache .. "statusline")
 
 require "options"
 
-local shell = require "shell"
-
-if not shell.is_linux() then
+if vim.loop.os_uname().sysname ~= "Linux" then
   vim.cmd "let &shell = has('win32') ? 'powershell' : 'pwsh'"
   vim.cmd "let &shellcmdflag = '-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;'"
   vim.cmd "let &shellredir = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode'"
