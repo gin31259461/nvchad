@@ -97,6 +97,8 @@ local plugins = {
     "mfussenegger/nvim-lint",
     event = { "BufWritePost", "BufReadPost", "InsertLeave" },
     opts = function()
+      vim.env.ESLINT_D_PPID = vim.fn.getpid()
+
       local opts = require "configs.nvim-lint-opt"
 
       -- for _, ft in ipairs(sql_ft) do
