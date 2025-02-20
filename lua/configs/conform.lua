@@ -77,14 +77,15 @@ local options = {
     ["markdown.mdx"] = { "deno_fmt", "markdownlint-cli2", "markdown-toc" },
   },
 
-  format_on_save = function()
-    if vim.bo.filetype == "prisma" then
-      return
-    end
-
-    -- These options will be passed to conform.format()
-    return { timeout_ms = 2000, lsp_fallback = true }
-  end,
+  format_on_save = false,
+  -- format_on_save = function()
+  --   if vim.bo.filetype == "prisma" then
+  --     return
+  --   end
+  --
+  --   -- These options will be passed to conform.format()
+  --   return { timeout_ms = 2000, lsp_fallback = true }
+  -- end,
 }
 
 return options
