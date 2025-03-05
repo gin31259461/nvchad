@@ -1,4 +1,11 @@
 local options = {
+  default_format_opts = {
+    timeout_ms = 500,
+    async = false, -- not recommended to change
+    quiet = false, -- not recommended to change
+    lsp_format = "fallback", -- not recommended to change
+  },
+
   formatters = {
     ["markdown-toc"] = {
       condition = function(_, ctx)
@@ -78,6 +85,7 @@ local options = {
   },
 
   format_on_save = false,
+
   -- format_on_save = function()
   --   if vim.bo.filetype == "prisma" then
   --     return
