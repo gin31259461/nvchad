@@ -18,7 +18,18 @@ local options = {
     javascript = { "eslint_d" },
   },
 
-  linters = {},
+  linters = {
+    eslint_d = {
+      args = {
+        "--no-warn-ignored", -- <-- this is the key argument
+        "--stdin",
+        "--stdin-filename",
+        function()
+          return vim.api.nvim_buf_get_name(0)
+        end,
+      },
+    },
+  },
 }
 
 return options
