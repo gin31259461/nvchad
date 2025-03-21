@@ -1,6 +1,14 @@
 local sql_ft = require("ft").sql_ft
 
-local plugins = {
+local plugins = { -- git stuff
+  {
+    "lewis6991/gitsigns.nvim",
+    event = "User FilePost",
+    opts = function()
+      return require "configs.gitsigns"
+    end,
+  },
+
   -- load luasnips + cmp related in insert mode only
   {
     "hrsh7th/nvim-cmp",

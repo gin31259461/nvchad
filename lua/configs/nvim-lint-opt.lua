@@ -21,18 +21,24 @@ local options = {
   },
 
   linters = {
-    eslint_d = {
+    eslint_d = require("lint.util").wrap({
+
+      stdin = true,
+      stream = "stdout",
+      ignore_exitcode = true,
+
+      args = {
+        "--stdin",
+        "--stdin-filename",
+        function()
+          return vim.api.nvim_buf_get_name(0)
+        end,
+      },
 
       cmd = function()
         local local_binary = vim.fn.fnamemodify("./node_modules/.bin/" .. eslint_d_binary_name, ":p")
         return vim.loop.fs_stat(local_binary) and local_binary or eslint_d_binary_name
       end,
-
-      stdin = true,
-
-      stream = "stdout",
-
-      ignore_exitcode = true,
 
       parser = function(output, bufnr)
         local result = require("lint.linters.eslint").parser(output, bufnr)
@@ -41,16 +47,12 @@ local options = {
         end
         return result
       end,
-
-      args = {
-        "--no-warn-ignored", -- <-- this is the key argument
-        "--stdin",
-        "--stdin-filename",
-        function()
-          return vim.api.nvim_buf_get_name(0)
-        end,
-      },
-    },
+    }, function(diagnostic)
+      if diagnostic.message:find "Error: Could not find config file" then
+        return nil
+      end
+      return diagnostic
+    end),
   },
 }
 
