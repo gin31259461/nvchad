@@ -26,6 +26,7 @@ map("x", "<", "<gv", { desc = "indent backward and stay in visual mode" })
 map("x", ">", ">gv", { desc = "indent forward and stay in visual mode" })
 map("x", "J", ":move '>+1<CR>gv-gv", { desc = "move selected block up and stay in visual mode" })
 map("x", "K", ":move '<-2<CR>gv-gv", { desc = "move selected block down and stay in visual mode" })
+map("x", "p", '"_dP', { desc = "dont copy replaced text" })
 
 -- insert mode
 map("i", "jk", "<ESC>")
