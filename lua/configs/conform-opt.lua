@@ -41,7 +41,7 @@ local options = {
         local current_filetype = vim.bo.filetype
 
         if current_filetype == "json" then
-          return { "fmt", "--ext=json", "-" }
+          return { "fmt", "-", "--ext=json" }
         else
           return { "fmt", "-" }
         end

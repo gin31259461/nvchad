@@ -21,7 +21,7 @@ local lsp_pkgs = {
   css = { "cssls", "css-lsp" },
   typescirpt = { "vtsls", "vtsls" },
   deno = { "denols", "deno" },
-  eslint = { "eslint", "eslint-lsp" },
+  -- eslint = { "eslint", "eslint-lsp" },
 
   -- other
   clangd = { "clangd", "clangd" },

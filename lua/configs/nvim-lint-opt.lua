@@ -1,4 +1,4 @@
--- local eslint_d_binary_name = "eslint_d"
+local eslint_d_binary_name = "eslint_d"
 
 local options = {
   events = { "BufWritePost", "BufReadPost", "InsertLeave" },
@@ -14,48 +14,47 @@ local options = {
     docker = { "hadolint" },
     markdown = { "markdownlint-cli2" },
 
-    -- typescriptreact = { "eslint_d" },
-    -- javascriptreact = { "eslint_d" },
-    -- typescript = { "eslint_d" },
-    -- javascript = { "eslint_d" },
+    typescriptreact = { "eslint_d" },
+    javascriptreact = { "eslint_d" },
+    typescript = { "eslint_d" },
+    javascript = { "eslint_d" },
   },
 
   linters = {
-    -- eslint_d = require("lint.util").wrap({
-    --
-    --   stdin = true,
-    --   stream = "stdout",
-    --   ignore_exitcode = true,
-    --
-    --   args = {
-    --     "--stdin",
-    --     "--stdin-filename",
-    --     function()
-    --       return vim.api.nvim_buf_get_name(0)
-    --     end,
-    --   },
-    --
-    --   cmd = function()
-    --     local local_binary = vim.fn.fnamemodify("./node_modules/.bin/" .. eslint_d_binary_name, ":p")
-    --     return vim.loop.fs_stat(local_binary) and local_binary or eslint_d_binary_name
-    --   end,
-    --
-    --   parser = function(output, bufnr)
-    --     local result = require("lint.linters.eslint").parser(output, bufnr)
-    --     for _, d in ipairs(result) do
-    --       d.source = eslint_d_binary_name
-    --     end
-    --     return result
-    --   end,
-    -- }, function(diagnostic)
-    --   if
-    --     diagnostic.message:find "Error: Could not find config file"
-    --     -- or diagnostic.message:find "Could not parse linter output"
-    --   then
-    --     return nil
-    --   end
-    --   return diagnostic
-    -- end),
+    eslint_d = require("lint.util").wrap({
+
+      stdin = true,
+      stream = "stdout",
+      ignore_exitcode = true,
+
+      args = {
+        "--format",
+        "json",
+        "--stdin",
+        "--stdin-filename",
+        function()
+          return vim.api.nvim_buf_get_name(0)
+        end,
+      },
+
+      cmd = function()
+        local local_binary = vim.fn.fnamemodify("./node_modules/.bin/" .. eslint_d_binary_name, ":p")
+        return vim.loop.fs_stat(local_binary) and local_binary or eslint_d_binary_name
+      end,
+
+      parser = function(output, bufnr)
+        local result = require("lint.linters.eslint").parser(output, bufnr)
+        for _, d in ipairs(result) do
+          d.source = eslint_d_binary_name
+        end
+        return result
+      end,
+    }, function(diagnostic)
+      if diagnostic.message:find "Error: Could not find config file" then
+        return nil
+      end
+      return diagnostic
+    end),
   },
 }
 

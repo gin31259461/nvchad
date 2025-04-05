@@ -51,7 +51,7 @@ local plugins = { -- git stuff
       },
     },
     opts = function()
-      return require "configs.cmp"
+      return require "configs.cmp-opt"
     end,
   },
 
@@ -59,7 +59,7 @@ local plugins = { -- git stuff
     "stevearc/conform.nvim",
     event = { "BufWritePost", "BufReadPost", "InsertLeave" },
     opts = function()
-      local opts = require "configs.conform"
+      local opts = require "configs.conform-opt"
 
       for _, ft in ipairs(sql_ft) do
         opts.formatters_by_ft[ft] = opts.formatters_by_ft[ft] or {}
@@ -78,7 +78,7 @@ local plugins = { -- git stuff
       { "williamboman/mason-lspconfig.nvim", config = function() end },
       {
         "yioneko/nvim-vtsls",
-        ft = {
+        filetypes = {
           "javascript",
           "javascriptreact",
           "javascript.jsx",
@@ -86,11 +86,40 @@ local plugins = { -- git stuff
           "typescriptreact",
           "typescript.tsx",
         },
+        settings = {
+          complete_function_calls = true,
+          vtsls = {
+            enableMoveToFileCodeAction = true,
+            autoUseWorkspaceTsdk = true,
+            experimental = {
+              maxInlayHintLength = 30,
+              completion = {
+                enableServerSideFuzzyMatch = true,
+              },
+            },
+          },
+          typescript = {
+            updateImportsOnFileMove = { enabled = "always" },
+            suggest = {
+              completeFunctionCalls = true,
+            },
+            inlayHints = {
+              enumMemberValues = { enabled = true },
+              functionLikeReturnTypes = { enabled = true },
+              parameterNames = { enabled = "literals" },
+              parameterTypes = { enabled = true },
+              propertyDeclarationTypes = { enabled = true },
+              variableTypes = { enabled = false },
+            },
+          },
+        },
         keys = {
           { "<leader>co", "<cmd>VtsExec organize_imports<CR>", desc = "Organize imports" },
           { "<leader>cu", "<cmd>VtsExec remove_unused_imports<CR>", desc = "Remove unused imports" },
           { "<leader>cR", "<cmd>VtsExec file_references<CR>", desc = "File References" },
           { "<leader>cr", "<cmd>VtsExec rename_file<CR>", desc = "Rename file and update all the related paths" },
+          { "<leader>cD", "<cmd>VtsExec fix_all<CR>", desc = "Fix all diagnostics" },
+          { "<leader>cM", "<cmd>VtsExec add_missing_imports<CR>", desc = "Add missing imports" },
         },
       },
     },
