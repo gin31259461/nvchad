@@ -2,20 +2,20 @@
 require("nvchad.configs.lspconfig").defaults()
 
 local lspconfig = require "lspconfig"
-local lspconfig_opts = require "configs.lspconfig-opt"
+local lspconfig_opts = require "plugins.lsp.lspconfig-opt"
 local lsp_servers = require("plugins.lsp.packages").lsp_servers
 local nvlsp = require "nvchad.configs.lspconfig"
 
 for _, server in ipairs(lsp_servers) do
   local servers = lspconfig_opts.servers
   local server_opts = vim.tbl_deep_extend("force", {
-    on_init = vim.deepcopy(nvlsp.on_init),
-    capabilities = vim.deepcopy(nvlsp.capabilities),
+    on_init = nvlsp.on_init,
+    capabilities = nvlsp.capabilities,
   }, servers[server] or {})
 
   if lspconfig_opts.setup[server] == nil then
     server_opts = vim.tbl_deep_extend("force", {
-      on_attach = vim.deepcopy(nvlsp.on_attach),
+      on_attach = nvlsp.on_attach,
     }, server_opts or {})
   end
 

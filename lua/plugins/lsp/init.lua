@@ -6,17 +6,17 @@ local plugins = {
       "mason.nvim",
       { "williamboman/mason-lspconfig.nvim", config = function() end },
     },
-    opts = require "configs.lspconfig-opt",
+    opts = require "plugins.lsp.lspconfig-opt",
     config = function()
       local lsp = require "utils.lsp"
 
-      -- mapping each configs.lspconfig-opt.servers.[server name].keys
+      -- mapping each lspconfig-opt.servers.[server name].keys
       lsp.on_attach(function(client, buffer)
         require("plugins.lsp.keymaps").on_attach(client, buffer)
       end)
 
       -- setup servers
-      require "configs.lspconfig-config"
+      require "plugins.lsp.lspconfig-config"
 
       lsp.on_dynamic_capability(require("plugins.lsp.keymaps").on_attach)
     end,
