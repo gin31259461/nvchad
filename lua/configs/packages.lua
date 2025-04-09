@@ -2,13 +2,14 @@
 
 local M = {}
 
-M.lsp = {}
-M.mason = {}
+M.lsp_servers = {}
+M.mason_ensured = {}
 
 -- alias = { lsp_config_name, pkg_name }
 local lsp_pkgs_with_setup = {
   -- python
   pyright = { "pyright", "pyright" },
+  ruff = { "ruff", "ruff" },
 
   -- docker
   docker = { "dockerls", "dockerfile-language-server" },
@@ -17,6 +18,7 @@ local lsp_pkgs_with_setup = {
   -- web
   html = { "html", "html-lsp" },
   css = { "cssls", "css-lsp" },
+  vtsls = { "vtsls", "vtsls" },
 
   -- other
   clangd = { "clangd", "clangd" },
@@ -31,8 +33,6 @@ local lsp_pkgs_with_setup = {
 local pkgs_only = {
   "python-lsp-server",
   "deno",
-  "vtsls",
-  "ruff",
   "shfmt",
   "sqlfluff",
   "hadolint",
@@ -44,12 +44,12 @@ local pkgs_only = {
 }
 
 for v in pairs(lsp_pkgs_with_setup) do
-  table.insert(M.lsp, lsp_pkgs_with_setup[v][1])
-  table.insert(M.mason, lsp_pkgs_with_setup[v][2])
+  table.insert(M.lsp_servers, lsp_pkgs_with_setup[v][1])
+  table.insert(M.mason_ensured, lsp_pkgs_with_setup[v][2])
 end
 
 for _, v in ipairs(pkgs_only) do
-  table.insert(M.mason, v)
+  table.insert(M.mason_ensured, v)
 end
 
 return M

@@ -1,5 +1,6 @@
 local M = {}
 
+---@diagnostic disable: deprecated
 M.unpack = table.unpack or unpack
 
 M.ternary = function(cond, t, f)

@@ -61,7 +61,7 @@ M.ui = {
 }
 
 M.mason = {
-  pkgs = require("configs.packages").mason,
+  pkgs = require("configs.packages").mason_ensured,
 }
 
 return M
