@@ -23,8 +23,7 @@ local config = function(_, opts)
       if timer ~= nil then
         timer:start(ms, 0, function()
           timer:stop()
-          table.unpack = table.unpack or unpack
-          vim.schedule_wrap(fn)(table.unpack(argv))
+          vim.schedule_wrap(fn)(require("utils").unpack(argv))
         end)
       end
     end
