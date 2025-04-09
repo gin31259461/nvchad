@@ -6,14 +6,14 @@ local lspconfig_opt = require "configs.lspconfig-opt"
 local nvlsp = require "nvchad.configs.lspconfig"
 local pkgs = require("configs.packages").lsp_servers
 
-for _, lsp in ipairs(pkgs) do
-  if lspconfig_opt.setup[lsp] ~= nil then
-    lspconfig[lsp].setup {
+for _, lsp_server_name in ipairs(pkgs) do
+  if lspconfig_opt.setup[lsp_server_name] ~= nil then
+    lspconfig[lsp_server_name].setup {
       on_init = nvlsp.on_init,
       capabilities = nvlsp.capabilities,
     }
   else
-    lspconfig[lsp].setup {
+    lspconfig[lsp_server_name].setup {
       on_init = nvlsp.on_init,
       capabilities = nvlsp.capabilities,
       on_attach = nvlsp.on_attach,
