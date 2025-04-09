@@ -3,7 +3,7 @@
 local M = {}
 
 M.lsp_servers = {}
-M.mason_ensured = {}
+M.mason_ensure_installed = {}
 
 -- alias = { lsp_config_name, pkg_name }
 local lsp_pkgs_with_setup = {
@@ -45,11 +45,11 @@ local pkgs_only = {
 
 for v in pairs(lsp_pkgs_with_setup) do
   table.insert(M.lsp_servers, lsp_pkgs_with_setup[v][1])
-  table.insert(M.mason_ensured, lsp_pkgs_with_setup[v][2])
+  table.insert(M.mason_ensure_installed, lsp_pkgs_with_setup[v][2])
 end
 
 for _, v in ipairs(pkgs_only) do
-  table.insert(M.mason_ensured, v)
+  table.insert(M.mason_ensure_installed, v)
 end
 
 return M

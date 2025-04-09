@@ -108,10 +108,6 @@ local options = {
           lsp.action["source.organizeImports"],
           desc = "Organize Imports",
         },
-      },
-    },
-    ruff_lsp = {
-      keys = {
         {
           "<leader>co",
           lsp.action["source.organizeImports"],
