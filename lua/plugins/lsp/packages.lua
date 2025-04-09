@@ -1,12 +1,10 @@
--- lsp server configurations: https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-
 local M = {}
 
 M.lsp_servers = {}
 M.mason_ensure_installed = {}
 
 -- alias = { lsp_config_name, pkg_name }
-local lsp_pkgs_with_setup = {
+local pkgs_with_setup = {
   -- python
   pyright = { "pyright", "pyright" },
   ruff = { "ruff", "ruff" },
@@ -43,9 +41,9 @@ local pkgs_only = {
   "sql-formatter",
 }
 
-for v in pairs(lsp_pkgs_with_setup) do
-  table.insert(M.lsp_servers, lsp_pkgs_with_setup[v][1])
-  table.insert(M.mason_ensure_installed, lsp_pkgs_with_setup[v][2])
+for v in pairs(pkgs_with_setup) do
+  table.insert(M.lsp_servers, pkgs_with_setup[v][1])
+  table.insert(M.mason_ensure_installed, pkgs_with_setup[v][2])
 end
 
 for _, v in ipairs(pkgs_only) do

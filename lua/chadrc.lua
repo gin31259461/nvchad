@@ -61,7 +61,7 @@ M.ui = {
 }
 
 M.mason = {
-  pkgs = require("configs.packages").mason_ensure_installed,
+  pkgs = require("plugins.lsp.packages").mason_ensure_installed,
 }
 
 return M
