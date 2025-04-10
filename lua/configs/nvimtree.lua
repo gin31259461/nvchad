@@ -1,3 +1,5 @@
+dofile(vim.g.base46_cache .. "nvimtree")
+
 local options = {
   filters = { dotfiles = false, git_ignored = true },
   disable_netrw = true,
