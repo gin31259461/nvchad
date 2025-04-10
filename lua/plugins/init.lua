@@ -1,4 +1,5 @@
-local plugins = { -- git stuff
+local plugins = {
+  -- git stuff
   {
     "lewis6991/gitsigns.nvim",
     event = "User FilePost",

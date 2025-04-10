@@ -1,9 +1,15 @@
-local plugins = {
+local plugins = { 
   {
+    "williamboman/mason.nvim",
+    cmd = { "Mason", "MasonInstall", "MasonUpdate" },
+    opts = function()
+      return require "nvchad.configs.mason" end,
+  },
+  {
+
     "neovim/nvim-lspconfig",
     event = { "BufReadPost", "BufWritePost", "BufNewFile" },
     dependencies = {
-      "mason.nvim",
       { "williamboman/mason-lspconfig.nvim", config = function() end },
     },
     opts = require "plugins.lsp.lspconfig-opt",

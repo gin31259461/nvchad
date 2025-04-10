@@ -49,9 +49,7 @@ local options = {
     },
     ["prisma_fmt"] = {
       command = function()
-        local shell = require "shell"
-
-        if shell.is_windows() then
+        if nvim.shell.is_windows() then
           return vim.fn.getcwd() .. "/node_modules/.bin/prisma.CMD"
         end
       end,
