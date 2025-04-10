@@ -1,5 +1,7 @@
 local M = {}
 
+M.packages = require "configs.packages"
+
 M.icons = {
   misc = {
     dots = "󰇘",

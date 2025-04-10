@@ -1,5 +1,3 @@
-local sql_ft = require("ft").sql_ft
-
 local plugins = { -- git stuff
   {
     "lewis6991/gitsigns.nvim",
@@ -61,7 +59,7 @@ local plugins = { -- git stuff
     opts = function()
       local opts = require "configs.conform-opt"
 
-      for _, ft in ipairs(sql_ft) do
+      for _, ft in ipairs(nvim.ft.sql_ft) do
         opts.formatters_by_ft[ft] = opts.formatters_by_ft[ft] or {}
         table.insert(opts.formatters_by_ft[ft], "sql_formatter")
       end
@@ -164,10 +162,10 @@ local plugins = { -- git stuff
   {
     "kristijanhusak/vim-dadbod-completion",
     dependencies = "vim-dadbod",
-    ft = sql_ft,
+    ft = nvim.ft.sql_ft,
     init = function()
       vim.api.nvim_create_autocmd("FileType", {
-        pattern = sql_ft,
+        pattern = nvim.ft.sql_ft,
         callback = function()
           local cmp = require "cmp"
 
@@ -191,7 +189,7 @@ local plugins = { -- git stuff
     cmd = { "DBUI", "DBUIToggle", "DBUIAddConnection", "DBUIFindBuffer" },
     dependencies = "vim-dadbod",
     keys = {
-      { "<leader>D", "<cmd>DBUIToggle<CR>", desc = "Toggle DBUI" },
+      { "<leader>D", "<cmd>DBUIToggle<CR>",     desc = "Toggle DBUI" },
       { "<leader>B", "<cmd>DBUIFindBuffer<CR>", desc = "Add buffer files to DBUI" },
     },
     init = function()

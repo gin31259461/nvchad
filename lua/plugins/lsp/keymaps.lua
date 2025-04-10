@@ -1,4 +1,3 @@
-local lsp = require "utils.lsp"
 local snacks = require "snacks"
 
 local M = {}
@@ -65,7 +64,7 @@ function M.get()
       has = { "workspace/didRenameFiles", "workspace/willRenameFiles" },
     },
     { "<leader>cr", vim.lsp.buf.rename, desc = "Rename", has = "rename" },
-    { "<leader>cA", lsp.action.source, desc = "Source Action", has = "codeAction" },
+    { "<leader>cA", nvim.lsp.action.source, desc = "Source Action", has = "codeAction" },
     {
       "]]",
       function()
@@ -126,7 +125,7 @@ function M.has(buffer, method)
     return false
   end
   method = method:find "/" and method or "textDocument/" .. method
-  local clients = lsp.get_clients { bufnr = buffer }
+  local clients = nvim.lsp.get_clients { bufnr = buffer }
   for _, client in ipairs(clients) do
     if client.supports_method(method) then
       return true
@@ -143,7 +142,7 @@ function M.resolve(buffer)
   end
   local spec = vim.tbl_extend("force", {}, M.get())
   local opts = require "plugins.lsp.lspconfig-opt"
-  local clients = lsp.get_clients { bufnr = buffer }
+  local clients = nvim.lsp.get_clients { bufnr = buffer }
   for _, client in ipairs(clients) do
     local maps = opts.servers[client.name] and opts.servers[client.name].keys or {}
     vim.list_extend(spec, maps)

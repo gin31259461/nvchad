@@ -61,7 +61,7 @@ M.ui = {
 }
 
 M.mason = {
-  pkgs = require("plugins.lsp.packages").mason_ensure_installed,
+  pkgs = nvim.configs.packages,
 }
 
 return M

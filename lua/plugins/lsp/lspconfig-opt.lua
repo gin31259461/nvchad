@@ -1,8 +1,3 @@
-local lsp = require "utils.lsp"
-local utils = require "utils"
-local icons = require("configs").icons
-
----@class PluginLspOpts
 local options = {
   -- options for vim.diagnostic.config()
   ---@type vim.diagnostic.Opts
@@ -20,10 +15,10 @@ local options = {
     severity_sort = true,
     signs = {
       text = {
-        [vim.diagnostic.severity.ERROR] = icons.diagnostics.Error,
-        [vim.diagnostic.severity.WARN] = icons.diagnostics.Warn,
-        [vim.diagnostic.severity.HINT] = icons.diagnostics.Hint,
-        [vim.diagnostic.severity.INFO] = icons.diagnostics.Info,
+        [vim.diagnostic.severity.ERROR] = nvim.configs.icons.diagnostics.Error,
+        [vim.diagnostic.severity.WARN] = nvim.configs.icons.diagnostics.Warn,
+        [vim.diagnostic.severity.HINT] = nvim.configs.icons.diagnostics.Hint,
+        [vim.diagnostic.severity.INFO] = nvim.configs.icons.diagnostics.Info,
       },
     },
   },
@@ -102,7 +97,7 @@ local options = {
           "gD",
           function()
             local params = vim.lsp.util.make_position_params()
-            lsp.execute {
+            nvim.lsp.execute {
               command = "typescript.goToSourceDefinition",
               arguments = { params.textDocument.uri, params.position },
               open = true,
@@ -113,7 +108,7 @@ local options = {
         {
           "gR",
           function()
-            lsp.execute {
+            nvim.lsp.execute {
               command = "typescript.findAllFileReferences",
               arguments = { vim.uri_from_bufnr(0) },
               open = true,
@@ -123,28 +118,28 @@ local options = {
         },
         {
           "leader>co",
-          lsp.action["source.organizeImports"],
+          nvim.lsp.action["source.organizeImports"],
           desc = "Organize Imports",
         },
         {
           "<leader>cM",
-          lsp.action["source.addMissingImports.ts"],
+          nvim.lsp.action["source.addMissingImports.ts"],
           desc = "Add missing imports",
         },
         {
           "<leader>cu",
-          lsp.action["source.removeUnused.ts"],
+          nvim.lsp.action["source.removeUnused.ts"],
           desc = "Remove unused imports",
         },
         {
           "<leader>cD",
-          lsp.action["source.fixAll.ts"],
+          nvim.lsp.action["source.fixAll.ts"],
           desc = "Fix all diagnostics",
         },
         {
           "<leader>cV",
           function()
-            lsp.execute { command = "typescript.selectTypeScriptVersion" }
+            nvim.lsp.execute { command = "typescript.selectTypeScriptVersion" }
           end,
           desc = "Select TS workspace version",
         },
@@ -161,12 +156,12 @@ local options = {
       keys = {
         {
           "<leader>co",
-          lsp.action["source.organizeImports"],
+          nvim.lsp.action["source.organizeImports"],
           desc = "Organize Imports",
         },
         {
           "<leader>co",
-          lsp.action["source.organizeImports"],
+          nvim.lsp.action["source.organizeImports"],
           desc = "Organize Imports",
         },
       },
@@ -175,16 +170,16 @@ local options = {
 
   setup = {
     vtsls = function(_, opts)
-      lsp.on_attach(function(client, _) -- client, buffer
+      nvim.lsp.on_attach(function(client, _)                                        -- client, buffer
         client.commands["_typescript.moveToFileRefactoring"] = function(command, _) -- command, ctx
-          local arg0, arg1, arg2 = utils.unpack(command.arguments)
+          local arg0, arg1, arg2 = nvim.utils.unpack(command.arguments)
 
           ---@type string, string, lsp.Range
           local action, uri, range =
-            tostring(arg0), tostring(arg1), {
-              start = { line = arg2 and arg2.start_line or 0, character = arg2 and arg2.start_char or 0 },
-              ["end"] = { line = arg2 and arg2.end_line or 0, character = arg2 and arg2.end_char or 0 },
-            }
+              tostring(arg0), tostring(arg1), {
+                start = { line = arg2 and arg2.start_line or 0, character = arg2 and arg2.start_char or 0 },
+                ["end"] = { line = arg2 and arg2.end_line or 0, character = arg2 and arg2.end_char or 0 },
+              }
 
           local function move(newf)
             client.request("workspace/executeCommand", {
@@ -222,7 +217,9 @@ local options = {
                   default = vim.fn.fnamemodify(fname, ":h") .. "/",
                   completion = "file",
                 }, function(newf)
-                  return newf and move(newf)
+                  if type(newf) == "string" then
+                    move(newf)
+                  end
                 end)
               elseif f then
                 move(f)
@@ -234,11 +231,11 @@ local options = {
 
       -- copy typescript settings to javascript
       opts.settings.javascript =
-        vim.tbl_deep_extend("force", {}, opts.settings.typescript, opts.settings.javascript or {})
+          vim.tbl_deep_extend("force", {}, opts.settings.typescript, opts.settings.javascript or {})
     end,
 
     ruff = function()
-      lsp.on_attach(function(client, _)
+      nvim.lsp.on_attach(function(client, _)
         -- Disable hover in favor of Pyright
         client.server_capabilities.hoverProvider = false
       end, "ruff")
