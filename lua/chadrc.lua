@@ -61,7 +61,7 @@ M.ui = {
 }
 
 M.mason = {
-  pkgs = nvim.configs.packages,
+  pkgs = nvim.configs.packages.mason_ensure_installed,
 }
 
 return M
