@@ -94,6 +94,9 @@ local plugins = {
         "markdown",
         "sql",
         "prisma",
+        "lua",
+        "luadoc",
+        "comment",
       }
     end,
   },
