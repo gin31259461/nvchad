@@ -1,4 +1,4 @@
-local plugins = { 
+local plugins = {
   {
     "williamboman/mason.nvim",
     cmd = { "Mason", "MasonInstall", "MasonUpdate" },
