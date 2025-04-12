@@ -24,12 +24,18 @@
 Refer to [NvChad](https://nvchad.com/docs/quickstart/install)
 
 ```bash
-npm install -g pnpm
+# install neovim
+# windows -> winget
+winget install --id=Neovim.Neovim  -e
 
+# some plugins need yarn to build
+npm install -g yarn
+
+# linux
 yay -S ttf-firacode-nerd
 
-# set terminal font as FiraCode Nerd Font
-
+# after set terminal font as FiraCode Nerd Font
+# clone this repo
 git clone https://github.com/gin31259461/nvchad.git ~/.config/nvim && nvim
 ```
 

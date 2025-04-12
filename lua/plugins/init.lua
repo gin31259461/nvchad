@@ -1,22 +1,4 @@
 local plugins = {
-  -- nvchad core
-  {
-    "nvchad/base46",
-    branch = "v3.0",
-    build = function()
-      require("base46").load_all_highlights()
-    end,
-  },
-
-  {
-    "nvchad/ui",
-    commit = "ee8104318cba9be2724ce548a1de0562758e9c28",
-    lazy = false,
-    config = function()
-      require "nvchad"
-    end,
-  },
-
   -- git stuff
   {
     "lewis6991/gitsigns.nvim",
