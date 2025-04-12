@@ -168,7 +168,7 @@ local options = {
     prismals = {
       keys = {
         {
-          "<leader>fe",
+          "<leader>fp",
           function()
             require("conform").format { lsp_fallback = true }
             vim.cmd "e!"

@@ -14,8 +14,14 @@ map("n", "<leader>fd", function()
   vim.diagnostic.open_float { border = "rounded" }
 end, { desc = "floating diagnostic" })
 map("n", "<leader>mp", "<cmd>MarkdownPreview<CR>", { desc = "toggle markdown preview server" })
-map("n", "<M-j>", "<cmd>NvimTreeResize +10<CR>", { desc = "increase nvim tree width" })
-map("n", "<M-k>", "<cmd>NvimTreeResize -10<CR>", { desc = "decrease nvim tree width" })
+
+-- override nvchad settings
+map("n", "<C-n>", "<cmd>Neotree action=show source=last toggle<CR>", { desc = "neotree toggle window" })
+map("n", "<leader>e", "<cmd>Neotree action=focus source=last<CR>", { desc = "neotree focus window" })
+
+map("n", "<leader>bb", "<cmd>enew<CR>", { desc = "buffer new" })
+
+-- end override
 
 -- visual mode
 map("x", "<", "<gv", { desc = "indent backward and stay in visual mode" })

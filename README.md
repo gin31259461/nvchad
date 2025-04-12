@@ -34,7 +34,6 @@ git clone https://github.com/gin31259461/nvchad.git ~/.config/nvim && nvim
 ```
 
 - Run `:MasonInstallAll` command after lazy.nvim finishes downloading plugins.
-- Run `:Lazy restore`
 - Reopen neovim
 
 ## Uninstall
