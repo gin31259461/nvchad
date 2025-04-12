@@ -10,7 +10,7 @@
 
 ## Pre-requisites
 
-- `Neovim` >= 0.10
+- `Neovim` >= 0.11
 - `Nerd Font` as terminal font
   - Make sure the nerd font you set doesn't end with Mono to prevent small icons
   - Example : JetbrainsMono Nerd Font and not ~~JetbrainsMono Nerd Font Mono~~
