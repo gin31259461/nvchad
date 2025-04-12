@@ -79,25 +79,8 @@ local plugins = {
 
   {
     "nvim-treesitter/nvim-treesitter",
-    opts = function(_, opts)
-      -- https://github.com/nvim-treesitter/nvim-treesitter?tab=readme-ov-file#modules
-      opts.ensure_installed = {
-        "html",
-        "css",
-        "javascript",
-        "typescript",
-        "tsx",
-        "c",
-        "cpp",
-        "python",
-        "bash",
-        "markdown",
-        "sql",
-        "prisma",
-        "lua",
-        "luadoc",
-        "comment",
-      }
+    opts = function()
+      return require "configs.treesitter"
     end,
   },
 
