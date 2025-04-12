@@ -1,3 +1,5 @@
+---@module "lspconfig"
+
 local options = {
   -- options for vim.diagnostic.config()
   ---@type vim.diagnostic.Opts
@@ -53,6 +55,7 @@ local options = {
   },
 
   -- LSP Server Settings
+  ---@type lspconfig.Config|{cmd?: string[], settings?: table<string, unknown>, keys?: LazyKeysSpec[]}
   servers = {
     vtsls = {
       -- explicitly add default filetypes, so that we can extend
@@ -117,7 +120,7 @@ local options = {
           desc = "File References",
         },
         {
-          "leader>co",
+          "<leader>co",
           nvim.lsp.action["source.organizeImports"],
           desc = "Organize Imports",
         },
@@ -154,11 +157,6 @@ local options = {
         },
       },
       keys = {
-        {
-          "<leader>co",
-          nvim.lsp.action["source.organizeImports"],
-          desc = "Organize Imports",
-        },
         {
           "<leader>co",
           nvim.lsp.action["source.organizeImports"],

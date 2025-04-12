@@ -3,7 +3,8 @@ local plugins = {
     "williamboman/mason.nvim",
     cmd = { "Mason", "MasonInstall", "MasonUpdate" },
     opts = function()
-      return require "nvchad.configs.mason" end,
+      return require "nvchad.configs.mason"
+    end,
   },
   {
 
@@ -12,7 +13,9 @@ local plugins = {
     dependencies = {
       { "williamboman/mason-lspconfig.nvim", config = function() end },
     },
-    opts = require "plugins.lsp.lspconfig-opt",
+    opts = function()
+      return require "plugins.lsp.lspconfig-opt"
+    end,
     config = function()
       -- mapping each lspconfig-opt.servers.[server name].keys
       nvim.lsp.on_attach(function(client, buffer)
@@ -24,6 +27,15 @@ local plugins = {
 
       nvim.lsp.on_dynamic_capability(require("plugins.lsp.keymaps").on_attach)
     end,
+  },
+
+  -- improve lua_ls annotations
+  {
+    "folke/lazydev.nvim",
+    ft = "lua",
+    opts = {
+      library = {},
+    },
   },
 }
 

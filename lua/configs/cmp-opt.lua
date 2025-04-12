@@ -69,7 +69,11 @@ local options = {
     { name = "buffer" },
     { name = "nvim_lua" },
     { name = "path" },
+    {
+      name = "lazydev",
+      group_index = 0, -- set group index to 0 to skip loading LuaLS completions
+    },
   },
 }
 
-return vim.tbl_deep_extend("force", options, require "nvchad.cmp")
+return vim.tbl_deep_extend("force", require "nvchad.cmp", options)
