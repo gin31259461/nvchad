@@ -167,7 +167,7 @@ local options = {
       },
     },
 
-    prisma = {
+    prismals = {
       keys = {
         {
           "<leader>fe",
