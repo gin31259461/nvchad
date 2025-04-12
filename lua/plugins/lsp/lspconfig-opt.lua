@@ -166,20 +166,33 @@ local options = {
         },
       },
     },
+
+    prisma = {
+      keys = {
+        {
+          "<leader>fe",
+          function()
+            require("conform").format { lsp_fallback = true }
+            vim.cmd "e!"
+          end,
+          desc = "prisma format file and force reload",
+        },
+      },
+    },
   },
 
   setup = {
     vtsls = function(_, opts)
-      nvim.lsp.on_attach(function(client, _)                                        -- client, buffer
+      nvim.lsp.on_attach(function(client, _) -- client, buffer
         client.commands["_typescript.moveToFileRefactoring"] = function(command, _) -- command, ctx
           local arg0, arg1, arg2 = nvim.utils.unpack(command.arguments)
 
           ---@type string, string, lsp.Range
           local action, uri, range =
-              tostring(arg0), tostring(arg1), {
-                start = { line = arg2 and arg2.start_line or 0, character = arg2 and arg2.start_char or 0 },
-                ["end"] = { line = arg2 and arg2.end_line or 0, character = arg2 and arg2.end_char or 0 },
-              }
+            tostring(arg0), tostring(arg1), {
+              start = { line = arg2 and arg2.start_line or 0, character = arg2 and arg2.start_char or 0 },
+              ["end"] = { line = arg2 and arg2.end_line or 0, character = arg2 and arg2.end_char or 0 },
+            }
 
           local function move(newf)
             client.request("workspace/executeCommand", {
@@ -231,7 +244,7 @@ local options = {
 
       -- copy typescript settings to javascript
       opts.settings.javascript =
-          vim.tbl_deep_extend("force", {}, opts.settings.typescript, opts.settings.javascript or {})
+        vim.tbl_deep_extend("force", {}, opts.settings.typescript, opts.settings.javascript or {})
     end,
 
     ruff = function()
