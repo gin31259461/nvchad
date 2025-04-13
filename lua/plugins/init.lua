@@ -71,7 +71,7 @@ local plugins = {
           virtual_text = {
             enabled = false,
             key_bindings = {
-              accept = false, -- handled by nvim-cmp / blink.cmp
+              accept = false, -- handled by nvim-cmp
               next = "<M-]>",
               prev = "<M-[>",
             },
@@ -79,6 +79,14 @@ local plugins = {
         },
         config = function(_, opts)
           require("codeium").setup(opts)
+
+          -- override codeium util, don't use \r
+          local codeium_util = require "codeium.util"
+
+          ---@diagnostic disable duplicate-set-field
+          codeium_util.get_newline = function()
+            return "\n"
+          end
         end,
       },
     },
