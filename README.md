@@ -3,6 +3,7 @@
 <!-- toc -->
 
 - [Pre-requisites](#pre-requisites)
+- [For windows setup](#for-windows-setup)
 - [How to install](#how-to-install)
 - [Uninstall](#uninstall)
 
@@ -12,16 +13,41 @@
 
 - `Neovim` >= 0.11
 - `Nerd Font` as terminal font
-  - Make sure the nerd font you set doesn't end with Mono to prevent small icons
+  - Make sure the nerd font setting doesn't end with Mono to prevent small icons
   - Example : JetbrainsMono Nerd Font and not ~~JetbrainsMono Nerd Font Mono~~
 - `Ripgrep` is required for grep searching with Telescope (OPTIONAL)
+- Node.js, NPM, Yarn
 - GCC, Windows users must have `mingw` installed and set on path.
-- Make, Windows users must have `GnuWin32` installed and set on path.
+- Make, Windows users must have `cygwin` installed and set on path.
 - Delete old neovim folders (check commands below)
 
-## How to install
+## For windows setup
 
-Refer to [NvChad](https://nvchad.com/docs/quickstart/install)
+- mingw
+
+```ps1
+# install
+winget install --id=MSYS2.MSYS2  -e
+
+# open msys2 mingw64 shell, install packages
+pacman -Sy -y mingw-w64-x86_64-gcc
+pacman -Sy -y --needed base-devel mingw-w64-x86_64-toolchain
+
+# add mingw's bin to path, such like C:\msys64\mingw64\bin
+```
+
+- cygwin
+
+allow windows use linux tools, such like gzip
+
+```ps1
+# install
+winget install --id=Cygwin.Cygwin  -e
+
+# add cygwin's bin to path, such like C:\cygwin64\bin
+```
+
+## How to install
 
 ```bash
 # install neovim

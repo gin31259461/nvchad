@@ -28,15 +28,6 @@ local plugins = {
       nvim.lsp.on_dynamic_capability(require("plugins.lsp.keymaps").on_attach)
     end,
   },
-
-  -- improve lua_ls annotations
-  {
-    "folke/lazydev.nvim",
-    ft = "lua",
-    opts = {
-      library = {},
-    },
-  },
 }
 
 return plugins

@@ -48,6 +48,39 @@ local plugins = {
         "hrsh7th/cmp-buffer",
         "hrsh7th/cmp-path",
       },
+
+      -- improve lua annotations and cmp
+      {
+        "folke/lazydev.nvim",
+        ft = "lua",
+        opts = {
+          library = {},
+        },
+      },
+
+      -- ai code completion
+      {
+        "Exafunction/windsurf.nvim",
+        dependencies = {
+          "nvim-lua/plenary.nvim",
+        },
+        cmd = "Codeium",
+        event = "InsertEnter",
+        opts = {
+          enable_cmp_source = true,
+          virtual_text = {
+            enabled = false,
+            key_bindings = {
+              accept = false, -- handled by nvim-cmp / blink.cmp
+              next = "<M-]>",
+              prev = "<M-[>",
+            },
+          },
+        },
+        config = function(_, opts)
+          require("codeium").setup(opts)
+        end,
+      },
     },
     opts = function()
       return require "configs.cmp-opt"
