@@ -26,6 +26,13 @@ local plugins = {
       require "plugins.lsp.lspconfig-config"
 
       nvim.lsp.on_dynamic_capability(require("plugins.lsp.keymaps").on_attach)
+
+      -- reset lsp signature active parameter highlight
+      vim.api.nvim_set_hl(0, "LspSignatureActiveParameter", {
+        fg = "#ff9e64",
+        bg = "#334155",
+        bold = true,
+      })
     end,
   },
 }
