@@ -12,7 +12,7 @@ M.base46 = {
   hl_override = {
     Comment = { italic = true },
     ["@comment"] = { italic = true },
-
+    LspSignatureActiveParameter = { fg = "green", bg = "black", reverse = true },
     NvimTreeOpenedFolderName = { fg = "green", bold = true },
   },
 }

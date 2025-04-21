@@ -30,14 +30,24 @@ function M.get()
     {
       "K",
       function()
-        return vim.lsp.buf.hover()
+        return vim.lsp.buf.hover {
+          focus = true,
+          silent = true,
+          max_height = 7,
+          border = "single",
+        }
       end,
       desc = "Hover",
     },
     {
       "gK",
       function()
-        return vim.lsp.buf.signature_help()
+        return vim.lsp.buf.signature_help {
+          focus = false,
+          silent = true,
+          max_height = 7,
+          border = "single",
+        }
       end,
       desc = "Signature Help",
       has = "signatureHelp",
@@ -45,7 +55,12 @@ function M.get()
     {
       "<c-k>",
       function()
-        return vim.lsp.buf.signature_help()
+        return vim.lsp.buf.signature_help {
+          focus = false,
+          silent = true,
+          max_height = 7,
+          border = "single",
+        }
       end,
       mode = "i",
       desc = "Signature Help",
