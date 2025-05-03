@@ -59,36 +59,36 @@ local plugins = {
       },
 
       -- ai code completion
-      {
-        "Exafunction/windsurf.nvim",
-        dependencies = {
-          "nvim-lua/plenary.nvim",
-        },
-        cmd = "Codeium",
-        event = "InsertEnter",
-        opts = {
-          enable_cmp_source = true,
-          virtual_text = {
-            enabled = false,
-            key_bindings = {
-              accept = false, -- handled by nvim-cmp
-              next = "<M-]>",
-              prev = "<M-[>",
-            },
-          },
-        },
-        config = function(_, opts)
-          require("codeium").setup(opts)
-
-          -- override codeium util, don't use \r
-          local codeium_util = require "codeium.util"
-
-          ---@diagnostic disable duplicate-set-field
-          codeium_util.get_newline = function()
-            return "\n"
-          end
-        end,
-      },
+      --     {
+      --       "Exafunction/windsurf.nvim",
+      --       dependencies = {
+      --         "nvim-lua/plenary.nvim",
+      --       },
+      --       cmd = "Codeium",
+      --       event = "InsertEnter",
+      --       opts = {
+      --         enable_cmp_source = true,
+      --         virtual_text = {
+      --           enabled = false,
+      --           key_bindings = {
+      --             accept = false, -- handled by nvim-cmp
+      --             next = "<M-]>",
+      --             prev = "<M-[>",
+      --           },
+      --         },
+      --       },
+      --       config = function(_, opts)
+      --         require("codeium").setup(opts)
+      --
+      --         -- override codeium util, don't use \r
+      --         local codeium_util = require "codeium.util"
+      --
+      --         ---@diagnostic disable duplicate-set-field
+      --         codeium_util.get_newline = function()
+      --           return "\n"
+      --         end
+      --       end,
+      --     },
     },
     opts = function()
       return require "configs.cmp-opt"

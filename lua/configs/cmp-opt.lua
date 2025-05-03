@@ -73,11 +73,11 @@ local options = {
       name = "lazydev",
       group_index = 0, -- set group index to 0 to skip loading LuaLS completions
     },
-    {
-      name = "codeium",
-      group_index = 1,
-      prioriry = 100,
-    },
+    -- {
+    --   name = "codeium",
+    --   group_index = 1,
+    --   prioriry = 100,
+    -- },
   },
 }
 
