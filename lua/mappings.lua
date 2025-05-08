@@ -16,8 +16,8 @@ end, { desc = "floating diagnostic" })
 map("n", "<leader>mp", "<cmd>MarkdownPreview<CR>", { desc = "toggle markdown preview server" })
 
 -- override nvchad settings
-map("n", "<C-n>", "<cmd>Neotree action=show source=last toggle<CR>", { desc = "neotree toggle window" })
-map("n", "<leader>e", "<cmd>Neotree action=focus source=last<CR>", { desc = "neotree focus window" })
+map("n", "<C-n>", "<cmd>Neotree action=show position=right source=last toggle<CR>", { desc = "neotree toggle window" })
+map("n", "<leader>e", "<cmd>Neotree action=focus position=right source=last<CR>", { desc = "neotree focus window" })
 
 map("n", "<leader>bb", "<cmd>enew<CR>", { desc = "buffer new" })
 
