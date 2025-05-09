@@ -18,8 +18,10 @@ map("n", "<leader>mp", "<cmd>MarkdownPreview<CR>", { desc = "toggle markdown pre
 -- override nvchad settings
 map("n", "<C-n>", "<cmd>Neotree action=show position=right source=last toggle<CR>", { desc = "neotree toggle window" })
 map("n", "<leader>e", "<cmd>Neotree action=focus position=right source=last<CR>", { desc = "neotree focus window" })
-
 map("n", "<leader>bb", "<cmd>enew<CR>", { desc = "buffer new" })
+map("n", "<leader>n", function()
+  nvim.snacks.notifier.show_history()
+end, { desc = "Notification History" })
 
 -- end override
 
