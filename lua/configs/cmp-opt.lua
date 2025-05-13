@@ -64,11 +64,11 @@ local options = {
   },
 
   sources = {
-    { name = "nvim_lsp", group_index = 1 },
-    { name = "luasnip", group_index = 1 },
-    { name = "buffer", group_index = 1 },
-    { name = "nvim_lua", group_index = 1 },
-    { name = "path", group_index = 1 },
+    { name = "nvim_lsp" },
+    { name = "luasnip" },
+    { name = "buffer" },
+    { name = "nvim_lua" },
+    { name = "path" },
     {
       name = "lazydev",
       group_index = 0, -- set group index to 0 to skip loading LuaLS completions
