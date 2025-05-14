@@ -44,6 +44,10 @@ local options = {
         didRename = true,
         willRename = true,
       },
+      -- TODO: fix lsp slow??
+      didChangeWatchedFiles = {
+        dynamicRegistration = false,
+      },
     },
   },
   -- options for vim.lsp.buf.format
