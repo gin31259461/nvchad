@@ -66,7 +66,7 @@ local options = {
   sources = {
     { name = "nvim_lsp" },
     { name = "luasnip" },
-    { name = "buffer" },
+    { name = "buffer", group_index = 1 },
     { name = "nvim_lua" },
     { name = "path" },
     {
