@@ -1,97 +1,11 @@
-local plugins = {
+---@type NvPluginSpec
+return {
   -- git stuff
   {
     "lewis6991/gitsigns.nvim",
     event = "User FilePost",
     opts = function()
       return require "configs.gitsigns"
-    end,
-  },
-
-  -- load luasnips + cmp related in insert mode only
-  {
-    "hrsh7th/nvim-cmp",
-    event = "InsertEnter",
-    dependencies = {
-      {
-        -- snippet plugin
-        "L3MON4D3/LuaSnip",
-        dependencies = "rafamadriz/friendly-snippets",
-        opts = { history = true, updateevents = "TextChanged,TextChangedI" },
-        config = function(_, opts)
-          require("luasnip").config.set_config(opts)
-          require "nvchad.configs.luasnip"
-        end,
-      },
-
-      -- autopairing of (){}[] etc
-      {
-        "windwp/nvim-autopairs",
-        opts = {
-          fast_wrap = {},
-          disable_filetype = { "TelescopePrompt", "vim" },
-        },
-        config = function(_, opts)
-          require("nvim-autopairs").setup(opts)
-
-          -- setup cmp for autopairs
-          local cmp_autopairs = require "nvim-autopairs.completion.cmp"
-          require("cmp").event:on("confirm_done", cmp_autopairs.on_confirm_done())
-        end,
-      },
-
-      -- cmp sources plugins
-      {
-        "saadparwaiz1/cmp_luasnip",
-        "hrsh7th/cmp-nvim-lua",
-        "hrsh7th/cmp-nvim-lsp",
-        "hrsh7th/cmp-buffer",
-        "hrsh7th/cmp-path",
-      },
-
-      -- improve lua annotations and cmp
-      {
-        "folke/lazydev.nvim",
-        ft = "lua",
-        opts = {
-          library = {},
-        },
-      },
-
-      -- ai code completion
-      --     {
-      --       "Exafunction/windsurf.nvim",
-      --       dependencies = {
-      --         "nvim-lua/plenary.nvim",
-      --       },
-      --       cmd = "Codeium",
-      --       event = "InsertEnter",
-      --       opts = {
-      --         enable_cmp_source = true,
-      --         virtual_text = {
-      --           enabled = false,
-      --           key_bindings = {
-      --             accept = false, -- handled by nvim-cmp
-      --             next = "<M-]>",
-      --             prev = "<M-[>",
-      --           },
-      --         },
-      --       },
-      --       config = function(_, opts)
-      --         require("codeium").setup(opts)
-      --
-      --         -- override codeium util, don't use \r
-      --         local codeium_util = require "codeium.util"
-      --
-      --         ---@diagnostic disable duplicate-set-field
-      --         codeium_util.get_newline = function()
-      --           return "\n"
-      --         end
-      --       end,
-      --     },
-    },
-    opts = function()
-      return require "configs.cmp-opt"
     end,
   },
 
@@ -424,38 +338,4 @@ local plugins = {
       },
     },
   },
-
-  -- include many small plugins to enhance neovim,
-  -- put this to the last of lazy plugin config to
-  -- ensure snacks.nvim's settings cover other plugins's settings
-  {
-    "folke/snacks.nvim",
-    priority = 1000,
-    lazy = false,
-
-    opts = {
-      bigfile = { enabled = true },
-      dashboard = { enabled = false },
-      explorer = { enabled = true },
-      indent = { enabled = true },
-      input = { enabled = true },
-      notifier = {
-        enabled = true,
-        timeout = 3000,
-      },
-      picker = { enabled = true },
-      quickfile = { enabled = true },
-      scope = { enabled = true },
-      scroll = { enabled = true },
-      statuscolumn = { enabled = true },
-      words = { enabled = true },
-      styles = {
-        notification = {
-          -- wo = { wrap = true } -- Wrap notifications
-        },
-      },
-    },
-  },
 }
-
-return plugins

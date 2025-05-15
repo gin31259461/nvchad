@@ -53,6 +53,7 @@ winget install --id=Cygwin.Cygwin  -e
 # install neovim
 # windows -> winget
 winget install --id=Neovim.Neovim  -e
+winget install -e --id JesseDuffield.lazygit # (optional)
 
 # some plugins need yarn to build
 npm install -g yarn

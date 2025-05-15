@@ -37,7 +37,7 @@ dofile(vim.g.base46_cache .. "statusline")
 
 require "options"
 
-if require"utils.shell".is_win() then
+if require("utils.shell").is_win() then
   vim.o.shell = vim.fn.has "win32" and "powershell" or "pwsh"
   vim.o.shellcmdflag =
     "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"

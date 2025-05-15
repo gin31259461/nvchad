@@ -68,7 +68,20 @@ local options = {
     { name = "luasnip", group_index = 1 },
     { name = "nvim_lua", group_index = 1 },
     { name = "path", group_index = 1 },
-    { name = "buffer", group_index = 2 },
+    {
+      name = "buffer",
+      group_index = 2,
+      option = {
+        get_bufnrs = function()
+          local buf = vim.api.nvim_get_current_buf()
+          local byte_size = vim.api.nvim_buf_get_offset(buf, vim.api.nvim_buf_line_count(buf))
+          if byte_size > 1024 * 1024 then -- 1 Megabyte max
+            return {}
+          end
+          return { buf }
+        end,
+      },
+    },
     {
       name = "lazydev",
       group_index = 0, -- set group index to 0 to skip loading LuaLS completions
