@@ -60,7 +60,7 @@ return {
     {
       "<leader>fc",
       function()
-        nvim.snacks.picker.files { cwd = vim.fn.stdpath "config" }
+        nvim.snacks.picker.files({ cwd = vim.fn.stdpath("config") })
       end,
       desc = "Find Config File",
     },
