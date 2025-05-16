@@ -10,7 +10,7 @@ local options = {
     ["markdown-toc"] = {
       condition = function(_, ctx)
         for _, line in ipairs(vim.api.nvim_buf_get_lines(ctx.buf, 0, -1, false)) do
-          if line:find "<!%-%- toc %-%->" then
+          if line:find("<!%-%- toc %-%->") then
             return true
           end
         end
@@ -30,7 +30,7 @@ local options = {
     },
     ["sql_formatter"] = {
       args = function()
-        local current_dir = vim.fn.expand "%:h"
+        local current_dir = vim.fn.expand("%:h")
         local current_config_path = string.format("%s/.sql-formatter.json", current_dir)
 
         return { "--config", current_config_path }
@@ -42,6 +42,8 @@ local options = {
 
         if current_filetype == "json" then
           return { "fmt", "-", "--ext=json" }
+        elseif current_filetype == "markdown" then
+          return { "fmt", "-", "--ext=md" }
         else
           return { "fmt", "-" }
         end
@@ -49,9 +51,11 @@ local options = {
     },
     ["prisma_fmt"] = {
       command = function()
-        if nvim.shell.is_windows() then
+        if nvim.shell.is_win() then
           return vim.fn.getcwd() .. "/node_modules/.bin/prisma.CMD"
         end
+
+        return ""
       end,
       condition = function(_, ctx)
         return vim.bo[ctx.buf].filetype == "prisma"
