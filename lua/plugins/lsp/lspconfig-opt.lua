@@ -10,6 +10,9 @@ local options = {
       spacing = 4,
       source = "if_many",
       prefix = "●",
+      severity = {
+        min = vim.diagnostic.severity.WARN,
+      },
       -- this will set set the prefix to a function that returns the diagnostics icon based on the severity
       -- this only works on a recent 0.10.0 build. Will be set to "●" when not supported
       -- prefix = "icons",
@@ -104,22 +107,22 @@ local options = {
           "gD",
           function()
             local params = vim.lsp.util.make_position_params()
-            nvim.lsp.execute {
+            nvim.lsp.execute({
               command = "typescript.goToSourceDefinition",
               arguments = { params.textDocument.uri, params.position },
               open = true,
-            }
+            })
           end,
           desc = "Goto Source Definition",
         },
         {
           "gR",
           function()
-            nvim.lsp.execute {
+            nvim.lsp.execute({
               command = "typescript.findAllFileReferences",
               arguments = { vim.uri_from_bufnr(0) },
               open = true,
-            }
+            })
           end,
           desc = "File References",
         },
@@ -146,7 +149,7 @@ local options = {
         {
           "<leader>cV",
           function()
-            nvim.lsp.execute { command = "typescript.selectTypeScriptVersion" }
+            nvim.lsp.execute({ command = "typescript.selectTypeScriptVersion" })
           end,
           desc = "Select TS workspace version",
         },
@@ -174,8 +177,8 @@ local options = {
         {
           "<leader>fp",
           function()
-            require("conform").format { lsp_fallback = true }
-            vim.cmd "e!"
+            require("conform").format({ lsp_fallback = true })
+            vim.cmd("e!")
           end,
           desc = "prisma format file and force reload",
         },
@@ -226,7 +229,7 @@ local options = {
                 return vim.fn.fnamemodify(f, ":~:.")
               end,
             }, function(f)
-              if f and f:find "^Enter new path" then
+              if f and f:find("^Enter new path") then
                 vim.ui.input({
                   prompt = "Enter move destination:",
                   default = vim.fn.fnamemodify(fname, ":h") .. "/",
