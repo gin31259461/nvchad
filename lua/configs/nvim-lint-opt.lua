@@ -23,6 +23,7 @@ local options = {
   linters = {
     eslint_d = require("lint.util").wrap({
 
+      name = "eslint_d",
       stdin = true,
       stream = "stdout",
       ignore_exitcode = true,
@@ -37,6 +38,7 @@ local options = {
         end,
       },
 
+      ---@diagnostic disable-next-line
       cmd = function()
         local local_binary = vim.fn.fnamemodify("./node_modules/.bin/" .. eslint_d_binary_name, ":p")
         return vim.loop.fs_stat(local_binary) and local_binary or eslint_d_binary_name
@@ -50,7 +52,7 @@ local options = {
         return result
       end,
     }, function(diagnostic)
-      if diagnostic.message:find "Error: Could not find config file" then
+      if diagnostic.message:find("Error: Could not find config file") then
         return nil
       end
       return diagnostic
