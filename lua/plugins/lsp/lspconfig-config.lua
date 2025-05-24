@@ -19,7 +19,8 @@ for _, server in ipairs(nvim.configs.packages.lsp_servers) do
     }, server_opts or {})
   end
 
-  lspconfig[server].setup(server_opts)
+  vim.lsp.enable(server)
+  vim.lsp.config(server, server_opts)
 end
 
 lspconfig.denols.setup({

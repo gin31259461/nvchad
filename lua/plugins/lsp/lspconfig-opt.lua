@@ -106,7 +106,7 @@ local options = {
         {
           "gD",
           function()
-            local params = vim.lsp.util.make_position_params()
+            local params = vim.lsp.util.make_position_params(0, "utf-8")
             nvim.lsp.execute({
               command = "typescript.goToSourceDefinition",
               arguments = { params.textDocument.uri, params.position },
@@ -200,14 +200,14 @@ local options = {
             }
 
           local function move(newf)
-            client.request("workspace/executeCommand", {
+            client:request("workspace/executeCommand", {
               command = command.command,
               arguments = { action, uri, range, newf },
             })
           end
 
           local fname = vim.uri_to_fname(uri)
-          client.request("workspace/executeCommand", {
+          client:request("workspace/executeCommand", {
             command = "typescript.tsserverRequest",
             arguments = {
               "getMoveToRefactoringFileSuggestions",
