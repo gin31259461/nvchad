@@ -1,7 +1,8 @@
 dofile(vim.g.base46_cache .. "cmp")
 
-local cmp = require "cmp"
+local cmp = require("cmp")
 
+---@type cmp.ConfigSchema
 local options = {
   completion = { completeopt = "menu,menuone" },
 
@@ -20,7 +21,7 @@ local options = {
     -- ["<C-Space>"] = cmp.mapping.complete(),
     -- ["<C-e>"] = cmp.mapping.close(),
 
-    ["<C-e>"] = cmp.mapping {
+    ["<C-e>"] = cmp.mapping({
       i = function()
         if cmp.visible() then
           cmp.abort()
@@ -35,12 +36,12 @@ local options = {
           cmp.complete()
         end
       end,
-    },
+    }),
 
-    ["<CR>"] = cmp.mapping.confirm {
+    ["<CR>"] = cmp.mapping.confirm({
       behavior = cmp.ConfirmBehavior.Insert,
       select = true,
-    },
+    }),
 
     ["<Tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
@@ -86,18 +87,7 @@ local options = {
       name = "lazydev",
       group_index = 0, -- set group index to 0 to skip loading LuaLS completions
     },
-    -- {
-    --   name = "codeium",
-    --   group_index = 1,
-    --   prioriry = 100,
-    -- },
-  },
-
-  -- TODO: more smooth when typing?
-  performance = {
-    debounce = 0, -- default is 60ms
-    throttle = 0, -- default is 30ms
   },
 }
 
-return vim.tbl_deep_extend("force", require "nvchad.cmp", options)
+return vim.tbl_deep_extend("force", require("nvchad.cmp"), options)

@@ -10,7 +10,7 @@ local options = {
     -- ['_'] = { 'fallback linter' },
     -- ["*"] = { "typos" },
 
-    python = { "ruff" },
+    -- python = { "ruff" },
     docker = { "hadolint" },
     markdown = { "markdownlint-cli2" },
 

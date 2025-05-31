@@ -39,12 +39,15 @@ local options = {
   codelens = {
     enabled = false,
   },
-  -- add any global capabilities here
+
+  ---@type lsp.ClientCapabilities
   capabilities = {
     workspace = {
       fileOperations = {
+        didCreate = true,
+        didDelete = true,
         didRename = true,
-        willRename = true,
+        dynamicRegistration = false,
       },
       -- TODO: fix lsp slow??
       didChangeWatchedFiles = {
@@ -168,6 +171,21 @@ local options = {
           "<leader>co",
           nvim.lsp.action["source.organizeImports"],
           desc = "Organize Imports",
+        },
+      },
+    },
+
+    pyright = {
+      settings = {
+        pyright = {
+          -- Using Ruff's import organizer
+          disableOrganizeImports = true,
+        },
+        python = {
+          analysis = {
+            -- Ignore all files for analysis to exclusively use Ruff for linting
+            ignore = { "*" },
+          },
         },
       },
     },
