@@ -47,7 +47,7 @@ local options = {
         didCreate = true,
         didDelete = true,
         didRename = true,
-        dynamicRegistration = false,
+        dynamicRegistration = true,
       },
       -- TODO: fix lsp slow??
       didChangeWatchedFiles = {
