@@ -1,9 +1,5 @@
-require "nvchad.options"
+require("nvchad.options")
 
-local o = vim.o
+vim.o.relativenumber = true
 
-o.relativenumber = true
-
-local g = vim.g
-
-g.snacks_animate = false
+vim.g.snacks_animate = false
