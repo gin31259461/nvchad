@@ -19,14 +19,14 @@ for _, server in ipairs(nvim.configs.packages.lsp_servers) do
     }, server_opts or {})
   end
 
-  vim.lsp.enable(server)
   vim.lsp.config(server, server_opts)
+  vim.lsp.enable(server)
 end
 
-lspconfig.denols.setup({
-  on_attach = nvlsp.on_attach,
-  on_init = nvlsp.on_init,
-  capabilities = capabilities,
-
-  root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
-})
+-- lspconfig.denols.setup({
+--   on_attach = nvlsp.on_attach,
+--   on_init = nvlsp.on_init,
+--   capabilities = capabilities,
+--
+--   root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
+-- })

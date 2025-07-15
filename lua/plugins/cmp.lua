@@ -11,7 +11,7 @@ return {
       opts = { history = true, updateevents = "TextChanged,TextChangedI" },
       config = function(_, opts)
         require("luasnip").config.set_config(opts)
-        require "nvchad.configs.luasnip"
+        require("nvchad.configs.luasnip")
       end,
     },
 
@@ -26,7 +26,7 @@ return {
         require("nvim-autopairs").setup(opts)
 
         -- setup cmp for autopairs
-        local cmp_autopairs = require "nvim-autopairs.completion.cmp"
+        local cmp_autopairs = require("nvim-autopairs.completion.cmp")
         require("cmp").event:on("confirm_done", cmp_autopairs.on_confirm_done())
       end,
     },
@@ -49,9 +49,11 @@ return {
         library = {
           -- Load luvit types when the `vim.uv` word is found
           { path = "${3rd}/luv/library", words = { "vim%.uv" } },
-          { path = "ui/nvchad_types", mod = { "ui" } },
-          { path = "lazy.nvim", mods = { "lazy" } },
 
+          -- Load the ui types when the `ui` module is required
+          { path = "ui/nvchad_types", mods = { "ui" } },
+
+          { path = "lazy.nvim", mods = { "lazy" } },
           { path = "snacks.nvim", words = { "snacks", "snacks.nvim" } },
         },
       },
@@ -59,6 +61,6 @@ return {
   },
 
   opts = function()
-    return require "configs.cmp-opt"
+    return require("configs.cmp-opt")
   end,
 }

@@ -38,7 +38,7 @@ dofile(vim.g.base46_cache .. "statusline")
 require("options")
 
 if require("utils.shell").is_win() then
-  vim.o.shell = vim.fn.has("win32") and "powershell" or "pwsh"
+  vim.o.shell = vim.fn.has("win64") and "powershell.exe" or "pwsh.exe"
   vim.o.shellcmdflag =
     "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
   vim.o.shellredir = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
