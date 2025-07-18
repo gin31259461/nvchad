@@ -71,7 +71,7 @@ local options = {
     { name = "path", group_index = 1 },
     {
       name = "buffer",
-      group_index = 2,
+      group_index = 1,
       option = {
         get_bufnrs = function()
           local buf = vim.api.nvim_get_current_buf()

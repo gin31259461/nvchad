@@ -44,14 +44,14 @@ local options = {
   capabilities = {
     workspace = {
       fileOperations = {
-        didCreate = true,
-        didDelete = true,
-        didRename = true,
+        -- didCreate = true,
+        -- didDelete = true,
+        -- didRename = true,
         dynamicRegistration = true,
       },
       -- TODO: fix lsp slow??
       didChangeWatchedFiles = {
-        dynamicRegistration = false,
+        dynamicRegistration = true,
       },
     },
   },
@@ -175,6 +175,7 @@ local options = {
       },
     },
 
+    -- more lsp setting refer to: https://microsoft.github.io/pyright/#/settings
     pyright = {
       settings = {
         pyright = {
@@ -183,6 +184,11 @@ local options = {
         },
         python = {
           analysis = {
+            -- default
+            autoSearchPaths = true,
+            diagnosticMode = "openFilesOnly",
+            useLibraryCodeForTypes = true,
+
             -- Ignore all files for analysis to exclusively use Ruff for linting
             ignore = { "*" },
           },
