@@ -189,6 +189,12 @@ local options = {
             diagnosticMode = "openFilesOnly",
             useLibraryCodeForTypes = true,
 
+            -- fix completion delay: https://github.com/microsoft/pyright/issues/4878
+            --
+            -- use extra stubs: https://github.com/microsoft/python-type-stubs
+            -- clone this repo via lazy "../lsp/init.lua"
+            stubPath = vim.fn.stdpath("data") .. "/lazy/python-type-stubs",
+
             -- Ignore all files for analysis to exclusively use Ruff for linting
             ignore = { "*" },
           },

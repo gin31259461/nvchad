@@ -1,3 +1,4 @@
+---@type LazySpec
 local plugins = {
   {
     "williamboman/mason.nvim",
@@ -78,6 +79,10 @@ local plugins = {
 
       vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
     end,
+  },
+  {
+    "microsoft/python-type-stubs",
+    cond = false,
   },
 }
 
