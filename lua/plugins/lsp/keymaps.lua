@@ -174,8 +174,7 @@ function M.on_attach(_, buffer)
     local has = not keys.has or M.has(buffer, keys.has)
     local cond = not (keys.cond == false or ((type(keys.cond) == "function") and not keys.cond()))
 
-    -- if has and cond then
-    if true then
+    if has and cond then
       ---@type LazyKeysOpts
       local opts = Keys.opts(keys)
       opts.cond = nil
