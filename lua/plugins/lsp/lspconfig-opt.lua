@@ -215,23 +215,28 @@ local options = {
       },
     },
 
+    -- more config refer to: https://github.com/OmniSharp/omnisharp-roslyn/wiki/Configuration-Options
     omnisharp = {
       keys = {
         {
           "<leader>cd",
           function()
-            require("omnisharp_extended").telescope_lsp_definition()
+            require("omnisharp_extended").telescope_lsp_definitions()
           end,
           desc = "Goto Definition",
         },
       },
+
+      -- refer to: https://github.com/Hoffs/omnisharp-extended-lsp.nvim?tab=reajdme-ov-file#custom-handler-suboptimal
       handlers = {
         ["textDocument/definition"] = require("omnisharp_extended").definition_handler,
         ["textDocument/typeDefinition"] = require("omnisharp_extended").type_definition_handler,
         ["textDocument/references"] = require("omnisharp_extended").references_handler,
         ["textDocument/implementation"] = require("omnisharp_extended").implementation_handler,
       },
+
       settings = {
+        cmd = { "omnisharp", "--languageserver", "--hostPID", tostring(vim.fn.getpid()) },
         RoslynExtensionsOptions = {
           enableDecompilationSupport = true,
         },
