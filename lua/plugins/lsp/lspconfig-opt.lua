@@ -1,3 +1,5 @@
+---@module "lspconfig"
+
 local options = {
   ---@type vim.diagnostic.Opts
   diagnostics = {
