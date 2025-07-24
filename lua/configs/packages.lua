@@ -25,6 +25,7 @@ local pkgs_with_setup = {
   prisma = { "prismals", "prisma-language-server" },
   toml = { "taplo", "taplo" },
   json = { "jsonls", "json-lsp" },
+  csharp = { "omnisharp", "omnisharp" },
 }
 
 -- formatter and linter
@@ -39,6 +40,8 @@ local pkgs_only = {
   "prettier",
   "eslint_d",
   "sql-formatter",
+  "csharpier",
+  "netcoredbg",
 }
 
 for v in pairs(pkgs_with_setup) do

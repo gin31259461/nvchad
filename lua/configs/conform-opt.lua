@@ -63,13 +63,13 @@ local options = {
       args = { "format" },
       stdin = false,
     },
+    ["csharpier"] = {
+      command = "dotnet-csharpier",
+      args = { "--write-stdout" },
+    },
   },
 
   formatters_by_ft = {
-    lua = { "stylua" },
-    python = { "ruff_fix", "ruff_organize_imports", "ruff_format" },
-    sh = { "shfmt" },
-
     -- web dev
     css = { "deno_fmt" },
     html = { "deno_fmt" },
@@ -84,6 +84,12 @@ local options = {
     -- markdown
     ["markdown"] = { "deno_fmt", "markdownlint-cli2", "markdown-toc" },
     ["markdown.mdx"] = { "deno_fmt", "markdownlint-cli2", "markdown-toc" },
+
+    -- other
+    lua = { "stylua" },
+    python = { "ruff_fix", "ruff_organize_imports", "ruff_format" },
+    sh = { "shfmt" },
+    cs = { "csharpier" },
   },
 
   format_on_save = false,

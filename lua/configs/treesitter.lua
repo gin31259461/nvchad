@@ -21,6 +21,7 @@ local options = {
     "lua",
     "luadoc",
     "comment",
+    "c_sharp",
   },
 
   highlight = {
