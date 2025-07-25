@@ -10,9 +10,9 @@ return {
     untracked = { text = "▎" },
   },
   signs_staged = {
-    add = { text = "▎" },
-    change = { text = "▎" },
-    delete = { text = "" },
+    add = { text = nvim.configs.icons.git.added },
+    change = { text = nvim.configs.icons.git.modified },
+    delete = { text = nvim.configs.icons.git.removed },
     topdelete = { text = "" },
     changedelete = { text = "▎" },
   },

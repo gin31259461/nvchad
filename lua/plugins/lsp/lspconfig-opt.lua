@@ -68,6 +68,7 @@ local options = {
   -- each server config refer to: https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
   ---@type lspconfig.Config|{cmd?: string[], settings?: table<string, unknown>, keys?: LazyKeysSpec[]}
   servers = {
+    -- https://github.com/yioneko/vtsls/blob/main/packages/service/configuration.schema.json
     vtsls = {
       -- explicitly add default filetypes, so that we can extend
       -- them in related extras
@@ -80,18 +81,21 @@ local options = {
         "typescript.tsx",
       },
       settings = {
-        complete_function_calls = true,
         vtsls = {
           enableMoveToFileCodeAction = true,
           autoUseWorkspaceTsdk = true,
           experimental = {
-            maxInlayHintLength = 30,
+            maxInlayHintLength = nil,
             completion = {
-              enableServerSideFuzzyMatch = true,
+              entriesLimit = nil,
+              enableServerSideFuzzyMatch = false,
             },
           },
         },
         typescript = {
+          tsserver = {
+            maxTsServerMemory = 2048,
+          },
           updateImportsOnFileMove = { enabled = "always" },
           suggest = {
             completeFunctionCalls = true,

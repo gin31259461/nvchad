@@ -65,13 +65,12 @@ local options = {
   },
 
   sources = {
-    { name = "nvim_lsp", group_index = 1 },
-    { name = "luasnip", group_index = 1 },
-    { name = "nvim_lua", group_index = 1 },
-    { name = "path", group_index = 1 },
+    -- { name = "nvim_lua" },
+    { name = "nvim_lsp" },
+    { name = "luasnip" },
+    { name = "path" },
     {
       name = "buffer",
-      group_index = 1,
       option = {
         get_bufnrs = function()
           local buf = vim.api.nvim_get_current_buf()
