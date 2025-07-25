@@ -70,6 +70,22 @@ return {
   -- LSP Server Settings
   -- each server config refer to: https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
   servers = {
+    lua_ls = {
+      settings = {
+        Lua = {
+          runtime = { version = "LuaJIT" },
+          workspace = {
+            library = {
+              vim.fn.expand("$VIMRUNTIME/lua"),
+              vim.fn.stdpath("data") .. "/lazy/ui/nvchad_types",
+              vim.fn.stdpath("data") .. "/lazy/lazy.nvim/lua/lazy",
+              "${3rd}/luv/library",
+            },
+          },
+        },
+      },
+    },
+
     -- https://github.com/yioneko/vtsls/blob/main/packages/service/configuration.schema.json
     vtsls = {
       -- explicitly add default filetypes, so that we can extend

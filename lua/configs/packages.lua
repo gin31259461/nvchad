@@ -25,10 +25,12 @@ local pkgs_with_setup = {
   prisma = { "prismals", "prisma-language-server" },
   toml = { "taplo", "taplo" },
   json = { "jsonls", "json-lsp" },
+  lua = { "lua_ls", "lua-language-server" },
 }
 
 -- formatter and linter
 local pkgs_only = {
+  "stylua",
   "python-lsp-server",
   "deno",
   "shfmt",
