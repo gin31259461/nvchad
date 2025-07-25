@@ -14,11 +14,15 @@ local plugins = {
     dependencies = {
       { "williamboman/mason-lspconfig.nvim", config = function() end },
     },
+
     opts = function()
       return require("plugins.lsp.lspconfig-opt")
     end,
+
+    ---@param _ LazyPlugin
+    ---@param opts LspConfigOptSpec
     config = function(_, opts)
-      -- mapping each lspconfig-opt.servers.[server name].keys
+      -- mapping each lspconfig-opt.servers.[server_name].keys
       nvim.lsp.on_attach(function(client, buffer)
         require("plugins.lsp.keymaps").on_attach(client, buffer)
       end)

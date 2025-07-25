@@ -1,7 +1,18 @@
 ---@module "lspconfig"
 
-local options = {
-  ---@type vim.diagnostic.Opts
+---@class LspConfigOptSetup
+---@field [string] function
+
+---@class LspConfigOptSpec
+---@field diagnostics vim.diagnostic.Opts
+---@field inlay_hints {enabled: boolean, exclude: table}
+---@field codelens {enabled: boolean}
+---@field capabilities lsp.ClientCapabilities
+---@field servers lspconfig.Config|{cmd?: string[], settings?: table<string, unknown>, keys?: LazyKeysSpec[]}
+---@field setup LspConfigOptSetup
+
+---@type LspConfigOptSpec
+return {
   diagnostics = {
     underline = true,
     update_in_insert = false,
@@ -26,6 +37,7 @@ local options = {
       },
     },
   },
+
   -- Enable this to enable the builtin LSP inlay hints on Neovim >= 0.10.0
   -- Be aware that you also will need to properly configure your LSP server to
   -- provide the inlay hints.
@@ -33,6 +45,7 @@ local options = {
     enabled = true,
     exclude = {}, -- filetypes for which you don't want to enable inlay hints
   },
+
   -- Enable this to enable the builtin LSP code lenses on Neovim >= 0.10.0
   -- Be aware that you also will need to properly configure your LSP server to
   -- provide the code lenses.
@@ -40,7 +53,6 @@ local options = {
     enabled = false,
   },
 
-  ---@type lsp.ClientCapabilities
   capabilities = {
     workspace = {
       fileOperations = {
@@ -49,24 +61,14 @@ local options = {
         -- didRename = true,
         dynamicRegistration = true,
       },
-      -- TODO: fix lsp slow??
       didChangeWatchedFiles = {
         dynamicRegistration = true,
       },
     },
   },
-  -- options for vim.lsp.buf.format
-  -- `bufnr` and `filter` is handled by the LazyVim formatter,
-  -- but can be also overridden when specified
-  -- TODO: not use this opt yet
-  format = {
-    formatting_options = nil,
-    timeout_ms = nil,
-  },
 
   -- LSP Server Settings
   -- each server config refer to: https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
-  ---@type lspconfig.Config|{cmd?: string[], settings?: table<string, unknown>, keys?: LazyKeysSpec[]}
   servers = {
     -- https://github.com/yioneko/vtsls/blob/main/packages/service/configuration.schema.json
     vtsls = {
@@ -88,13 +90,13 @@ local options = {
             maxInlayHintLength = nil,
             completion = {
               entriesLimit = nil,
-              enableServerSideFuzzyMatch = false,
+              enableServerSideFuzzyMatch = true,
             },
           },
         },
         typescript = {
           tsserver = {
-            maxTsServerMemory = 2048,
+            -- maxTsServerMemory = 2048,
           },
           updateImportsOnFileMove = { enabled = "always" },
           suggest = {
@@ -222,10 +224,10 @@ local options = {
   },
 
   setup = {
-    vtsls = function(_, opts)
-      nvim.lsp.on_attach(function(client, _) -- client, buffer
+    vtsls = function()
+      nvim.lsp.on_attach(function(client, _)
         client.commands["_typescript.moveToFileRefactoring"] = function(command, _) -- command, ctx
-          local arg0, arg1, arg2 = nvim.utils.unpack(command.arguments)
+          local arg0, arg1, arg2 = nvim.unpack(command.arguments)
 
           ---@type string, string, lsp.Range
           local action, uri, range =
@@ -281,10 +283,6 @@ local options = {
           end)
         end
       end, "vtsls")
-
-      -- copy typescript settings to javascript
-      opts.settings.javascript =
-        vim.tbl_deep_extend("force", {}, opts.settings.typescript, opts.settings.javascript or {})
     end,
 
     ruff = function()
@@ -295,5 +293,3 @@ local options = {
     end,
   },
 }
-
-return options
