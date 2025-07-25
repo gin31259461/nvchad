@@ -65,6 +65,7 @@ local options = {
   },
 
   -- LSP Server Settings
+  -- each server config refer to: https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
   ---@type lspconfig.Config|{cmd?: string[], settings?: table<string, unknown>, keys?: LazyKeysSpec[]}
   servers = {
     vtsls = {
