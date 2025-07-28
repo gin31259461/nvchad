@@ -12,8 +12,8 @@ M.base46 = {
   hl_override = {
     Comment = { italic = true },
     ["@comment"] = { italic = true },
-    LspSignatureActiveParameter = { fg = "green", bg = "black", reverse = true },
-    NvimTreeOpenedFolderName = { fg = "green", bold = true },
+    LspSignatureActiveParameter = { fg = "green", reverse = true },
+    -- NvimTreeOpenedFolderName = { fg = "green", bold = true },
   },
 }
 
@@ -72,7 +72,7 @@ M.term = {
 M.ui = {
 
   statusline = {
-    theme = "vscode_colored",
+    -- theme = "vscode_colored",
   },
 
   -- Always load tabufline on startup
