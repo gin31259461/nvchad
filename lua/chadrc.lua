@@ -15,6 +15,14 @@ M.base46 = {
     LspSignatureActiveParameter = { fg = "green", reverse = true },
     -- NvimTreeOpenedFolderName = { fg = "green", bold = true },
   },
+
+  hl_add = {
+    -- SnacksPickerDir = { fg = "#928374" },
+    -- SnacksPickerPathHidden = { fg = "#928374" },
+
+    SnacksPickerDir = { fg = "light_grey" },
+    SnacksPickerPathHidden = { fg = "light_grey" },
+  },
 }
 
 M.nvdash = {
