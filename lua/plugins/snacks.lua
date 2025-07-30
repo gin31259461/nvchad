@@ -142,28 +142,28 @@ return {
     {
       "<leader>sb",
       function()
-        Snacks.picker.lines()
+        nvim.snacks.picker.lines()
       end,
       desc = "Buffer Lines",
     },
     {
       "<leader>sB",
       function()
-        Snacks.picker.grep_buffers()
+        nvim.snacks.picker.grep_buffers()
       end,
       desc = "Grep Open Buffers",
     },
     {
       "<leader>sg",
       function()
-        Snacks.picker.grep()
+        nvim.snacks.picker.grep()
       end,
       desc = "Grep",
     },
     {
       "<leader>sw",
       function()
-        Snacks.picker.grep_word()
+        nvim.snacks.picker.grep_word()
       end,
       desc = "Visual selection or word",
       mode = { "n", "x" },
@@ -190,13 +190,6 @@ return {
         nvim.snacks.picker.autocmds()
       end,
       desc = "Autocmds",
-    },
-    {
-      "<leader>sb",
-      function()
-        nvim.snacks.picker.lines()
-      end,
-      desc = "Buffer Lines",
     },
     {
       "<leader>sc",
@@ -226,13 +219,13 @@ return {
       end,
       desc = "Buffer Diagnostics",
     },
-    {
-      "<leader>sh",
-      function()
-        nvim.snacks.picker.help()
-      end,
-      desc = "Help Pages",
-    },
+    -- {
+    --   "<leader>sh",
+    --   function()
+    --     nvim.snacks.picker.help()
+    --   end,
+    --   desc = "Help Pages",
+    -- },
     {
       "<leader>sH",
       function()
@@ -310,13 +303,13 @@ return {
       end,
       desc = "Undo History",
     },
-    {
-      "<leader>uC",
-      function()
-        nvim.snacks.picker.colorschemes()
-      end,
-      desc = "Colorschemes",
-    },
+    -- {
+    --   "<leader>uC",
+    --   function()
+    --     nvim.snacks.picker.colorschemes()
+    --   end,
+    --   desc = "Colorschemes",
+    -- },
 
     -- Other
     {
