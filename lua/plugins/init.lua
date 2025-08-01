@@ -209,14 +209,16 @@ return {
     config = require "configs.nvim-lint-config",
   },
 
+  -- config refer to: https://github.com/MeanderingProgrammer/render-markdown.nvim?tab=readme-ov-file#setup
   {
     "MeanderingProgrammer/render-markdown.nvim",
     opts = {
       file_types = { "markdown", "norg", "rmd", "org" },
       code = {
         sign = false,
-        width = "block",
+        width = "full",
         right_pad = 1,
+        disable_background = true
       },
       heading = {
         sign = false,
