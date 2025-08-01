@@ -79,7 +79,13 @@ M.term = {
 M.ui = {
 
   statusline = {
-    -- theme = "vscode_colored",
+    theme = "default",
+    order = { "mode", "file", "git", "path", "%=", "lsp_msg", "%=", "diagnostics", "lsp", "cwd", "cursor" },
+    modules = {
+      path = function()
+        return "  " .. nvim.root.pretty_path(6)
+      end,
+    },
   },
 
   -- Always load tabufline on startup
