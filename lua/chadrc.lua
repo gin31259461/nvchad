@@ -17,11 +17,11 @@ M.base46 = {
   },
 
   hl_add = {
-    -- SnacksPickerDir = { fg = "#928374" },
-    -- SnacksPickerPathHidden = { fg = "#928374" },
+    SnacksPickerDir = { fg = "#928374" },
+    SnacksPickerPathHidden = { fg = "#928374" },
 
-    SnacksPickerDir = { fg = "light_grey" },
-    SnacksPickerPathHidden = { fg = "light_grey" },
+    -- SnacksPickerDir = { fg = "light_grey" },
+    -- SnacksPickerPathHidden = { fg = "light_grey" },
   },
 }
 
