@@ -79,23 +79,24 @@ M.term = {
 M.ui = {
 
   statusline = {
-    theme = "default",
-    order = { "mode", "file", "git", "path", "%=", "lsp_msg", "%=", "diagnostics", "lsp", "cwd", "cursor" },
+    theme = "vscode_colored",
+
+    -- refer to: https://github.com/NvChad/ui/blob/e0f06a9aa43112e94beca8283516e6804112fb8e/lua/nvchad/stl/utils.lua#L12
+    order = { "mode", "git_hl", "git", "path", "%=", "lsp_msg", "%=", "diagnostics", "lsp", "cwd", "cursor" },
     modules = {
-      path = function()
-        return "  " .. nvim.root.pretty_path(6)
-      end,
+      git_hl = nvim.hl.statusline.git,
+      path = nvim.statusline.path,
     },
   },
 
-  -- Always load tabufline on startup
+  -- always load tabufline on startup
   tabufline = {
     lazyload = false,
   },
 }
 
 M.mason = {
-  pkgs = nvim.configs.packages.mason_ensure_installed,
+  pkgs = nvim.config.packages.mason_ensure_installed,
 }
 
 return M

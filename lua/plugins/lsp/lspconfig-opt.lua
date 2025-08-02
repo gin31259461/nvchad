@@ -30,10 +30,10 @@ return {
     severity_sort = true,
     signs = {
       text = {
-        [vim.diagnostic.severity.ERROR] = nvim.configs.icons.diagnostics.Error,
-        [vim.diagnostic.severity.WARN] = nvim.configs.icons.diagnostics.Warn,
-        [vim.diagnostic.severity.HINT] = nvim.configs.icons.diagnostics.Hint,
-        [vim.diagnostic.severity.INFO] = nvim.configs.icons.diagnostics.Info,
+        [vim.diagnostic.severity.ERROR] = nvim.config.icons.diagnostics.Error,
+        [vim.diagnostic.severity.WARN] = nvim.config.icons.diagnostics.Warn,
+        [vim.diagnostic.severity.HINT] = nvim.config.icons.diagnostics.Hint,
+        [vim.diagnostic.severity.INFO] = nvim.config.icons.diagnostics.Info,
       },
     },
   },

@@ -9,7 +9,7 @@ local servers = lspconfig_opts.servers
 local setup = lspconfig_opts.setup
 local capabilities = vim.tbl_deep_extend("force", nvlsp.capabilities, lspconfig_opts.capabilities)
 
-for _, server in ipairs(nvim.configs.packages.lsp_servers) do
+for _, server in ipairs(nvim.config.packages.lsp_servers) do
   -- copy typescript settings to javascript
   servers["vtsls"].settings.javascript =
     vim.tbl_deep_extend("force", {}, servers["vtsls"].settings.typescript, servers["vtsls"].settings.javascript or {})
