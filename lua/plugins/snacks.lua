@@ -1,3 +1,7 @@
+local ignore_msg = {
+  "man.lua",
+}
+
 ---@type NvPluginSpec
 return {
   "folke/snacks.nvim",
@@ -14,6 +18,15 @@ return {
     notifier = {
       enabled = true,
       timeout = 3000,
+      filter = function(notif)
+        for _, msg in ipairs(ignore_msg) do
+          if notif.msg:find(msg) then
+            return false
+          end
+        end
+
+        return true
+      end,
     },
     picker = {
       enabled = true,

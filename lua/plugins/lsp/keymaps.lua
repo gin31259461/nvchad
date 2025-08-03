@@ -33,8 +33,8 @@ function M.get()
         return vim.lsp.buf.hover {
           focus = true,
           silent = true,
-          max_height = 7,
           border = "single",
+          -- max_height = 7,
         }
       end,
       desc = "Hover",
