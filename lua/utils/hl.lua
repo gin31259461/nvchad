@@ -13,15 +13,17 @@ vim.api.nvim_set_hl(0, "@statusline.text", {
 })
 
 vim.api.nvim_set_hl(0, "@statusline.git", {
-  fg = "#ABB2BF",
-  -- bold = true,
+  bg = "#1D1E29",
+  bold = true,
+  fg = "#646D96",
 })
 
 local M = {}
 
-M.statusline = {}
-M.statusline.git = "%#@statusline.git#"
-M.statusline.current_file = "%#@statusline.file.current#"
-M.statusline.text = "%#@statusline.text#"
+M.statusline = {
+  git = "%#@statusline.git#",
+  file = "%#@statusline.file.current#",
+  text = "%#@statusline.text#",
+}
 
 return M

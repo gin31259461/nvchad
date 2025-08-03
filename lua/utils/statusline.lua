@@ -1,5 +1,19 @@
 local M = {}
 
+M.ignore_ft = { "neo%-tree", "nvdash", "NvTerm_", "trouble" }
+
+M.if_ignore_ft = function()
+  local current_ft = vim.bo.filetype
+
+  for _, v in ipairs(M.ignore_ft) do
+    if current_ft:match(v) then
+      return true
+    end
+  end
+
+  return false
+end
+
 --- @param symbols string
 --- @param length number
 --- @return string
@@ -23,13 +37,8 @@ M.pretty_symbol_path = function(symbols, length)
 end
 
 M.path = function()
-  local current_ft = vim.bo.filetype
-  local ignore_ft = { "neo%-tree", "nvdash", "NvTerm_", "trouble" }
-
-  for _, v in ipairs(ignore_ft) do
-    if current_ft:match(v) then
-      return ""
-    end
+  if M.if_ignore_ft() then
+    return ""
   end
 
   local relative_path = nvim.root.pretty_path(3)
@@ -47,7 +56,7 @@ M.path = function()
   end
 
   icon = "  " .. icon
-  filename = nvim.hl.statusline.current_file .. filename .. nvim.hl.statusline.text
+  filename = nvim.hl.statusline.file .. filename .. nvim.hl.statusline.text
 
   if dir == "." then
     return icon .. filename
@@ -59,6 +68,10 @@ end
 M.state = { lsp_symbols = nil }
 
 M.lsp_symbols = function()
+  if M.if_ignore_ft() then
+    return ""
+  end
+
   local nvchad_utils_present, nvchad_utils = pcall(require, "nvchad.stl.utils")
 
   if
