@@ -82,10 +82,24 @@ M.ui = {
     theme = "vscode_colored",
 
     -- refer to: https://github.com/NvChad/ui/blob/e0f06a9aa43112e94beca8283516e6804112fb8e/lua/nvchad/stl/utils.lua#L12
-    order = { "mode", "git_hl", "git", "path", "%=", "lsp_msg", "%=", "diagnostics", "lsp", "cwd", "cursor" },
+    order = {
+      "mode",
+      "git_hl",
+      "git",
+      "path",
+      "lsp_symbols",
+      "%=",
+      "lsp_msg",
+      "%=",
+      "diagnostics",
+      "lsp",
+      "cwd",
+      "cursor",
+    },
     modules = {
       git_hl = nvim.hl.statusline.git,
       path = nvim.statusline.path,
+      lsp_symbols = nvim.statusline.lsp_symbols,
     },
   },
 
