@@ -89,7 +89,7 @@ M.ui = {
       "path",
       "lsp_symbols",
       "%=",
-      "lsp_msg",
+      -- "lsp_msg",
       "%=",
       "diagnostics",
       "lsp",

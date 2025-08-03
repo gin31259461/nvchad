@@ -4,6 +4,12 @@ local cmp = require("cmp")
 
 ---@type cmp.ConfigSchema
 local options = {
+  window = {
+    completion = {
+      scrollbar = true,
+    },
+  },
+
   completion = { completeopt = "menu,menuone" },
 
   snippet = {

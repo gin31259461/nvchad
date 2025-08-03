@@ -5,7 +5,7 @@ return {
     "lewis6991/gitsigns.nvim",
     event = "User FilePost",
     opts = function()
-      return require "configs.gitsigns"
+      return require("configs.gitsigns")
     end,
   },
 
@@ -13,7 +13,7 @@ return {
     "stevearc/conform.nvim",
     event = { "BufWritePost", "BufReadPost", "InsertLeave" },
     opts = function()
-      local opts = require "configs.conform-opt"
+      local opts = require("configs.conform-opt")
 
       for _, ft in ipairs(nvim.ft.sql_ft) do
         opts.formatters_by_ft[ft] = opts.formatters_by_ft[ft] or {}
@@ -51,7 +51,7 @@ return {
       {
         "<leader>fe",
         function()
-          require("neo-tree.command").execute { toggle = true, position = "right", dir = vim.uv.cwd() }
+          require("neo-tree.command").execute({ toggle = true, position = "right", dir = vim.uv.cwd() })
         end,
         desc = "Explorer NeoTree (cwd)",
       },
@@ -60,20 +60,20 @@ return {
       {
         "<leader>ge",
         function()
-          require("neo-tree.command").execute { source = "git_status", toggle = true, position = "right" }
+          require("neo-tree.command").execute({ source = "git_status", toggle = true, position = "right" })
         end,
         desc = "Git Explorer",
       },
       {
         "<leader>be",
         function()
-          require("neo-tree.command").execute { source = "buffers", toggle = true, position = "right" }
+          require("neo-tree.command").execute({ source = "buffers", toggle = true, position = "right" })
         end,
         desc = "Buffer Explorer",
       },
     },
     deactivate = function()
-      vim.cmd [[Neotree close]]
+      vim.cmd([[Neotree close]])
     end,
     init = function()
       -- FIX: use `autocmd` for lazy-loading neo-tree instead of directly requiring it,
@@ -88,7 +88,7 @@ return {
           else
             local stats = vim.uv.fs_stat(vim.fn.argv(0))
             if stats and stats.type == "directory" then
-              require "neo-tree"
+              require("neo-tree")
             end
           end
         end,
@@ -144,7 +144,7 @@ return {
         nvim.snacks.rename.on_rename_file(data.source, data.destination)
       end
 
-      local events = require "neo-tree.events"
+      local events = require("neo-tree.events")
       opts.event_handlers = opts.event_handlers or {}
       vim.list_extend(opts.event_handlers, {
         { event = events.FILE_MOVED, handler = on_move },
@@ -166,7 +166,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
     lazy = false,
     opts = function()
-      return require "configs.treesitter"
+      return require("configs.treesitter")
     end,
   },
 
@@ -197,7 +197,7 @@ return {
     opts = function()
       vim.env.ESLINT_D_PPID = vim.fn.getpid()
 
-      local opts = require "configs.nvim-lint-opt"
+      local opts = require("configs.nvim-lint-opt")
 
       -- for _, ft in ipairs(sql_ft) do
       --   opts.linters_by_ft[ft] = opts.linters_by_ft[ft] or {}
@@ -206,7 +206,7 @@ return {
 
       return opts
     end,
-    config = require "configs.nvim-lint-config",
+    config = require("configs.nvim-lint-config"),
   },
 
   -- config refer to: https://github.com/MeanderingProgrammer/render-markdown.nvim?tab=readme-ov-file#setup
@@ -218,7 +218,7 @@ return {
         sign = false,
         width = "full",
         right_pad = 1,
-        disable_background = true
+        disable_background = true,
       },
       heading = {
         sign = false,
@@ -244,7 +244,7 @@ return {
       vim.api.nvim_create_autocmd("FileType", {
         pattern = nvim.ft.sql_ft,
         callback = function()
-          local cmp = require "cmp"
+          local cmp = require("cmp")
 
           local sources = vim.tbl_map(function(source)
             return { name = source.name }
@@ -254,7 +254,7 @@ return {
           table.insert(sources, { name = "vim-dadbod-completion" })
 
           -- update sources for the current buffer
-          cmp.setup.buffer { sources = sources }
+          cmp.setup.buffer({ sources = sources })
         end,
       })
     end,
@@ -271,7 +271,7 @@ return {
       { "<leader>B", "<cmd>DBUIFindBuffer<CR>", desc = "Add buffer files to DBUI" },
     },
     init = function()
-      local data_path = vim.fn.stdpath "data"
+      local data_path = vim.fn.stdpath("data")
 
       vim.g.db_ui_auto_execute_table_helpers = 1
       vim.g.db_ui_save_location = data_path .. "/dadbod_ui"
@@ -293,15 +293,26 @@ return {
         end,
       })
 
-      vim.filetype.add {
+      vim.filetype.add({
         pattern = { ["*-[Columns|Primary Keys|Indexes|References|Constraints|Foreign Keys|Describe]-[^%.]*"] = "sql" },
-      }
+      })
     end,
   },
 
   {
     "folke/edgy.nvim",
     ft = "dbui",
-    opts = require "configs.edgy",
+    opts = require("configs.edgy"),
+  },
+
+  {
+    "nvim-telescope/telescope.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    cmd = "Telescope",
+    opts = function()
+      local opts = require("nvchad.configs.telescope")
+      table.insert(opts.extensions_list, "noice")
+      return opts
+    end,
   },
 }
