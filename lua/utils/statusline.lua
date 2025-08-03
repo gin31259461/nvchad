@@ -53,6 +53,8 @@ M.path = function()
   if filename ~= "Empty" and web_devicons_present then
     local devicon, devicon_hl_name = web_devicons.get_icon(filename, filename:match("%.([^%.]+)$"))
     icon = string.format("%%#%s#", devicon_hl_name) .. (devicon or "") .. " " .. nvim.hl.statusline.text
+  elseif filename == "Empty" then
+    icon = nvim.hl.statusline.file .. icon
   end
 
   icon = "  " .. icon
