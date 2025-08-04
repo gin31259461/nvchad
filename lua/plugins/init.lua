@@ -173,7 +173,7 @@ return {
   {
     "iamcco/markdown-preview.nvim",
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-    build = "yarn && cd app && yarn",
+    build = { "pnpm install", "cd app", "pnpm install" },
     init = function()
       vim.g.mkdp_filetypes = { "markdown" }
     end,
