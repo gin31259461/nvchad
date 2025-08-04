@@ -1,12 +1,13 @@
 dofile(vim.g.base46_cache .. "cmp")
 
 local cmp = require("cmp")
+local defaults = require("cmp.config.default")()
 
 ---@type cmp.ConfigSchema
 local options = {
   window = {
     completion = {
-      scrollbar = true,
+      scrollbar = false,
     },
   },
 
@@ -77,22 +78,24 @@ local options = {
     { name = "path" },
     {
       name = "buffer",
-      option = {
-        get_bufnrs = function()
-          local buf = vim.api.nvim_get_current_buf()
-          local byte_size = vim.api.nvim_buf_get_offset(buf, vim.api.nvim_buf_line_count(buf))
-          if byte_size > 1024 * 1024 then -- 1 Megabyte max
-            return {}
-          end
-          return { buf }
-        end,
-      },
+      -- option = {
+      --   get_bufnrs = function()
+      --     local buf = vim.api.nvim_get_current_buf()
+      --     local byte_size = vim.api.nvim_buf_get_offset(buf, vim.api.nvim_buf_line_count(buf))
+      --     if byte_size > 1024 * 1024 then -- 1 Megabyte max
+      --       return {}
+      --     end
+      --     return { buf }
+      --   end,
+      -- },
     },
     {
       name = "lazydev",
       group_index = 0, -- set group index to 0 to skip loading LuaLS completions
     },
   },
+
+  sorting = defaults.sorting,
 }
 
 return vim.tbl_deep_extend("force", require("nvchad.cmp"), options)
