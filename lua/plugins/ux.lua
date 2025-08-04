@@ -341,11 +341,20 @@ return {
     event = "VeryLazy",
     opts = {
       -- control msgs
+      ---@type NoiceRouteConfig[]
       routes = {
         {
           filter = {
             event = "notify",
             find = "signature help",
+          },
+          opts = { skip = true },
+        },
+
+        {
+          filter = {
+            event = "msg_show",
+            find = "fewer lines",
           },
           opts = { skip = true },
         },
