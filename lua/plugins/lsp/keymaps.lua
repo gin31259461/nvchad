@@ -53,7 +53,7 @@ function M.get()
       has = "signatureHelp",
     },
     {
-      "<c-k>",
+      "<m-k>",
       function()
         return vim.lsp.buf.signature_help {
           focus = false,

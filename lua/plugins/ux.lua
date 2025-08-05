@@ -358,6 +358,14 @@ return {
           },
           opts = { skip = true },
         },
+
+        {
+          filter = {
+            event = "msg_show",
+            find = "more lines",
+          },
+          opts = { skip = true },
+        },
       },
 
       lsp = {
