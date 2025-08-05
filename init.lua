@@ -50,5 +50,5 @@ require("nvchad.autocmds")
 require("autocmds")
 
 vim.schedule(function()
-  require("mappings")
+  require("keymaps")
 end)

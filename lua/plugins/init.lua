@@ -24,14 +24,6 @@ return {
     end,
   },
 
-  -- {
-  --   "nvim-tree/nvim-tree.lua",
-  --   cmd = { "NvimTreeToggle", "NvimTreeFocus" },
-  --   opts = function()
-  --     return require "configs.nvimtree"
-  --   end,
-  -- },
-
   {
     "nvim-neo-tree/neo-tree.nvim",
     cmd = "Neotree",
@@ -302,7 +294,33 @@ return {
   {
     "folke/edgy.nvim",
     ft = "dbui",
-    opts = require("configs.edgy"),
+    opts = {
+      right = {
+        {
+          title = "Database",
+          ft = "dbui",
+          pinned = true,
+          width = 0.3,
+          open = function()
+            vim.cmd("DBUI")
+          end,
+        },
+      },
+
+      bottom = {
+        {
+          title = "DB Query Result",
+          pinned = true,
+          ft = "dbout",
+        },
+      },
+
+      options = {
+        bottom = {
+          size = 30,
+        },
+      },
+    },
   },
 
   {

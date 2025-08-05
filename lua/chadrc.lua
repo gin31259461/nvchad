@@ -7,7 +7,7 @@ local M = {}
 
 M.base46 = {
   theme = "tokyonight",
-  theme_toggle = { "nightowl", "vscode_light" },
+  theme_toggle = { "tokyonight", "vscode_light" },
 
   hl_override = {
     Comment = { italic = true },
