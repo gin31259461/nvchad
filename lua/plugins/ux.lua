@@ -382,9 +382,15 @@ return {
         },
 
         signature = {
+          enabled = true,
           auto_open = {
-            trigger = false,
+            enabled = true,
+            trigger = true,
+            luasnip = true,
+            throttle = 50,
           },
+          ---@type NoiceViewOptions
+          opts = { focusable = false },
         },
       },
 

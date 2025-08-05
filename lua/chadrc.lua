@@ -76,6 +76,11 @@ M.term = {
   },
 }
 
+-- use noice signature so disable nvchad signature
+M.lsp = {
+  signature = false,
+}
+
 M.ui = {
 
   statusline = {
