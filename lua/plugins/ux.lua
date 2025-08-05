@@ -336,6 +336,7 @@ return {
     },
   },
 
+  -- config: https://github.com/folke/noice.nvim?tab=readme-ov-file#%EF%B8%8F-configuration
   {
     "folke/noice.nvim",
     event = "VeryLazy",
@@ -378,6 +379,12 @@ return {
 
         hover = {
           silent = true,
+        },
+
+        signature = {
+          auto_open = {
+            trigger = false,
+          },
         },
       },
 
