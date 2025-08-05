@@ -2,16 +2,25 @@ dofile(vim.g.base46_cache .. "cmp")
 
 local cmp = require("cmp")
 local defaults = require("cmp.config.default")()
+local auto_select = true
+
+-- vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
 
 ---@type cmp.ConfigSchema
 local options = {
   window = {
     completion = {
-      scrollbar = false,
+      scrollbar = true,
+      -- border = "none",
+    },
+    documentation = {
+      -- border = "none",
     },
   },
 
-  completion = { completeopt = "menu,menuone" },
+  completion = { completeopt = "menu,menuone" .. (auto_select and "" or ",noselect") },
+
+  preselect = auto_select and cmp.PreselectMode.Item or cmp.PreselectMode.None,
 
   snippet = {
     expand = function(args)
@@ -72,22 +81,11 @@ local options = {
   },
 
   sources = {
-    -- { name = "nvim_lua" },
     { name = "nvim_lsp" },
     { name = "luasnip" },
     { name = "path" },
     {
       name = "buffer",
-      -- option = {
-      --   get_bufnrs = function()
-      --     local buf = vim.api.nvim_get_current_buf()
-      --     local byte_size = vim.api.nvim_buf_get_offset(buf, vim.api.nvim_buf_line_count(buf))
-      --     if byte_size > 1024 * 1024 then -- 1 Megabyte max
-      --       return {}
-      --     end
-      --     return { buf }
-      --   end,
-      -- },
     },
     {
       name = "lazydev",

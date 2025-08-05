@@ -84,6 +84,24 @@ local plugins = {
       vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
     end,
   },
+
+  {
+    "nvimtools/none-ls.nvim",
+    event = { "BufReadPost", "BufWritePost", "BufNewFile" },
+    dependencies = { "mason.nvim" },
+    opts = function(_, opts)
+      local nls = require("null-ls")
+      opts.root_dir = opts.root_dir
+        or require("null-ls.utils").root_pattern(".null-ls-root", ".neoconf.json", "Makefile", ".git")
+      opts.sources = vim.list_extend(opts.sources or {}, {
+        nls.builtins.formatting.fish_indent,
+        nls.builtins.diagnostics.fish,
+        nls.builtins.formatting.stylua,
+        nls.builtins.formatting.shfmt,
+      })
+    end,
+  },
+
   {
     "microsoft/python-type-stubs",
     cond = false,
