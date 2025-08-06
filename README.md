@@ -56,7 +56,7 @@ winget install --id=Neovim.Neovim  -e
 winget install -e --id JesseDuffield.lazygit # (optional)
 
 # some plugins need yarn to build
-npm install -g yarn
+npm install -g pnpm
 
 # linux
 yay -S ttf-firacode-nerd

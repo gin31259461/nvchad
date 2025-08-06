@@ -3,7 +3,7 @@ pcall(function()
   dofile(vim.g.base46_cache .. "treesitter")
 end)
 
-local options = {
+return {
 
   ensure_installed = {
     "html",
@@ -29,5 +29,3 @@ local options = {
 
   indent = { enable = true },
 }
-
-return options

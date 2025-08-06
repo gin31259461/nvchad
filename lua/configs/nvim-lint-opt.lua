@@ -1,6 +1,6 @@
 local eslint_d_binary_name = "eslint_d"
 
-local options = {
+return {
   events = { "BufWritePost", "BufReadPost", "InsertLeave" },
 
   linters_by_ft = {
@@ -59,5 +59,3 @@ local options = {
     end),
   },
 }
-
-return options

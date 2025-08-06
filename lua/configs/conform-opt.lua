@@ -1,4 +1,4 @@
-local options = {
+return {
   default_format_opts = {
     timeout_ms = 5000,
     async = true, -- not recommended to change
@@ -97,5 +97,3 @@ local options = {
   --   return { timeout_ms = 2000, lsp_fallback = true }
   -- end,
 }
-
-return options
