@@ -219,7 +219,7 @@ return {
             stubPath = vim.fn.stdpath("data") .. "/lazy/python-type-stubs",
 
             -- Ignore all files for analysis to exclusively use Ruff for linting
-            ignore = { "*" },
+            -- ignore = { "*" },
           },
         },
       },
