@@ -155,14 +155,6 @@ return {
   },
 
   {
-    "nvim-treesitter/nvim-treesitter",
-    lazy = false,
-    opts = function()
-      return require("configs.treesitter")
-    end,
-  },
-
-  {
     "iamcco/markdown-preview.nvim",
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
     build = { "pnpm install", "cd app", "pnpm install" },

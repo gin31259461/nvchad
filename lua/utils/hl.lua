@@ -18,6 +18,10 @@ vim.api.nvim_set_hl(0, "@statusline.git", {
   fg = "#646D96",
 })
 
+vim.api.nvim_set_hl(0, "TreesitterContextBottom", {
+  bg = "#1F2336",
+})
+
 local M = {}
 
 M.statusline = {
