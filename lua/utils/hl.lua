@@ -18,7 +18,7 @@ vim.api.nvim_set_hl(0, "@statusline.git", {
   fg = "#646D96",
 })
 
-vim.api.nvim_set_hl(0, "TreesitterContextBottom", {
+vim.api.nvim_set_hl(0, "TreesitterContext", {
   bg = "#1F2336",
 })
 
