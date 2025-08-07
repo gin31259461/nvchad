@@ -62,7 +62,8 @@ return {
           if package.loaded["neo-tree"] then
             return
           else
-            local stats = vim.uv.fs_stat(vim.fn.argv(0))
+            local path = vim.fn.argv(0)
+            local stats = type(path) == "string" and vim.uv.fs_stat(path) or nil
             if stats and stats.type == "directory" then
               require("neo-tree")
             end
@@ -156,6 +157,7 @@ return {
     opts = function()
       dofile(vim.g.base46_cache .. "whichkey")
 
+      ---@module "which-key"
       ---@type wk.Opts
       return {
         ---@type false | "classic" | "modern" | "helix"
