@@ -103,6 +103,21 @@ local plugins = {
   },
 
   {
+    "stevearc/conform.nvim",
+    event = { "BufWritePost", "BufReadPost", "InsertLeave" },
+    opts = function()
+      local opts = require("configs.conform-opt")
+
+      for _, ft in ipairs(NvChad.ft.sql_ft) do
+        opts.formatters_by_ft[ft] = opts.formatters_by_ft[ft] or {}
+        table.insert(opts.formatters_by_ft[ft], "sql_formatter")
+      end
+
+      return opts
+    end,
+  },
+
+  {
     "microsoft/python-type-stubs",
     cond = false,
   },
