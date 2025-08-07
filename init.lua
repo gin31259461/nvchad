@@ -14,7 +14,7 @@ vim.opt.rtp:prepend(lazypath)
 local lazy_config = require("configs.lazy")
 
 -- add global utils
-_G.nvim = require("utils")
+_G.NvChad = require("utils")
 
 -- load plugins
 require("lazy").setup({
@@ -29,7 +29,7 @@ require("lazy").setup({
 }, lazy_config)
 
 -- after load plugins, add some plugins to global
-_G.nvim.snacks = require("snacks")
+_G.NvChad.snacks = require("snacks")
 
 -- load theme
 dofile(vim.g.base46_cache .. "defaults")

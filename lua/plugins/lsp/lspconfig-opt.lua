@@ -30,10 +30,10 @@ return {
     severity_sort = true,
     signs = {
       text = {
-        [vim.diagnostic.severity.ERROR] = nvim.config.icons.diagnostics.Error,
-        [vim.diagnostic.severity.WARN] = nvim.config.icons.diagnostics.Warn,
-        [vim.diagnostic.severity.HINT] = nvim.config.icons.diagnostics.Hint,
-        [vim.diagnostic.severity.INFO] = nvim.config.icons.diagnostics.Info,
+        [vim.diagnostic.severity.ERROR] = NvChad.config.icons.diagnostics.Error,
+        [vim.diagnostic.severity.WARN] = NvChad.config.icons.diagnostics.Warn,
+        [vim.diagnostic.severity.HINT] = NvChad.config.icons.diagnostics.Hint,
+        [vim.diagnostic.severity.INFO] = NvChad.config.icons.diagnostics.Info,
       },
     },
   },
@@ -133,7 +133,7 @@ return {
           "gD",
           function()
             local params = vim.lsp.util.make_position_params(0, "utf-8")
-            nvim.lsp.execute({
+            NvChad.lsp.execute({
               command = "typescript.goToSourceDefinition",
               arguments = { params.textDocument.uri, params.position },
               open = true,
@@ -144,7 +144,7 @@ return {
         {
           "gR",
           function()
-            nvim.lsp.execute({
+            NvChad.lsp.execute({
               command = "typescript.findAllFileReferences",
               arguments = { vim.uri_from_bufnr(0) },
               open = true,
@@ -154,28 +154,28 @@ return {
         },
         {
           "<leader>co",
-          nvim.lsp.action["source.organizeImports"],
+          NvChad.lsp.action["source.organizeImports"],
           desc = "Organize Imports",
         },
         {
           "<leader>cM",
-          nvim.lsp.action["source.addMissingImports.ts"],
+          NvChad.lsp.action["source.addMissingImports.ts"],
           desc = "Add missing imports",
         },
         {
           "<leader>cu",
-          nvim.lsp.action["source.removeUnused.ts"],
+          NvChad.lsp.action["source.removeUnused.ts"],
           desc = "Remove unused imports",
         },
         {
           "<leader>cD",
-          nvim.lsp.action["source.fixAll.ts"],
+          NvChad.lsp.action["source.fixAll.ts"],
           desc = "Fix all diagnostics",
         },
         {
           "<leader>cV",
           function()
-            nvim.lsp.execute({ command = "typescript.selectTypeScriptVersion" })
+            NvChad.lsp.execute({ command = "typescript.selectTypeScriptVersion" })
           end,
           desc = "Select TS workspace version",
         },
@@ -192,7 +192,7 @@ return {
       keys = {
         {
           "<leader>co",
-          nvim.lsp.action["source.organizeImports"],
+          NvChad.lsp.action["source.organizeImports"],
           desc = "Organize Imports",
         },
       },
@@ -241,9 +241,9 @@ return {
 
   setup = {
     vtsls = function()
-      nvim.lsp.on_attach(function(client, _)
+      NvChad.lsp.on_attach(function(client, _)
         client.commands["_typescript.moveToFileRefactoring"] = function(command, _) -- command, ctx
-          local arg0, arg1, arg2 = nvim.unpack(command.arguments)
+          local arg0, arg1, arg2 = NvChad.unpack(command.arguments)
 
           ---@type string, string, lsp.Range
           local action, uri, range =
@@ -302,7 +302,7 @@ return {
     end,
 
     ruff = function()
-      nvim.lsp.on_attach(function(client, _)
+      NvChad.lsp.on_attach(function(client, _)
         -- Disable hover in favor of Pyright
         client.server_capabilities.hoverProvider = false
       end, "ruff")

@@ -51,7 +51,7 @@ return {
     },
     ["prisma_fmt"] = {
       command = function()
-        if nvim.shell.is_win() then
+        if NvChad.shell.is_win() then
           return vim.fn.getcwd() .. "/node_modules/.bin/prisma.CMD"
         end
 

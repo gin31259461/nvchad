@@ -53,7 +53,7 @@ return {
       {
         "<leader>n",
         function()
-          nvim.snacks.picker.notifications()
+          NvChad.snacks.picker.notifications()
         end,
         desc = "Notification History",
       },
@@ -62,42 +62,42 @@ return {
       {
         "<leader>fb",
         function()
-          nvim.snacks.picker.buffers()
+          NvChad.snacks.picker.buffers()
         end,
         desc = "Buffers",
       },
       {
         "<leader>fc",
         function()
-          nvim.snacks.picker.files({ cwd = vim.fn.stdpath("config") })
+          NvChad.snacks.picker.files({ cwd = vim.fn.stdpath("config") })
         end,
         desc = "Find Config File",
       },
       {
         "<leader>ff",
         function()
-          nvim.snacks.picker.files()
+          NvChad.snacks.picker.files()
         end,
         desc = "Find Files",
       },
       {
         "<leader>fg",
         function()
-          nvim.snacks.picker.git_files()
+          NvChad.snacks.picker.git_files()
         end,
         desc = "Find Git Files",
       },
       {
         "<leader>fp",
         function()
-          nvim.snacks.picker.projects()
+          NvChad.snacks.picker.projects()
         end,
         desc = "Projects",
       },
       {
         "<leader>fr",
         function()
-          nvim.snacks.picker.recent()
+          NvChad.snacks.picker.recent()
         end,
         desc = "Recent",
       },
@@ -106,49 +106,49 @@ return {
       {
         "<leader>gb",
         function()
-          nvim.snacks.picker.git_branches()
+          NvChad.snacks.picker.git_branches()
         end,
         desc = "Git Branches",
       },
       {
         "<leader>gl",
         function()
-          nvim.snacks.picker.git_log()
+          NvChad.snacks.picker.git_log()
         end,
         desc = "Git Log",
       },
       {
         "<leader>gL",
         function()
-          nvim.snacks.picker.git_log_line()
+          NvChad.snacks.picker.git_log_line()
         end,
         desc = "Git Log Line",
       },
       {
         "<leader>gs",
         function()
-          nvim.snacks.picker.git_status()
+          NvChad.snacks.picker.git_status()
         end,
         desc = "Git Status",
       },
       {
         "<leader>gS",
         function()
-          nvim.snacks.picker.git_stash()
+          NvChad.snacks.picker.git_stash()
         end,
         desc = "Git Stash",
       },
       {
         "<leader>gd",
         function()
-          nvim.snacks.picker.git_diff()
+          NvChad.snacks.picker.git_diff()
         end,
         desc = "Git Diff (Hunks)",
       },
       {
         "<leader>gf",
         function()
-          nvim.snacks.picker.git_log_file()
+          NvChad.snacks.picker.git_log_file()
         end,
         desc = "Git Log File",
       },
@@ -156,28 +156,28 @@ return {
       {
         "<leader>sb",
         function()
-          nvim.snacks.picker.lines()
+          NvChad.snacks.picker.lines()
         end,
         desc = "Buffer Lines",
       },
       {
         "<leader>sB",
         function()
-          nvim.snacks.picker.grep_buffers()
+          NvChad.snacks.picker.grep_buffers()
         end,
         desc = "Grep Open Buffers",
       },
       {
         "<leader>sg",
         function()
-          nvim.snacks.picker.grep()
+          NvChad.snacks.picker.grep()
         end,
         desc = "Grep",
       },
       {
         "<leader>sw",
         function()
-          nvim.snacks.picker.grep_word()
+          NvChad.snacks.picker.grep_word()
         end,
         desc = "Visual selection or word",
         mode = { "n", "x" },
@@ -187,49 +187,49 @@ return {
       {
         '<leader>s"',
         function()
-          nvim.snacks.picker.registers()
+          NvChad.snacks.picker.registers()
         end,
         desc = "Registers",
       },
       {
         "<leader>s/",
         function()
-          nvim.snacks.picker.search_history()
+          NvChad.snacks.picker.search_history()
         end,
         desc = "Search History",
       },
       {
         "<leader>sa",
         function()
-          nvim.snacks.picker.autocmds()
+          NvChad.snacks.picker.autocmds()
         end,
         desc = "Autocmds",
       },
       {
         "<leader>sc",
         function()
-          nvim.snacks.picker.command_history()
+          NvChad.snacks.picker.command_history()
         end,
         desc = "Command History",
       },
       {
         "<leader>sC",
         function()
-          nvim.snacks.picker.commands()
+          NvChad.snacks.picker.commands()
         end,
         desc = "Commands",
       },
       {
         "<leader>sd",
         function()
-          nvim.snacks.picker.diagnostics()
+          NvChad.snacks.picker.diagnostics()
         end,
         desc = "Diagnostics",
       },
       {
         "<leader>sD",
         function()
-          nvim.snacks.picker.diagnostics_buffer()
+          NvChad.snacks.picker.diagnostics_buffer()
         end,
         desc = "Buffer Diagnostics",
       },
@@ -243,77 +243,77 @@ return {
       {
         "<leader>sH",
         function()
-          nvim.snacks.picker.highlights()
+          NvChad.snacks.picker.highlights()
         end,
         desc = "Highlights",
       },
       {
         "<leader>si",
         function()
-          nvim.snacks.picker.icons()
+          NvChad.snacks.picker.icons()
         end,
         desc = "Icons",
       },
       {
         "<leader>sj",
         function()
-          nvim.snacks.picker.jumps()
+          NvChad.snacks.picker.jumps()
         end,
         desc = "Jumps",
       },
       {
         "<leader>sk",
         function()
-          nvim.snacks.picker.keymaps()
+          NvChad.snacks.picker.keymaps()
         end,
         desc = "Keymaps",
       },
       {
         "<leader>sl",
         function()
-          nvim.snacks.picker.loclist()
+          NvChad.snacks.picker.loclist()
         end,
         desc = "Location List",
       },
       {
         "<leader>sm",
         function()
-          nvim.snacks.picker.marks()
+          NvChad.snacks.picker.marks()
         end,
         desc = "Marks",
       },
       {
         "<leader>sM",
         function()
-          nvim.snacks.picker.man()
+          NvChad.snacks.picker.man()
         end,
         desc = "Man Pages",
       },
       {
         "<leader>sp",
         function()
-          nvim.snacks.picker.lazy()
+          NvChad.snacks.picker.lazy()
         end,
         desc = "Search for Plugin Spec",
       },
       {
         "<leader>sq",
         function()
-          nvim.snacks.picker.qflist()
+          NvChad.snacks.picker.qflist()
         end,
         desc = "Quickfix List",
       },
       {
         "<leader>sR",
         function()
-          nvim.snacks.picker.resume()
+          NvChad.snacks.picker.resume()
         end,
         desc = "Resume",
       },
       {
         "<leader>su",
         function()
-          nvim.snacks.picker.undo()
+          NvChad.snacks.picker.undo()
         end,
         desc = "Undo History",
       },
@@ -329,7 +329,7 @@ return {
       {
         "<leader>gg",
         function()
-          nvim.snacks.lazygit()
+          NvChad.snacks.lazygit()
         end,
         desc = "Lazygit",
       },
@@ -461,74 +461,7 @@ return {
         hl_group = "@statusline.symbols",
       })
 
-      nvim.statusline.state.lsp_symbols = symbols.get
-    end,
-  },
-
-  {
-    "hrsh7th/nvim-cmp",
-    version = false,
-    event = "InsertEnter",
-    dependencies = {
-      {
-        -- snippet plugin
-        "L3MON4D3/LuaSnip",
-        dependencies = "rafamadriz/friendly-snippets",
-        opts = { history = true, updateevents = "TextChanged,TextChangedI" },
-        config = function(_, opts)
-          require("luasnip").config.set_config(opts)
-          require("nvchad.configs.luasnip")
-        end,
-      },
-
-      -- autopairing of (){}[] etc
-      {
-        "windwp/nvim-autopairs",
-        opts = {
-          fast_wrap = {},
-          disable_filetype = { "TelescopePrompt", "vim" },
-        },
-        config = function(_, opts)
-          require("nvim-autopairs").setup(opts)
-
-          -- setup cmp for autopairs
-          local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-          require("cmp").event:on("confirm_done", cmp_autopairs.on_confirm_done())
-        end,
-      },
-
-      -- cmp sources plugins
-      {
-        "saadparwaiz1/cmp_luasnip",
-        "hrsh7th/cmp-nvim-lua",
-        "hrsh7th/cmp-nvim-lsp",
-        "hrsh7th/cmp-buffer",
-        "hrsh7th/cmp-path",
-      },
-
-      -- improve lua annotations and cmp
-      {
-        "folke/lazydev.nvim",
-        ft = "lua",
-
-        opts = {
-          library = {
-            -- Load luvit types when the `vim.uv` word is found
-            { path = "${3rd}/luv/library", words = { "vim%.uv" } },
-
-            -- Load the ui types when the `ui` module is required
-            { path = "ui/nvchad_types", mods = { "ui" } },
-
-            { path = "lazy.nvim", mods = { "lazy" } },
-            { path = "snacks.nvim", words = { "snacks", "snacks.nvim" } },
-            { path = "noice.nvim", words = { "noice", "noice.nvim" } },
-          },
-        },
-      },
-    },
-
-    opts = function()
-      return require("configs.cmp-opt")
+      NvChad.statusline.state.lsp_symbols = symbols.get
     end,
   },
 

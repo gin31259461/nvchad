@@ -41,7 +41,7 @@ M.path = function()
     return ""
   end
 
-  local relative_path = nvim.root.pretty_path(3)
+  local relative_path = NvChad.root.pretty_path(3)
   local dir = vim.fs.dirname(relative_path)
 
   local icon = "󰈚 "
@@ -52,19 +52,19 @@ M.path = function()
 
   if filename ~= "Empty" and web_devicons_present then
     local devicon, devicon_hl_name = web_devicons.get_icon(filename, filename:match("%.([^%.]+)$"))
-    icon = string.format("%%#%s#", devicon_hl_name) .. (devicon or "") .. " " .. nvim.hl.statusline.text
+    icon = string.format("%%#%s#", devicon_hl_name) .. (devicon or "") .. " " .. NvChad.hl.statusline.text
   elseif filename == "Empty" then
-    icon = nvim.hl.statusline.file .. icon
+    icon = NvChad.hl.statusline.file .. icon
   end
 
   icon = "  " .. icon
-  filename = nvim.hl.statusline.file .. filename .. nvim.hl.statusline.text
+  filename = NvChad.hl.statusline.file .. filename .. NvChad.hl.statusline.text
 
   if dir == "." then
     return icon .. filename
   end
 
-  return icon .. nvim.hl.statusline.text .. dir .. "/" .. filename
+  return icon .. NvChad.hl.statusline.text .. dir .. "/" .. filename
 end
 
 M.state = { lsp_symbols = nil }

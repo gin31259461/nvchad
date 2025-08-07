@@ -15,7 +15,7 @@ return {
     opts = function()
       local opts = require("configs.conform-opt")
 
-      for _, ft in ipairs(nvim.ft.sql_ft) do
+      for _, ft in ipairs(NvChad.ft.sql_ft) do
         opts.formatters_by_ft[ft] = opts.formatters_by_ft[ft] or {}
         table.insert(opts.formatters_by_ft[ft], "sql_formatter")
       end
@@ -133,7 +133,7 @@ return {
     },
     config = function(_, opts)
       local function on_move(data)
-        nvim.snacks.rename.on_rename_file(data.source, data.destination)
+        NvChad.snacks.rename.on_rename_file(data.source, data.destination)
       end
 
       local events = require("neo-tree.events")
@@ -231,10 +231,10 @@ return {
   {
     "kristijanhusak/vim-dadbod-completion",
     dependencies = "vim-dadbod",
-    ft = nvim.ft.sql_ft,
+    ft = NvChad.ft.sql_ft,
     init = function()
       vim.api.nvim_create_autocmd("FileType", {
-        pattern = nvim.ft.sql_ft,
+        pattern = NvChad.ft.sql_ft,
         callback = function()
           local cmp = require("cmp")
 
@@ -255,7 +255,7 @@ return {
   {
     "kristijanhusak/vim-dadbod-ui",
     event = { "VeryLazy" },
-    ft = nvim.ft.sql_ft,
+    ft = NvChad.ft.sql_ft,
     cmd = { "DBUI", "DBUIToggle", "DBUIAddConnection", "DBUIFindBuffer" },
     dependencies = "vim-dadbod",
     keys = {

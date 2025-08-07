@@ -102,9 +102,9 @@ M.ui = {
       "cursor",
     },
     modules = {
-      git_hl = nvim.hl.statusline.git,
-      path = nvim.statusline.path,
-      lsp_symbols = nvim.statusline.lsp_symbols,
+      git_hl = NvChad.hl.statusline.git,
+      path = NvChad.statusline.path,
+      lsp_symbols = NvChad.statusline.lsp_symbols,
     },
   },
 
@@ -115,7 +115,7 @@ M.ui = {
 }
 
 M.mason = {
-  pkgs = nvim.config.packages.mason_ensure_installed,
+  pkgs = NvChad.config.packages.mason_ensure_installed,
 }
 
 return M
