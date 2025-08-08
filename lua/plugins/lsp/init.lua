@@ -7,6 +7,7 @@ local plugins = {
       return require("nvchad.configs.mason")
     end,
   },
+
   {
 
     "neovim/nvim-lspconfig",
