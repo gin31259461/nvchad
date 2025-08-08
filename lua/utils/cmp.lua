@@ -74,8 +74,8 @@ end
 function M.auto_brackets(entry)
   local cmp = require("cmp")
   local Kind = cmp.lsp.CompletionItemKind
-  ---@diagnostic disable-next-line
-  local item = entry:get_completion_item()
+  -- local item = entry:get_completion_item()
+  local item = entry.completion_item
   if vim.tbl_contains({ Kind.Function, Kind.Method }, item.kind) then
     local cursor = vim.api.nvim_win_get_cursor(0)
     local prev_char = vim.api.nvim_buf_get_text(0, cursor[1] - 1, cursor[2], cursor[1] - 1, cursor[2] + 1, {})[1]
@@ -95,8 +95,8 @@ function M.add_missing_snippet_docs(window)
   local entries = window:get_entries()
   for _, entry in ipairs(entries) do
     if entry:get_kind() == Kind.Snippet then
-      ---@diagnostic disable-next-line
-      local item = entry:get_completion_item()
+      -- local item = entry:get_completion_item()
+      local item = entry.completion_item
       if not item.documentation and item.insertText then
         item.documentation = {
           kind = cmp.lsp.MarkupKind.Markdown,
