@@ -1,4 +1,6 @@
-dofile(vim.g.base46_cache .. "cmp")
+pcall(function()
+  dofile(vim.g.base46_cache .. "cmp")
+end)
 
 local cmp = require("cmp")
 local defaults = require("cmp.config.default")()
@@ -109,12 +111,11 @@ local options = {
     { name = "nvim_lsp" },
     { name = "luasnip" },
     { name = "path" },
-    {
-      name = "buffer",
-    },
+    { name = "buffer" },
     {
       name = "lazydev",
-      group_index = 0, -- set group index to 0 to skip loading LuaLS completions
+      -- set group index to 0 to skip loading LuaLS completions
+      group_index = 0,
     },
   },
 
