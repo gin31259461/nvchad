@@ -1,5 +1,17 @@
+---@class LinterExtend
+---@field condition? boolean
+
+---@alias Linter lint.Linter | LinterExtend | fun(): lint.Linter | LinterExtend
+
+---@module "lint"
+---@class Linter.Opts
+---@field events LazyEvent
+---@field linters_by_ft table
+---@field linters Linter
+
 local eslint_d_binary_name = "eslint_d"
 
+---@type Linter.Opts
 return {
   events = { "BufWritePost", "BufReadPost", "InsertLeave" },
 

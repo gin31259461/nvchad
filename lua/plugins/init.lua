@@ -166,24 +166,6 @@ return {
     end,
   },
 
-  {
-    "mfussenegger/nvim-lint",
-    event = { "BufWritePost", "BufReadPost", "InsertLeave" },
-    opts = function()
-      vim.env.ESLINT_D_PPID = vim.fn.getpid()
-
-      local opts = require("configs.nvim-lint-opt")
-
-      -- for _, ft in ipairs(sql_ft) do
-      --   opts.linters_by_ft[ft] = opts.linters_by_ft[ft] or {}
-      --   table.insert(opts.linters_by_ft[ft], "sqlfluff")
-      -- end
-
-      return opts
-    end,
-    config = require("configs.nvim-lint-config"),
-  },
-
   -- config refer to: https://github.com/MeanderingProgrammer/render-markdown.nvim?tab=readme-ov-file#setup
   {
     "MeanderingProgrammer/render-markdown.nvim",
