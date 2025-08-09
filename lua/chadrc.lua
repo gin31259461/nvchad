@@ -13,6 +13,9 @@ M.base46 = {
     Comment = { italic = true },
     ["@comment"] = { italic = true },
     -- NvimTreeOpenedFolderName = { fg = "green", bold = true },
+    St_EmptySpace = {
+      bg = "NONE",
+    },
   },
 
   hl_add = {
@@ -84,11 +87,12 @@ M.lsp = {
 M.ui = {
 
   statusline = {
-    theme = "vscode_colored",
+    theme = "default",
+    separator_style = "round",
 
     -- refer to: https://github.com/NvChad/ui/blob/e0f06a9aa43112e94beca8283516e6804112fb8e/lua/nvchad/stl/utils.lua#L12
     order = {
-      "mode",
+      "mode_override",
       "git_hl",
       "git",
       "path",
@@ -102,6 +106,7 @@ M.ui = {
       "cursor",
     },
     modules = {
+      mode_override = NvChad.statusline.mode,
       git_hl = NvChad.hl.statusline.git,
       path = NvChad.statusline.path,
       lsp_symbols = NvChad.statusline.lsp_symbols,

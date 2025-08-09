@@ -449,20 +449,6 @@ return {
         desc = "Quickfix List (Trouble)",
       },
     },
-
-    config = function(_, opts)
-      local trouble = require("trouble")
-      local symbols = trouble.statusline({
-        mode = "symbols",
-        groups = {},
-        title = false,
-        filter = { range = true },
-        format = "{kind_icon}{symbol.name:Normal}",
-        hl_group = "@statusline.symbols",
-      })
-
-      NvChad.statusline.state.lsp_symbols = symbols.get
-    end,
   },
 
   {

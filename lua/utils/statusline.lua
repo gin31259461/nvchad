@@ -67,7 +67,7 @@ M.path = function()
   return icon .. NvChad.hl.statusline.text .. dir .. "/" .. filename
 end
 
-M.state = { lsp_symbols = nil }
+M.state = { lsp_symbols = nil, mode = nil }
 
 M.lsp_symbols = function()
   if M.if_ignore_ft() then
@@ -90,6 +90,59 @@ M.lsp_symbols = function()
   end
 
   return ""
+end
+
+M.mode = function()
+  if type(M.state.mode) == "function" then
+    return M.state.mode()
+  end
+
+  return ""
+end
+
+-------------------- setup function after plugins are loaded --------------------
+
+-- only import this after trouble is loaded
+M.set_lsp_symbols_state = function()
+  local trouble = require("trouble")
+  local symbols = trouble.statusline({
+    mode = "symbols",
+    groups = {},
+    title = false,
+    filter = { range = true },
+    format = "{kind_icon}{symbol.name:Normal}",
+    hl_group = "@statusline.symbols",
+  })
+
+  M.state.lsp_symbols = symbols.get
+end
+
+-- only import this after nvchad is loaded
+M.set_mode_state = function()
+  local config = require("nvconfig").ui.statusline
+  local sep_style = config.separator_style
+  local utils = require("nvchad.stl.utils")
+
+  local sep_icons = utils.separators
+  local separators = (type(sep_style) == "table" and sep_style) or sep_icons[sep_style]
+
+  local sep_l = separators["left"]
+  local sep_r = separators["right"]
+
+  M.state.mode = function()
+    if not utils.is_activewin() then
+      return ""
+    end
+
+    local modes = utils.modes
+    local m = vim.api.nvim_get_mode().mode
+
+    local current_mode = "%#St_" .. modes[m][2] .. "Mode#  " .. modes[m][1]
+    local mode_sep1 = "%#St_" .. modes[m][2] .. "ModeSep#" .. sep_r
+
+    -- return current_mode .. mode_sep1 .. "%#ST_EmptySpace#" .. sep_r
+    return current_mode .. mode_sep1 .. "%#ST_EmptySpace#" .. sep_r
+  end
 end
 
 return M
