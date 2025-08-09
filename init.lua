@@ -32,8 +32,7 @@ require("lazy").setup({
 _G.NvChad.snacks = require("snacks")
 
 -- load theme
-require("utils.statusline").set_mode_state()
-require("utils.statusline").set_lsp_symbols_state()
+require("utils.statusline").setup()
 
 dofile(vim.g.base46_cache .. "defaults")
 dofile(vim.g.base46_cache .. "statusline")

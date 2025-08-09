@@ -67,8 +67,6 @@ M.path = function()
   return icon .. NvChad.hl.statusline.text .. dir .. "/" .. filename
 end
 
-M.state = { lsp_symbols = nil, mode = nil }
-
 M.lsp_symbols = function()
   if M.if_ignore_ft() then
     return ""
@@ -100,9 +98,9 @@ M.mode = function()
   return ""
 end
 
--------------------- setup function after plugins are loaded --------------------
+-------------------- all state --------------------
+M.state = { lsp_symbols = nil, mode = nil }
 
--- only import this after trouble is loaded
 M.set_lsp_symbols_state = function()
   local trouble = require("trouble")
   local symbols = trouble.statusline({
@@ -117,7 +115,6 @@ M.set_lsp_symbols_state = function()
   M.state.lsp_symbols = symbols.get
 end
 
--- only import this after nvchad is loaded
 M.set_mode_state = function()
   local config = require("nvconfig").ui.statusline
   local sep_style = config.separator_style
@@ -143,6 +140,12 @@ M.set_mode_state = function()
     -- return current_mode .. mode_sep1 .. "%#ST_EmptySpace#" .. sep_r
     return current_mode .. mode_sep1 .. "%#ST_EmptySpace#" .. sep_r
   end
+end
+
+-- call this setup after all plugins are loaded
+M.setup = function()
+  M.set_mode_state()
+  M.set_lsp_symbols_state()
 end
 
 return M
