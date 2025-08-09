@@ -92,7 +92,7 @@ M.ui = {
 
     -- refer to: https://github.com/NvChad/ui/blob/e0f06a9aa43112e94beca8283516e6804112fb8e/lua/nvchad/stl/utils.lua#L12
     order = {
-      "mode_override",
+      "mode",
       "git_hl",
       "git",
       "path",

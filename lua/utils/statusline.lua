@@ -14,6 +14,9 @@ M.if_ignore_ft = function()
   return false
 end
 
+-- "  "
+local sep = "  "
+
 --- @param symbols string
 --- @param length number
 --- @return string
@@ -23,8 +26,6 @@ M.pretty_symbol_path = function(symbols, length)
   for s in symbols:gmatch("%%#.-%%%*%%#.-%%%*") do
     table.insert(parts, s)
   end
-
-  local sep = "  "
 
   if #parts <= length then
     return table.concat(parts, sep)
@@ -83,7 +84,7 @@ M.lsp_symbols = function()
     local symbols = M.state.lsp_symbols()
 
     if symbols ~= "" then
-      return "  " .. M.pretty_symbol_path(symbols, 3)
+      return NvChad.hl.statusline.file .. sep .. M.pretty_symbol_path(symbols, 3)
     end
   end
 
@@ -123,7 +124,7 @@ M.set_mode_state = function()
   local sep_icons = utils.separators
   local separators = (type(sep_style) == "table" and sep_style) or sep_icons[sep_style]
 
-  local sep_l = separators["left"]
+  -- local sep_l = separators["left"]
   local sep_r = separators["right"]
 
   M.state.mode = function()
@@ -137,7 +138,6 @@ M.set_mode_state = function()
     local current_mode = "%#St_" .. modes[m][2] .. "Mode#  " .. modes[m][1]
     local mode_sep1 = "%#St_" .. modes[m][2] .. "ModeSep#" .. sep_r
 
-    -- return current_mode .. mode_sep1 .. "%#ST_EmptySpace#" .. sep_r
     return current_mode .. mode_sep1 .. "%#ST_EmptySpace#" .. sep_r
   end
 end
