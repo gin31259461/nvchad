@@ -15,6 +15,7 @@ local eslint_d_binary_name = "eslint_d"
 return {
   events = { "BufWritePost", "BufReadPost", "InsertLeave" },
 
+  -- available linters: https://github.com/mfussenegger/nvim-lint?tab=readme-ov-file#available-linters
   linters_by_ft = {
     -- Use the "*" filetype to run linters on all filetypes.
     -- ['*'] = { 'global linter' },
@@ -22,7 +23,9 @@ return {
     -- ['_'] = { 'fallback linter' },
     -- ["*"] = { "typos" },
 
+    -- this has already running on lsp
     -- python = { "ruff" },
+
     docker = { "hadolint" },
     markdown = { "markdownlint-cli2" },
 

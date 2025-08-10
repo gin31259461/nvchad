@@ -5,9 +5,20 @@ M.mason_ensure_installed = {}
 
 -- alias = { lsp_config_name, pkg_name }
 local pkgs_with_setup = {
-  -- python
-  pyright = { "pyright", "pyright" },
-  ruff = { "ruff", "ruff" },
+  ------------------- python services -------------------
+
+  -- pyright performance issue: https://www.reddit.com/r/neovim/comments/1mgwt7p/neovim_pyright_lsp_is_super_slow_compared_to/
+
+  python_lsp = { "jedi_language_server", "jedi-language-server" },
+  -- python_lsp = { "pylsp", "python-lsp-server" },
+
+  -- https://github.com/facebook/pyrefly
+  -- python_type_checker = { "pyrefly", "pyrefly" },
+
+  python_type_checker = { "pyright", "pyright" },
+  python_linter = { "ruff", "ruff" },
+
+  ------------------- other services -------------------
 
   -- docker
   docker = { "dockerls", "dockerfile-language-server" },
@@ -31,7 +42,6 @@ local pkgs_with_setup = {
 -- formatter and linter
 local pkgs_only = {
   "stylua",
-  "python-lsp-server",
   "deno",
   "shfmt",
   "sqlfluff",

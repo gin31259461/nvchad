@@ -204,6 +204,7 @@ return {
         pyright = {
           -- Using Ruff's import organizer
           disableOrganizeImports = true,
+          disableLanguageServices = true,
         },
         python = {
           analysis = {
@@ -218,9 +219,40 @@ return {
             -- clone this repo via lazy "../lsp/init.lua"
             stubPath = vim.fn.stdpath("data") .. "/lazy/python-type-stubs",
 
+            typeCheckingMode = "standard",
+
             -- Ignore all files for analysis to exclusively use Ruff for linting
             -- ignore = { "*" },
           },
+        },
+      },
+    },
+
+    -- config: https://github.com/python-lsp/python-lsp-server/blob/develop/CONFIGURATION.md
+    pylsp = {
+      settings = {
+        plugins = {
+          jedi_completion = {
+            fuzzy = true,
+          },
+
+          pycodestyle = {
+            maxLineLength = 80,
+          },
+
+          signature = {
+            formatter = "ruff",
+            line_length = 100,
+          },
+        },
+      },
+    },
+
+    -- config: https://github.com/pappasam/jedi-language-server?tab=readme-ov-file#configuration
+    jedi_language_server = {
+      init_options = {
+        hover = {
+          enable = true,
         },
       },
     },

@@ -16,6 +16,36 @@ M.base46 = {
     St_EmptySpace = {
       bg = "NONE",
     },
+    St_CommandModeSep = {
+      bg = "NONE",
+    },
+    St_ConfirmModeSep = {
+      bg = "NONE",
+    },
+    St_InsertModeSep = {
+      bg = "NONE",
+    },
+    St_NTerminalModeSep = {
+      bg = "NONE",
+    },
+    St_NormalModeSep = {
+      bg = "NONE",
+    },
+    St_SelectModeSep = {
+      bg = "NONE",
+    },
+    St_ReplaceModeSep = {
+
+      bg = "NONE",
+    },
+    St_TerminalModeSep = {
+
+      bg = "NONE",
+    },
+    St_VisualModeSep = {
+
+      bg = "NONE",
+    },
   },
 
   hl_add = {
@@ -92,7 +122,7 @@ M.ui = {
 
     -- refer to: https://github.com/NvChad/ui/blob/e0f06a9aa43112e94beca8283516e6804112fb8e/lua/nvchad/stl/utils.lua#L12
     order = {
-      "mode",
+      "mode_override",
       "git_hl",
       "git",
       "path",
@@ -101,7 +131,7 @@ M.ui = {
       -- "lsp_msg",
       "%=",
       "diagnostics",
-      "lsp",
+      -- "lsp",
       "cwd",
       "cursor",
     },

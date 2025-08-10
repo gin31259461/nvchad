@@ -392,6 +392,10 @@ return {
           ---@type NoiceViewOptions
           opts = { focusable = false },
         },
+
+        progress = {
+          enabled = true,
+        },
       },
 
       presets = {
