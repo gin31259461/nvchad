@@ -35,15 +35,12 @@ M.base46 = {
       bg = "NONE",
     },
     St_ReplaceModeSep = {
-
       bg = "NONE",
     },
     St_TerminalModeSep = {
-
       bg = "NONE",
     },
     St_VisualModeSep = {
-
       bg = "NONE",
     },
   },
