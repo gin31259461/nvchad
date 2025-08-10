@@ -121,7 +121,6 @@ local plugins = {
 
   {
     "microsoft/python-type-stubs",
-    cond = false,
   },
 }
 

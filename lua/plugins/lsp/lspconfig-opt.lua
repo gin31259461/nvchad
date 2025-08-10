@@ -11,6 +11,8 @@
 ---@field servers lspconfig.Config|{cmd?: string[], settings?: table<string, unknown>, keys?: LazyKeysSpec[]}
 ---@field setup LspConfigOptSetup
 
+local data_path = vim.fs.normalize(vim.fn.stdpath("data"))
+
 ---@type LspConfigOptSpec
 return {
   diagnostics = {
@@ -77,8 +79,8 @@ return {
           workspace = {
             library = {
               vim.fn.expand("$VIMRUNTIME/lua"),
-              vim.fn.stdpath("data") .. "/lazy/ui/nvchad_types",
-              vim.fn.stdpath("data") .. "/lazy/lazy.nvim/lua/lazy",
+              data_path .. "/lazy/ui/nvchad_types",
+              data_path .. "/lazy/lazy.nvim/lua/lazy",
               "${3rd}/luv/library",
             },
           },
@@ -211,13 +213,17 @@ return {
             -- default
             autoSearchPaths = true,
             diagnosticMode = "openFilesOnly",
-            useLibraryCodeForTypes = true,
 
             -- fix completion delay: https://github.com/microsoft/pyright/issues/4878
-            --
-            -- use extra stubs: https://github.com/microsoft/python-type-stubs
-            -- clone this repo via lazy "../lsp/init.lua"
-            stubPath = vim.fn.stdpath("data") .. "/lazy/python-type-stubs",
+            -- disable useLibraryCodeForTypes and use extra stubs: https://github.com/microsoft/python-type-stubs
+            useLibraryCodeForTypes = false,
+            stubPath = data_path .. "/lazy/python-type-stubs",
+
+            -- use default typeshed so keep following setting commented
+            -- https://github.com/python/typeshed
+            -- typeshedPaths = {
+            --   data_path .. "/lazy/typeshed",
+            -- },
 
             typeCheckingMode = "standard",
 
