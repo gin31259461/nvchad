@@ -9,7 +9,7 @@ local pkgs_with_setup = {
 
   -- pyright performance issue: https://www.reddit.com/r/neovim/comments/1mgwt7p/neovim_pyright_lsp_is_super_slow_compared_to/
 
-  python_lsp = { "jedi_language_server", "jedi-language-server" },
+  -- python_lsp = { "jedi_language_server", "jedi-language-server" },
   -- python_lsp = { "pylsp", "python-lsp-server" },
 
   -- https://github.com/facebook/pyrefly

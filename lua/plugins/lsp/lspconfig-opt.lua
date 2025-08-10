@@ -204,7 +204,7 @@ return {
         pyright = {
           -- Using Ruff's import organizer
           disableOrganizeImports = true,
-          disableLanguageServices = true,
+          -- disableLanguageServices = true,
         },
         python = {
           analysis = {
