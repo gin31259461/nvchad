@@ -1,4 +1,4 @@
-vim.api.nvim_set_hl(0, "@statusline.file.current", {
+vim.api.nvim_set_hl(0, "@statusline.current_file", {
   fg = "#ABB2BF",
   bold = true,
 })
@@ -26,8 +26,9 @@ local M = {}
 
 M.statusline = {
   git = "%#@statusline.git#",
-  file = "%#@statusline.file.current#",
+  file = "%#@statusline.current_file#",
   text = "%#@statusline.text#",
+  trouble_text = "%#TroubleStatusline1#",
 }
 
 return M

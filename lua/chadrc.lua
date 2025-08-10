@@ -121,7 +121,7 @@ M.ui = {
     order = {
       "mode_override",
       "git_hl",
-      "git",
+      "git_override",
       "path",
       "lsp_symbols",
       "%=",
@@ -135,6 +135,7 @@ M.ui = {
     modules = {
       mode_override = NvChad.statusline.mode,
       git_hl = NvChad.hl.statusline.git,
+      git_override = NvChad.statusline.git,
       path = NvChad.statusline.path,
       lsp_symbols = NvChad.statusline.lsp_symbols,
     },

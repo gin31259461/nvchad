@@ -2,6 +2,10 @@ local M = {}
 
 M.ignore_ft = { "neo%-tree", "nvdash", "NvTerm_", "trouble" }
 
+M.stbufnr = function()
+  return vim.api.nvim_win_get_buf(vim.g.statusline_winid or 0)
+end
+
 M.if_ignore_ft = function()
   local current_ft = vim.bo.filetype
 
@@ -44,8 +48,8 @@ M.path = function()
 
   local relative_path = NvChad.root.pretty_path(3)
   local dir = vim.fs.dirname(relative_path)
-
   local icon = "󰈚 "
+
   local filename = vim.fn.expand("%:t")
   filename = (filename == "" and "Empty") or filename
 
@@ -59,7 +63,7 @@ M.path = function()
   end
 
   icon = "  " .. icon
-  filename = NvChad.hl.statusline.file .. filename .. NvChad.hl.statusline.text
+  filename = NvChad.hl.statusline.trouble_text .. filename
 
   if dir == "." then
     return icon .. filename
@@ -97,6 +101,22 @@ M.mode = function()
   end
 
   return ""
+end
+
+M.git = function()
+  if not vim.b[M.stbufnr()].gitsigns_head or vim.b[M.stbufnr()].gitsigns_git_status then
+    return ""
+  end
+
+  local git_status = vim.b[M.stbufnr()].gitsigns_status_dict
+
+  local added = (git_status.added and git_status.added ~= 0) and ("  " .. git_status.added) or ""
+  local changed = (git_status.changed and git_status.changed ~= 0) and ("  " .. git_status.changed) or ""
+  local removed = (git_status.removed and git_status.removed ~= 0) and ("  " .. git_status.removed) or ""
+  -- local branch_name = " " .. git_status.head
+  local branch_name = " "
+
+  return " " .. branch_name .. added .. changed .. removed
 end
 
 -------------------- all state --------------------
