@@ -31,23 +31,14 @@ require("lazy").setup({
 -- after load plugins, add some plugins to global
 _G.NvChad.snacks = require("snacks")
 
--- load theme
 require("utils.statusline").setup()
+require("utils.shell").setup()
 
+-- load theme
 dofile(vim.g.base46_cache .. "defaults")
 dofile(vim.g.base46_cache .. "statusline")
 
 require("options")
-
-if require("utils.shell").is_win() then
-  vim.o.shell = vim.fn.has("win64") and "powershell.exe" or "pwsh.exe"
-  vim.o.shellcmdflag = "-NoLogo -ExecutionPolicy RemoteSigned"
-  vim.o.shellredir = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
-  vim.o.shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
-  vim.o.shellquote = ""
-  vim.o.shellxquote = '"'
-end
-
 require("nvchad.autocmds")
 require("autocmds")
 
