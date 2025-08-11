@@ -31,6 +31,7 @@ local plugins = {
       -- setup servers
       require("plugins.lsp.lspconfig-config")
 
+      NvChad.lsp.setup()
       NvChad.lsp.on_dynamic_capability(require("plugins.lsp.keymaps").on_attach)
 
       -- diagnostics signs

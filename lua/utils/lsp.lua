@@ -87,6 +87,26 @@ end
 ---@type table<string, table<vim.lsp.Client, table<number, boolean>>>
 M._supports_method = {}
 
+function M.setup()
+  local register_capability = vim.lsp.handlers["client/registerCapability"]
+  vim.lsp.handlers["client/registerCapability"] = function(err, res, ctx)
+    ---@diagnostic disable-next-line: no-unknown
+    local ret = register_capability(err, res, ctx)
+    local client = vim.lsp.get_client_by_id(ctx.client_id)
+    if client then
+      for buffer in pairs(client.attached_buffers) do
+        vim.api.nvim_exec_autocmds("User", {
+          pattern = "LspDynamicCapability",
+          data = { client_id = client.id, buffer = buffer },
+        })
+      end
+    end
+    return ret
+  end
+  M.on_attach(M._check_methods)
+  M.on_dynamic_capability(M._check_methods)
+end
+
 ---@param client vim.lsp.Client
 function M._check_methods(client, buffer)
   -- don't trigger on invalid buffers
