@@ -144,6 +144,12 @@ M.ui = {
   -- always load tabufline on startup
   tabufline = {
     lazyload = false,
+
+    order = { "tree_offset", "buffers", "tabs", "btns" },
+
+    modules = {
+      tree_offset = NvChad.tabufline.tree_offset,
+    },
   },
 }
 

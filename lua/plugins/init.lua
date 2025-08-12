@@ -35,33 +35,38 @@ return {
       "MunifTanjim/nui.nvim",
     },
     keys = {
-      -- {
-      --   "<leader>fE",
-      --   function()
-      --     require("neo-tree.command").execute { toggle = true, position = "right", dir = nvim.root() }
-      --   end,
-      --   desc = "Explorer NeoTree (Root Dir)",
-      -- },
+      {
+        "<C-n>",
+        "<cmd>Neotree action=show position=left source=last toggle<CR>",
+        desc = "neotree toggle window",
+      },
       {
         "<leader>fe",
         function()
-          require("neo-tree.command").execute({ toggle = true, position = "right", dir = vim.uv.cwd() })
+          require("neo-tree.command").execute({ toggle = false, dir = NvChad.root.get_root() })
+        end,
+        desc = "Explorer NeoTree (Root Dir)",
+      },
+      {
+        "<leader>fE",
+        function()
+          require("neo-tree.command").execute({ toggle = false, dir = vim.uv.cwd() })
         end,
         desc = "Explorer NeoTree (cwd)",
       },
-      -- { "<leader>E", "<leader>fE", desc = "Explorer NeoTree (Root Dir)", remap = true },
-      { "<leader>e", "<leader>fe", desc = "Explorer NeoTree (cwd)", remap = true },
+      { "<leader>e", "<leader>fe", desc = "Explorer NeoTree (Root Dir)", remap = true },
+      { "<leader>E", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
       {
         "<leader>ge",
         function()
-          require("neo-tree.command").execute({ source = "git_status", toggle = true, position = "right" })
+          require("neo-tree.command").execute({ source = "git_status", toggle = false })
         end,
         desc = "Git Explorer",
       },
       {
         "<leader>be",
         function()
-          require("neo-tree.command").execute({ source = "buffers", toggle = true, position = "right" })
+          require("neo-tree.command").execute({ source = "buffers", toggle = false })
         end,
         desc = "Buffer Explorer",
       },

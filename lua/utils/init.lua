@@ -31,6 +31,7 @@ M.shell = require("utils.shell")
 M.config = require("configs")
 M.root = require("utils.root")
 M.statusline = require("utils.statusline")
+M.tabufline = require("utils.tabufline")
 M.cmp = require("utils.cmp")
 M.hl = require("utils.hl")
 

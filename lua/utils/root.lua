@@ -31,4 +31,72 @@ M.pretty_path = function(length)
   return table.concat(short_parts, sep)
 end
 
+M.root_pattern = {
+  ".git",
+  ".hg",
+  ".svn",
+  ".bzr",
+  "package.json",
+  "pyproject.toml",
+  "setup.py",
+  "requirements.txt",
+  "Pipfile",
+  "Cargo.toml",
+  "go.mod",
+  "composer.json",
+  "Gemfile",
+  "Makefile",
+  "CMakeLists.txt",
+  "meson.build",
+  "build.gradle",
+  "build.gradle.kts",
+  "pom.xml",
+  ".idea",
+  ".vscode",
+}
+
+local function find_root_marker(startpath, markers)
+  local Path = vim.fn.expand(startpath)
+  for _, marker in ipairs(markers) do
+    local found = vim.fn.finddir(marker, Path .. ";")
+    if found ~= "" then
+      return vim.fn.fnamemodify(found, ":p:h:h")
+    end
+    local found_file = vim.fn.findfile(marker, Path .. ";")
+    if found_file ~= "" then
+      return vim.fn.fnamemodify(found_file, ":p:h")
+    end
+  end
+end
+
+function M.get_root()
+  local bufname = vim.api.nvim_buf_get_name(0)
+
+  -- lsp root
+  local clients = vim.lsp.get_clients({ bufnr = 0 })
+  if #clients > 0 then
+    for _, client in ipairs(clients) do
+      if client.config and client.config.root_dir then
+        return client.config.root_dir
+      end
+    end
+  end
+
+  -- marker files
+  if bufname ~= "" then
+    local root = find_root_marker(bufname, M.root_pattern)
+    if root then
+      return root
+    end
+  end
+
+  -- current path of current file
+  if bufname ~= "" then
+    return vim.fn.fnamemodify(bufname, ":p:h")
+  end
+
+  -- fallback: cwd
+  return vim.loop.cwd()
+end
+
 return M

@@ -96,12 +96,8 @@ map("n", ">", ">>", { desc = "indent forward easily" })
 map("n", "<leader>fd", function()
   vim.diagnostic.open_float({ border = "rounded" })
 end, { desc = "floating diagnostic" })
+
 map("n", "<leader>mp", "<cmd>MarkdownPreview<CR>", { desc = "toggle markdown preview server" })
-
--- neo-tree
-map("n", "<C-n>", "<cmd>Neotree action=show position=left source=last toggle<CR>", { desc = "neotree toggle window" })
-map("n", "<leader>e", "<cmd>Neotree action=focus position=left source=last<CR>", { desc = "neotree focus window" })
-
 map("n", "<leader>bb", "<cmd>enew<CR>", { desc = "buffer new" })
 
 map("x", "<", "<gv", { desc = "indent backward and stay in visual mode" })
