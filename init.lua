@@ -33,6 +33,7 @@ _G.NvChad.snacks = require("snacks")
 
 require("utils.statusline").setup()
 require("utils.shell").setup()
+require("utils.hl").setup()
 
 -- load theme
 dofile(vim.g.base46_cache .. "defaults")
