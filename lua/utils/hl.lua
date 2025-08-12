@@ -22,6 +22,26 @@ vim.api.nvim_set_hl(0, "TreesitterContext", {
   bg = "#1F2336",
 })
 
+---@type {[string]: vim.api.keyset.highlight}
+local underline_highlights = {
+  Underlined = {
+    sp = "#565F89",
+    underline = false,
+    undercurl = true,
+  },
+}
+
+---@type vim.api.keyset.highlight
+local shared_hl = { undercurl = true, underline = false }
+
+-- TODO: add checking method
+local support_undercurl = true
+
+if not support_undercurl then
+  shared_hl.undercurl = false
+  shared_hl.underline = true
+end
+
 local M = {}
 
 M.statusline = {
@@ -32,8 +52,6 @@ M.statusline = {
 }
 
 M.setup_diagnostic_underline = function()
-  -- TODO: add checking method
-  local support_undercurl = true
   local colors = require("base46").get_theme_tb("base_30")
   -- local mix_col = require("base46.colors").mix
 
@@ -44,22 +62,15 @@ M.setup_diagnostic_underline = function()
     DiagnosticUnderlineHint = { sp = colors.purple },
   }
 
-  ---@type vim.api.keyset.highlight
-  local shared_hl = {}
-
-  if support_undercurl then
-    shared_hl.undercurl = true
-  else
-    shared_hl.underline = true
-  end
-
-  for k, v in pairs(highlights) do
-    vim.api.nvim_set_hl(0, k, vim.tbl_extend("force", v, shared_hl))
-  end
+  underline_highlights = vim.tbl_deep_extend("keep", underline_highlights, highlights)
 end
 
 M.setup = function()
   M.setup_diagnostic_underline()
+
+  for k, v in pairs(underline_highlights) do
+    vim.api.nvim_set_hl(0, k, vim.tbl_extend("keep", v, shared_hl))
+  end
 end
 
 return M
