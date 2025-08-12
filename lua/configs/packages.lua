@@ -37,6 +37,7 @@ local pkgs_with_setup = {
   toml = { "taplo", "taplo" },
   json = { "jsonls", "json-lsp" },
   lua = { "lua_ls", "lua-language-server" },
+  powershell = { "powershell_es", "powershell-editor-services" },
 }
 
 -- formatter and linter

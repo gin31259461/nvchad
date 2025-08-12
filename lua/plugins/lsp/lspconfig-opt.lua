@@ -279,6 +279,13 @@ return {
         },
       },
     },
+
+    -- this lsp need install bundle from: https://github.com/PowerShell/PowerShellEditorServices
+    -- extract zip file to C:/PSES
+    powershell_es = {
+      bundle_path = "C:/PSES",
+      shell = "powershell",
+    },
   },
 
   setup = {
