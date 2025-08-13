@@ -16,5 +16,33 @@ return {
       end
     end,
     config = function() end,
+    keys = {
+      {
+        "<leader>db",
+        "<cmd>DapToggleBreakpoint<CR>",
+        desc = "DAP Toggle Breakpoint",
+      },
+      {
+        "<leader>dn",
+        "<cmd>DapNew<CR>",
+        desc = "DAP New Session",
+      },
+      {
+        "<leader>dr",
+        "<cmd>DapToggleRepl<CR>",
+        desc = "DAP Toggle Repl",
+      },
+
+      {
+        "<leader>dc",
+        "<cmd>DapContinue<CR>",
+        desc = "DAP Continue",
+      },
+      {
+        "<leader>dl",
+        "<cmd>DapShowLog<CR>",
+        desc = "DAP Show Log",
+      },
+    },
   },
 }
