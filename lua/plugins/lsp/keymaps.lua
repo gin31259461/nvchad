@@ -1,4 +1,4 @@
-local snacks = require "snacks"
+local snacks = require("snacks")
 
 local M = {}
 
@@ -23,31 +23,31 @@ function M.get()
       desc = "Lsp Info",
     },
     { "gd", vim.lsp.buf.definition, desc = "Goto Definition", has = "definition" },
-    -- { "gr", vim.lsp.buf.references, desc = "References", nowait = true },
+    { "gR", vim.lsp.buf.references, desc = "References", nowait = true },
     { "gI", vim.lsp.buf.implementation, desc = "Goto Implementation" },
     { "gy", vim.lsp.buf.type_definition, desc = "Goto Type Definition" },
     { "gD", vim.lsp.buf.declaration, desc = "Goto Declaration" },
     {
       "K",
       function()
-        return vim.lsp.buf.hover {
+        return vim.lsp.buf.hover({
           focus = true,
           silent = true,
           border = "single",
           -- max_height = 7,
-        }
+        })
       end,
       desc = "Hover",
     },
     {
       "gK",
       function()
-        return vim.lsp.buf.signature_help {
+        return vim.lsp.buf.signature_help({
           focus = false,
           silent = true,
           max_height = 7,
           border = "single",
-        }
+        })
       end,
       desc = "Signature Help",
       has = "signatureHelp",
@@ -55,12 +55,12 @@ function M.get()
     {
       "<m-k>",
       function()
-        return vim.lsp.buf.signature_help {
+        return vim.lsp.buf.signature_help({
           focus = false,
           silent = true,
           max_height = 7,
           border = "single",
-        }
+        })
       end,
       mode = "i",
       desc = "Signature Help",
@@ -139,8 +139,8 @@ function M.has(buffer, method)
     end
     return false
   end
-  method = method:find "/" and method or "textDocument/" .. method
-  local clients = NvChad.lsp.get_clients { bufnr = buffer }
+  method = method:find("/") and method or "textDocument/" .. method
+  local clients = NvChad.lsp.get_clients({ bufnr = buffer })
   for _, client in ipairs(clients) do
     if client:supports_method(method) then
       return true
@@ -151,13 +151,13 @@ end
 
 ---@return LazyKeysLsp[]
 function M.resolve(buffer)
-  local Keys = require "lazy.core.handler.keys"
+  local Keys = require("lazy.core.handler.keys")
   if not Keys.resolve then
     return {}
   end
   local spec = vim.tbl_extend("force", {}, M.get())
-  local opts = require "plugins.lsp.lspconfig-opt"
-  local clients = NvChad.lsp.get_clients { bufnr = buffer }
+  local opts = require("plugins.lsp.lspconfig-opt")
+  local clients = NvChad.lsp.get_clients({ bufnr = buffer })
   for _, client in ipairs(clients) do
     local maps = opts.servers[client.name] and opts.servers[client.name].keys or {}
     vim.list_extend(spec, maps)
@@ -166,7 +166,7 @@ function M.resolve(buffer)
 end
 
 function M.on_attach(_, buffer)
-  local Keys = require "lazy.core.handler.keys"
+  local Keys = require("lazy.core.handler.keys")
   local keymaps = M.resolve(buffer)
 
   for _, keys in pairs(keymaps) do

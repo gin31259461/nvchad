@@ -304,7 +304,7 @@ return {
           desc = "Goto Definition (C#)",
         },
         {
-          "gs",
+          "gR",
           function()
             require("omnisharp_extended").telescope_lsp_references()
           end,
