@@ -18,6 +18,7 @@ return {
       input = { enabled = true },
       notifier = {
         enabled = true,
+        top_down = false,
         timeout = 3000,
         filter = function(notif)
           for _, msg in ipairs(ignore_msg) do
@@ -29,6 +30,7 @@ return {
           return true
         end,
       },
+
       picker = {
         enabled = true,
         win = {

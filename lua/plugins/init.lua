@@ -214,10 +214,11 @@ return {
     "nvim-telescope/telescope.nvim",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     cmd = "Telescope",
-    opts = function()
-      local opts = require("nvchad.configs.telescope")
-      table.insert(opts.extensions_list, "noice")
-      return opts
+    opts = function(_, opts)
+      -- local actions = require("telescope.actions")
+      local nvchad_telescope_opts = require("nvchad.configs.telescope")
+
+      opts = vim.tbl_deep_extend("force", opts, nvchad_telescope_opts)
     end,
   },
 }
