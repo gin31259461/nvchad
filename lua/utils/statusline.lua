@@ -154,12 +154,17 @@ M.set_mode_state = function()
 
     local modes = utils.modes
     local m = vim.api.nvim_get_mode().mode
+    local recording = vim.fn.reg_recording()
+
+    if #recording > 0 then
+      recording = " @" .. recording
+    end
 
     local current_mode = "%#St_" .. modes[m][2] .. "Mode#  " .. modes[m][1]
     local mode_sep1 = "%#St_" .. modes[m][2] .. "ModeSep#" .. sep_r
 
     -- return current_mode .. mode_sep1 .. "%#ST_EmptySpace#" .. sep_r
-    return current_mode .. mode_sep1
+    return current_mode .. recording .. mode_sep1
   end
 end
 

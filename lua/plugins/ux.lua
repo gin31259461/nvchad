@@ -346,12 +346,6 @@ return {
       -- control msgs
       ---@type NoiceRouteConfig[]
       routes = {
-        -- https://github.com/folke/noice.nvim/wiki/Configuration-Recipes#show-recording-messages
-        {
-          view = "notify",
-          filter = { event = "msg_showmode" },
-        },
-
         {
           filter = {
             event = "notify",
