@@ -26,8 +26,8 @@ vim.api.nvim_set_hl(0, "TreesitterContext", {
 local underline_highlights = {
   Underlined = {
     sp = "#565F89",
-    underline = false,
-    undercurl = true,
+    underline = true,
+    undercurl = false,
   },
 }
 

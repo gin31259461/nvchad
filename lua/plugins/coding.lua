@@ -25,6 +25,7 @@ return {
         "lua",
         "luadoc",
         "comment",
+        "c_sharp",
       },
 
       highlight = {

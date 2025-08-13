@@ -63,6 +63,10 @@ return {
       args = { "format" },
       stdin = false,
     },
+    csharpier = {
+      command = "dotnet-csharpier",
+      args = { "--write-stdout" },
+    },
   },
 
   formatters_by_ft = {
@@ -80,6 +84,7 @@ return {
     json = { "deno_fmt" },
     toml = { "taplo" },
     prisma = { "prisma_fmt" },
+    cs = { "csharpier" },
 
     -- markdown
     ["markdown"] = { "deno_fmt", "markdownlint-cli2", "markdown-toc" },

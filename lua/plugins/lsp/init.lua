@@ -124,6 +124,8 @@ local plugins = {
   {
     "microsoft/python-type-stubs",
   },
+
+  { "Hoffs/omnisharp-extended-lsp.nvim", lazy = true },
 }
 
 return plugins

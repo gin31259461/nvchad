@@ -373,6 +373,14 @@ return {
           },
           opts = { skip = true },
         },
+
+        {
+          filter = {
+            event = "msg_show",
+            find = "Error INVALID_SERVER_MESSAGE: nil",
+          },
+          opts = { skip = true },
+        },
       },
 
       lsp = {

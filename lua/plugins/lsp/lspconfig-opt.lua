@@ -280,11 +280,60 @@ return {
       },
     },
 
-    -- this lsp need install bundle from: https://github.com/PowerShell/PowerShellEditorServices
-    -- extract zip file to C:/PSES
     powershell_es = {
       bundle_path = "C:/PSES",
       shell = "powershell",
+    },
+
+    -- https://www.lazyvim.org/extras/lang/omnisharp
+    -- https://github.com/Hoffs/omnisharp-extended-lsp.nvim
+    omnisharp = {
+      handlers = {
+        ["textDocument/definition"] = require("omnisharp_extended").definition_handler,
+        ["textDocument/typeDefinition"] = require("omnisharp_extended").type_definition_handler,
+        ["textDocument/references"] = require("omnisharp_extended").references_handler,
+        ["textDocument/implementation"] = require("omnisharp_extended").implementation_handler,
+      },
+
+      keys = {
+        {
+          "gd",
+          function()
+            require("omnisharp_extended").telescope_lsp_definitions()
+          end,
+          desc = "Goto Definition (C#)",
+        },
+        {
+          "gs",
+          function()
+            require("omnisharp_extended").telescope_lsp_references()
+          end,
+          desc = "References (C#)",
+        },
+        {
+          "gy",
+          function()
+            require("omnisharp_extended").telescope_lsp_type_definition()
+          end,
+          desc = "Goto Type Definition (C#)",
+        },
+        {
+          "gI",
+          function()
+            require("omnisharp_extended").telescope_lsp_implementation()
+          end,
+          desc = "Goto Implementation (C#)",
+        },
+      },
+
+      -- https://github.com/OmniSharp/omnisharp-roslyn/wiki/Configuration-Options
+      settings = {
+        RoslynExtensionsOptions = {
+          enableDecompilationSupport = true,
+          enableAnalyzersSupport = true,
+          enableImportCompletion = true,
+        },
+      },
     },
   },
 

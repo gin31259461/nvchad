@@ -37,7 +37,13 @@ local pkgs_with_setup = {
   toml = { "taplo", "taplo" },
   json = { "jsonls", "json-lsp" },
   lua = { "lua_ls", "lua-language-server" },
+
+  -- also need install bundle from: https://github.com/PowerShell/PowerShellEditorServices
+  -- extract zip file to C:/PSES
   powershell = { "powershell_es", "powershell-editor-services" },
+
+  -- also need dotnet-sdk to be installed: https://dotnet.microsoft.com/zh-tw/download
+  c_sharp = { "omnisharp", "omnisharp" },
 }
 
 -- formatter and linter
@@ -52,6 +58,8 @@ local pkgs_only = {
   "prettier",
   "eslint_d",
   "sql-formatter",
+  "csharpier",
+  "netcoredbg",
 }
 
 for v in pairs(pkgs_with_setup) do
