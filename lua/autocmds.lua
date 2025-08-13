@@ -7,6 +7,14 @@ vim.api.nvim_create_autocmd({ "BufEnter" }, {
   end,
 })
 
+-- FIX: statusline diagnostics missing on idle buffer open
+vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
+  pattern = "*",
+  callback = function()
+    vim.cmd("redrawstatus")
+  end,
+})
+
 -- FIX (temp): issue: https://github.com/neovim/neovim/issues/8587
 -- this method is from: https://github.com/neovim/neovim/issues/8587#issuecomment-2176399196
 if NvChad.shell.is_win() then
