@@ -43,7 +43,7 @@ local pkgs_with_setup = {
   powershell = { "powershell_es", "powershell-editor-services" },
 
   -- also need dotnet-sdk to be installed: https://dotnet.microsoft.com/zh-tw/download
-  c_sharp = { "omnisharp", "omnisharp" },
+  csharp = { "omnisharp", "omnisharp" },
 }
 
 -- formatter and linter

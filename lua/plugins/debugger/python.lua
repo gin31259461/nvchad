@@ -3,17 +3,6 @@ local M = {}
 -- need debugpy to be installed in .venv
 M.setup = function()
   local dap = require("plugins.debugger.shared").dap
-  local venv_path = os.getenv("VIRTUAL_ENV")
-
-  if venv_path == "" or venv_path == nil then
-    vim.notify("venv has not been activated", "warn")
-    return
-  end
-
-  local executable_python_path = venv_path .. "/bin/python"
-  if NvChad.shell.is_win() then
-    executable_python_path = vim.fs.normalize(venv_path) .. "/Scripts/pythonw.exe"
-  end
 
   dap.adapters["python"] = function(callback, config)
     if config.request == "attach" then
@@ -32,7 +21,7 @@ M.setup = function()
     else
       callback({
         type = "executable",
-        command = executable_python_path,
+        command = config.pythonPath,
         args = { "-m", "debugpy.adapter" },
         options = {
           source_filetype = "python",
@@ -55,6 +44,18 @@ M.setup = function()
         -- debugpy supports launching an application with a different interpreter then the one used to launch debugpy itself.
         -- The code below looks for a `venv` or `.venv` folder in the current directly and uses the python within.
         -- You could adapt this - to for example use the `VIRTUAL_ENV` environment variable.
+
+        local venv_path = os.getenv("VIRTUAL_ENV")
+
+        if venv_path == "" or venv_path == nil then
+          vim.notify("venv has not been activated", vim.log.levels.WARN)
+          return
+        end
+
+        local executable_python_path = venv_path .. "/bin/python"
+        if NvChad.shell.is_win() then
+          executable_python_path = vim.fs.normalize(venv_path) .. "/Scripts/pythonw.exe"
+        end
 
         return executable_python_path
       end,

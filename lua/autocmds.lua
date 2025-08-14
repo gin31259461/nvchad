@@ -1,11 +1,11 @@
-vim.api.nvim_create_autocmd({ "BufEnter" }, {
-  pattern = "*",
-  callback = function()
-    if vim.bo.filetype == "" then
-      vim.cmd("filetype detect")
-    end
-  end,
-})
+-- vim.api.nvim_create_autocmd({ "BufEnter" }, {
+--   pattern = "*",
+--   callback = function()
+--     if vim.bo.filetype == "" then
+--       vim.cmd("filetype detect")
+--     end
+--   end,
+-- })
 
 -- FIX: statusline diagnostics missing on idle buffer open
 vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
