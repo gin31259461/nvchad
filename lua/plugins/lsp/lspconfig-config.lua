@@ -9,6 +9,12 @@ local servers = lspconfig_opts.servers
 local setup = lspconfig_opts.setup
 local capabilities = vim.tbl_deep_extend("force", nvlsp.capabilities, lspconfig_opts.capabilities)
 
+-- https://www.reddit.com/r/neovim/comments/1guifug/lsp_extreme_lag
+local flags = {
+  allow_incremental_sync = false,
+  debounce_text_changes = 1000,
+}
+
 for _, server in ipairs(NvChad.config.packages.lsp_servers) do
   -- copy typescript settings to javascript
   servers["vtsls"].settings.javascript =
@@ -17,6 +23,7 @@ for _, server in ipairs(NvChad.config.packages.lsp_servers) do
   local server_opts = vim.tbl_deep_extend("force", {
     on_init = nvlsp.on_init,
     capabilities = capabilities,
+    -- flags = flags,
   }, servers[server] or {})
 
   if setup[server] then

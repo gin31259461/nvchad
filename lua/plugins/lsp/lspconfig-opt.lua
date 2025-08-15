@@ -62,9 +62,9 @@ return {
   capabilities = {
     workspace = {
       fileOperations = {
-        -- didCreate = true,
-        -- didDelete = true,
-        -- didRename = true,
+        didCreate = true,
+        didDelete = true,
+        didRename = true,
         dynamicRegistration = true,
       },
       didChangeWatchedFiles = {
@@ -111,14 +111,15 @@ return {
           experimental = {
             maxInlayHintLength = nil,
             completion = {
-              entriesLimit = nil,
+              entriesLimit = 50,
               enableServerSideFuzzyMatch = true,
             },
           },
         },
         typescript = {
           tsserver = {
-            -- maxTsServerMemory = 2048,
+            maxTsServerMemory = 4096,
+            useSyntaxServer = "auto",
           },
           updateImportsOnFileMove = { enabled = "always" },
           suggest = {

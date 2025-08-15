@@ -27,7 +27,8 @@ local pkgs_with_setup = {
   -- web
   html = { "html", "html-lsp" },
   css = { "cssls", "css-lsp" },
-  vtsls = { "vtsls", "vtsls" },
+  -- ts = { "vtsls", "vtsls" },
+  -- ts = { "ts_ls", "typescript-language-server" },
 
   -- other
   clangd = { "clangd", "clangd" },
