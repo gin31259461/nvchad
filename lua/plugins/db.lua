@@ -35,13 +35,13 @@ return {
 
   {
     "kristijanhusak/vim-dadbod-ui",
-    event = { "VeryLazy" },
+    -- event = { "VeryLazy" },
     ft = NvChad.ft.sql_ft,
     cmd = { "DBUI", "DBUIToggle", "DBUIAddConnection", "DBUIFindBuffer" },
     dependencies = "tpope/vim-dadbod",
     keys = {
-      { "<leader>D", "<cmd>DBUIToggle<CR>", desc = "Toggle DBUI" },
-      { "<leader>B", "<cmd>DBUIFindBuffer<CR>", desc = "Add buffer files to DBUI" },
+      { "<leader>dD", "<cmd>DBUIToggle<CR>", desc = "Toggle DBUI" },
+      { "<leader>dF", "<cmd>DBUIFindBuffer<CR>", desc = "Add buffer files to DBUI" },
     },
     init = function()
       local data_path = vim.fn.stdpath("data")

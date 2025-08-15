@@ -23,7 +23,7 @@ return {
     -- ['_'] = { 'fallback linter' },
     -- ["*"] = { "typos" },
 
-    -- this has already running on lsp
+    -- this has already handle by lspconfig
     -- python = { "ruff" },
 
     docker = { "hadolint" },

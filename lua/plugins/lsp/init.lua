@@ -111,7 +111,7 @@ local plugins = {
 
       local opts = require("configs.nvim-lint-opt")
 
-      -- for _, ft in ipairs(sql_ft) do
+      -- for _, ft in ipairs(NvChad.ft.sql_ft) do
       --   opts.linters_by_ft[ft] = opts.linters_by_ft[ft] or {}
       --   table.insert(opts.linters_by_ft[ft], "sqlfluff")
       -- end

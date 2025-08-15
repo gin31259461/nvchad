@@ -7,6 +7,11 @@ return {
     priority = 1000, -- needs to be loaded in first
     opts = {
       preset = "modern",
+
+      options = {
+        -- https://github.com/rachartier/tiny-inline-diagnostic.nvim/issues/40#issuecomment-2331128814
+        overwrite_events = { "DiagnosticChanged" },
+      },
     },
     config = function(_, opts)
       require("tiny-inline-diagnostic").setup(opts)

@@ -15,6 +15,7 @@ local lazy_config = require("configs.lazy")
 
 -- add global utils
 _G.NvChad = require("utils")
+require("options")
 
 -- load plugins
 require("lazy").setup({
@@ -39,7 +40,7 @@ require("utils.hl").setup()
 dofile(vim.g.base46_cache .. "defaults")
 dofile(vim.g.base46_cache .. "statusline")
 
-require("options")
+require("nvchad.options")
 require("nvchad.autocmds")
 require("autocmds")
 
