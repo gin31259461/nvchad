@@ -100,9 +100,9 @@ return {
         "javascript",
         "javascriptreact",
         "javascript.jsx",
-        "typescript",
-        "typescriptreact",
-        "typescript.tsx",
+        -- "typescript",
+        -- "typescriptreact",
+        -- "typescript.tsx",
       },
       settings = {
         vtsls = {
