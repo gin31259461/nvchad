@@ -128,7 +128,7 @@ M.ui = {
       -- "lsp_msg",
       "%=",
       "diagnostics",
-      "lsp",
+      -- "lsp",
       "cwd",
       "cursor",
     },
