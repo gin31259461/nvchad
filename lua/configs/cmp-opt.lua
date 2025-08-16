@@ -14,10 +14,11 @@ local options = {
   window = {
     completion = {
       scrollbar = true,
-      -- border = "none",
+      -- border = defaults.window.completion.border,
     },
     documentation = {
-      -- border = "none",
+      scrollbar = true,
+      -- border = defaults.window.documentation.border,
     },
   },
 
