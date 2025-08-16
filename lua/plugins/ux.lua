@@ -5,6 +5,7 @@ local ignore_msg = {
 ---@type NvPluginSpec
 return {
   {
+    -- https://github.com/folke/snacks.nvim?tab=readme-ov-file#-features
     "folke/snacks.nvim",
     priority = 1000,
     lazy = false,
@@ -19,6 +20,9 @@ return {
       notifier = {
         enabled = true,
         top_down = false,
+        margin = {
+          bottom = 2,
+        },
         timeout = 3000,
         filter = function(notif)
           for _, msg in ipairs(ignore_msg) do
@@ -379,6 +383,22 @@ return {
         },
       },
 
+      -- FIX: disable due to strange ui bug
+      cmdline = {
+        enabled = false,
+      },
+
+      messages = {
+        enabled = false,
+      },
+
+      popupmenu = {
+        enabled = false, -- enables the Noice popupmenu UI
+        ---@type 'nui'|'cmp'
+        backend = "nui", -- backend to use to show regular cmdline completions
+      },
+      -------------------- end --------------------
+
       lsp = {
         -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
         override = {
@@ -414,6 +434,21 @@ return {
         long_message_to_split = true, -- long messages will be sent to a split
         inc_rename = false, -- enables an input dialog for inc-rename.nvim
         lsp_doc_border = true, -- add a border to hover docs and signature help
+      },
+
+      ---@type NoiceConfigViews
+      views = {
+        mini = {
+          position = {
+            row = -3,
+            col = "100%",
+          },
+        },
+        ---@type NoiceViewOptions
+        popupmenu = {
+          -- when auto, then it will be positioned to the cmdline or cursor
+          position = "bottom",
+        },
       },
     },
     dependencies = {

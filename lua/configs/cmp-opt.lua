@@ -8,6 +8,7 @@ local auto_select = true
 
 -- vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
 
+-- https://github.com/hrsh7th/nvim-cmp/blob/b5311ab3ed9c846b585c0c15b7559be131ec4be9/doc/cmp.txt#L450
 ---@type cmp.ConfigSchema
 local options = {
   window = {

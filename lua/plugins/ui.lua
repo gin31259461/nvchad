@@ -3,7 +3,6 @@ return {
   {
     -- config: https://github.com/rachartier/tiny-inline-diagnostic.nvim?tab=readme-ov-file#%EF%B8%8F-setup
     "rachartier/tiny-inline-diagnostic.nvim",
-    cond = false,
     event = "VeryLazy",
     priority = 1000, -- needs to be loaded in first
     opts = {
@@ -11,7 +10,7 @@ return {
 
       options = {
         -- https://github.com/rachartier/tiny-inline-diagnostic.nvim/issues/40#issuecomment-2331128814
-        overwrite_events = { "DiagnosticChanged" },
+        overwrite_events = { "DiagnosticChanged", "BufEnter" },
       },
     },
     config = function(_, opts)
