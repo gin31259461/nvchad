@@ -189,6 +189,16 @@ return {
       },
     },
 
+    ["typescript-tools"] = {
+      keys = {
+        {
+          "<leader>co",
+          "<cmd>TSToolsOrganizeImports<cr>",
+          desc = "Organize Imports",
+        },
+      },
+    },
+
     ruff = {
       cmd_env = { RUFF_TRACE = "messages" },
       init_options = {
