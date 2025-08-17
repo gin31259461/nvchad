@@ -95,6 +95,20 @@ M.lsp_symbols = function()
   return ""
 end
 
+M.lsp = function()
+  local hl = "%#St_NormalModeSep#"
+  if rawget(vim, "lsp") then
+    for _, client in ipairs(vim.lsp.get_clients()) do
+      if client.attached_buffers[M.stbufnr()] then
+        -- return (vim.o.columns > 100 and "   LSP ~ " .. client.name .. " ") or "   LSP "
+        return hl .. "   LSP "
+      end
+    end
+  end
+
+  return ""
+end
+
 M.mode = function()
   if type(M.state.mode) == "function" then
     return M.state.mode()

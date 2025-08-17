@@ -23,7 +23,7 @@ vim.api.nvim_set_hl(0, "TreesitterContext", {
 })
 
 ---@type {[string]: vim.api.keyset.highlight}
-local underline_highlights = {
+local all_underline_hl = {
   Underlined = {
     sp = "#565F89",
     underline = true,
@@ -31,15 +31,17 @@ local underline_highlights = {
   },
 }
 
+local all_hl = {}
+
 ---@type vim.api.keyset.highlight
-local shared_hl = { undercurl = true, underline = false }
+local shared_underline_hl = { undercurl = true, underline = false }
 
 -- TODO: add checking method
 local support_undercurl = true
 
 if not support_undercurl then
-  shared_hl.undercurl = false
-  shared_hl.underline = true
+  shared_underline_hl.undercurl = false
+  shared_underline_hl.underline = true
 end
 
 local M = {}
@@ -51,25 +53,38 @@ M.statusline = {
   trouble_text = "%#TroubleStatusline1#",
 }
 
-M.setup_diagnostic_underline = function()
+M.setup_diagnostic = function()
   local colors = require("base46").get_theme_tb("base_30")
-  -- local mix_col = require("base46.colors").mix
+  local mix_col = require("base46.colors").mix
 
-  local highlights = {
+  local underline_hl = {
     DiagnosticUnderlineError = { sp = colors.red },
     DiagnosticUnderlineWarn = { sp = colors.yellow },
     DiagnosticUnderlineInfo = { sp = colors.green },
     DiagnosticUnderlineHint = { sp = colors.purple },
   }
 
-  underline_highlights = vim.tbl_deep_extend("keep", underline_highlights, highlights)
+  local hl = {
+
+    DiagnosticVirtualTextError = { bg = mix_col(colors.red, colors.black, 75), fg = colors.red },
+    DiagnosticVirtualTextWarn = { bg = mix_col(colors.yellow, colors.black, 75), fg = colors.yellow },
+    DiagnosticVirtualTextInfo = { bg = mix_col(colors.green, colors.black, 75), fg = colors.green },
+    DiagnosticVirtualTextHint = { bg = mix_col(colors.purple, colors.black, 75), fg = colors.purple },
+  }
+
+  all_underline_hl = vim.tbl_deep_extend("force", all_underline_hl, underline_hl)
+  all_hl = vim.tbl_deep_extend("force", all_hl, hl)
 end
 
 M.setup = function()
-  M.setup_diagnostic_underline()
+  M.setup_diagnostic()
 
-  for k, v in pairs(underline_highlights) do
-    vim.api.nvim_set_hl(0, k, vim.tbl_extend("keep", v, shared_hl))
+  for k, v in pairs(all_underline_hl) do
+    vim.api.nvim_set_hl(0, k, vim.tbl_extend("keep", v, shared_underline_hl))
+  end
+
+  for k, v in pairs(all_hl) do
+    vim.api.nvim_set_hl(0, k, v)
   end
 end
 

@@ -156,7 +156,7 @@ function M.resolve(buffer)
     return {}
   end
   local spec = vim.tbl_extend("force", {}, M.get())
-  local opts = require("plugins.lsp.lspconfig-opt")
+  local opts = require("plugins.lsp.config")
   local clients = NvChad.lsp.get_clients({ bufnr = buffer })
   for _, client in ipairs(clients) do
     local maps = opts.servers[client.name] and opts.servers[client.name].keys or {}

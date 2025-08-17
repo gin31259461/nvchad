@@ -1,19 +1,29 @@
 ---@module "lspconfig"
 
----@class LspConfigOptSetup
----@field [string] function
+---@class Lsp.Config.Servers
+---@field [string] vim.lsp.Config | {keys?: LazyKeysSpec[]}
 
----@class LspConfigOptSpec
+---@class Lsp.Config.Spec
+---@field servers Lsp.Config.Servers
+---
+---default lsp config for all servers
+---@field on_init elem_or_list<fun(client: vim.lsp.Client, init_result: lsp.InitializeResult)>
+---@field capabilities lsp.ClientCapabilities
+---
+---@field setup {[string]: function}
 ---@field diagnostics vim.diagnostic.Opts
 ---@field inlay_hints {enabled: boolean, exclude: table}
 ---@field codelens {enabled: boolean}
----@field capabilities lsp.ClientCapabilities
----@field servers lspconfig.Config|{cmd?: string[], settings?: table<string, unknown>, keys?: LazyKeysSpec[]}
----@field setup LspConfigOptSetup
 
 local data_path = vim.fs.normalize(vim.fn.stdpath("data"))
 
----@type LspConfigOptSpec
+---@param opts lsp.ClientCapabilities
+local make_client_capabilities = function(opts)
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  return vim.tbl_deep_extend("force", capabilities, opts)
+end
+
+---@type Lsp.Config.Spec
 return {
   diagnostics = {
     underline = true,
@@ -42,6 +52,8 @@ return {
         [vim.diagnostic.severity.INFO] = NvChad.config.icons.diagnostics.Info,
       },
     },
+
+    float = { border = "single" },
   },
 
   -- Enable this to enable the builtin LSP inlay hints on Neovim >= 0.10.0
@@ -59,19 +71,54 @@ return {
     enabled = false,
   },
 
-  capabilities = {
-    workspace = {
-      fileOperations = {
-        didCreate = true,
-        didDelete = true,
-        didRename = true,
-        dynamicRegistration = true,
-      },
-      didChangeWatchedFiles = {
-        dynamicRegistration = true,
+  on_init = function(client, _)
+    if client:supports_method("textDocument/semanticTokens") then
+      client.server_capabilities.semanticTokensProvider = nil
+    end
+  end,
+
+  capabilities = make_client_capabilities({
+    textDocument = {
+      completion = {
+        completionItem = {
+          documentationFormat = { "markdown", "plaintext" },
+          snippetSupport = true,
+          preselectSupport = true,
+          insertReplaceSupport = true,
+          labelDetailsSupport = true,
+          deprecatedSupport = true,
+          commitCharactersSupport = true,
+          tagSupport = { valueSet = { 1 } },
+          resolveSupport = {
+            properties = {
+              "documentation",
+              "detail",
+              "additionalTextEdits",
+            },
+          },
+        },
       },
     },
-  },
+
+    -- workspace = {
+    --   fileOperations = {
+    --     didCreate = true,
+    --     didDelete = true,
+    --     didRename = true,
+    --     dynamicRegistration = true,
+    --   },
+    --   didChangeWatchedFiles = {
+    --     dynamicRegistration = true,
+    --   },
+    -- },
+    --
+  }),
+
+  -- https://www.reddit.com/r/neovim/comments/1guifug/lsp_extreme_lag
+  -- flags = {
+  --   allow_incremental_sync = false,
+  --   debounce_text_changes = 1000,
+  -- },
 
   -- LSP Server Settings
   -- each server config refer to: https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md

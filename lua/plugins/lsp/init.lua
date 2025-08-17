@@ -1,5 +1,5 @@
 ---@type LazySpec
-local plugins = {
+return {
   {
     "williamboman/mason.nvim",
     cmd = { "Mason", "MasonInstall", "MasonUpdate" },
@@ -18,11 +18,11 @@ local plugins = {
     },
 
     opts = function()
-      return require("plugins.lsp.lspconfig-opt")
+      return require("plugins.lsp.config")
     end,
 
     ---@param _ LazyPlugin
-    ---@param opts LspConfigOptSpec
+    ---@param opts Lsp.Config.Spec
     config = function(_, opts)
       -- mapping each lspconfig-opt.servers.[server_name].keys
       NvChad.lsp.on_attach(function(client, buffer)
@@ -30,7 +30,7 @@ local plugins = {
       end)
 
       -- setup servers
-      require("plugins.lsp.lspconfig-config")
+      require("plugins.lsp.setup")
 
       NvChad.lsp.setup()
       NvChad.lsp.on_dynamic_capability(require("plugins.lsp.keymaps").on_attach)
@@ -161,5 +161,3 @@ local plugins = {
     },
   },
 }
-
-return plugins
