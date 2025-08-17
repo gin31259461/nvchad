@@ -27,7 +27,7 @@ local pkgs_with_setup = {
   -- web
   html = { "html", "html-lsp" },
   css = { "cssls", "css-lsp" },
-  js = { "vtsls", "vtsls" },
+  -- js = { "vtsls", "vtsls" },
   -- ts = { "ts_ls", "typescript-language-server" },
 
   -- other
@@ -61,6 +61,7 @@ local pkgs_only = {
   "sql-formatter",
   "csharpier",
   "netcoredbg",
+  "typescript-language-server",
 }
 
 for v in pairs(pkgs_with_setup) do

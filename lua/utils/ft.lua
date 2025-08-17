@@ -5,6 +5,9 @@ M.ts = {
   "typescript",
   "typescriptreact",
   "typescript.tsx",
+  "javascript",
+  "javascriptreact",
+  "javascript.jsx",
 }
 M.js = {
   "javascript",

@@ -2,6 +2,8 @@
 return {
   {
     "williamboman/mason.nvim",
+    -- fix error with typescript-tools
+    event = "VeryLazy",
     cmd = { "Mason", "MasonInstall", "MasonUpdate" },
     opts = function()
       return require("nvchad.configs.mason")
