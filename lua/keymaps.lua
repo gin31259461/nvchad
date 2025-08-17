@@ -83,27 +83,35 @@ map({ "n", "t" }, "<A-i>", function()
   require("nvchad.term").toggle({ pos = "float", id = "floatTerm" })
 end, { desc = "terminal toggle floating term" })
 
--- whichkey
+-------------------- whick key --------------------
 map("n", "<leader>wK", "<cmd>WhichKey <CR>", { desc = "whichkey all keymaps" })
 
 map("n", "<leader>wk", function()
   vim.cmd("WhichKey " .. vim.fn.input("WhichKey: "))
 end, { desc = "whichkey query lookup" })
 
+-------------------- QoL --------------------
 map("n", ";", ":", { desc = "CMD enter command mode" })
 map("n", "<", "<<", { desc = "indent backward easily" })
 map("n", ">", ">>", { desc = "indent forward easily" })
-map("n", "<leader>fd", function()
-  vim.diagnostic.open_float({ border = "rounded" })
-end, { desc = "floating diagnostic" })
-
-map("n", "<leader>mp", "<cmd>MarkdownPreview<CR>", { desc = "toggle markdown preview server" })
-map("n", "<leader>bb", "<cmd>enew<CR>", { desc = "buffer new" })
-
 map("x", "<", "<gv", { desc = "indent backward and stay in visual mode" })
 map("x", ">", ">gv", { desc = "indent forward and stay in visual mode" })
 map("x", "J", ":move '>+1<CR>gv-gv", { desc = "move selected block up and stay in visual mode" })
 map("x", "K", ":move '<-2<CR>gv-gv", { desc = "move selected block down and stay in visual mode" })
 map("x", "p", '"_dP', { desc = "dont copy replaced text" })
-
 map("i", "jk", "<ESC>")
+
+-------------------- tab --------------------
+map("n", "<leader>tN", "<cmd>tabnew<cr>", { desc = "CMD enter command mode" })
+map("n", "<leader>tn", "<cmd>tabn<cr>", { desc = "CMD enter command mode" })
+map("n", "<leader>tp", "<cmd>tabp<cr>", { desc = "CMD enter command mode" })
+map("n", "<leader>tx", "<cmd>tabclose<cr>", { desc = "CMD enter command mode" })
+
+-------------------- diagnostic --------------------
+map("n", "<leader>fd", function()
+  vim.diagnostic.open_float({ border = "rounded" })
+end, { desc = "floating diagnostic" })
+
+-------------------- other --------------------
+map("n", "<leader>mp", "<cmd>MarkdownPreview<CR>", { desc = "toggle markdown preview server" })
+map("n", "<leader>bb", "<cmd>enew<CR>", { desc = "buffer new" })
