@@ -208,17 +208,4 @@ return {
     ft = { "markdown", "norg", "rmd", "org" },
     dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
   },
-
-  -- default keymaps: https://github.com/nvim-telescope/telescope.nvim?tab=readme-ov-file#default-mappings
-  {
-    "nvim-telescope/telescope.nvim",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    cmd = "Telescope",
-    opts = function(_, opts)
-      -- local actions = require("telescope.actions")
-      local nvchad_telescope_opts = require("nvchad.configs.telescope")
-
-      opts = vim.tbl_deep_extend("force", opts, nvchad_telescope_opts)
-    end,
-  },
 }
