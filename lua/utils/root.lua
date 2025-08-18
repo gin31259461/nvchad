@@ -26,7 +26,8 @@ M.pretty_path = function(path, opts)
     end
   end
 
-  local sep = package.config:sub(1, 1)
+  -- local sep = package.config:sub(1, 1)
+  local sep = "/"
   local parts = vim.split(full_path, "[\\/]", { plain = false })
 
   if #parts <= length then

@@ -16,16 +16,36 @@ return {
 
   {
     "ThePrimeagen/harpoon",
-    lazy = false,
+    event = "VeryLazy",
     branch = "harpoon2",
     dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim" },
     ---@type HarpoonPartialConfig
     opts = {
       default = {
+        -- refer to: https://github.com/ThePrimeagen/harpoon/issues/523#issuecomment-1984926994
+        create_list_item = function(config, value)
+          value = value or vim.fs.normalize(vim.fn.expand("%:p"))
+
+          local bufnr = vim.fn.bufnr(value, false)
+          local pos = { 1, 0 }
+
+          if bufnr ~= -1 then
+            pos = vim.api.nvim_win_get_cursor(0)
+          end
+
+          return {
+            value = value,
+            context = {
+              row = pos[1],
+              col = pos[2],
+              short_path = NvChad.root.pretty_path(value, { length = NvChad.ui.harpoon.short_path_length }),
+            },
+          }
+        end,
+
         display = function(list_item)
-          local path = list_item.value
+          local path = list_item.context.short_path or ""
           local icon = NvChad.ui.get_file_icon(path)
-          -- local path = NvChad.root.pretty_path(list_item.value, { length = 5 })
           return "  " .. icon .. " " .. path
         end,
       },
@@ -42,11 +62,11 @@ return {
       end, { desc = "Buffer add into harpoon list" })
 
       -- Toggle previous & next buffers stored within Harpoon list
-      vim.keymap.set("n", "<C-S-P>", function()
+      vim.keymap.set("n", "<S-p>", function()
         harpoon:list():prev()
       end, { desc = "Toggle previous of harpoon list" })
 
-      vim.keymap.set("n", "<C-S-N>", function()
+      vim.keymap.set("n", "<S-n>", function()
         harpoon:list():next()
       end, { desc = "Toggle next of harpoon list" })
 
@@ -58,6 +78,9 @@ return {
         harpoon.ui:save()
       end)
 
+      -- https://github.com/ThePrimeagen/harpoon/issues/491
+      -- currently, telescope is broken on windows
+      --
       -- local conf = require("telescope.config").values
       -- local function toggle_telescope(harpoon_files)
       --   local file_paths = {}
@@ -76,22 +99,6 @@ return {
       --     })
       --     :find()
       -- end
-
-      -- vim.keymap.set("n", "<C-h>", function()
-      --   harpoon:list():select(1)
-      -- end, { desc = "Select 1 of harpoon list" })
-      --
-      -- vim.keymap.set("n", "<C-t>", function()
-      --   harpoon:list():select(2)
-      -- end, { desc = "Select 2 of harpoon list" })
-      --
-      -- vim.keymap.set("n", "<C-n>", function()
-      --   harpoon:list():select(3)
-      -- end, { desc = "Select 3 of harpoon list" })
-      --
-      -- vim.keymap.set("n", "<C-s>", function()
-      --   harpoon:list():select(4)
-      -- end, { desc = "Select 4 of harpoon list" })
 
       -- vim.keymap.set("n", "<C-e>", function()
       --   toggle_telescope(harpoon:list())

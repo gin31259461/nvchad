@@ -1,10 +1,13 @@
 local M = { harpoon = {} }
 
+M.harpoon.short_path_length = 8
+
 M.harpoon.highlight_current_file = function()
   return {
     UI_CREATE = function(cx)
       for line_number, file in pairs(cx.contents) do
-        if cx.current_file ~= "" and string.find(file, cx.current_file, 1, true) then
+        local short_path = NvChad.root.pretty_path(cx.current_file, { length = M.harpoon.short_path_length })
+        if cx.current_file ~= "" and string.find(file, short_path, 1, true) then
           -- highlight the harpoon menu line that corresponds to the current buffer
           vim.api.nvim_buf_add_highlight(cx.bufnr, -1, "St_NormalModeSep", line_number - 1, 0, -1)
           -- set the position of the cursor in the harpoon menu to the start of the current buffer line

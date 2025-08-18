@@ -1,6 +1,6 @@
 local M = {}
 
-M.ignore_ft = { "neo%-tree", "nvdash", "NvTerm_", "trouble", "noice" }
+M.ignore_ft = { "neo%-tree", "nvdash", "NvTerm_", "trouble", "noice", "harpoon" }
 
 M.stbufnr = function()
   return vim.api.nvim_win_get_buf(vim.g.statusline_winid or 0)
@@ -10,7 +10,7 @@ M.if_ignore_ft = function()
   local current_ft = vim.bo.filetype
 
   for _, v in ipairs(M.ignore_ft) do
-    if current_ft:match(v) then
+    if current_ft:find(v) then
       return true
     end
   end
