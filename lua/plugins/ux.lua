@@ -350,10 +350,28 @@ return {
       -- control msgs
       ---@type NoiceRouteConfig[]
       routes = {
+
+        -- show all messages always
+        -- https://github.com/folke/noice.nvim/issues/769#issuecomment-2111927208
+
+        -- {
+        --   filter = {
+        --     any = {
+        --       {
+        --         cond = function(_)
+        --           return true
+        --         end,
+        --       },
+        --     },
+        --   },
+        -- },
+        --
         {
           filter = {
             event = "notify",
-            find = "signature help",
+            any = {
+              find = "signature help",
+            },
           },
           opts = { skip = true },
         },
@@ -361,23 +379,19 @@ return {
         {
           filter = {
             event = "msg_show",
-            find = "fewer lines",
-          },
-          opts = { skip = true },
-        },
-
-        {
-          filter = {
-            event = "msg_show",
-            find = "more lines",
-          },
-          opts = { skip = true },
-        },
-
-        {
-          filter = {
-            event = "msg_show",
-            find = "Error INVALID_SERVER_MESSAGE: nil",
+            any = {
+              { find = "%d+L, %d+B" },
+              { find = "; after #%d+" },
+              { find = "; before #%d+" },
+              { find = "%d fewer lines" },
+              { find = "%d more lines" },
+              {
+                find = "Error INVALID_SERVER_MESSAGE: nil",
+              },
+              {
+                find = "snacks/util/init.lua:207: Invalid window id",
+              },
+            },
           },
           opts = { skip = true },
         },
@@ -385,16 +399,16 @@ return {
 
       -- FIX: disable due to strange ui bug
       cmdline = {
-        enabled = false,
+        enabled = true,
+        view = "cmdline_popup",
       },
 
       messages = {
-        enabled = false,
+        enabled = true,
       },
 
       popupmenu = {
-        enabled = false, -- enables the Noice popupmenu UI
-        ---@type 'nui'|'cmp'
+        enabled = true, -- enables the Noice popupmenu UI
         backend = "nui", -- backend to use to show regular cmdline completions
       },
       -------------------- end --------------------
