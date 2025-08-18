@@ -72,15 +72,21 @@ end, { desc = "terminal new vertical term" })
 
 -- toggleable
 map({ "n", "t" }, "<A-v>", function()
-  require("nvchad.term").toggle({ pos = "vsp", id = "vtoggleTerm" })
+  if NvChad.ui.check_toggle_nvterm() then
+    require("nvchad.term").toggle({ pos = "vsp", id = "vtoggleTerm" })
+  end
 end, { desc = "terminal toggleable vertical term" })
 
 map({ "n", "t" }, "<A-h>", function()
-  require("nvchad.term").toggle({ pos = "sp", id = "htoggleTerm" })
+  if NvChad.ui.check_toggle_nvterm() then
+    require("nvchad.term").toggle({ pos = "sp", id = "htoggleTerm" })
+  end
 end, { desc = "terminal toggleable horizontal term" })
 
 map({ "n", "t" }, "<A-i>", function()
-  require("nvchad.term").toggle({ pos = "float", id = "floatTerm" })
+  if NvChad.ui.check_toggle_nvterm() then
+    require("nvchad.term").toggle({ pos = "float", id = "floatTerm" })
+  end
 end, { desc = "terminal toggle floating term" })
 
 -------------------- whick key --------------------

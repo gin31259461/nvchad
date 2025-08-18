@@ -42,4 +42,22 @@ M.get_file_icon = function(path, opts)
   return icon
 end
 
+M.check_toggle_nvterm = function()
+  local current_ft = vim.bo.filetype
+
+  if current_ft:match("NvTerm_") or not M.win_is_floating() then
+    return true
+  end
+
+  return false
+end
+
+---@param winid? integer
+---@return boolean
+M.win_is_floating = function(winid)
+  winid = winid or 0
+  local cfg = vim.api.nvim_win_get_config(winid)
+  return cfg.relative ~= ""
+end
+
 return M

@@ -22,12 +22,6 @@ return {
     ---@type HarpoonPartialConfig
     opts = {
       default = {
-        create_list_item = function(_, item)
-          return {
-            value = NvChad.root.pretty_path(item.value, { length = 5 }),
-            context = item.context,
-          }
-        end,
         display = function(list_item)
           local path = list_item.value
           local icon = NvChad.ui.get_file_icon(path)
