@@ -34,6 +34,7 @@ M.statusline = require("utils.statusline")
 M.tabufline = require("utils.tabufline")
 M.cmp = require("utils.cmp")
 M.hl = require("utils.hl")
+M.ui = require("utils.ui")
 
 ---@diagnostic disable: deprecated
 M.unpack = table.unpack or unpack

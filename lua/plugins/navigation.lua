@@ -20,11 +20,28 @@ return {
     branch = "harpoon2",
     dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim" },
     ---@type HarpoonPartialConfig
-    opts = {},
+    opts = {
+      default = {
+        create_list_item = function(_, item)
+          return {
+            value = NvChad.root.pretty_path(item.value, { length = 5 }),
+            context = item.context,
+          }
+        end,
+        display = function(list_item)
+          local path = list_item.value
+          local icon = NvChad.ui.get_file_icon(path)
+          -- local path = NvChad.root.pretty_path(list_item.value, { length = 5 })
+          return "  " .. icon .. " " .. path
+        end,
+      },
+    },
     config = function(_, opts)
       local harpoon = require("harpoon")
 
       harpoon:setup(opts)
+      -- this will set cursor to current file
+      harpoon:extend(NvChad.ui.harpoon.highlight_current_file())
 
       vim.keymap.set("n", "<leader>a", function()
         harpoon:list():add()

@@ -385,6 +385,7 @@ return {
               { find = "; before #%d+" },
               { find = "%d fewer lines" },
               { find = "%d more lines" },
+              { find = "%d lines yanked" },
               {
                 find = "Error INVALID_SERVER_MESSAGE: nil",
               },

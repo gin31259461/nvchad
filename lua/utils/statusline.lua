@@ -46,23 +46,19 @@ M.path = function()
     return ""
   end
 
-  local relative_path = NvChad.root.pretty_path(3)
+  local relative_path = NvChad.root.pretty_path(nil, { only_cwd = true })
   local dir = vim.fs.dirname(relative_path)
-  local icon = "󰈚 "
+  local filename = vim.fn.fnamemodify(relative_path, ":t")
+  local icon = NvChad.hl.statusline.file .. "󰈚 "
 
-  local filename = vim.fn.expand("%:t")
-  filename = (filename == "" and "Empty") or filename
-
-  local web_devicons_present, web_devicons = pcall(require, "nvim-web-devicons")
-
-  if filename ~= "Empty" and web_devicons_present then
-    local devicon, devicon_hl_name = web_devicons.get_icon(filename, filename:match("%.([^%.]+)$"))
-    icon = string.format("%%#%s#", devicon_hl_name) .. (devicon or "") .. " " .. NvChad.hl.statusline.text
-  elseif filename == "Empty" then
-    icon = NvChad.hl.statusline.file .. icon
+  if filename ~= "" then
+    icon = NvChad.ui.get_file_icon(filename, { has_hl = true })
   end
 
-  icon = "  " .. icon
+  filename = (filename == "" and "Empty") or filename
+
+  -- set hl and indent
+  icon = "  " .. icon .. " "
   filename = NvChad.hl.statusline.trouble_text .. filename
 
   if dir == "." then
