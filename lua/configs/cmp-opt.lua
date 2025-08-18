@@ -13,11 +13,11 @@ local auto_select = true
 local options = {
   window = {
     completion = {
-      scrollbar = true,
+      -- scrollbar = true,
       -- border = defaults.window.completion.border,
     },
     documentation = {
-      scrollbar = true,
+      -- scrollbar = true,
       -- border = defaults.window.documentation.border,
     },
   },
