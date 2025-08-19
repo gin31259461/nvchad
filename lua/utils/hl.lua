@@ -31,6 +31,7 @@ local all_underline_hl = {
   },
 }
 
+---@type {[string]: vim.api.keyset.highlight}
 local all_hl = {}
 
 ---@type vim.api.keyset.highlight
@@ -65,7 +66,6 @@ M.setup_diagnostic = function()
   }
 
   local hl = {
-
     DiagnosticVirtualTextError = { bg = mix_col(colors.red, colors.black, 75), fg = colors.red },
     DiagnosticVirtualTextWarn = { bg = mix_col(colors.yellow, colors.black, 75), fg = colors.yellow },
     DiagnosticVirtualTextInfo = { bg = mix_col(colors.green, colors.black, 75), fg = colors.green },

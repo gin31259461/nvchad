@@ -1,15 +1,15 @@
 local M = {}
 
-M.ignore_ft = { "neo%-tree", "nvdash", "NvTerm_", "trouble", "noice", "harpoon" }
+local _ignore_ft = { "neo%-tree", "nvdash", "NvTerm_", "trouble", "noice", "harpoon" }
 
 M.stbufnr = function()
   return vim.api.nvim_win_get_buf(vim.g.statusline_winid or 0)
 end
 
-M.if_ignore_ft = function()
+M.is_ignore_ft = function()
   local current_ft = vim.bo.filetype
 
-  for _, v in ipairs(M.ignore_ft) do
+  for _, v in ipairs(_ignore_ft) do
     if current_ft:find(v) then
       return true
     end
@@ -18,7 +18,7 @@ M.if_ignore_ft = function()
   return false
 end
 
--- "  "
+-- local sep = "  "
 local sep = "  "
 
 --- @param symbols string
@@ -42,7 +42,7 @@ M.pretty_symbol_path = function(symbols, length)
 end
 
 M.path = function()
-  if M.if_ignore_ft() then
+  if M.is_ignore_ft() then
     return ""
   end
 
@@ -69,7 +69,7 @@ M.path = function()
 end
 
 M.lsp_symbols = function()
-  if M.if_ignore_ft() then
+  if M.is_ignore_ft() then
     return ""
   end
 

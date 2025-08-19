@@ -24,19 +24,12 @@ map({ "n", "x" }, "<leader>fm", function()
   require("conform").format({ lsp_fallback = true })
 end, { desc = "Format file" })
 
--- map("n", "<leader>n", "<cmd>set nu!<CR>", { desc = "toggle line number" })
--- map("n", "<leader>rn", "<cmd>set rnu!<CR>", { desc = "toggle relative number" })
-map("n", "<leader>ch", "<cmd>NvCheatsheet<CR>", { desc = "toggle nvcheatsheet" })
-
--------------------- lsp --------------------
--- map("n", "<leader>ds", vim.diagnostic.setloclist, { desc = "LSP diagnostic loclist" })
-
 -------------------- navigation & buffer --------------------
 map("n", "<leader>bb", "<cmd>enew<CR>", { desc = "buffer new" })
+
 map("n", "<tab>", function()
   require("nvchad.tabufline").next()
 end, { desc = "buffer goto next" })
-
 map("n", "<S-tab>", function()
   require("nvchad.tabufline").prev()
 end, { desc = "buffer goto prev" })
@@ -45,7 +38,7 @@ map("n", "<leader>x", function()
   require("nvchad.tabufline").close_buffer()
 end, { desc = "buffer close" })
 
--- nvimtree [not be used]
+-- nvimtree [not used]
 -- map("n", "<C-n>", "<cmd>NvimTreeToggle<CR>", { desc = "nvimtree toggle window" })
 -- map("n", "<leader>e", "<cmd>NvimTreeFocus<CR>", { desc = "nvimtree focus window" })
 
@@ -95,8 +88,8 @@ map("x", ">", ">gv", { desc = "indent forward and stay in visual mode" })
 map("x", "J", ":move '>+1<CR>gv-gv", { desc = "move selected block up and stay in visual mode" })
 map("x", "K", ":move '<-2<CR>gv-gv", { desc = "move selected block down and stay in visual mode" })
 map("x", "p", '"_dP', { desc = "dont copy replaced text" })
-map("i", "jk", "<ESC>")
 map("n", "<Esc>", "<cmd>noh<CR>", { desc = "general clear highlights" })
+map("i", "jk", "<ESC>")
 
 -- comment
 map("n", "<leader>/", "gcc", { desc = "toggle comment", remap = true })
@@ -113,8 +106,15 @@ map("n", "<leader>fd", function()
   vim.diagnostic.open_float({ border = "rounded" })
 end, { desc = "floating diagnostic" })
 
+-- map("n", "<leader>ds", vim.diagnostic.setloclist, { desc = "LSP diagnostic loclist" })
+
 -------------------- other --------------------
 map("n", "<leader>mp", "<cmd>MarkdownPreview<CR>", { desc = "toggle markdown preview server" })
+map("n", "<leader>ch", "<cmd>NvCheatsheet<CR>", { desc = "toggle nvcheatsheet" })
+
 map("n", "<leader>th", function()
   require("nvchad.themes").open()
 end, { desc = "telescope nvchad themes" })
+
+-- map("n", "<leader>n", "<cmd>set nu!<CR>", { desc = "toggle line number" })
+-- map("n", "<leader>rn", "<cmd>set rnu!<CR>", { desc = "toggle relative number" })
