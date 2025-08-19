@@ -74,7 +74,6 @@ return {
 
           local bufnr = vim.fn.bufnr(value, false)
           local pos = { 1, 0 }
-
           if bufnr ~= -1 then
             pos = vim.api.nvim_win_get_cursor(0)
           end
@@ -118,18 +117,23 @@ return {
         end
       end
 
-      -- default behavior is strange?
-      -- it will not set cursor position when buffer close and select from harpoon list again
-      -- so I remove set_position
-      -- default code refer to: https://github.com/ThePrimeagen/harpoon/blob/ed1f853847ffd04b2b61c314865665e1dadf22c7/lua/harpoon/config.lua#L133
-      opts.default.select = function(list_item, _, options)
+      -- default code: https://github.com/ThePrimeagen/harpoon/blob/ed1f853847ffd04b2b61c314865665e1dadf22c7/lua/harpoon/config.lua#L96
+      opts.default.select = function(list_item, list, options)
+        if list_item == nil then
+          return
+        end
+
         options = options or {}
 
         local bufnr = vim.fn.bufnr(to_exact_name(list_item.value))
+
+        -- when close buffer, not quit neovim, bufnr will still exists,
+        -- so I remove set_position to fix cursor position not set bug
         if bufnr == -1 then -- must create a buffer!
           -- bufnr = vim.fn.bufnr(list_item.value, true)
           bufnr = vim.fn.bufadd(list_item.value)
         end
+
         if not vim.api.nvim_buf_is_loaded(bufnr) then
           vim.fn.bufload(bufnr)
           vim.api.nvim_set_option_value("buflisted", true, {

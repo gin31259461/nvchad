@@ -340,6 +340,18 @@ return {
         desc = "Lazygit",
       },
     },
+
+    config = function(_, opts)
+      local snacks = require("snacks")
+      local redraw_range = snacks.util.redraw_range
+
+      -- wrap this function due to invalid window id error popup
+      snacks.util.redraw_range = function(...)
+        pcall(redraw_range, ...)
+      end
+
+      snacks.setup(opts)
+    end,
   },
 
   -- config: https://github.com/folke/noice.nvim?tab=readme-ov-file#%EF%B8%8F-configuration
@@ -400,16 +412,16 @@ return {
 
       -- FIX: disable due to strange ui bug
       cmdline = {
-        enabled = true,
+        enabled = false,
         view = "cmdline_popup",
       },
 
       messages = {
-        enabled = true,
+        enabled = false,
       },
 
       popupmenu = {
-        enabled = true, -- enables the Noice popupmenu UI
+        enabled = false, -- enables the Noice popupmenu UI
         backend = "nui", -- backend to use to show regular cmdline completions
       },
       -------------------- end --------------------
