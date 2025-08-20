@@ -147,11 +147,11 @@ return {
           quotePreference = "auto",
 
           -- https://github.com/microsoft/TypeScript/blob/3b45f4db12bbae97d10f62ec0e2d94858252c5ab/src/server/protocol.ts#L3501
-          includeInlayParameterNameHintsWhenArgumentMatchesName = true,
-          includeInlayFunctionParameterTypeHints = true,
-          includeInlayVariableTypeHintsWhenTypeMatchesName = true,
-          includeInlayPropertyDeclarationTypeHints = true,
-          includeInlayEnumMemberValueHints = true,
+          -- includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+          -- includeInlayFunctionParameterTypeHints = true,
+          -- includeInlayVariableTypeHintsWhenTypeMatchesName = true,
+          -- includeInlayPropertyDeclarationTypeHints = true,
+          -- includeInlayEnumMemberValueHints = true,
 
           -- enable following inlay hints will crash the server
           includeInlayParameterNameHints = "none",

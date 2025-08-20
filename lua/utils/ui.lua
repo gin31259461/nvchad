@@ -39,7 +39,7 @@ M.harpoon.highlight_current_file = function()
             vim.api.nvim_create_namespace("harpoon"),
             line_number - 1,
             2,
-            { end_col = vim.fn.strwidth(line) + M.get_text_offset(cx.win_id), hl_group = "St_NormalModeSep" }
+            { end_col = #line, hl_group = "St_NormalModeSep" }
           )
           -- set the position of the cursor in the harpoon menu to the start of the current buffer line
           vim.api.nvim_win_set_cursor(cx.win_id, { line_number, 0 })
