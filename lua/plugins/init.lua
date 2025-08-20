@@ -43,7 +43,7 @@ return {
       {
         "<leader>fe",
         function()
-          require("neo-tree.command").execute({ toggle = false, dir = NvChad.root.get_root() })
+          require("neo-tree.command").execute({ toggle = false, dir = NvChad.path.get_root() })
         end,
         desc = "Explorer NeoTree (Root Dir)",
       },
@@ -98,6 +98,7 @@ return {
       sources = { "filesystem", "buffers", "git_status" },
       open_files_do_not_replace_types = { "terminal", "Trouble", "trouble", "qf", "Outline" },
       filesystem = {
+        hijack_netrw_behavior = "open_current",
         bind_to_cwd = false,
         follow_current_file = { enabled = true },
         use_libuv_file_watcher = true,

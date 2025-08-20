@@ -11,11 +11,8 @@ end
 
 vim.opt.rtp:prepend(lazypath)
 
-local lazy_config = require("configs.lazy")
-
--- add global utils
-_G.NvChad = require("utils")
 require("options")
+_G.NvChad = require("utils")
 
 -- load plugins
 require("lazy").setup({
@@ -27,18 +24,17 @@ require("lazy").setup({
   },
 
   { import = "plugins" },
-}, lazy_config)
+}, require("configs.lazy"))
 
--- after load plugins, add some plugins to global
 _G.NvChad.snacks = require("snacks")
-
-require("utils.statusline").setup()
-require("utils.shell").setup()
-require("utils.hl").setup()
+-- setup all required tools
+NvChad.setup()
 
 -- load theme
-dofile(vim.g.base46_cache .. "defaults")
-dofile(vim.g.base46_cache .. "statusline")
+pcall(function()
+  dofile(vim.g.base46_cache .. "defaults")
+  dofile(vim.g.base46_cache .. "statusline")
+end)
 
 require("nvchad.options")
 require("nvchad.autocmds")

@@ -1,13 +1,3 @@
-local function normalize_path(buf_name, root)
-  local Path_ready, Path = pcall(require, "plenary.path")
-
-  if Path_ready then
-    return Path:new(buf_name):make_relative(root)
-  end
-
-  return ""
-end
-
 ---@type LazySpec
 return {
   -- default keymaps: https://github.com/nvim-telescope/telescope.nvim?tab=readme-ov-file#default-mappings
@@ -67,7 +57,10 @@ return {
         --
         create_list_item = function(config, value)
           value = value
-            or normalize_path(vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()), config.get_root_dir())
+            or NvChad.path.normalize_path(
+              vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()),
+              config.get_root_dir()
+            )
 
           local bufnr = vim.fn.bufnr(value, false)
           local pos = { 1, 0 }
@@ -80,7 +73,10 @@ return {
             context = {
               row = pos[1],
               col = pos[2],
-              short_path = NvChad.root.pretty_path(value, { length = NvChad.ui.harpoon.short_path_length }),
+              short_path = NvChad.path.pretty_path(
+                value,
+                { length = NvChad.ui.harpoon.short_path_length, only_cwd = true }
+              ),
             },
           }
         end,

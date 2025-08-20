@@ -149,7 +149,7 @@ M.ui = {
     order = { "tree_offset", "buffers", "tabs", "btns" },
 
     modules = {
-      tree_offset = NvChad.tabufline.tree_offset,
+      tree_offset = NvChad.ui.tree_offset,
     },
   },
 }

@@ -108,4 +108,16 @@ function M.get_root()
   return vim.loop.cwd()
 end
 
+---@param buf_name string
+---@param root string
+---@return string
+M.normalize_path = function(buf_name, root)
+  local Path_ready, Path = pcall(require, "plenary.path")
+
+  if Path_ready then
+    return Path:new(buf_name):make_relative(root)
+  end
+
+  return ""
+end
 return M

@@ -27,9 +27,8 @@ M.lsp = require("utils.lsp")
 M.ft = require("utils.ft")
 M.shell = require("utils.shell")
 M.config = require("configs")
-M.root = require("utils.root")
+M.path = require("utils.path")
 M.statusline = require("utils.statusline")
-M.tabufline = require("utils.tabufline")
 M.cmp = require("utils.cmp")
 M.hl = require("utils.hl")
 M.ui = require("utils.ui")
@@ -43,6 +42,13 @@ for _, level in ipairs({ "info", "warn", "error" }) do
     opts.title = opts.title or "NvChad"
     return LazyUtil[level](msg, opts)
   end
+end
+
+-- call this setup when all plugins loaded
+M.setup = function()
+  M.statusline.setup()
+  M.shell.setup()
+  M.hl.setup()
 end
 
 return M
