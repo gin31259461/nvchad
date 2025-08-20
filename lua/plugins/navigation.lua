@@ -29,9 +29,9 @@ return {
       extensions = {},
     },
     config = function(_, opts)
-      pcall(function()
-        dofile(vim.g.base46_cache .. "telescope")
-      end)
+      -- pcall(function()
+      --   dofile(vim.g.base46_cache .. "telescope")
+      -- end)
 
       local telescope = require("telescope")
 
