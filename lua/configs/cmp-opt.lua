@@ -117,7 +117,7 @@ local options = {
     {
       name = "lazydev",
       -- set group index to 0 to skip loading LuaLS completions
-      group_index = 0,
+      -- group_index = 0,
     },
   },
 

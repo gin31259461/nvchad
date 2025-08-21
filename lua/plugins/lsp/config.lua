@@ -130,8 +130,6 @@ return {
           workspace = {
             library = {
               vim.fn.expand("$VIMRUNTIME/lua"),
-              data_path .. "/lazy/ui/nvchad_types",
-              data_path .. "/lazy/lazy.nvim/lua/lazy",
               "${3rd}/luv/library",
             },
           },
