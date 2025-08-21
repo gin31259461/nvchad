@@ -104,6 +104,11 @@ return {
         "folke/lazydev.nvim",
         ft = "lua",
 
+        -- https://github.com/DrKJeff16/wezterm-types
+        dependencies = {
+          { "justinsgithub/wezterm-types", lazy = true },
+        },
+
         opts = {
           library = {
             -- Load luvit types when the `vim.uv` word is found
@@ -115,6 +120,7 @@ return {
             { path = "lazy.nvim", mods = { "lazy" } },
             { path = "snacks.nvim", words = { "snacks", "snacks.nvim" } },
             { path = "noice.nvim", words = { "noice", "noice.nvim" } },
+            { path = "wezterm-types", mods = { "wezterm", "module.wezterm" } },
           },
         },
       },
