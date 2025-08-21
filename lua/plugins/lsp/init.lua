@@ -13,6 +13,7 @@ return {
   {
 
     "neovim/nvim-lspconfig",
+    lazy = false,
     event = { "BufReadPost", "BufWritePost", "BufNewFile" },
     dependencies = {
       { "williamboman/mason-lspconfig.nvim", config = function() end },

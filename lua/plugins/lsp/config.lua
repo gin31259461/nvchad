@@ -131,6 +131,7 @@ return {
             library = {
               vim.fn.expand("$VIMRUNTIME/lua"),
               "${3rd}/luv/library",
+              data_path .. "/lazy/lazy.nvim/lua/lazy",
             },
           },
         },

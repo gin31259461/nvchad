@@ -117,7 +117,6 @@ return {
             -- Load the ui types when the `ui` module is required
             { path = "ui/nvchad_types", mods = { "ui" } },
 
-            { path = "lazy.nvim", mods = { "lazy" } },
             { path = "snacks.nvim", words = { "snacks", "snacks.nvim" } },
             { path = "noice.nvim", words = { "noice", "noice.nvim" } },
             { path = "wezterm-types", mods = { "wezterm", "module.wezterm" } },
