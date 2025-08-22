@@ -391,6 +391,9 @@ return {
           enableImportCompletion = true,
         },
       },
+
+      -- https://github.com/neovim/neovim/issues/27395
+      -- https://github.com/OmniSharp/omnisharp-roslyn/issues/2574
     },
   },
 
