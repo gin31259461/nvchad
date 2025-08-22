@@ -83,8 +83,7 @@ return {
 
         display = function(list_item)
           local path = list_item.context.short_path or ""
-          local icon = NvChad.ui.get_file_icon(path)
-          return "  " .. icon .. " " .. path
+          return NvChad.ui.harpoon.format_display(path)
         end,
       },
     },

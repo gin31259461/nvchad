@@ -1,4 +1,6 @@
-local M = { harpoon = {} }
+local M = {}
+
+M.harpoon = {}
 
 M.get_neo_tree_width = function()
   local winid = nil
@@ -24,13 +26,28 @@ end
 
 M.harpoon.short_path_length = 8
 
+---@param path string
+---@return string
+M.harpoon.format_display = function(path)
+  local icon = NvChad.ui.get_file_icon(path)
+  return "  " .. icon .. " " .. path
+end
+
 M.harpoon.highlight_current_file = function()
   return {
     UI_CREATE = function(cx)
-      for line_number, file in pairs(cx.contents) do
+      for line_number, name_of_harpoon in pairs(cx.contents) do
         local short_path =
           NvChad.path.pretty_path(cx.current_file, { length = M.harpoon.short_path_length, only_cwd = true })
-        if short_path ~= "" and string.find(file, short_path, 1, true) then
+
+        if short_path == "" then
+          return
+        end
+
+        local format_path = NvChad.ui.harpoon.format_display(short_path)
+        name_of_harpoon = string.gsub(name_of_harpoon, "%-", "%%-")
+
+        if string.find(format_path, name_of_harpoon) then
           -- highlight the harpoon menu line that corresponds to the current buffer
           local line = vim.api.nvim_buf_get_lines(cx.bufnr, line_number - 1, line_number, false)[1]
 

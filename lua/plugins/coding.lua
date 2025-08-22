@@ -126,7 +126,7 @@ return {
     },
 
     opts = function()
-      return require("configs.cmp-opt")
+      return require("configs.cmp")
     end,
 
     main = "utils.cmp",
