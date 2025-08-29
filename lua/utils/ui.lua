@@ -37,6 +37,10 @@ M.harpoon.highlight_current_file = function()
   return {
     UI_CREATE = function(cx)
       for line_number, name_of_harpoon in pairs(cx.contents) do
+        if line_number == 1 and name_of_harpoon == "" then
+          break
+        end
+
         local short_path =
           NvChad.path.pretty_path(cx.current_file, { length = M.harpoon.short_path_length, only_cwd = true })
 
