@@ -2,6 +2,8 @@
 -- https://github.com/NvChad/ui/blob/v2.5/lua/nvconfig.lua
 -- Please read that file to know all available options :(
 
+---@module "ui"
+
 ---@type ChadrcConfig
 local M = {}
 
@@ -122,23 +124,25 @@ M.ui = {
       "mode_override",
       "git_hl",
       "git_override",
+      "break_point",
       "path",
       "lsp_symbols",
       "%=",
       -- "lsp_msg",
       "%=",
       "diagnostics",
-      "lsp_override",
+      "current_lsp",
       "cwd",
       "cursor",
     },
     modules = {
       mode_override = NvChad.statusline.mode,
-      lsp_override = NvChad.statusline.lsp,
+      current_lsp = NvChad.statusline.current_lsp,
       git_hl = NvChad.hl.statusline.git,
       git_override = NvChad.statusline.git,
       path = NvChad.statusline.path,
       lsp_symbols = NvChad.statusline.lsp_symbols,
+      break_point = NvChad.statusline.break_point,
     },
   },
 

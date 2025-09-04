@@ -38,6 +38,8 @@ map("n", "<leader>x", function()
   require("nvchad.tabufline").close_buffer()
 end, { desc = "buffer close" })
 
+map("n", "<leader>bc", "<cmd>%bd|e#<cr>", { desc = "buffer close" })
+
 -- nvimtree [not used]
 -- map("n", "<C-n>", "<cmd>NvimTreeToggle<CR>", { desc = "nvimtree toggle window" })
 -- map("n", "<leader>e", "<cmd>NvimTreeFocus<CR>", { desc = "nvimtree focus window" })

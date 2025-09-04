@@ -91,13 +91,13 @@ M.lsp_symbols = function()
   return ""
 end
 
-M.lsp = function()
+M.current_lsp = function()
   local hl = "%#St_NormalModeSep#"
   if rawget(vim, "lsp") then
     for _, client in ipairs(vim.lsp.get_clients()) do
       if client.attached_buffers[M.stbufnr()] then
-        -- return (vim.o.columns > 100 and "   LSP ~ " .. client.name .. " ") or "   LSP "
-        return hl .. "   LSP "
+        return hl .. ((vim.o.columns > 100 and "   LSP ~ " .. client.name .. " ") or "   LSP ")
+        -- return hl .. "   LSP "
       end
     end
   end
@@ -127,6 +127,10 @@ M.git = function()
   local branch_name = " "
 
   return " " .. branch_name .. added .. changed .. removed
+end
+
+M.break_point = function()
+  return "  %<"
 end
 
 -------------------- all state --------------------

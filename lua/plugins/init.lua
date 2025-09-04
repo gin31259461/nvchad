@@ -193,6 +193,7 @@ return {
   -- config refer to: https://github.com/MeanderingProgrammer/render-markdown.nvim?tab=readme-ov-file#setup
   {
     "MeanderingProgrammer/render-markdown.nvim",
+    cond = false,
     opts = {
       file_types = { "markdown", "norg", "rmd", "org" },
       code = {
