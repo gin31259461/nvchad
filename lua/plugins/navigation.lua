@@ -25,8 +25,7 @@ return {
       },
 
       -- extensions_list = { "themes", "terms", "noice" },
-      extensions_list = { "noice" },
-      extensions = {},
+      extensions = { "noice" },
     },
     config = function(_, opts)
       -- pcall(function()
@@ -35,7 +34,7 @@ return {
 
       local telescope = require("telescope")
 
-      for _, v in ipairs(opts.extensions_list) do
+      for _, v in ipairs(opts.extensions) do
         telescope.load_extension(v)
       end
 
