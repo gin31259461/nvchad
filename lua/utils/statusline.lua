@@ -49,7 +49,7 @@ M.path = function()
   local relative_path = NvChad.path.pretty_path(nil, { only_cwd = true })
   local dir = vim.fs.dirname(relative_path)
   local filename = vim.fn.fnamemodify(relative_path, ":t")
-  local icon = NvChad.hl.statusline.file .. "󰈚"
+  local icon = NvChad.hl.statusline.current_file .. "󰈚"
 
   if filename ~= "" then
     icon = NvChad.ui.get_file_icon(filename, { has_hl = true })
@@ -58,8 +58,8 @@ M.path = function()
   filename = (filename == "" and "Empty") or filename
 
   -- set hl and indent
-  icon = "  " .. icon .. " "
-  filename = NvChad.hl.statusline.trouble_text .. filename
+  icon = icon .. " "
+  filename = NvChad.hl.statusline.current_file .. filename
 
   if dir == "." then
     return icon .. filename
@@ -84,7 +84,7 @@ M.lsp_symbols = function()
     local symbols = M.state.lsp_symbols()
 
     if symbols ~= "" then
-      return NvChad.hl.statusline.file .. sep .. M.pretty_symbol_path(symbols, 3)
+      return NvChad.hl.statusline.current_file .. sep .. M.pretty_symbol_path(symbols, 3)
     end
   end
 
@@ -178,7 +178,8 @@ M.set_mode_state = function()
     local mode_sep1 = "%#St_" .. modes[m][2] .. "ModeSep#" .. sep_r
 
     -- return current_mode .. mode_sep1 .. "%#ST_EmptySpace#" .. sep_r
-    return current_mode .. recording .. mode_sep1
+    -- return current_mode .. recording .. mode_sep1
+    return current_mode .. " "
   end
 end
 

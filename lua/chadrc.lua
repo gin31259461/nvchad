@@ -1,9 +1,6 @@
--- This file needs to have same structure as nvconfig.lua
--- https://github.com/NvChad/ui/blob/v2.5/lua/nvconfig.lua
--- Please read that file to know all available options :(
-
 ---@module "ui"
 
+-- https://github.com/NvChad/ui/blob/v2.5/lua/nvconfig.lua
 ---@type ChadrcConfig
 local M = {}
 
@@ -116,7 +113,7 @@ M.lsp = {
 M.ui = {
 
   statusline = {
-    theme = "default",
+    theme = "vscode_colored",
     separator_style = "round",
 
     -- refer to: https://github.com/NvChad/ui/blob/e0f06a9aa43112e94beca8283516e6804112fb8e/lua/nvchad/stl/utils.lua#L12
@@ -149,9 +146,7 @@ M.ui = {
   -- always load tabufline on startup
   tabufline = {
     lazyload = false,
-
     order = { "tree_offset", "buffers", "tabs", "btns" },
-
     modules = {
       tree_offset = NvChad.ui.tree_offset,
     },

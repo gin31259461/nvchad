@@ -1,6 +1,5 @@
 vim.api.nvim_set_hl(0, "@statusline.current_file", {
-  fg = "#ABB2BF",
-  bold = true,
+  fg = "#A9B1D6",
 })
 
 vim.api.nvim_set_hl(0, "@statusline.symbols", {
@@ -49,7 +48,7 @@ local M = {}
 
 M.statusline = {
   git = "%#@statusline.git#",
-  file = "%#@statusline.current_file#",
+  current_file = "%#@statusline.current_file#",
   text = "%#@statusline.text#",
   trouble_text = "%#TroubleStatusline1#",
 }

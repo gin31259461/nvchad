@@ -115,7 +115,7 @@ return {
             -- { path = "${3rd}/luv/library", words = { "vim%.uv" } },
 
             -- Load the ui types when the `ui` module is required
-            { path = "ui/nvchad_types", mods = { "ui" } },
+            { path = "nvchad-ui/nvchad_types", mods = { "ui" } },
 
             { path = "snacks.nvim", words = { "snacks", "snacks.nvim" } },
             { path = "noice.nvim", words = { "noice", "noice.nvim" } },
