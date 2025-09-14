@@ -12,13 +12,17 @@ vim.api.nvim_set_hl(0, "@statusline.text", {
 })
 
 vim.api.nvim_set_hl(0, "@statusline.git", {
+  fg = "#646D96",
   bg = "#1D1E29",
   bold = true,
-  fg = "#646D96",
 })
 
 vim.api.nvim_set_hl(0, "TreesitterContext", {
   bg = "#1F2336",
+})
+
+vim.api.nvim_set_hl(0, "active_context", {
+  fg = "#7AA2F7",
 })
 
 ---@type {[string]: vim.api.keyset.highlight}
@@ -46,11 +50,19 @@ end
 
 local M = {}
 
+M.util = {
+  ---@param hl string
+  get_hl_name_without_syntax = function(hl)
+    return hl:gsub("%%#", ""):gsub("#", "")
+  end,
+}
+
 M.statusline = {
   git = "%#@statusline.git#",
   current_file = "%#@statusline.current_file#",
   text = "%#@statusline.text#",
   trouble_text = "%#TroubleStatusline1#",
+  active_context = "%#active_context#",
 }
 
 M.setup_diagnostic = function()

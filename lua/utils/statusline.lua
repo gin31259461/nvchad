@@ -92,11 +92,11 @@ M.lsp_symbols = function()
 end
 
 M.current_lsp = function()
-  local hl = "%#St_NormalModeSep#"
   if rawget(vim, "lsp") then
     for _, client in ipairs(vim.lsp.get_clients()) do
       if client.attached_buffers[M.stbufnr()] then
-        return hl .. ((vim.o.columns > 100 and "   LSP ~ " .. client.name .. " ") or "   LSP ")
+        return NvChad.hl.statusline.active_context
+          .. ((vim.o.columns > 100 and "   LSP ~ " .. client.name .. " ") or "   LSP ")
         -- return hl .. "   LSP "
       end
     end
