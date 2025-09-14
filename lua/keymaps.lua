@@ -105,7 +105,7 @@ map("n", "<leader>tx", "<cmd>tabclose<cr>", { desc = "CMD enter command mode" })
 
 -------------------- diagnostic --------------------
 map("n", "<leader>fd", function()
-  vim.diagnostic.open_float({ border = "rounded" })
+  vim.diagnostic.open_float({ border = "single" })
 end, { desc = "floating diagnostic" })
 
 -- map("n", "<leader>ds", vim.diagnostic.setloclist, { desc = "LSP diagnostic loclist" })

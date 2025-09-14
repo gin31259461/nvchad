@@ -262,6 +262,8 @@ return {
     },
 
     -- more lsp setting refer to: https://microsoft.github.io/pyright/#/settings
+    -- WARN: when defining [tool.pyright] in pyproject.toml, the following settings will be overridden
+    -- so, the following settings are the default settings
     pyright = {
       settings = {
         pyright = {
@@ -269,6 +271,7 @@ return {
           disableOrganizeImports = true,
           -- disableLanguageServices = true,
         },
+
         python = {
           analysis = {
             -- default

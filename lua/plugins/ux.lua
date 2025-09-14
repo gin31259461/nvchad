@@ -436,6 +436,10 @@ return {
 
         hover = {
           silent = true,
+          ---@type NoiceViewOptions
+          opts = {
+            border = "single",
+          },
         },
 
         signature = {
@@ -447,7 +451,10 @@ return {
             throttle = 50,
           },
           ---@type NoiceViewOptions
-          opts = { focusable = false },
+          opts = {
+            focusable = false,
+            border = "single",
+          },
         },
 
         progress = {
@@ -465,6 +472,14 @@ return {
 
       ---@type NoiceConfigViews
       views = {
+        popup = {
+          win_options = {
+            winhighlight = {
+              Normal = "Normal",
+              FloatBorder = "FloatBorder",
+            },
+          },
+        },
         mini = {
           position = {
             row = -3,
