@@ -435,10 +435,17 @@ return {
         },
 
         hover = {
+          enabled = true,
           silent = true,
           ---@type NoiceViewOptions
           opts = {
             border = "single",
+
+            -- HACK
+            size = {
+              max_width = select(1, NvChad.ui.get_doc_window_size()),
+              max_height = select(2, NvChad.ui.get_doc_window_size()),
+            },
           },
         },
 
@@ -454,6 +461,12 @@ return {
           opts = {
             focusable = false,
             border = "single",
+
+            -- HACK
+            size = {
+              max_width = select(1, NvChad.ui.get_doc_window_size()),
+              max_height = select(2, NvChad.ui.get_doc_window_size()),
+            },
           },
         },
 

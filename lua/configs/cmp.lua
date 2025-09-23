@@ -2,6 +2,8 @@ pcall(function()
   dofile(vim.g.base46_cache .. "cmp")
 end)
 
+vim.o.pumheight = select(2, NvChad.ui.get_completion_window_size())
+
 local cmp = require("cmp")
 local defaults = require("cmp.config.default")()
 local auto_select = true
@@ -13,12 +15,15 @@ local auto_select = true
 local options = {
   window = {
     completion = {
-      -- scrollbar = true,
+      scrollbar = true,
+      col_offset = -1,
       -- border = defaults.window.completion.border,
     },
     documentation = {
       -- scrollbar = true,
       -- border = defaults.window.documentation.border,
+      max_width = select(1, NvChad.ui.get_doc_window_size()),
+      max_height = select(2, NvChad.ui.get_doc_window_size()),
     },
   },
 
@@ -88,6 +93,7 @@ local options = {
     fields = { "kind", "abbr", "menu" },
     format = function(entry, item)
       local icons = NvChad.config.icons.kinds
+      local max_width = select(1, NvChad.ui.get_completion_window_size())
       if icons[item.kind] then
         -- with text
         -- item.kind = icons[item.kind] .. item.kind
@@ -95,8 +101,8 @@ local options = {
       end
 
       local widths = {
-        abbr = vim.g.cmp_widths and vim.g.cmp_widths.abbr or 40,
-        menu = vim.g.cmp_widths and vim.g.cmp_widths.menu or 30,
+        abbr = vim.g.cmp_widths and vim.g.cmp_widths.abbr or math.floor(max_width * 4 / 7),
+        menu = vim.g.cmp_widths and vim.g.cmp_widths.menu or math.floor(max_width * 3 / 7),
       }
 
       for key, width in pairs(widths) do

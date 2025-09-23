@@ -23,6 +23,7 @@ return {
       return require("plugins.lsp.config")
     end,
 
+    ---@module "plugins.lsp.config"
     ---@param _ LazyPlugin
     ---@param opts Lsp.Config.Spec
     config = function(_, opts)

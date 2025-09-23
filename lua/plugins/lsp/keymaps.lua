@@ -34,7 +34,8 @@ function M.get()
           focus = true,
           silent = true,
           border = "single",
-          -- max_height = 7,
+          max_width = select(1, NvChad.ui.get_doc_window_size()),
+          max_height = select(2, NvChad.ui.get_doc_window_size()),
         })
       end,
       desc = "Hover",
@@ -45,7 +46,8 @@ function M.get()
         return vim.lsp.buf.signature_help({
           focus = false,
           silent = true,
-          max_height = 7,
+          max_width = select(1, NvChad.ui.get_doc_window_size()),
+          max_height = select(2, NvChad.ui.get_doc_window_size()),
           border = "single",
         })
       end,
@@ -58,7 +60,8 @@ function M.get()
         return vim.lsp.buf.signature_help({
           focus = false,
           silent = true,
-          max_height = 7,
+          max_width = select(1, NvChad.ui.get_doc_window_size()),
+          max_height = select(2, NvChad.ui.get_doc_window_size()),
           border = "single",
         })
       end,
