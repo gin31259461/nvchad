@@ -8,20 +8,20 @@ local cmp = require("cmp")
 local defaults = require("cmp.config.default")()
 local auto_select = true
 
--- vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
-
 -- https://github.com/hrsh7th/nvim-cmp/blob/b5311ab3ed9c846b585c0c15b7559be131ec4be9/doc/cmp.txt#L450
 ---@type cmp.ConfigSchema
 local options = {
   window = {
     completion = {
+      -- border = defaults.window.completion.border,
+
       scrollbar = true,
       col_offset = -1,
-      -- border = defaults.window.completion.border,
     },
     documentation = {
-      -- scrollbar = true,
       -- border = defaults.window.documentation.border,
+
+      scrollbar = true,
       max_width = select(1, NvChad.ui.get_doc_window_size()),
       max_height = select(2, NvChad.ui.get_doc_window_size()),
     },
@@ -42,10 +42,6 @@ local options = {
     ["<C-n>"] = cmp.mapping.select_next_item(),
     ["<C-u>"] = cmp.mapping.scroll_docs(-4),
     ["<C-d>"] = cmp.mapping.scroll_docs(4),
-
-    -- ["<C-Space>"] = cmp.mapping.complete(),
-    -- ["<C-e>"] = cmp.mapping.close(),
-
     ["<C-e>"] = cmp.mapping({
       i = function()
         if cmp.visible() then
@@ -62,12 +58,10 @@ local options = {
         end
       end,
     }),
-
     ["<CR>"] = cmp.mapping.confirm({
       behavior = cmp.ConfirmBehavior.Insert,
       select = true,
     }),
-
     ["<Tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
@@ -120,14 +114,16 @@ local options = {
     { name = "luasnip" },
     { name = "path" },
     { name = "buffer" },
-    {
-      name = "lazydev",
-      -- set group index to 0 to skip loading LuaLS completions
-      -- group_index = 0,
-    },
+    { name = "lazydev" },
   },
 
   sorting = defaults.sorting,
+
+  experimental = {
+    ghost_text = {
+      hl_group = "CmpGhostText",
+    },
+  },
 }
 
 return vim.tbl_deep_extend("force", require("nvchad.cmp"), options)
