@@ -13,7 +13,6 @@ vim.api.nvim_set_hl(0, "@statusline.text", {
 
 vim.api.nvim_set_hl(0, "@statusline.git", {
   fg = "#646D96",
-  bg = "#1D1E29",
   bold = true,
 })
 
