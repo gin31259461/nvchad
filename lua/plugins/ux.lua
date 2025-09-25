@@ -410,18 +410,18 @@ return {
         },
       },
 
-      -- FIX: disable due to strange ui bug
       cmdline = {
-        enabled = false,
+        enabled = true,
         view = "cmdline_popup",
       },
 
+      -- FIX: editor view shift when save buffer
       messages = {
         enabled = false,
       },
 
       popupmenu = {
-        enabled = false, -- enables the Noice popupmenu UI
+        enabled = true, -- enables the Noice popupmenu UI
         backend = "nui", -- backend to use to show regular cmdline completions
       },
       -------------------- end --------------------
@@ -503,6 +503,24 @@ return {
         popupmenu = {
           -- when auto, then it will be positioned to the cmdline or cursor
           position = "bottom",
+        },
+
+        ---@type NoiceViewOptions
+        cmdline_popup = {
+          position = {
+            col = 0.5,
+            row = 0.3,
+          },
+        },
+
+        -- rows must differ by at least 2.5
+
+        ---@type NoiceViewOptions
+        cmdline_popupmenu = {
+          position = {
+            col = 0.5,
+            row = 0.56,
+          },
         },
       },
     },
