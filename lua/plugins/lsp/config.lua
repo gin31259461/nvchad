@@ -130,9 +130,8 @@ return {
           workspace = {
             library = {
               vim.fn.expand("$VIMRUNTIME/lua"),
-              data_path .. "/lazy/ui/nvchad_types",
-              data_path .. "/lazy/lazy.nvim/lua/lazy",
               "${3rd}/luv/library",
+              data_path .. "/lazy/lazy.nvim/lua/lazy",
             },
           },
         },
@@ -263,6 +262,8 @@ return {
     },
 
     -- more lsp setting refer to: https://microsoft.github.io/pyright/#/settings
+    -- WARN: when defining [tool.pyright] in pyproject.toml, the following settings will be overridden
+    -- so, the following settings are the default settings
     pyright = {
       settings = {
         pyright = {
@@ -270,6 +271,7 @@ return {
           disableOrganizeImports = true,
           -- disableLanguageServices = true,
         },
+
         python = {
           analysis = {
             -- default
@@ -278,6 +280,7 @@ return {
 
             -- fix completion delay: https://github.com/microsoft/pyright/issues/4878
             -- disable useLibraryCodeForTypes and use extra stubs: https://github.com/microsoft/python-type-stubs
+            -- createstub: pyright --createstub tensorflow
             useLibraryCodeForTypes = false,
             stubPath = data_path .. "/lazy/python-type-stubs/stubs",
 
@@ -392,6 +395,9 @@ return {
           enableImportCompletion = true,
         },
       },
+
+      -- https://github.com/neovim/neovim/issues/27395
+      -- https://github.com/OmniSharp/omnisharp-roslyn/issues/2574
     },
   },
 

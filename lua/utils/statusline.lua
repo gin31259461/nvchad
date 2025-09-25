@@ -1,16 +1,16 @@
 local M = {}
 
-M.ignore_ft = { "neo%-tree", "nvdash", "NvTerm_", "trouble", "noice" }
+local _ignore_ft = { "neo%-tree", "nvdash", "NvTerm_", "trouble", "noice", "harpoon" }
 
 M.stbufnr = function()
   return vim.api.nvim_win_get_buf(vim.g.statusline_winid or 0)
 end
 
-M.if_ignore_ft = function()
+M.is_ignore_ft = function()
   local current_ft = vim.bo.filetype
 
-  for _, v in ipairs(M.ignore_ft) do
-    if current_ft:match(v) then
+  for _, v in ipairs(_ignore_ft) do
+    if current_ft:find(v) then
       return true
     end
   end
@@ -18,7 +18,7 @@ M.if_ignore_ft = function()
   return false
 end
 
--- "  "
+-- local sep = "  "
 local sep = "  "
 
 --- @param symbols string
@@ -42,28 +42,24 @@ M.pretty_symbol_path = function(symbols, length)
 end
 
 M.path = function()
-  if M.if_ignore_ft() then
+  if M.is_ignore_ft() then
     return ""
   end
 
-  local relative_path = NvChad.root.pretty_path(3)
+  local relative_path = NvChad.path.pretty_path(nil, { only_cwd = true })
   local dir = vim.fs.dirname(relative_path)
-  local icon = "󰈚 "
+  local filename = vim.fn.fnamemodify(relative_path, ":t")
+  local icon = NvChad.hl.statusline.current_file .. "󰈚"
 
-  local filename = vim.fn.expand("%:t")
-  filename = (filename == "" and "Empty") or filename
-
-  local web_devicons_present, web_devicons = pcall(require, "nvim-web-devicons")
-
-  if filename ~= "Empty" and web_devicons_present then
-    local devicon, devicon_hl_name = web_devicons.get_icon(filename, filename:match("%.([^%.]+)$"))
-    icon = string.format("%%#%s#", devicon_hl_name) .. (devicon or "") .. " " .. NvChad.hl.statusline.text
-  elseif filename == "Empty" then
-    icon = NvChad.hl.statusline.file .. icon
+  if filename ~= "" then
+    icon = NvChad.ui.get_file_icon(filename, { has_hl = true })
   end
 
-  icon = "  " .. icon
-  filename = NvChad.hl.statusline.trouble_text .. filename
+  filename = (filename == "" and "Empty") or filename
+
+  -- set hl and indent
+  icon = icon .. " "
+  filename = NvChad.hl.statusline.current_file .. filename
 
   if dir == "." then
     return icon .. filename
@@ -73,7 +69,7 @@ M.path = function()
 end
 
 M.lsp_symbols = function()
-  if M.if_ignore_ft() then
+  if M.is_ignore_ft() then
     return ""
   end
 
@@ -88,20 +84,20 @@ M.lsp_symbols = function()
     local symbols = M.state.lsp_symbols()
 
     if symbols ~= "" then
-      return NvChad.hl.statusline.file .. sep .. M.pretty_symbol_path(symbols, 3)
+      return NvChad.hl.statusline.current_file .. sep .. M.pretty_symbol_path(symbols, 3)
     end
   end
 
   return ""
 end
 
-M.lsp = function()
-  local hl = "%#St_NormalModeSep#"
+M.current_lsp = function()
   if rawget(vim, "lsp") then
     for _, client in ipairs(vim.lsp.get_clients()) do
       if client.attached_buffers[M.stbufnr()] then
-        -- return (vim.o.columns > 100 and "   LSP ~ " .. client.name .. " ") or "   LSP "
-        return hl .. "   LSP "
+        return NvChad.hl.statusline.active_context
+          .. ((vim.o.columns > 100 and "   LSP ~ " .. client.name .. " ") or "   LSP ")
+        -- return hl .. "   LSP "
       end
     end
   end
@@ -131,6 +127,10 @@ M.git = function()
   local branch_name = " "
 
   return " " .. branch_name .. added .. changed .. removed
+end
+
+M.break_point = function()
+  return "  %<"
 end
 
 -------------------- all state --------------------
@@ -178,7 +178,8 @@ M.set_mode_state = function()
     local mode_sep1 = "%#St_" .. modes[m][2] .. "ModeSep#" .. sep_r
 
     -- return current_mode .. mode_sep1 .. "%#ST_EmptySpace#" .. sep_r
-    return current_mode .. recording .. mode_sep1
+    -- return current_mode .. recording .. mode_sep1
+    return current_mode .. " "
   end
 end
 

@@ -43,7 +43,7 @@ return {
       {
         "<leader>fe",
         function()
-          require("neo-tree.command").execute({ toggle = false, dir = NvChad.root.get_root() })
+          require("neo-tree.command").execute({ toggle = false, dir = NvChad.path.get_root() })
         end,
         desc = "Explorer NeoTree (Root Dir)",
       },
@@ -98,6 +98,7 @@ return {
       sources = { "filesystem", "buffers", "git_status" },
       open_files_do_not_replace_types = { "terminal", "Trouble", "trouble", "qf", "Outline" },
       filesystem = {
+        hijack_netrw_behavior = "open_current",
         bind_to_cwd = false,
         follow_current_file = { enabled = true },
         use_libuv_file_watcher = true,
@@ -192,6 +193,7 @@ return {
   -- config refer to: https://github.com/MeanderingProgrammer/render-markdown.nvim?tab=readme-ov-file#setup
   {
     "MeanderingProgrammer/render-markdown.nvim",
+    cond = false,
     opts = {
       file_types = { "markdown", "norg", "rmd", "org" },
       code = {
@@ -207,18 +209,5 @@ return {
     },
     ft = { "markdown", "norg", "rmd", "org" },
     dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
-  },
-
-  -- default keymaps: https://github.com/nvim-telescope/telescope.nvim?tab=readme-ov-file#default-mappings
-  {
-    "nvim-telescope/telescope.nvim",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    cmd = "Telescope",
-    opts = function(_, opts)
-      -- local actions = require("telescope.actions")
-      local nvchad_telescope_opts = require("nvchad.configs.telescope")
-
-      opts = vim.tbl_deep_extend("force", opts, nvchad_telescope_opts)
-    end,
   },
 }

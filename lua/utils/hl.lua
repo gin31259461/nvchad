@@ -1,6 +1,5 @@
 vim.api.nvim_set_hl(0, "@statusline.current_file", {
-  fg = "#ABB2BF",
-  bold = true,
+  fg = "#A9B1D6",
 })
 
 vim.api.nvim_set_hl(0, "@statusline.symbols", {
@@ -13,14 +12,19 @@ vim.api.nvim_set_hl(0, "@statusline.text", {
 })
 
 vim.api.nvim_set_hl(0, "@statusline.git", {
-  bg = "#1D1E29",
-  bold = true,
   fg = "#646D96",
+  bold = true,
 })
 
 vim.api.nvim_set_hl(0, "TreesitterContext", {
   bg = "#1F2336",
 })
+
+vim.api.nvim_set_hl(0, "active_context", {
+  fg = "#7AA2F7",
+})
+
+vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
 
 ---@type {[string]: vim.api.keyset.highlight}
 local all_underline_hl = {
@@ -31,6 +35,7 @@ local all_underline_hl = {
   },
 }
 
+---@type {[string]: vim.api.keyset.highlight}
 local all_hl = {}
 
 ---@type vim.api.keyset.highlight
@@ -46,11 +51,19 @@ end
 
 local M = {}
 
+M.util = {
+  ---@param hl string
+  get_hl_name_without_syntax = function(hl)
+    return hl:gsub("%%#", ""):gsub("#", "")
+  end,
+}
+
 M.statusline = {
   git = "%#@statusline.git#",
-  file = "%#@statusline.current_file#",
+  current_file = "%#@statusline.current_file#",
   text = "%#@statusline.text#",
   trouble_text = "%#TroubleStatusline1#",
+  active_context = "%#active_context#",
 }
 
 M.setup_diagnostic = function()
@@ -65,7 +78,6 @@ M.setup_diagnostic = function()
   }
 
   local hl = {
-
     DiagnosticVirtualTextError = { bg = mix_col(colors.red, colors.black, 75), fg = colors.red },
     DiagnosticVirtualTextWarn = { bg = mix_col(colors.yellow, colors.black, 75), fg = colors.yellow },
     DiagnosticVirtualTextInfo = { bg = mix_col(colors.green, colors.black, 75), fg = colors.green },

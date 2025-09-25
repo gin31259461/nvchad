@@ -2,7 +2,7 @@ local ignore_msg = {
   "man.lua",
 }
 
----@type NvPluginSpec
+---@type LazySpec
 return {
   {
     -- https://github.com/folke/snacks.nvim?tab=readme-ov-file#-features
@@ -340,6 +340,18 @@ return {
         desc = "Lazygit",
       },
     },
+
+    config = function(_, opts)
+      local snacks = require("snacks")
+      local redraw_range = snacks.util.redraw_range
+
+      -- wrap this function due to invalid window id error popup
+      snacks.util.redraw_range = function(...)
+        pcall(redraw_range, ...)
+      end
+
+      snacks.setup(opts)
+    end,
   },
 
   -- config: https://github.com/folke/noice.nvim?tab=readme-ov-file#%EF%B8%8F-configuration
@@ -350,10 +362,28 @@ return {
       -- control msgs
       ---@type NoiceRouteConfig[]
       routes = {
+
+        -- show all messages always
+        -- https://github.com/folke/noice.nvim/issues/769#issuecomment-2111927208
+
+        -- {
+        --   filter = {
+        --     any = {
+        --       {
+        --         cond = function(_)
+        --           return true
+        --         end,
+        --       },
+        --     },
+        --   },
+        -- },
+        --
         {
           filter = {
             event = "notify",
-            find = "signature help",
+            any = {
+              find = "signature help",
+            },
           },
           opts = { skip = true },
         },
@@ -361,23 +391,20 @@ return {
         {
           filter = {
             event = "msg_show",
-            find = "fewer lines",
-          },
-          opts = { skip = true },
-        },
-
-        {
-          filter = {
-            event = "msg_show",
-            find = "more lines",
-          },
-          opts = { skip = true },
-        },
-
-        {
-          filter = {
-            event = "msg_show",
-            find = "Error INVALID_SERVER_MESSAGE: nil",
+            any = {
+              { find = "%d+L, %d+B" },
+              { find = "; after #%d+" },
+              { find = "; before #%d+" },
+              { find = "%d fewer lines" },
+              { find = "%d more lines" },
+              { find = "%d lines yanked" },
+              {
+                find = "Error INVALID_SERVER_MESSAGE: nil",
+              },
+              {
+                find = "snacks/util/init.lua:207: Invalid window id",
+              },
+            },
           },
           opts = { skip = true },
         },
@@ -386,6 +413,7 @@ return {
       -- FIX: disable due to strange ui bug
       cmdline = {
         enabled = false,
+        view = "cmdline_popup",
       },
 
       messages = {
@@ -394,7 +422,6 @@ return {
 
       popupmenu = {
         enabled = false, -- enables the Noice popupmenu UI
-        ---@type 'nui'|'cmp'
         backend = "nui", -- backend to use to show regular cmdline completions
       },
       -------------------- end --------------------
@@ -408,7 +435,18 @@ return {
         },
 
         hover = {
+          enabled = true,
           silent = true,
+          ---@type NoiceViewOptions
+          opts = {
+            border = "single",
+
+            -- HACK
+            size = {
+              max_width = select(1, NvChad.ui.get_doc_window_size()),
+              max_height = select(2, NvChad.ui.get_doc_window_size()),
+            },
+          },
         },
 
         signature = {
@@ -420,7 +458,16 @@ return {
             throttle = 50,
           },
           ---@type NoiceViewOptions
-          opts = { focusable = false },
+          opts = {
+            focusable = false,
+            border = "single",
+
+            -- HACK
+            size = {
+              max_width = select(1, NvChad.ui.get_doc_window_size()),
+              max_height = select(2, NvChad.ui.get_doc_window_size()),
+            },
+          },
         },
 
         progress = {
@@ -438,6 +485,14 @@ return {
 
       ---@type NoiceConfigViews
       views = {
+        popup = {
+          win_options = {
+            winhighlight = {
+              Normal = "Normal",
+              FloatBorder = "FloatBorder",
+            },
+          },
+        },
         mini = {
           position = {
             row = -3,
@@ -498,25 +553,5 @@ return {
         desc = "Quickfix List (Trouble)",
       },
     },
-  },
-
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    main = "ibl",
-    event = "User FilePost",
-    ---@type ibl.config
-    opts = {
-      indent = { char = "│", highlight = "IblChar" },
-      scope = { char = "│", highlight = "IblScopeChar" },
-    },
-    config = function(_, opts)
-      dofile(vim.g.base46_cache .. "blankline")
-
-      local hooks = require("ibl.hooks")
-      hooks.register(hooks.type.WHITESPACE, hooks.builtin.hide_first_space_indent_level)
-      require("ibl").setup(opts)
-
-      dofile(vim.g.base46_cache .. "blankline")
-    end,
   },
 }

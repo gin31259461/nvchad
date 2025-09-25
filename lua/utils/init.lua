@@ -16,8 +16,6 @@ setmetatable(M, {
   end,
 })
 
-require("utils.hl")
-
 M.CREATE_UNDO = vim.api.nvim_replace_termcodes("<c-G>u", true, true, true)
 function M.create_undo()
   if vim.api.nvim_get_mode().mode == "i" then
@@ -29,11 +27,11 @@ M.lsp = require("utils.lsp")
 M.ft = require("utils.ft")
 M.shell = require("utils.shell")
 M.config = require("configs")
-M.root = require("utils.root")
+M.path = require("utils.path")
 M.statusline = require("utils.statusline")
-M.tabufline = require("utils.tabufline")
 M.cmp = require("utils.cmp")
 M.hl = require("utils.hl")
+M.ui = require("utils.ui")
 
 ---@diagnostic disable: deprecated
 M.unpack = table.unpack or unpack
@@ -44,6 +42,13 @@ for _, level in ipairs({ "info", "warn", "error" }) do
     opts.title = opts.title or "NvChad"
     return LazyUtil[level](msg, opts)
   end
+end
+
+-- call this setup when all plugins loaded
+M.setup = function()
+  M.statusline.setup()
+  M.shell.setup()
+  M.hl.setup()
 end
 
 return M

@@ -1,24 +1,33 @@
 local M = {}
 
----@param length integer
+---@param path? string
+---@param opts? {length?: integer, only_cwd?: boolean}
 ---@return string
-M.pretty_path = function(length)
-  local full_path = vim.fn.expand("%:p")
+M.pretty_path = function(path, opts)
+  opts = opts or {}
+
+  local length = opts.length or 3
+  local full_path = path or vim.fn.expand("%:p")
+
   if full_path == "" then
     return ""
   end
 
   -- Normalize and get cwd
-  local cwd = vim.fn.getcwd()
   full_path = vim.fs.normalize(full_path)
-  cwd = vim.fs.normalize(cwd)
 
-  -- remove cwd prefix
-  if full_path:find(cwd, 1, true) == 1 then
-    full_path = full_path:sub(#cwd + 2) -- +2 to remove slash
+  if opts.only_cwd then
+    local cwd = vim.fn.getcwd()
+    cwd = vim.fs.normalize(cwd)
+
+    -- remove cwd prefix
+    if full_path:find(cwd, 1, true) == 1 then
+      full_path = full_path:sub(#cwd + 2) -- +2 to remove slash
+    end
   end
 
-  local sep = package.config:sub(1, 1)
+  -- local sep = package.config:sub(1, 1)
+  local sep = "/"
   local parts = vim.split(full_path, "[\\/]", { plain = false })
 
   if #parts <= length then
@@ -99,4 +108,16 @@ function M.get_root()
   return vim.loop.cwd()
 end
 
+---@param buf_name string
+---@param root string
+---@return string
+M.normalize_path = function(buf_name, root)
+  local Path_ready, Path = pcall(require, "plenary.path")
+
+  if Path_ready then
+    return Path:new(buf_name):make_relative(root)
+  end
+
+  return ""
+end
 return M

@@ -1,6 +1,23 @@
 ---@type LazySpec
 return {
   {
+    "nvchad/ui",
+    cond = false,
+    lazy = false,
+    config = function()
+      require("nvchad")
+    end,
+  },
+
+  {
+    "gin31259461/nvchad-ui",
+    lazy = false,
+    config = function()
+      require("nvchad")
+    end,
+  },
+
+  {
     -- config: https://github.com/rachartier/tiny-inline-diagnostic.nvim?tab=readme-ov-file#%EF%B8%8F-setup
     "rachartier/tiny-inline-diagnostic.nvim",
     -- this plugin may has conflict with noice ui, so it's disalbed

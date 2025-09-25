@@ -23,6 +23,7 @@ return {
       return require("plugins.lsp.config")
     end,
 
+    ---@module "plugins.lsp.config"
     ---@param _ LazyPlugin
     ---@param opts Lsp.Config.Spec
     config = function(_, opts)
@@ -94,7 +95,7 @@ return {
     "stevearc/conform.nvim",
     event = { "BufWritePost", "BufReadPost", "InsertLeave" },
     opts = function()
-      local opts = require("configs.conform-opt")
+      local opts = require("configs.conform")
 
       for _, ft in ipairs(NvChad.ft.sql_ft) do
         opts.formatters_by_ft[ft] = opts.formatters_by_ft[ft] or {}
@@ -111,7 +112,7 @@ return {
     opts = function()
       vim.env.ESLINT_D_PPID = vim.fn.getpid()
 
-      local opts = require("configs.nvim-lint-opt")
+      local opts = require("configs.lint")
 
       -- for _, ft in ipairs(NvChad.ft.sql_ft) do
       --   opts.linters_by_ft[ft] = opts.linters_by_ft[ft] or {}
@@ -120,7 +121,7 @@ return {
 
       return opts
     end,
-    config = require("configs.nvim-lint-config"),
+    config = require("configs.lint-config"),
   },
 
   {
@@ -148,11 +149,11 @@ return {
           quotePreference = "auto",
 
           -- https://github.com/microsoft/TypeScript/blob/3b45f4db12bbae97d10f62ec0e2d94858252c5ab/src/server/protocol.ts#L3501
-          includeInlayParameterNameHintsWhenArgumentMatchesName = true,
-          includeInlayFunctionParameterTypeHints = true,
-          includeInlayVariableTypeHintsWhenTypeMatchesName = true,
-          includeInlayPropertyDeclarationTypeHints = true,
-          includeInlayEnumMemberValueHints = true,
+          -- includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+          -- includeInlayFunctionParameterTypeHints = true,
+          -- includeInlayVariableTypeHintsWhenTypeMatchesName = true,
+          -- includeInlayPropertyDeclarationTypeHints = true,
+          -- includeInlayEnumMemberValueHints = true,
 
           -- enable following inlay hints will crash the server
           includeInlayParameterNameHints = "none",

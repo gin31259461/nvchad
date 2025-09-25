@@ -104,26 +104,51 @@ return {
         "folke/lazydev.nvim",
         ft = "lua",
 
+        -- https://github.com/DrKJeff16/wezterm-types
+        dependencies = {
+          { "justinsgithub/wezterm-types", lazy = true },
+        },
+
         opts = {
           library = {
             -- Load luvit types when the `vim.uv` word is found
-            { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+            -- { path = "${3rd}/luv/library", words = { "vim%.uv" } },
 
             -- Load the ui types when the `ui` module is required
-            { path = "ui/nvchad_types", mods = { "ui" } },
+            { path = "nvchad-ui/nvchad_types", mods = { "ui" } },
 
-            { path = "lazy.nvim", mods = { "lazy" } },
             { path = "snacks.nvim", words = { "snacks", "snacks.nvim" } },
             { path = "noice.nvim", words = { "noice", "noice.nvim" } },
+            { path = "wezterm-types", mods = { "wezterm", "module.wezterm" } },
           },
         },
       },
     },
 
     opts = function()
-      return require("configs.cmp-opt")
+      return require("configs.cmp")
     end,
 
     main = "utils.cmp",
+  },
+
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    main = "ibl",
+    event = "User FilePost",
+    ---@type ibl.config
+    opts = {
+      indent = { char = "│", highlight = "IblChar" },
+      scope = { char = "│", highlight = "IblScopeChar" },
+    },
+    config = function(_, opts)
+      dofile(vim.g.base46_cache .. "blankline")
+
+      local hooks = require("ibl.hooks")
+      hooks.register(hooks.type.WHITESPACE, hooks.builtin.hide_first_space_indent_level)
+      require("ibl").setup(opts)
+
+      dofile(vim.g.base46_cache .. "blankline")
+    end,
   },
 }
