@@ -114,9 +114,10 @@ end
 ---@param opts? {select: boolean, behavior: cmp.ConfirmBehavior}
 function M.confirm(opts)
   local cmp = require("cmp")
+  local cmp_types = require("cmp.types")
   opts = vim.tbl_extend("force", {
     select = true,
-    behavior = cmp.ConfirmBehavior.Insert,
+    behavior = cmp_types.cmp.ConfirmBehavior.Insert,
   }, opts or {})
   return function(fallback)
     if cmp.core.view:visible() or vim.fn.pumvisible() == 1 then

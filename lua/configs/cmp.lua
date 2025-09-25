@@ -5,6 +5,7 @@ end)
 vim.o.pumheight = select(2, NvChad.ui.get_completion_window_size())
 
 local cmp = require("cmp")
+local cmp_types = require("cmp.types")
 local defaults = require("cmp.config.default")()
 local auto_select = true
 
@@ -26,20 +27,16 @@ local options = {
       max_height = select(2, NvChad.ui.get_doc_window_size()),
     },
   },
-
-  completion = { completeopt = "menu,menuone" .. (auto_select and "" or ",noselect") },
-
-  preselect = auto_select and cmp.PreselectMode.Item or cmp.PreselectMode.None,
-
+  completion = { completeopt = "menu,menuone,noinsert" .. (auto_select and "" or ",noselect") },
+  preselect = auto_select and cmp_types.cmp.PreselectMode.Item or cmp_types.cmp.PreselectMode.None,
   snippet = {
     expand = function(args)
       require("luasnip").lsp_expand(args.body)
     end,
   },
-
   mapping = {
-    ["<C-p>"] = cmp.mapping.select_prev_item(),
-    ["<C-n>"] = cmp.mapping.select_next_item(),
+    ["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp_types.cmp.SelectBehavior.Insert }),
+    ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp_types.cmp.SelectBehavior.Insert }),
     ["<C-u>"] = cmp.mapping.scroll_docs(-4),
     ["<C-d>"] = cmp.mapping.scroll_docs(4),
     ["<C-e>"] = cmp.mapping({
@@ -58,13 +55,12 @@ local options = {
         end
       end,
     }),
-    ["<CR>"] = cmp.mapping.confirm({
-      behavior = cmp.ConfirmBehavior.Insert,
-      select = true,
+    ["<CR>"] = NvChad.cmp.confirm({
+      select = auto_select,
     }),
     ["<Tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
-        cmp.select_next_item()
+        cmp.select_next_item({ behavior = cmp_types.cmp.SelectBehavior.Insert })
       elseif require("luasnip").expand_or_jumpable() then
         require("luasnip").expand_or_jump()
       else
@@ -74,7 +70,7 @@ local options = {
 
     ["<S-Tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
-        cmp.select_prev_item()
+        cmp.select_prev_item({ behavior = cmp_types.cmp.SelectBehavior.Insert })
       elseif require("luasnip").jumpable(-1) then
         require("luasnip").jump(-1)
       else
