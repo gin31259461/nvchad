@@ -43,7 +43,7 @@ return {
       {
         "<leader>fe",
         function()
-          require("neo-tree.command").execute({ toggle = false, dir = NvChad.path.get_root() })
+          require("neo-tree.command").execute({ toggle = false, dir = NvChad.fs.get_root() })
         end,
         desc = "Explorer NeoTree (Root Dir)",
       },

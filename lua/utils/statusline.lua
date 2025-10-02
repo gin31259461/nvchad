@@ -46,7 +46,7 @@ M.path = function()
     return ""
   end
 
-  local relative_path = NvChad.path.pretty_path(nil, { only_cwd = true })
+  local relative_path = NvChad.fs.pretty_path(nil, { only_cwd = true })
   local dir = vim.fs.dirname(relative_path)
   local filename = vim.fn.fnamemodify(relative_path, ":t")
   local icon = NvChad.hl.statusline.current_file .. "󰈚"

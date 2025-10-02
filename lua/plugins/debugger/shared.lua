@@ -1,6 +1,6 @@
 local M = {}
 
 M.dap = require("dap")
-M.root = NvChad.path.get_root()
+M.root = NvChad.fs.get_root()
 
 return M

@@ -56,7 +56,7 @@ return {
         --
         create_list_item = function(config, value)
           value = value
-            or NvChad.path.normalize_path(
+            or NvChad.fs.normalize_path(
               vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()),
               config.get_root_dir()
             )
@@ -72,7 +72,7 @@ return {
             context = {
               row = pos[1],
               col = pos[2],
-              short_path = NvChad.path.pretty_path(
+              short_path = NvChad.fs.pretty_path(
                 value,
                 { length = NvChad.ui.harpoon.short_path_length, only_cwd = true }
               ),

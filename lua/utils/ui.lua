@@ -42,7 +42,7 @@ M.harpoon.highlight_current_file = function()
         end
 
         local short_path =
-          NvChad.path.pretty_path(cx.current_file, { length = M.harpoon.short_path_length, only_cwd = true })
+          NvChad.fs.pretty_path(cx.current_file, { length = M.harpoon.short_path_length, only_cwd = true })
 
         if short_path == "" then
           return
