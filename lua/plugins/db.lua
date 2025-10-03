@@ -2,7 +2,7 @@ if not vim.g.enable_db_plugins then
   return {}
 end
 
----@type LazySpec
+---@type LazySpec[]
 return {
   {
     "kristijanhusak/vim-dadbod-completion",

@@ -2,7 +2,7 @@ pcall(function()
   dofile(vim.g.base46_cache .. "git")
 end)
 
----@type LazySpec
+---@type LazySpec[]
 return {
   {
     "lewis6991/gitsigns.nvim",

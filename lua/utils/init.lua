@@ -51,4 +51,21 @@ M.setup = function()
   M.hl.setup()
 end
 
+---@param p1 LazySpec[]
+---@param p2 LazySpec[]
+---@return LazySpec[]
+M.merge_plugins_table = function(p1, p2)
+  ---@type LazySpec[]
+  local result = {}
+
+  for _, v in ipairs(p1) do
+    table.insert(result, v)
+  end
+  for _, v in ipairs(p2) do
+    table.insert(result, v)
+  end
+
+  return result
+end
+
 return M

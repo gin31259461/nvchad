@@ -1,4 +1,4 @@
----@type LazySpec
+---@type LazySpec[]
 return {
   -- default keymaps: https://github.com/nvim-telescope/telescope.nvim?tab=readme-ov-file#default-mappings
   {

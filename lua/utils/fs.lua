@@ -120,4 +120,30 @@ M.normalize_path = function(buf_name, root)
 
   return ""
 end
+
+---@alias ScandirMode "file" | "directory" | "all"
+
+---@param path string
+---@param mode ScandirMode
+---@return table
+M.scandir = function(path, mode)
+  local names = {}
+  local fd = vim.loop.fs_scandir(path)
+  if not fd then
+    return names
+  end
+
+  while true do
+    local name, t = vim.loop.fs_scandir_next(fd)
+    if not name then
+      break
+    end
+    if (mode == "all") or (t == mode) then
+      table.insert(names, name)
+    end
+  end
+
+  return names
+end
+
 return M

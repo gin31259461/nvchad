@@ -3,7 +3,7 @@ pcall(function()
   dofile(vim.g.base46_cache .. "treesitter")
 end)
 
----@type LazySpec
+---@type LazySpec[]
 return {
 
   {

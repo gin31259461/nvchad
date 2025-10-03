@@ -2,7 +2,7 @@ local ignore_msg = {
   "man.lua",
 }
 
----@type LazySpec
+---@type LazySpec[]
 return {
   {
     -- https://github.com/folke/snacks.nvim?tab=readme-ov-file#-features

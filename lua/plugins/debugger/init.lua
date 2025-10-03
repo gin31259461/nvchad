@@ -3,7 +3,7 @@
 
 local available_lang = { "csharp", "python" }
 
----@type LazySpec
+---@type LazySpec[]
 return {
   {
     "mfussenegger/nvim-dap",
