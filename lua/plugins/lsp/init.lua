@@ -1,3 +1,5 @@
+dofile(vim.g.base46_cache .. "mason")
+
 ---@type LazySpec[]
 local plugins = {
   {
@@ -5,11 +7,25 @@ local plugins = {
     -- fix error with typescript-tools
     event = "VeryLazy",
     cmd = { "Mason", "MasonInstall", "MasonUpdate" },
-    opts = function()
-      return require("nvchad.configs.mason")
-    end,
-  },
+    opts = {
+      PATH = "skip",
 
+      ui = {
+        icons = {
+          package_pending = " ",
+          package_installed = " ",
+          package_uninstalled = " ",
+        },
+      },
+
+      max_concurrent_installers = 10,
+
+      registries = {
+        "github:mason-org/mason-registry",
+        "github:Crashdummyy/mason-registry",
+      },
+    },
+  },
   {
 
     "neovim/nvim-lspconfig",
