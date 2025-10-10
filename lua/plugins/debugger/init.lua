@@ -1,7 +1,8 @@
 -- installation guide: https://codeberg.org/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation
 -- custom command of debug console: https://github.com/mfussenegger/nvim-dap/blob/a479e25ed5b5d331fb46ee4b9e160ff02ac64310/doc/dap.txt#L955
 
-local available_lang = { "csharp", "python" }
+local debugger_path = vim.fn.stdpath("config") .. "/lua/plugins/debugger"
+local debuggers = NvChad.fs.scandir(debugger_path, "file")
 
 ---@type LazySpec[]
 return {
@@ -9,10 +10,12 @@ return {
     "mfussenegger/nvim-dap",
     event = { "VeryLazy" },
     opts = function()
-      for _, v in ipairs(available_lang) do
-        pcall(function()
-          require("plugins.debugger." .. v).setup()
-        end)
+      for _, v in ipairs(debuggers) do
+        if v ~= "init.lua" then
+          pcall(function()
+            require("plugins.debugger." .. vim.fn.fnamemodify(v, ":r")).setup()
+          end)
+        end
       end
     end,
     config = function() end,
@@ -46,6 +49,7 @@ return {
     },
   },
 
+  -- https://github.com/rcarriga/nvim-dap-ui
   {
     "rcarriga/nvim-dap-ui",
     event = "VeryLazy",

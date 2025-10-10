@@ -45,20 +45,7 @@ M.setup = function()
   local dap = require("dap")
 
   dap.adapters.python = function(callback, config)
-    if config.request == "attach" then
-      ---@diagnostic disable-next-line: undefined-field
-      local port = (config.connect or config).port
-      ---@diagnostic disable-next-line: undefined-field
-      local host = (config.connect or config).host or "127.0.0.1"
-      callback({
-        type = "server",
-        port = assert(port, "`connect.port` is required for a python `attach` configuration"),
-        host = host,
-        options = {
-          source_filetype = "python",
-        },
-      })
-    elseif config.request == "launch" then
+    if config.request == "launch" then
       local command = get_python_path()
 
       if command == "" then
@@ -79,6 +66,18 @@ M.setup = function()
           source_filetype = "python",
         },
       })
+    else
+      local host = (config.connect or config).host or "127.0.0.1"
+      local port = (config.connect or config).port or "8001"
+
+      callback({
+        type = "server",
+        host = host,
+        port = assert(port, "`connect.port` is required for a python `attach` configuration"),
+        options = {
+          source_filetype = "python",
+        },
+      })
     end
   end
 
@@ -87,8 +86,18 @@ M.setup = function()
     {
       type = "python",
       request = "launch",
-      name = "Launch Debugpy",
+      name = "launch debugpy",
       program = "${file}",
+    },
+
+    {
+      type = "python",
+      request = "attach",
+      name = "attach debugpy",
+      connect = {
+        host = "127.0.0.1",
+        port = "8001",
+      },
     },
   }
 end
