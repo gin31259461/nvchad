@@ -1,25 +1,50 @@
 local M = {}
 
-local get_python_path = function()
+local get_venv_path = function()
   local venv_path = os.getenv("VIRTUAL_ENV")
 
   if venv_path == "" or venv_path == nil then
     return ""
   end
 
-  local executable_python_path = venv_path .. "/bin/python"
+  return vim.fs.normalize(venv_path)
+end
+
+local get_python_path = function()
+  local venv_path = get_venv_path()
+
+  if venv_path == "" then
+    return ""
+  end
+
+  local executable_python_path = ""
+
   if NvChad.shell.is_win() then
-    executable_python_path = vim.fs.normalize(venv_path) .. "/Scripts/pythonw.exe"
+    executable_python_path = venv_path .. "/Scripts/pythonw.exe"
+  else
+    executable_python_path = venv_path .. "/bin/python"
   end
 
   return executable_python_path
 end
 
+local debugpy_exists = function()
+  local venv_path = get_venv_path()
+
+  if NvChad.shell.is_win() then
+    venv_path = venv_path .. "/Scripts/debugpy.exe"
+  else
+    venv_path = venv_path .. "/bin/debugpy"
+  end
+
+  return vim.fn.filereadable(venv_path)
+end
+
 -- need debugpy to be installed in .venv
 M.setup = function()
-  local dap = require("plugins.debugger.shared").dap
+  local dap = require("dap")
 
-  dap.adapters["python"] = function(callback, config)
+  dap.adapters.python = function(callback, config)
     if config.request == "attach" then
       ---@diagnostic disable-next-line: undefined-field
       local port = (config.connect or config).port
@@ -33,11 +58,16 @@ M.setup = function()
           source_filetype = "python",
         },
       })
-    else
+    elseif config.request == "launch" then
       local command = get_python_path()
 
       if command == "" then
         vim.notify("venv has not been activated", vim.log.levels.WARN)
+        return
+      end
+
+      if debugpy_exists() == 0 then
+        vim.notify("debugpy not found in venv, please install debugpy in venv", vim.log.levels.WARN)
         return
       end
 
@@ -52,21 +82,13 @@ M.setup = function()
     end
   end
 
-  dap.configurations["python"] = {
+  -- Options below are for debugpy, see https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings for supported options
+  dap.configurations.python = {
     {
-      -- The first three options are required by nvim-dap
-      type = "python", -- the type here established the link to the adapter definition: `dap.adapters.python`
+      type = "python",
       request = "launch",
-      name = "Launch file",
-
-      -- Options below are for debugpy, see https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings for supported options
-
-      program = "${file}", -- This configuration will launch the current file if used.
-
-      -- debugpy supports launching an application with a different interpreter then the one used to launch debugpy itself.
-      -- The code below looks for a `venv` or `.venv` folder in the current directly and uses the python within.
-      -- You could adapt this - to for example use the `VIRTUAL_ENV` environment variable.
-      pythonPath = get_python_path,
+      name = "Launch Debugpy",
+      program = "${file}",
     },
   }
 end
