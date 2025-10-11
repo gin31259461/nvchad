@@ -73,6 +73,10 @@ return {
       dap.listeners.before.event_exited.dapui_config = function()
         dapui.close()
       end
+
+      vim.keymap.set("n", "<leader>du", function()
+        dapui.toggle()
+      end, { desc = "DAP Toggle UI" })
     end,
   },
 }

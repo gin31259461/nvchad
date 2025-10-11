@@ -86,14 +86,14 @@ M.setup = function()
     {
       type = "python",
       request = "launch",
-      name = "launch debugpy",
+      name = "launch debugpy server",
       program = "${file}",
     },
 
     {
       type = "python",
       request = "attach",
-      name = "attach debugpy",
+      name = "attach to active debugpy server",
       connect = {
         host = "127.0.0.1",
         port = "8001",
