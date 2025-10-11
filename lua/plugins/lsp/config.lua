@@ -10,6 +10,7 @@
 ---@field on_init elem_or_list<fun(client: vim.lsp.Client, init_result: lsp.InitializeResult)>
 ---@field capabilities lsp.ClientCapabilities
 ---
+---@field disable_default_settings {[string]: table}
 ---@field setup {[string]: function}
 ---@field diagnostics vim.diagnostic.Opts
 ---@field inlay_hints {enabled: boolean, exclude: table}
@@ -119,6 +120,10 @@ return {
   --   allow_incremental_sync = false,
   --   debounce_text_changes = 1000,
   -- },
+
+  disable_default_settings = {
+    roslyn = { "on_init" },
+  },
 
   -- LSP Server Settings
   -- each server config refer to: https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
@@ -400,7 +405,19 @@ return {
       -- https://github.com/OmniSharp/omnisharp-roslyn/issues/2574
     },
 
+    -- wiki:            https://github.com/seblyng/roslyn.nvim/wiki
+    -- diagnostic hack: https://github.com/seblyng/roslyn.nvim/blob/7d8819239c5e2c4a0d8150da1c00fa583f761704/lsp/roslyn.lua#L33
     roslyn = {
+      on_attach = function(client, bufnr)
+        local params = { textDocument = vim.lsp.util.make_text_document_params(bufnr) }
+
+        vim.api.nvim_create_autocmd({ "InsertLeave" }, {
+          pattern = "*",
+          callback = function()
+            client:request("textDocument/diagnostic", params, nil, bufnr)
+          end,
+        })
+      end,
       settings = {
         ["csharp|inlay_hints"] = {
           csharp_enable_inlay_hints_for_implicit_object_creation = true,
