@@ -1,5 +1,6 @@
 local ignore_msg = {
   "man.lua",
+  "roslyn: %-32000",
 }
 
 ---@type LazySpec[]
@@ -382,7 +383,7 @@ return {
           filter = {
             event = "notify",
             any = {
-              find = "signature help",
+              { find = "signature help" },
             },
           },
           opts = { skip = true },

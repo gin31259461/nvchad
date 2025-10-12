@@ -408,16 +408,16 @@ return {
     -- wiki:            https://github.com/seblyng/roslyn.nvim/wiki
     -- diagnostic hack: https://github.com/seblyng/roslyn.nvim/blob/7d8819239c5e2c4a0d8150da1c00fa583f761704/lsp/roslyn.lua#L33
     roslyn = {
-      on_attach = function(client, bufnr)
-        local params = { textDocument = vim.lsp.util.make_text_document_params(bufnr) }
-
-        vim.api.nvim_create_autocmd({ "InsertLeave" }, {
-          pattern = "*",
-          callback = function()
-            client:request("textDocument/diagnostic", params, nil, bufnr)
-          end,
-        })
-      end,
+      -- on_attach = function(client, bufnr)
+      --   local params = { textDocument = vim.lsp.util.make_text_document_params(bufnr) }
+      --
+      --   vim.api.nvim_create_autocmd({ "InsertLeave" }, {
+      --     pattern = "*",
+      --     callback = function()
+      --       client:request("textDocument/diagnostic", params, nil, bufnr)
+      --     end,
+      --   })
+      -- end,
       settings = {
         ["csharp|inlay_hints"] = {
           csharp_enable_inlay_hints_for_implicit_object_creation = true,

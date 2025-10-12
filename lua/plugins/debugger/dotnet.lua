@@ -33,6 +33,7 @@ M.setup = function()
     local build_cmd = get_build_dotnet_project_cmd()
 
     vim.fn.jobstart(build_cmd, {
+      -- refer to nvim doc: https://neovim.io/doc/user/job_control.html#on_exit
       on_exit = function(job_id, exit_code, event_type)
         if exit_code == 0 then
           vim.notify("build project successfully", vim.log.levels.INFO, { title = "Dotnet" })
