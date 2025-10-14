@@ -1,35 +1,8 @@
+local py_cmd = require("cmds.python")
 local M = {}
 
-local get_venv_path = function()
-  local venv_path = os.getenv("VIRTUAL_ENV")
-
-  if venv_path == "" or venv_path == nil then
-    return ""
-  end
-
-  return vim.fs.normalize(venv_path)
-end
-
-local get_python_path = function()
-  local venv_path = get_venv_path()
-
-  if venv_path == "" then
-    return ""
-  end
-
-  local executable_python_path = ""
-
-  if NvChad.shell.is_win() then
-    executable_python_path = venv_path .. "/Scripts/pythonw.exe"
-  else
-    executable_python_path = venv_path .. "/bin/python"
-  end
-
-  return executable_python_path
-end
-
 local debugpy_exists = function()
-  local venv_path = get_venv_path()
+  local venv_path = py_cmd.get_venv_path()
 
   if NvChad.shell.is_win() then
     venv_path = venv_path .. "/Scripts/debugpy.exe"
@@ -46,10 +19,7 @@ M.setup = function()
 
   dap.adapters.python = function(callback, config)
     if config.request == "launch" then
-      local command = get_python_path()
-
-      if command == "" then
-        vim.notify("venv has not been activated", vim.log.levels.WARN)
+      if py_cmd.check_venv() ~= 0 then
         return
       end
 
@@ -60,7 +30,7 @@ M.setup = function()
 
       callback({
         type = "executable",
-        command = command,
+        command = py_cmd.get_virtual_python_path(),
         args = { "-m", "debugpy.adapter" },
         options = {
           source_filetype = "python",
