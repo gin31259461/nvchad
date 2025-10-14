@@ -14,7 +14,7 @@ local function get_dotnet_project_name()
   return vim.fn.getcwd() .. "/bin/Debug/" .. vim.fn.fnamemodify(csproj_files[1], ":t:r") .. ".dll"
 end
 
-local function get_build_dotnet_project_cmd()
+local function get_build_cmd()
   return { "dotnet", "build", "-c", "Debug", "-o", vim.fn.getcwd() .. "/bin/Debug/" }
 end
 
@@ -29,14 +29,14 @@ M.setup = function()
   end
 
   dap.adapters.coreclr = function(callback, config)
-    vim.notify("building project", vim.log.levels.INFO, { title = "Dotnet" })
-    local build_cmd = get_build_dotnet_project_cmd()
+    vim.notify("Building project", vim.log.levels.INFO, { title = "Dotnet" })
+    local build_cmd = get_build_cmd()
 
     vim.fn.jobstart(build_cmd, {
       -- refer to nvim doc: https://neovim.io/doc/user/job_control.html#on_exit
       on_exit = function(job_id, exit_code, event_type)
         if exit_code == 0 then
-          vim.notify("build project successfully", vim.log.levels.INFO, { title = "Dotnet" })
+          vim.notify("Build project successfully", vim.log.levels.INFO, { title = "Dotnet" })
 
           callback({
             type = "executable",
@@ -44,7 +44,7 @@ M.setup = function()
             args = { "--interpreter=vscode" },
           })
         else
-          vim.notify("error occur when build project", vim.log.levels.ERROR, { title = "Dotnet" })
+          vim.notify("Error occur when build project", vim.log.levels.ERROR, { title = "Dotnet" })
         end
       end,
     })

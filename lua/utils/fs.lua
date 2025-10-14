@@ -146,4 +146,6 @@ M.scandir = function(path, mode)
   return names
 end
 
+M.config_path = vim.fn.stdpath("config")
+
 return M

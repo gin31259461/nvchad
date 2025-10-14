@@ -52,3 +52,8 @@ if NvChad.shell.is_win() then
     end
   end, { desc = "Clears all the .tmp shada files" })
 end
+
+local cmds = NvChad.fs.scandir(NvChad.fs.config_path .. "/lua/cmds", "file")
+for _, v in ipairs(cmds) do
+  require("cmds." .. vim.fn.fnamemodify(v, ":r"))
+end
