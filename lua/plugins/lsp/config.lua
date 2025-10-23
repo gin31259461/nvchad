@@ -255,6 +255,11 @@ return {
       init_options = {
         settings = {
           logLevel = "error",
+          ["line-length"] = 80,
+          exclude = { "**/__init__.py" },
+          lint = {
+            ignore = { "F403", "E402" },
+          },
         },
       },
       keys = {
@@ -274,14 +279,20 @@ return {
         pyright = {
           -- Using Ruff's import organizer
           disableOrganizeImports = true,
+          include = { "src" },
+          reportMissingTypeStubs = false,
+          useLibraryCodeForTypes = false,
+          extraPaths = { "typings" },
           -- disableLanguageServices = true,
+          -- reportUnusedVariable = false
+          -- typeCheckingMode = "basic"
         },
 
         python = {
           analysis = {
             -- default
             autoSearchPaths = true,
-            diagnosticMode = "openFilesOnly",
+            diagnosticMode = "workspace",
 
             -- fix completion delay: https://github.com/microsoft/pyright/issues/4878
             -- disable useLibraryCodeForTypes and use extra stubs: https://github.com/microsoft/python-type-stubs
