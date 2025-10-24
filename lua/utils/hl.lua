@@ -24,8 +24,6 @@ vim.api.nvim_set_hl(0, "active_context", {
   fg = "#7AA2F7",
 })
 
-vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
-
 ---@type {[string]: vim.api.keyset.highlight}
 local all_underline_hl = {
   Underlined = {

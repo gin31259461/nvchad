@@ -42,11 +42,15 @@ M.base46 = {
     St_VisualModeSep = {
       bg = "NONE",
     },
+    FloatBorder = {
+      fg = "#565F89",
+    },
   },
 
   hl_add = {
     SnacksPickerDir = { fg = "#928374" },
     SnacksPickerPathHidden = { fg = "#928374" },
+    CmpGhostText = { link = "Comment", default = true },
 
     -- SnacksPickerDir = { fg = "light_grey" },
     -- SnacksPickerPathHidden = { fg = "light_grey" },
@@ -76,7 +80,7 @@ M.nvdash = {
     { txt = "  Find File", keys = "f", cmd = ":lua Snacks.picker.files()" },
     { txt = "  Recent Files", keys = "o", cmd = ":lua Snacks.picker.recent()" },
     { txt = "  Projects", keys = "p", cmd = ":lua Snacks.picker.projects()" },
-    { txt = "󰒲  Config", keys = "c", cmd = ":lua Snacks.picker.files { cwd = vim.fn.stdpath 'config' }" },
+    { txt = "  Config", keys = "c", cmd = ":lua Snacks.picker.files { cwd = vim.fn.stdpath 'config' }" },
     -- { txt = "󱥚  Themes", keys = "th", cmd = ":lua require('nvchad.themes').open()" },
     -- { txt = "  Mappings", keys = "ch", cmd = "NvCheatsheet" },
     { txt = "─", hl = "NvDashFooter", no_gap = true, rep = true },
@@ -113,7 +117,7 @@ M.lsp = {
 M.ui = {
 
   statusline = {
-    theme = "minimal",
+    theme = "default",
     separator_style = "round",
 
     -- refer to: https://github.com/NvChad/ui/blob/e0f06a9aa43112e94beca8283516e6804112fb8e/lua/nvchad/stl/utils.lua#L12
