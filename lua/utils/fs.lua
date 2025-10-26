@@ -64,6 +64,14 @@ M.root_pattern = {
   ".vscode",
 }
 
+M.sqlfluff_pattern = {
+  ".sqlfluff",
+  "pep8.ini",
+  "pyproject.toml",
+  "setup.cfg",
+  "tox.ini",
+}
+
 local function find_root_marker(startpath, markers)
   local Path = vim.fn.expand(startpath)
   for _, marker in ipairs(markers) do

@@ -41,10 +41,11 @@ return {
     dependencies = "tpope/vim-dadbod",
     keys = {
       { "<leader>dD", "<cmd>DBUIToggle<CR>", desc = "Toggle DBUI" },
-      { "<leader>dF", "<cmd>DBUIFindBuffer<CR>", desc = "Add buffer files to DBUI" },
+      { "<leader>dA", "<cmd>DBUIFindBuffer<CR>", desc = "Add buffer files to DBUI" },
     },
     init = function()
       local data_path = vim.fn.stdpath("data")
+      local config_path = vim.fn.stdpath("config")
 
       vim.g.db_ui_auto_execute_table_helpers = 1
       vim.g.db_ui_save_location = data_path .. "/dadbod_ui"
@@ -65,6 +66,14 @@ return {
           vim.wo.foldenable = false
         end,
       })
+
+      vim.keymap.set("n", "<leader>dC", function()
+        vim.cmd("edit " .. NvChad.str.rstrip_slash(vim.g.db_ui_save_location) .. "/connections.json")
+      end, { desc = "Open Connection Config" })
+
+      vim.keymap.set("n", "<leader>dT", function()
+        vim.cmd("edit " .. config_path .. "/lua/plugins/db/template")
+      end, { desc = "Open DB Config Template" })
 
       vim.filetype.add({
         pattern = { ["*-[Columns|Primary Keys|Indexes|References|Constraints|Foreign Keys|Describe]-[^%.]*"] = "sql" },

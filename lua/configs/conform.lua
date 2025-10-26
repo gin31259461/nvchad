@@ -1,3 +1,5 @@
+local util = require("conform.util")
+
 return {
   default_format_opts = {
     timeout_ms = 5000,
@@ -25,8 +27,22 @@ return {
       end,
     },
     ["sqlfluff"] = {
-      args = { "format", "--dialect", "ansi", "-" },
-      -- require_cwd = false,
+      command = "sqlfluff",
+      args = function()
+        for _, file in ipairs(NvChad.fs.sqlfluff_pattern) do
+          local path = NvChad.fs.get_root() .. "/" .. file
+          if vim.loop.fs_stat(path) then
+            return { "format", "-" }
+          end
+        end
+
+        local config_path = NvChad.fs.config_path .. "/lua/plugins/db/template/sqlfluff"
+
+        return { "format", "--config", config_path, "-" }
+      end,
+      stdin = true,
+      cwd = util.root_file(NvChad.fs.sqlfluff_pattern),
+      require_cwd = true,
     },
     ["sql_formatter"] = {
       args = function()
