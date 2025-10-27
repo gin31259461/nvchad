@@ -68,7 +68,7 @@ M.sqlfluff_pattern = {
   ".sqlfluff",
   -- "pep8.ini",
   -- "pyproject.toml",
-  -- "setup.cfg",
+  "setup.cfg",
   -- "tox.ini",
 }
 
