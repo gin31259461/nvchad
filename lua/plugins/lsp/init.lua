@@ -137,7 +137,7 @@ local plugins = {
 
       return opts
     end,
-    config = require("configs.lint-config"),
+    config = require("plugins.lsp.lint"),
   },
 }
 

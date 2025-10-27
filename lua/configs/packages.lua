@@ -38,6 +38,7 @@ local pkgs_with_setup = {
   toml = { "taplo", "taplo" },
   json = { "jsonls", "json-lsp" },
   lua = { "lua_ls", "lua-language-server" },
+  sql = { "sqls", "sqls" },
 
   -- also need install bundle from: https://github.com/PowerShell/PowerShellEditorServices
   -- extract zip file to C:/PSES
