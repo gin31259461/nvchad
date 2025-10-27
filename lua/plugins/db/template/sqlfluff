@@ -35,3 +35,6 @@ ignore_comment_lines = True
 [sqlfluff:exclude]
 path = migrations/, tests/
 
+# note:
+# 1. 分號可能造成錯誤
+# 2. 某些情況格式要相同，例如 select * from [T1], [T2] (not select * from [T1], T2)

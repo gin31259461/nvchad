@@ -66,10 +66,10 @@ M.root_pattern = {
 
 M.sqlfluff_pattern = {
   ".sqlfluff",
-  "pep8.ini",
-  "pyproject.toml",
-  "setup.cfg",
-  "tox.ini",
+  -- "pep8.ini",
+  -- "pyproject.toml",
+  -- "setup.cfg",
+  -- "tox.ini",
 }
 
 local function find_root_marker(startpath, markers)

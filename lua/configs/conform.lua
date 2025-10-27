@@ -31,17 +31,17 @@ return {
       args = function()
         for _, file in ipairs(NvChad.fs.sqlfluff_pattern) do
           local path = NvChad.fs.get_root() .. "/" .. file
-          if vim.loop.fs_stat(path) then
+          if vim.loop.fs_stat(path) == 0 then
             return { "format", "-" }
           end
         end
 
         local config_path = NvChad.fs.config_path .. "/lua/plugins/db/template/sqlfluff"
-
         return { "format", "--config", config_path, "-" }
       end,
       stdin = true,
-      cwd = util.root_file(NvChad.fs.sqlfluff_pattern),
+      -- cwd = util.root_file(NvChad.fs.sqlfluff_pattern),
+      cwd = NvChad.fs.get_root,
       require_cwd = true,
     },
     ["sql_formatter"] = {

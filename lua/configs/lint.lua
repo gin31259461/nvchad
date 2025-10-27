@@ -73,4 +73,19 @@ return {
       return diagnostic
     end),
   },
+
+  sqlfluff = {
+    command = "sqlfluff",
+    args = function()
+      for _, file in ipairs(NvChad.fs.sqlfluff_pattern) do
+        local path = NvChad.fs.get_root() .. "/" .. file
+        if vim.loop.fs_stat(path) == 0 then
+          return { "lint", "--format=json" }
+        end
+      end
+
+      local config_path = NvChad.fs.config_path .. "/lua/plugins/db/template/sqlfluff"
+      return { "lint", "--format=json", "--config", config_path }
+    end,
+  },
 }
