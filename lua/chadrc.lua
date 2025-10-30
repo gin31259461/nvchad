@@ -58,7 +58,7 @@ M.base46 = {
 }
 
 M.nvdash = {
-  load_on_startup = true,
+  load_on_startup = false,
   header = require("configs.header").wolf,
   buttons = {
     { txt = "  Explorer", keys = "e", cmd = ":Neotree action=focus position=float source=filesystem" },
