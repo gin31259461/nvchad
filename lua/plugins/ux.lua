@@ -20,87 +20,15 @@ return {
         enabled = true,
         preset = {
           header = require("configs.header").wolf_snack,
-          keys = {
-            {
-              { key = "n", hidden = true, action = ":ene | startinsert" },
-              { key = "f", hidden = true, action = ":lua Snacks.dashboard.pick('files')" },
-              { key = "r", hidden = true, action = ":lua Snacks.dashboard.pick('oldfiles')" },
-              { key = "g", hidden = true, action = ":lua Snacks.dashboard.pick('live_grep')" },
-              -- { key = "s", hidden = true, section = "session" },
-              { key = "L", hidden = true, action = ":Lazy", enabled = package.loaded.lazy ~= nil },
-              { key = "q", hidden = true, action = ":qa", enabled = package.loaded.lazy ~= nil },
-              { key = "e", hidden = true, action = ":Neotree action=focus position=float source=filesystem" },
-              { key = "c", hidden = true, action = ":lua Snacks.picker.files { cwd = vim.fn.stdpath 'config' }" },
-            },
-          },
         },
-        pane_gap = 2,
-        row = nil,
-        formats = {
-          key = { "" },
-          file = function(item)
-            return {
-              { item.key, hl = "key" },
-              { " " },
-              { item.file:sub(2):match("^(.*[/])"), hl = "NonText" },
-              { item.file:match("([^/]+)$"), hl = "Normal" },
-            }
-          end,
-          icon = { "" },
-        },
+
+        -- build-in: https://github.com/folke/snacks.nvim/blob/main/docs/dashboard.md#-features
         sections = {
-          align = "center",
-
-          -- this is hidden
-          { section = "keys" },
-
-          {
-            pane = 1,
-            { section = "header" },
-          },
-
-          {
-            pane = 2,
-            indent = 10,
-            align = "left",
-            {
-              { text = "" },
-              {
-                text = {
-                  { "n ", hl = "key" },
-                  { "  New file", hl = "Normal" },
-                  { "", width = 12 },
-                  { "g ", hl = "key" },
-                  { "  Grep text", hl = "Normal" },
-                },
-              },
-              { text = "", padding = 1 },
-              {
-                text = {
-                  { "e ", hl = "key" },
-                  { "  Explorer", hl = "Normal" },
-                  { "", width = 12 },
-                  { "c ", hl = "key" },
-                  { "  Config", hl = "Normal" },
-                },
-              },
-              { text = "", padding = 1 },
-              {
-                text = {
-                  { "r ", hl = "key" },
-                  { "  Recent files", hl = "Normal" },
-                  { "", width = 8 },
-                  { "L ", hl = "key" },
-                  { "  Lazy", hl = "Normal" },
-                },
-              },
-            },
-            { text = "", padding = 2 },
-            { title = "  Projects", padding = 1 },
-            { section = "projects", limit = 5, padding = 2 },
-          },
-
-          { section = "startup" },
+          { section = "header", align = "center" },
+          { pane = 2, section = "keys", gap = 1, padding = 1 },
+          { pane = 2, icon = " ", title = "Recent Files", section = "recent_files", indent = 2, padding = { 1, 1 } },
+          { pane = 2, icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1 },
+          { pane = 2, section = "startup" },
         },
       },
       explorer = { enabled = true },
@@ -144,6 +72,14 @@ return {
     },
 
     keys = {
+      {
+        "<leader>D",
+        function()
+          NvChad.snacks.dashboard()
+        end,
+        desc = "Open Dashboard",
+      },
+
       -- Top pickers & Explorer
       {
         "<leader>n",

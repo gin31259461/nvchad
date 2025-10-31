@@ -11,13 +11,17 @@ end
 M.setup = function()
   if M.is_win() then
     vim.o.shell = vim.fn.has("win64") and "powershell.exe" or "pwsh.exe"
-    vim.o.shellcmdflag = "-NoLogo -ExecutionPolicy RemoteSigned"
+    -- refer to https://www.reddit.com/r/neovim/comments/1crdv93/neovim_on_windows_using_windows_terminal_and/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+    vim.o.shellcmdflag =
+      "-NoLogo -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
     vim.o.shellredir = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
     vim.o.shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
     vim.o.shellquote = ""
-    vim.o.shellxquote = '"'
+    vim.o.shellxquote = ""
   else
-    vim.o.shellcmdflag = ""
+    vim.o.shellcmdflag = "-c"
+    vim.o.shellquote = ""
+    vim.o.shellxquote = ""
   end
 end
 
