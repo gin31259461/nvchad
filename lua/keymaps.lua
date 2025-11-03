@@ -26,6 +26,10 @@ end, { desc = "Format file" })
 
 -------------------- navigation & buffer --------------------
 map("n", "<leader>bb", "<cmd>enew<CR>", { desc = "buffer new" })
+map("n", "<leader>bc", "<cmd>%bd|e#<cr>", { desc = "buffer close" })
+map("n", "<leader>x", function()
+  require("nvchad.tabufline").close_buffer()
+end, { desc = "buffer close" })
 
 map("n", "<tab>", function()
   require("nvchad.tabufline").next()
@@ -34,11 +38,9 @@ map("n", "<S-tab>", function()
   require("nvchad.tabufline").prev()
 end, { desc = "buffer goto prev" })
 
-map("n", "<leader>x", function()
-  require("nvchad.tabufline").close_buffer()
-end, { desc = "buffer close" })
-
-map("n", "<leader>bc", "<cmd>%bd|e#<cr>", { desc = "buffer close" })
+map("n", "<leader>cd", function()
+  vim.cmd("cd " .. NvChad.fs.get_root())
+end, { desc = "enter current buffer root" })
 
 -- nvimtree [not used]
 -- map("n", "<C-n>", "<cmd>NvimTreeToggle<CR>", { desc = "nvimtree toggle window" })
