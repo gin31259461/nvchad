@@ -49,8 +49,8 @@ M.harpoon.highlight_current_file = function()
         end
 
         local format_path = NvChad.ui.harpoon.format_display(short_path)
-        name_of_harpoon = string.gsub(name_of_harpoon, "%-", "%%-")
-
+        -- name_of_harpoon = string.gsub(name_of_harpoon, "%-", "%%-")
+        name_of_harpoon = string.gsub(name_of_harpoon, "([%-%[%]])", "%%%1")
         if string.find(format_path, name_of_harpoon) then
           -- highlight the harpoon menu line that corresponds to the current buffer
           local line = vim.api.nvim_buf_get_lines(cx.bufnr, line_number - 1, line_number, false)[1]

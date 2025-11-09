@@ -59,6 +59,83 @@ return {
     },
   },
 
+  -- https://github.com/nvim-treesitter/nvim-treesitter-textobjects/tree/main
+  -- {
+  --   "nvim-treesitter/nvim-treesitter-textobjects",
+  --   dependencies = { "nvim-treesitter/nvim-treesitter" },
+  --   branch = "main",
+  --   opts = {
+  --     move = {
+  --       -- whether to set jumps in the jumplist
+  --       set_jumps = true,
+  --     },
+  --   },
+  --   config = function(_, opts)
+  --     require("nvim-treesitter-textobjects").setup(opts)
+  --
+  --     local mv = require("nvim-treesitter-textobjects.move")
+  --     vim.keymap.set({ "n", "x", "o" }, "]m", function()
+  --       mv.goto_next_start("@function.outer", "textobjects")
+  --     end)
+  --     vim.keymap.set({ "n", "x", "o" }, "]M", function()
+  --       mv.goto_next_end("@function.outer", "textobjects")
+  --     end)
+  --   end,
+  -- },
+
+  -- https://www.reddit.com/r/neovim/comments/1agjong/html_tags/
+  -- https://github.com/andymass/vim-matchup?tab=readme-ov-file#installation
+  {
+    "andymass/vim-matchup",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    init = function()
+      -- modify your configuration vars here
+      vim.g.matchup_treesitter_stopline = 500
+      vim.g.matchup_matchparen_offscreen = { method = "popup", fullwidth = 1, border = 0 }
+
+      -- or call the setup function provided as a helper. It defines the
+      -- configuration vars for you
+      require("match-up").setup({
+        ---@diagnostic disable-next-line
+        treesitter = {
+          stopline = 500,
+        },
+      })
+    end,
+    -- or use the `opts` mechanism built into `lazy.nvim`. It calls
+    -- `require('match-up').setup` under the hood
+    ---@type matchup.Config
+    ---@diagnostic disable-next-line
+    opts = {
+      ---@diagnostic disable-next-line
+      treesitter = {
+        stopline = 500,
+      },
+    },
+  },
+  -- https://github.com/windwp/nvim-ts-autotag
+  {
+    "windwp/nvim-ts-autotag",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    event = { "BufReadPre", "BufNewFile" },
+    opts = {
+      -- Defaults
+      enable_close = true, -- Auto close tags
+      enable_rename = true, -- Auto rename pairs of tags
+      enable_close_on_slash = false, -- Auto close on trailing </
+    },
+    config = function(_, opts)
+      require("nvim-ts-autotag").setup({
+        opts,
+        per_filetype = {
+          ["html"] = {
+            enable_close = false,
+          },
+        },
+      })
+    end,
+  },
+
   {
     "hrsh7th/nvim-cmp",
     version = false,
