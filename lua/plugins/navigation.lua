@@ -56,7 +56,7 @@ return {
         --
         create_list_item = function(config, value)
           value = value
-            or NvChad.fs.normalize_path(
+            or NvChad.fs.make_relative_path(
               vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()),
               config.get_root_dir()
             )

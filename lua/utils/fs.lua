@@ -119,7 +119,7 @@ end
 ---@param buf_name string
 ---@param root string
 ---@return string
-M.normalize_path = function(buf_name, root)
+M.make_relative_path = function(buf_name, root)
   local Path_ready, Path = pcall(require, "plenary.path")
 
   if Path_ready then

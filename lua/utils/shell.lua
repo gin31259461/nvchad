@@ -18,6 +18,9 @@ M.setup = function()
     vim.o.shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
     vim.o.shellquote = ""
     vim.o.shellxquote = ""
+
+    -- this option only modifiable in MS-Windows, so set value here
+    vim.o.shellslash = true
   else
     vim.o.shellcmdflag = "-c"
     vim.o.shellquote = ""
