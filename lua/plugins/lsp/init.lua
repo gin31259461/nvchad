@@ -111,7 +111,7 @@ local plugins = {
     "stevearc/conform.nvim",
     event = { "BufWritePost", "BufReadPost", "InsertLeave" },
     opts = function()
-      local opts = require("configs.conform")
+      local opts = require("configs.formatter")
 
       for _, ft in ipairs(NvChad.ft.sql_ft) do
         opts.formatters_by_ft[ft] = opts.formatters_by_ft[ft] or {}
@@ -128,7 +128,7 @@ local plugins = {
     opts = function()
       vim.env.ESLINT_D_PPID = vim.fn.getpid()
 
-      local opts = require("configs.lint")
+      local opts = require("configs.linter")
 
       -- for _, ft in ipairs(NvChad.ft.sql_ft) do
       --   opts.linters_by_ft[ft] = opts.linters_by_ft[ft] or {}

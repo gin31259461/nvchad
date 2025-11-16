@@ -42,9 +42,6 @@ M.base46 = {
     St_VisualModeSep = {
       bg = "NONE",
     },
-    FloatBorder = {
-      fg = "#565F89",
-    },
   },
 
   hl_add = {
