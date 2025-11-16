@@ -12,7 +12,19 @@ return {
         client.server_capabilities.semanticTokensProvider = nil
       end,
 
+      ---@type vim.lsp.Config
+      config = {
+        handlers = {
+          -- FIXME: Diagnostic handler
+          -- Diagnostic handling is being offloaded to eslint_d because the Diagnostic processing in typescript-tools is inadequate (or poor).
+          ["textDocument/publishDiagnostics"] = function() end,
+        },
+      },
+
       settings = {
+        separate_diagnostic_server = true,
+        publish_diagnostic_on = "insert_leave",
+
         -- https://github.com/microsoft/TypeScript/blob/v5.0.4/src/server/protocol.ts#L3439
         tsserver_file_preferences = {
           includeCompletionsForModuleExports = true,

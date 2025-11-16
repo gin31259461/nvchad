@@ -26,14 +26,19 @@ local plugins = {
       },
     },
   },
+
+  -- {
+  --   "williamboman/mason-lspconfig.nvim",
+  --   opts = {
+  --     automatic_enable = false,
+  --   },
+  -- },
+
   {
 
     "neovim/nvim-lspconfig",
     lazy = false,
     event = { "BufReadPost", "BufWritePost", "BufNewFile" },
-    dependencies = {
-      { "williamboman/mason-lspconfig.nvim", config = function() end },
-    },
 
     opts = function()
       return require("plugins.lsp.config")

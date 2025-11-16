@@ -66,15 +66,9 @@ local pkgs_only = {
   "typescript-language-server",
 }
 
-local extra_lsp_servers = {}
-
 for v in pairs(pkgs_with_setup) do
   table.insert(M.lsp_servers, pkgs_with_setup[v][1])
   table.insert(M.mason_ensure_installed, pkgs_with_setup[v][2])
-end
-
-for _, v in ipairs(extra_lsp_servers) do
-  table.insert(M.lsp_servers, v)
 end
 
 for _, v in ipairs(pkgs_only) do
