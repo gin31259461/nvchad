@@ -94,6 +94,7 @@ return {
         end,
       })
     end,
+    ---@type neotree.Config
     opts = {
       sources = { "filesystem", "buffers", "git_status" },
       open_files_do_not_replace_types = { "terminal", "Trouble", "trouble", "qf", "Outline" },
@@ -105,23 +106,22 @@ return {
       },
       window = {
         mappings = {
+          -- disable fuzzy finder because it's so slow
+          ["/"] = "noop",
           ["l"] = "open",
           ["h"] = "close_node",
           ["<space>"] = "none",
-          ["Y"] = {
-            function(state)
-              local node = state.tree:get_node()
-              local path = node:get_id()
-              vim.fn.setreg("+", path, "c")
-            end,
-            desc = "Copy Path to Clipboard",
-          },
-          ["O"] = {
-            function(state)
-              require("lazy.util").open(state.tree:get_node().path, { system = true })
-            end,
-            desc = "Open with System Application",
-          },
+          ["Y"] = function(state)
+            ---@diagnostic disable-next-line
+            local node = state.tree:get_node()
+            local path = node:get_id()
+            vim.fn.setreg("+", path, "c")
+            vim.notify("Copied " .. vim.fn.fnamemodify(path, ":t") .. " to system clipboard")
+          end,
+          ["O"] = function(state)
+            ---@diagnostic disable-next-line
+            require("lazy.util").open(state.tree:get_node().path, { system = true })
+          end,
           ["P"] = { "toggle_preview", config = { use_float = false } },
         },
       },
