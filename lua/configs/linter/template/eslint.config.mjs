@@ -34,6 +34,7 @@ const eslintConfig = defineConfig([
       globals: {
         ...globals.browser,
         ...globals.node,
+        React: true,
       },
     },
   },
@@ -55,6 +56,8 @@ const eslintConfig = defineConfig([
       // Enable React recommended rules and React Hooks rules
       ...react.configs.recommended.rules,
       ...reactHooks.configs.recommended.rules,
+
+      "no-undef": "error",
 
       // Disable the base 'no-unused-vars' rule, using the TypeScript-specific version instead
       "no-unused-vars": "off",
