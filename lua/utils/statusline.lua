@@ -178,8 +178,8 @@ M.set_mode_state = function()
     local mode_sep1 = "%#St_" .. modes[m][2] .. "ModeSep#" .. sep_r
 
     -- return current_mode .. mode_sep1 .. "%#ST_EmptySpace#" .. sep_r
-    -- return current_mode .. recording .. mode_sep1
-    return current_mode .. " "
+    return current_mode .. recording .. mode_sep1
+    -- return current_mode .. " "
   end
 end
 
