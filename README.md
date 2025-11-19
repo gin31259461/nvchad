@@ -52,7 +52,7 @@ debugging capabilities.
 Before using this configuration, ensure the following tools are installed on
 your system:
 
-1. ****Neovim****: Version must be `\>= 0.10` (0.11 recommended).
+1. ****Neovim****: Version must be `>= 0.11`.
 2. ****Nerd Font****: Terminal must be configured with a font that supports
    icons (e.g., JetBrainsMono Nerd Font).
 3. ****System Tools****:
