@@ -56,6 +56,7 @@ local pkgs_only = {
   "shfmt",
   "sqlfluff",
   "hadolint",
+  "markdownlint",
   "markdownlint-cli2",
   "markdown-toc",
   "prettier",

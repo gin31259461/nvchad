@@ -13,7 +13,6 @@ debugging capabilities.
     * [For windows setup](#for-windows-setup)
     * [How to install](#how-to-install)
 - [Uninstall](#uninstall)
-- [**Project Structure**](#project-structure)
 - [**Language Support**](#language-support)
 - [**Keymappings**](#keymappings)
     * [**General**](#general)
@@ -132,31 +131,6 @@ rd -r ~\AppData\Local\nvim-data
 rm -Force ~\AppData\Local\nvim
 rm -Force ~\AppData\Local\nvim-data
 ```
-
-**Note**: After the first launch, run `:MasonInstallAll` to ensure all LSP and
-DAP tools are installed.
-
-## **Project Structure**
-
-lua/\
-├── autocmds.lua \# Auto Commands\
-├── chadrc.lua \# NvChad UI and Theme overrides\
-├── keymaps.lua \# General Keymappings\
-├── options.lua \# Vim Options (e.g., line numbers, tab width)\
-├── cmds/ \# Custom User Commands (e.g., Python/Dotnet tools)\
-├── configs/ \# Detailed Plugin Configurations\
-│ ├── lsp/ \# LSP settings (config, keymaps, setup)\
-│ ├── linter/ \# nvim-lint settings and ESLint templates\
-│ ├── formatter/ \# conform.nvim settings\
-│ └── packages.lua \# List of packages for Mason to install\
-├── plugins/ \# Lazy.nvim Plugin Specs\
-│ ├── coding.lua \# Treesitter, CMP, Autopairs\
-│ ├── navigation.lua \# Telescope, Harpoon\
-│ ├── ui.lua \# Snacks, Noice, Neo-tree\
-│ ├── db/ \# Dadbod Database settings\
-│ ├── debugger/ \# DAP Debugger settings\
-│ └── lsp/ \# LSP related plugins\
-└── utils/ \# Custom Utility Functions (FS, LSP Helper, Statusline)
 
 ## **Language Support**
 

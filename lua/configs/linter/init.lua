@@ -12,7 +12,7 @@
 ---@field linters Linter
 
 local eslint_d_binary_name = "eslint_d"
-
+local markdownlint_efm = "%f:%l:%c %m,%f:%l %m"
 ---@type Linter.Opts
 return {
   events = { "BufWritePost", "BufReadPost", "InsertLeave" },
@@ -74,20 +74,34 @@ return {
       end
       return diagnostic
     end),
-  },
 
-  sqlfluff = {
-    command = "sqlfluff",
-    args = function()
-      for _, file in ipairs(NvChad.fs.sqlfluff_pattern) do
-        local path = NvChad.fs.get_root() .. "/" .. file
-        if vim.loop.fs_stat(path) == 0 then
-          return { "lint", "--format=json" }
+    sqlfluff = {
+      command = "sqlfluff",
+      args = (function()
+        for _, file in ipairs(NvChad.fs.sqlfluff_pattern) do
+          local path = NvChad.fs.get_root() .. "/" .. file
+          if vim.loop.fs_stat(path) == 0 then
+            return { "lint", "--format=json" }
+          end
         end
-      end
 
-      local config_path = NvChad.fs.config_path .. "/lua/plugins/db/template/sqlfluff"
-      return { "lint", "--format=json", "--config", config_path }
-    end,
+        local config_path = NvChad.fs.config_path .. "/lua/plugins/db/template/sqlfluff"
+        return { "lint", "--format=json", "--config", config_path }
+      end)(),
+    },
+
+    ["markdownlint-cli2"] = {
+      cmd = "markdownlint-cli2",
+      args = (function()
+        local config_path = NvChad.fs.config_path .. "/lua/configs/linter/template/.markdownlint.yaml"
+        return { "--config", config_path }
+      end)(),
+      ignore_exitcode = true,
+      stream = "stderr",
+      parser = require("lint.parser").from_errorformat(markdownlint_efm, {
+        source = "markdownlint",
+        severity = vim.diagnostic.severity.WARN,
+      }),
+    },
   },
 }
