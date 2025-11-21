@@ -68,7 +68,7 @@ local config = function(_, opts)
 
   vim.api.nvim_create_autocmd(opts.events, {
     group = vim.api.nvim_create_augroup("nvim-lint", { clear = true }),
-    callback = M.debounce(100, M.lint),
+    callback = M.debounce(200, M.lint),
   })
 end
 

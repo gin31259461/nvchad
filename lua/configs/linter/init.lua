@@ -15,7 +15,8 @@ local eslint_d_binary_name = "eslint_d"
 local markdownlint_efm = "%f:%l:%c %m,%f:%l %m"
 ---@type Linter.Opts
 return {
-  events = { "BufWritePost", "BufReadPost", "InsertLeave" },
+  -- events = { "BufWritePost", "BufReadPost", "InsertLeave" },
+  events = { "BufWritePost", "BufReadPost", "InsertLeave", "TextChanged" },
 
   -- available linters: https://github.com/mfussenegger/nvim-lint?tab=readme-ov-file#available-linters
   linters_by_ft = {

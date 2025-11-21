@@ -17,7 +17,7 @@ return {
         handlers = {
           -- FIXME: Diagnostic handler
           -- Diagnostic handling is being offloaded to eslint_d because the Diagnostic processing in typescript-tools is inadequate (or poor).
-          ["textDocument/publishDiagnostics"] = function() end,
+          -- ["textDocument/publishDiagnostics"] = function() end,
         },
       },
 
