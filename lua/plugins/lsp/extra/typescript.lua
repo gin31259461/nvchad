@@ -35,7 +35,6 @@ return {
 
       settings = {
         separate_diagnostic_server = true,
-        publish_diagnostic_on = "insert_leave",
 
         -- https://github.com/microsoft/TypeScript/blob/v5.0.4/src/server/protocol.ts#L3439
         tsserver_file_preferences = {
