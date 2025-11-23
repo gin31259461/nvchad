@@ -15,9 +15,21 @@ return {
       ---@type vim.lsp.Config
       config = {
         handlers = {
-          -- FIXME: Diagnostic handler
-          -- Diagnostic handling is being offloaded to eslint_d because the Diagnostic processing in typescript-tools is inadequate (or poor).
-          -- ["textDocument/publishDiagnostics"] = function() end,
+          -- HACK: drop duplicated diagnostic message
+          -- https://neovim.io/doc/user/lsp.html#lsp-handler
+          ---@type lsp.Handler
+          ["textDocument/publishDiagnostics"] = function(err, res, ctx)
+            local filtered = {}
+            res.diagnostics = NvChad.table.unique_by_key(res.diagnostics, "message")
+            for _, diag in ipairs(res.diagnostics) do
+              if diag.source == "tsserver" then
+                table.insert(filtered, diag)
+              end
+            end
+
+            res.diagnostics = filtered
+            vim.lsp.diagnostic.on_publish_diagnostics(err, res, ctx)
+          end,
         },
       },
 

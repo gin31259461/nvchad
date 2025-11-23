@@ -33,6 +33,7 @@ M.cmp = require("utils.cmp")
 M.hl = require("utils.hl")
 M.ui = require("utils.ui")
 M.str = require("utils.str")
+M.table = require("utils.table")
 
 ---@diagnostic disable: deprecated
 M.unpack = table.unpack or unpack
