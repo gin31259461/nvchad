@@ -131,6 +131,8 @@ return {
     lua_ls = {
       settings = {
         Lua = {
+          codeLens = { enable = true },
+          hint = { enable = true, arrayIndex = "Disable", setType = false, paramName = "Disable", paramType = true },
           runtime = { version = "LuaJIT" },
           workspace = {
             library = {
