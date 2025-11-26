@@ -54,7 +54,19 @@ return {
       },
     },
 
-    float = { border = "single" },
+    float = {
+      ---@diagnostic disable-next-line
+      border = {
+        { "┌", "CmpBorder" },
+        { "─", "CmpBorder" },
+        { "┐", "CmpBorder" },
+        { "│", "CmpBorder" },
+        { "┘", "CmpBorder" },
+        { "─", "CmpBorder" },
+        { "└", "CmpBorder" },
+        { "│", "CmpBorder" },
+      },
+    },
   },
 
   -- Enable this to enable the builtin LSP inlay hints on Neovim >= 0.10.0

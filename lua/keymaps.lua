@@ -95,7 +95,7 @@ map("x", "p", '"_dP', { desc = "dont copy replaced text" })
 map("n", "<Esc>", "<cmd>noh<CR>", { desc = "general clear highlights" })
 map("i", "jk", "<ESC>")
 
--- comment
+-------------------- comment --------------------
 map("n", "<leader>/", "gcc", { desc = "toggle comment", remap = true })
 map("v", "<leader>/", "gc", { desc = "toggle comment", remap = true })
 
@@ -107,7 +107,7 @@ map("n", "<leader>tx", "<cmd>tabclose<cr>", { desc = "CMD enter command mode" })
 
 -------------------- diagnostic --------------------
 map("n", "<leader>fd", function()
-  vim.diagnostic.open_float({ border = "single" })
+  vim.diagnostic.open_float()
 end, { desc = "floating diagnostic" })
 
 -- map("n", "<leader>ds", vim.diagnostic.setloclist, { desc = "LSP diagnostic loclist" })
