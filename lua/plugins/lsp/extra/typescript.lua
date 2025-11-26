@@ -12,25 +12,43 @@ return {
         client.server_capabilities.semanticTokensProvider = nil
       end,
 
-      ---@type vim.lsp.Config
-      config = {
-        handlers = {
-          -- HACK: drop duplicated diagnostic message
-          -- https://neovim.io/doc/user/lsp.html#lsp-handler
-          ---@type lsp.Handler
-          ["textDocument/publishDiagnostics"] = function(err, res, ctx)
-            local filtered = {}
-            res.diagnostics = NvChad.table.unique_by_key(res.diagnostics, "message")
-            for _, diag in ipairs(res.diagnostics) do
-              if diag.source == "tsserver" then
-                table.insert(filtered, diag)
-              end
-            end
+      -- ---@type vim.lsp.Config
+      -- config = {
+      --   handlers = {
+      --     -- HACK: drop duplicated diagnostic message
+      --     -- https://neovim.io/doc/user/lsp.html#lsp-handler
+      --     ---@type lsp.Handler
+      --     ["textDocument/publishDiagnostics"] = function(err, res, ctx)
+      --       local filtered = {}
+      --       res.diagnostics = NvChad.table.unique_by_key(res.diagnostics, "message")
+      --       for _, diag in ipairs(res.diagnostics) do
+      --         if diag.source == "tsserver" then
+      --           table.insert(filtered, diag)
+      --         end
+      --       end
+      --
+      --       res.diagnostics = filtered
+      --       vim.lsp.diagnostic.on_publish_diagnostics(err, res, ctx)
+      --     end,
+      --   },
+      -- },
 
-            res.diagnostics = filtered
-            vim.lsp.diagnostic.on_publish_diagnostics(err, res, ctx)
-          end,
-        },
+      handlers = {
+        -- HACK: drop duplicated diagnostic message
+        -- https://neovim.io/doc/user/lsp.html#lsp-handler
+        ---@type lsp.Handler
+        ["textDocument/publishDiagnostics"] = function(err, res, ctx)
+          local filtered = {}
+          res.diagnostics = NvChad.table.unique_by_key(res.diagnostics, "message")
+          for _, diag in ipairs(res.diagnostics) do
+            if diag.source == "tsserver" then
+              table.insert(filtered, diag)
+            end
+          end
+
+          res.diagnostics = filtered
+          vim.lsp.diagnostic.on_publish_diagnostics(err, res, ctx)
+        end,
       },
 
       settings = {
