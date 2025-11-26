@@ -14,7 +14,7 @@
 ---@field setup {[string]: function}
 ---@field diagnostics vim.diagnostic.Opts
 ---@field inlay_hints {enabled: boolean, exclude: table}
----@field codelens {enabled: boolean}
+---@field codelens {enabled: boolean, autocmd: boolean}
 
 local data_path = vim.fs.normalize(vim.fn.stdpath("data"))
 
@@ -69,7 +69,8 @@ return {
   -- Be aware that you also will need to properly configure your LSP server to
   -- provide the code lenses.
   codelens = {
-    enabled = false,
+    enabled = true,
+    autocmd = false,
   },
 
   on_init = function(client, _)

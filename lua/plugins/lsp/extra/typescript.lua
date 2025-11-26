@@ -35,6 +35,7 @@ return {
 
       settings = {
         separate_diagnostic_server = true,
+        code_lens = "off",
 
         -- https://github.com/microsoft/TypeScript/blob/v5.0.4/src/server/protocol.ts#L3439
         tsserver_file_preferences = {

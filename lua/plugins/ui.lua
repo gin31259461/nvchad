@@ -470,6 +470,16 @@ return {
           },
           opts = { skip = true },
         },
+
+        {
+          filter = {
+            kind = "progress",
+            any = {
+              { find = "Searching in files" },
+            },
+          },
+          opts = { skip = true },
+        },
       },
 
       cmdline = {

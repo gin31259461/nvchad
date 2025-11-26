@@ -85,7 +85,7 @@ local plugins = {
         end
 
         -- code lens
-        if opts.codelens.enabled and vim.lsp.codelens then
+        if opts.codelens.enabled and opts.codelens.autocmd and vim.lsp.codelens then
           NvChad.lsp.on_supports_method("textDocument/codeLens", function(client, buffer)
             vim.lsp.codelens.refresh()
             vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
