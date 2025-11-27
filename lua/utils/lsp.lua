@@ -151,4 +151,8 @@ function M.on_supports_method(method, fn)
   })
 end
 
+function M.toggle_inlay_hints()
+  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+end
+
 return M

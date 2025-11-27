@@ -72,6 +72,7 @@ function M.get()
     { "<leader>ca", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" }, has = "codeAction" },
     { "<leader>cC", vim.lsp.codelens.run, desc = "Run Codelens", mode = { "n", "v" }, has = "codeLens" },
     { "<leader>cc", vim.lsp.codelens.refresh, desc = "Refresh & Display Codelens", mode = { "n" }, has = "codeLens" },
+    { "<leader>ci", NvChad.lsp.toggle_inlay_hints, desc = "Toggle Inlay Hints", mode = { "n" }, has = "inlayHint" },
     {
       "<leader>cR",
       function()

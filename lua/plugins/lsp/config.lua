@@ -42,8 +42,6 @@ return {
       -- prefix = "icons",
     },
 
-    -- virtual_text = false,
-
     severity_sort = true,
     signs = {
       text = {
@@ -73,7 +71,7 @@ return {
   -- Be aware that you also will need to properly configure your LSP server to
   -- provide the inlay hints.
   inlay_hints = {
-    enabled = true,
+    enabled = false,
     exclude = {}, -- filetypes for which you don't want to enable inlay hints
   },
 
@@ -81,8 +79,7 @@ return {
   -- Be aware that you also will need to properly configure your LSP server to
   -- provide the code lenses.
   codelens = {
-    enabled = true,
-    autocmd = false,
+    enabled = false,
   },
 
   on_init = function(client, _)
