@@ -42,6 +42,9 @@ M.base46 = {
     St_VisualModeSep = {
       bg = "NONE",
     },
+    NormalFloat = {
+      bg = "black",
+    },
   },
 
   hl_add = {
