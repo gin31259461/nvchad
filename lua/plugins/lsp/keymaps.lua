@@ -69,7 +69,21 @@ function M.get()
       desc = "Signature Help",
       has = "signatureHelp",
     },
-    { "<leader>ca", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" }, has = "codeAction" },
+    {
+      "<leader>ca",
+      function()
+        vim.lsp.buf.code_action({
+          -- refer to: https://github.com/pmizio/typescript-tools.nvim/issues/238#issuecomment-3114629296
+          filter = function(action)
+            local exclude_actions = { ["Move to a new file"] = true, ["Move to file"] = true }
+            return not exclude_actions[action.title]
+          end,
+        })
+      end,
+      desc = "Code Action",
+      mode = { "n", "v" },
+      has = "codeAction",
+    },
     { "<leader>cC", vim.lsp.codelens.run, desc = "Run Codelens", mode = { "n", "v" }, has = "codeLens" },
     { "<leader>cc", vim.lsp.codelens.refresh, desc = "Refresh & Display Codelens", mode = { "n" }, has = "codeLens" },
     { "<leader>ci", NvChad.lsp.toggle_inlay_hints, desc = "Toggle Inlay Hints", mode = { "n" }, has = "inlayHint" },
