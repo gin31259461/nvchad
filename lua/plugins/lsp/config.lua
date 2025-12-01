@@ -293,11 +293,9 @@ return {
           disableOrganizeImports = true,
           include = { "src" },
           reportMissingTypeStubs = false,
+          reportMissingImports = false,
           useLibraryCodeForTypes = false,
           extraPaths = { "typings" },
-          -- disableLanguageServices = true,
-          -- reportUnusedVariable = false
-          -- typeCheckingMode = "basic"
         },
 
         python = {

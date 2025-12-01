@@ -34,3 +34,30 @@ for _, server in ipairs(NvChad.config.packages.lsp_servers) do
   vim.lsp.config(server, server_opts)
   vim.lsp.enable(server)
 end
+
+local ignore_messages = {
+  "is not accessed",
+  "Unused local",
+}
+
+local default_handler = vim.lsp.handlers["textDocument/publishDiagnostics"]
+
+vim.lsp.handlers["textDocument/publishDiagnostics"] = function(err, result, ctx, config)
+  if result and result.diagnostics then
+    local filtered_diagnostics = {}
+    for _, diagnostic in ipairs(result.diagnostics) do
+      local should_keep = true
+      for _, msg in ipairs(ignore_messages) do
+        if diagnostic.message:find(msg) then
+          should_keep = false
+          break
+        end
+      end
+      if should_keep then
+        table.insert(filtered_diagnostics, diagnostic)
+      end
+    end
+    result.diagnostics = filtered_diagnostics
+  end
+  default_handler(err, result, ctx, config)
+end
