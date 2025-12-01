@@ -291,18 +291,16 @@ return {
         pyright = {
           -- Using Ruff's import organizer
           disableOrganizeImports = true,
-          include = { "src" },
           reportMissingTypeStubs = false,
           reportMissingImports = false,
-          useLibraryCodeForTypes = false,
-          extraPaths = { "typings" },
         },
 
         python = {
           analysis = {
-            -- default
             autoSearchPaths = true,
             diagnosticMode = "workspace",
+            include = { "src" },
+            extraPaths = { "typings" },
 
             -- fix completion delay: https://github.com/microsoft/pyright/issues/4878
             -- disable useLibraryCodeForTypes and use extra stubs: https://github.com/microsoft/python-type-stubs
