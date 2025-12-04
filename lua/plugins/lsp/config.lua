@@ -292,7 +292,7 @@ return {
           -- Using Ruff's import organizer
           disableOrganizeImports = true,
           reportMissingTypeStubs = false,
-          reportMissingImports = false,
+          -- reportMissingImports = false,
         },
 
         python = {
