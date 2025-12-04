@@ -39,6 +39,8 @@ local options = {
     ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp_types.cmp.SelectBehavior.Insert }),
     ["<C-u>"] = cmp.mapping.scroll_docs(-4),
     ["<C-d>"] = cmp.mapping.scroll_docs(4),
+
+    -- `i` = insert mode, `c` = command mode, `s` = select mode
     ["<C-e>"] = cmp.mapping({
       i = function()
         if cmp.visible() then
@@ -49,34 +51,36 @@ local options = {
       end,
       c = function()
         if cmp.visible() then
-          cmp.close()
+          cmp.abort()
         else
           cmp.complete()
         end
       end,
     }),
+
     ["<CR>"] = NvChad.cmp.confirm({
       select = auto_select,
     }),
-    ["<Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item({ behavior = cmp_types.cmp.SelectBehavior.Insert })
-      elseif require("luasnip").expand_or_jumpable() then
-        require("luasnip").expand_or_jump()
-      else
-        fallback()
-      end
-    end, { "i", "s" }),
 
-    ["<S-Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item({ behavior = cmp_types.cmp.SelectBehavior.Insert })
-      elseif require("luasnip").jumpable(-1) then
-        require("luasnip").jump(-1)
-      else
-        fallback()
-      end
-    end, { "i", "s" }),
+    -- ["<Tab>"] = cmp.mapping(function(fallback)
+    --   if cmp.visible() then
+    --     cmp.select_next_item({ behavior = cmp_types.cmp.SelectBehavior.Insert })
+    --   elseif require("luasnip").expand_or_jumpable() then
+    --     require("luasnip").expand_or_jump()
+    --   else
+    --     fallback()
+    --   end
+    -- end, { "i", "s" }),
+    --
+    -- ["<S-Tab>"] = cmp.mapping(function(fallback)
+    --   if cmp.visible() then
+    --     cmp.select_prev_item({ behavior = cmp_types.cmp.SelectBehavior.Insert })
+    --   elseif require("luasnip").jumpable(-1) then
+    --     require("luasnip").jump(-1)
+    --   else
+    --     fallback()
+    --   end
+    -- end, { "i", "s" }),
   },
 
   formatting = {
