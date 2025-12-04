@@ -45,18 +45,18 @@ M.base46 = {
     NormalFloat = {
       bg = "black",
     },
-    CmpPmenu = {
-      bg = "one_bg",
-    },
-    CmpBorder = {
-      bg = "black",
-    },
-    CmpDoc = {
-      bg = "one_bg",
-    },
-    CmpDocBorder = {
-      bg = "black",
-    },
+    -- CmpPmenu = {
+    --   bg = "one_bg",
+    -- },
+    -- CmpBorder = {
+    --   bg = "black",
+    -- },
+    -- CmpDoc = {
+    --   bg = "one_bg",
+    -- },
+    -- CmpDocBorder = {
+    --   bg = "black",
+    -- },
   },
 
   hl_add = {
