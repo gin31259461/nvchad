@@ -37,6 +37,8 @@ local options = {
   mapping = {
     ["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp_types.cmp.SelectBehavior.Insert }),
     ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp_types.cmp.SelectBehavior.Insert }),
+    ["<C-j>"] = cmp.mapping.select_next_item({ behavior = cmp_types.cmp.SelectBehavior.Insert }),
+    ["<C-k>"] = cmp.mapping.select_prev_item({ behavior = cmp_types.cmp.SelectBehavior.Insert }),
     ["<C-u>"] = cmp.mapping.scroll_docs(-4),
     ["<C-d>"] = cmp.mapping.scroll_docs(4),
 

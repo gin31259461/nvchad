@@ -4,10 +4,10 @@
 local map = vim.keymap.set
 
 -------------------- movement --------------------
-map("i", "<C-j>", "<Down>", { desc = "move down" })
-map("i", "<C-k>", "<Up>", { desc = "move up" })
-map("i", "<C-h>", "<Left>", { desc = "move left" })
-map("i", "<C-l>", "<Right>", { desc = "move right" })
+-- map("i", "<C-j>", "<Down>", { desc = "move down" })
+-- map("i", "<C-k>", "<Up>", { desc = "move up" })
+-- map("i", "<C-h>", "<Left>", { desc = "move left" })
+-- map("i", "<C-l>", "<Right>", { desc = "move right" })
 
 map("n", "<C-h>", "<C-w>h", { desc = "switch window left" })
 map("n", "<C-l>", "<C-w>l", { desc = "switch window right" })
