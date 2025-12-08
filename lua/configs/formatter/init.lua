@@ -100,7 +100,7 @@ return {
     typescript = { "deno_fmt", "eslint_d" },
     javascript = { "deno_fmt", "eslint_d" },
     json = { "deno_fmt" },
-    toml = { "taplo" },
+    toml = { "tombi" },
     prisma = { "prisma_fmt" },
     cs = { "csharpier" },
 

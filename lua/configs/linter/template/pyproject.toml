@@ -1,7 +1,6 @@
-# example python config for uv manager
 [project]
-name = ""
-version = "0.0.0"
+name = "template"
+version = "0.1.0"
 description = ""
 readme = "README.md"
 requires-python = ">=3.10"
@@ -27,31 +26,30 @@ dependencies = [
   "wcwidth",
   "rich",
   "graphviz",
+  "pdm",
 ]
 
 # also self install automind
 [build-system]
 requires = ["setuptools"]
 
-# define package entry
-[tool.setuptools.packages.find]
-where = ["src"]
+[tool.pdm.scripts]
 
 # more setting refer to: https://microsoft.github.io/pyright/#/configuration?id=sample-pyprojecttoml-file
 [tool.pyright]
-disableOrganizeImports = true
 include = ["src"]
 reportMissingTypeStubs = false
 useLibraryCodeForTypes = false
 extraPaths = ["typings"]
-autoSearchPaths = true
-diagnosticMode = "workspace"
 typeCheckingMode = "standard"
 
+[tool.ruff]
+line-length = 80
 
 [tool.ruff.lint]
 ignore = ["F403", "E402"]
 exclude = ["**/__init__.py"]
 
-[tool.ruff]
-line-length = 80
+# define package entry
+[tool.setuptools.packages.find]
+where = ["src"]
