@@ -11,7 +11,12 @@ M.base46 = {
   hl_override = {
     Comment = { italic = true },
     ["@comment"] = { italic = true },
+    ["@comment.todo"] = {
+      bg = "green",
+    },
+
     -- NvimTreeOpenedFolderName = { fg = "green", bold = true },
+
     St_EmptySpace = {
       bg = "NONE",
     },
