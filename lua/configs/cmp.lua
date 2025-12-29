@@ -64,25 +64,37 @@ local options = {
       select = auto_select,
     }),
 
-    -- ["<Tab>"] = cmp.mapping(function(fallback)
-    --   if cmp.visible() then
-    --     cmp.select_next_item({ behavior = cmp_types.cmp.SelectBehavior.Insert })
-    --   elseif require("luasnip").expand_or_jumpable() then
-    --     require("luasnip").expand_or_jump()
-    --   else
-    --     fallback()
-    --   end
-    -- end, { "i", "s" }),
-    --
-    -- ["<S-Tab>"] = cmp.mapping(function(fallback)
-    --   if cmp.visible() then
-    --     cmp.select_prev_item({ behavior = cmp_types.cmp.SelectBehavior.Insert })
-    --   elseif require("luasnip").jumpable(-1) then
-    --     require("luasnip").jump(-1)
-    --   else
-    --     fallback()
-    --   end
-    -- end, { "i", "s" }),
+    ["<Tab>"] = cmp.mapping(function(fallback)
+      -- if cmp.visible() then
+      --   cmp.select_next_item({ behavior = cmp_types.cmp.SelectBehavior.Insert })
+      -- elseif require("luasnip").expand_or_jumpable() then
+      --   require("luasnip").expand_or_jump()
+      -- else
+      --   fallback()
+      -- end
+
+      if (not cmp.visible()) and require("luasnip").expand_or_jumpable() then
+        require("luasnip").expand_or_jump()
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+
+    ["<S-Tab>"] = cmp.mapping(function(fallback)
+      -- if cmp.visible() then
+      --   cmp.select_prev_item({ behavior = cmp_types.cmp.SelectBehavior.Insert })
+      -- elseif require("luasnip").jumpable(-1) then
+      --   require("luasnip").jump(-1)
+      -- else
+      --   fallback()
+      -- end
+
+      if (not cmp.visible()) and require("luasnip").jumpable(-1) then
+        require("luasnip").jump(-1)
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
   },
 
   formatting = {
