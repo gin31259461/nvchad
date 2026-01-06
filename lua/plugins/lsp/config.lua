@@ -305,7 +305,7 @@ return {
             -- fix completion delay: https://github.com/microsoft/pyright/issues/4878
             -- disable useLibraryCodeForTypes and use extra stubs: https://github.com/microsoft/python-type-stubs
             -- createstub: pyright --createstub tensorflow
-            useLibraryCodeForTypes = false,
+            useLibraryCodeForTypes = true,
             stubPath = data_path .. "/lazy/python-type-stubs/stubs",
 
             -- use default typeshed so keep following setting commented

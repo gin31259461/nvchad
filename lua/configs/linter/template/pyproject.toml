@@ -1,6 +1,7 @@
+#:tombi schema.strict = false
 [project]
 name = "template"
-version = "0.1.0"
+version = "0.0.0"
 description = ""
 readme = "README.md"
 requires-python = ">=3.10"
@@ -39,10 +40,8 @@ requires = ["setuptools"]
 # more setting refer to: https://microsoft.github.io/pyright/#/configuration?id=sample-pyprojecttoml-file
 [tool.pyright]
 include = ["src"]
+disableOrganizeImports = true
 reportMissingTypeStubs = false
-useLibraryCodeForTypes = false
-extraPaths = ["typings"]
-typeCheckingMode = "standard"
 
 [tool.ruff]
 line-length = 80
