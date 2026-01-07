@@ -11,21 +11,21 @@ import tseslint from "typescript-eslint";
 const NEXTJS_ROOT_DIR = "./src/";
 
 const eslintConfig = defineConfig([
-  // 1. Base JavaScript Recommended Rules
+  // Base JavaScript Recommended Rules
   // Provides the basic ESLint core rules
   js.configs.recommended,
 
-  // 2. Ignore Patterns
+  // Ignore Patterns
   // Retains the original setting's requirement to ignore the .next folder
   {
     ignores: [".next"],
   },
 
-  // 3. TypeScript Recommended Rules
+  // TypeScript Recommended Rules
   // Enables TypeScript-specific rules and handles conflicts with base JS rules
   ...tseslint.configs.recommended,
 
-  // 4. Environments & Globals
+  // Environments & Globals
   {
     languageOptions: {
       // Enable ES modules syntax parsing
@@ -39,7 +39,7 @@ const eslintConfig = defineConfig([
     },
   },
 
-  // 5. React / React Hooks Rules
+  // React / React Hooks Rules
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     plugins: {
@@ -63,7 +63,7 @@ const eslintConfig = defineConfig([
       "no-unused-vars": "off",
       "react/react-in-jsx-scope": "off",
 
-      // ** Unused Variables Fix - Retain Original Setting **
+      // Unused Variables Fix - Retain Original Setting
       // Set '@typescript-eslint/no-unused-vars' to 'warn'
       "@typescript-eslint/no-unused-vars": ["warn", {
         argsIgnorePattern: "^_",
@@ -75,7 +75,7 @@ const eslintConfig = defineConfig([
     },
   },
 
-  // 6. Next.js Specific Rules
+  // Next.js Specific Rules
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     plugins: {
@@ -95,7 +95,7 @@ const eslintConfig = defineConfig([
     },
   },
 
-  // 7. Eslint-Plugin-Import Rules
+  // Eslint-Plugin-Import Rules
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     plugins: {
@@ -114,7 +114,7 @@ const eslintConfig = defineConfig([
       "import/named": "error",
       "import/no-duplicates": "error",
 
-      // ** Import Order Fix - Retain Original Setting **
+      // Import Order Fix - Retain Original Setting
       "import/order": ["warn", {
         "groups": [
           "builtin", // Node.js built-in modules

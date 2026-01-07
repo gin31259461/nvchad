@@ -30,7 +30,7 @@ const eslintConfig = [
       },
     },
     rules: {
-      // ** Fix Unused Variables **
+      // Fix Unused Variables
       // Set TypeScript-related unused variable rules to warn
       "@typescript-eslint/no-unused-vars": ["warn", {
         // Optional configuration, e.g., allowing unused arguments to start with an underscore
@@ -46,7 +46,7 @@ const eslintConfig = [
       //    caughtErrorsIgnorePattern: "^_",
       // }],
 
-      // ** Fix Undefined Variables **
+      // Fix Undefined Variables
       // Although not unused, this is often downgraded from error to avoid conflicts with certain external libraries
       // "no-undef": "warn",
 
