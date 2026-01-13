@@ -8,7 +8,7 @@ M.get_csproj_files = function()
 end
 
 M.get_publish_cmd = function(project)
-  return { "dotnet", "build", project, "-c", "Release", "-o", vim.fn.getcwd() .. "/bin/Release/" }
+  return { "dotnet", "publish", project, "-p:PublishProfile=FolderProfile", "-c", "Release" }
 end
 
 vim.api.nvim_create_user_command("DotnetPublish", function(args)

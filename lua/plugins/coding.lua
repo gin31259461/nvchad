@@ -10,6 +10,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
     lazy = false,
 
+    ---@module "nvim-treesitter"
     ---@type TSConfig
     ---@diagnostic disable-next-line
     opts = {
@@ -125,20 +126,17 @@ return {
 
     ---@type nvim-ts-autotag.PluginSetup
     opts = {
-      -- Defaults
-      enable_close = true, -- Auto close tags
-      enable_rename = true, -- Auto rename pairs of tags
-      enable_close_on_slash = false, -- Auto close on trailing </
+
+      opts = {
+        -- Defaults
+        enable_close = true, -- Auto close tags
+        enable_rename = true, -- Auto rename pairs of tags
+        enable_close_on_slash = false, -- Auto close on trailing </
+      },
 
       aliases = {
         ["pubxml"] = "xml",
       },
-
-      -- per_filetype = {
-      --   ["html"] = {
-      --     enable_close = false,
-      --   },
-      -- },
     },
 
     config = function(_, opts)
