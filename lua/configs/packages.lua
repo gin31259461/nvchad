@@ -47,6 +47,8 @@ local pkgs_with_setup = {
   -- also need dotnet-sdk to be installed: https://dotnet.microsoft.com/zh-tw/download
   -- csharp = { "omnisharp", "omnisharp" },
   csharp = { "roslyn", "roslyn" },
+
+  xml = { "lemminx", "lemminx" },
 }
 
 -- formatter and linter

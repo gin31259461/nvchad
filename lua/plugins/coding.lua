@@ -9,6 +9,9 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     lazy = false,
+
+    ---@type TSConfig
+    ---@diagnostic disable-next-line
     opts = {
       ensure_installed = {
         "html",
@@ -27,6 +30,7 @@ return {
         "luadoc",
         "comment",
         "c_sharp",
+        "xml",
       },
 
       highlight = {
@@ -118,21 +122,27 @@ return {
     "windwp/nvim-ts-autotag",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     event = { "BufReadPre", "BufNewFile" },
+
+    ---@type nvim-ts-autotag.PluginSetup
     opts = {
       -- Defaults
       enable_close = true, -- Auto close tags
       enable_rename = true, -- Auto rename pairs of tags
       enable_close_on_slash = false, -- Auto close on trailing </
+
+      aliases = {
+        ["pubxml"] = "xml",
+      },
+
+      -- per_filetype = {
+      --   ["html"] = {
+      --     enable_close = false,
+      --   },
+      -- },
     },
+
     config = function(_, opts)
-      require("nvim-ts-autotag").setup({
-        opts,
-        per_filetype = {
-          ["html"] = {
-            enable_close = false,
-          },
-        },
-      })
+      require("nvim-ts-autotag").setup(opts)
     end,
   },
 
