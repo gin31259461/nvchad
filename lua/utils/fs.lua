@@ -157,4 +157,40 @@ end
 M.config_path = vim.fn.stdpath("config")
 M.data_path = vim.fn.stdpath("data")
 
+---@class DeleteFilesOpts
+---@field success_message? string
+---@field skip_condition? fun(file_name: string, file_path: string): boolean
+
+---@param path string
+---@param opts? DeleteFilesOpts
+M.delete_files = function(path, opts)
+  opts = opts or {}
+  local files
+  if vim.fn.isdirectory(path) == 1 then
+    files = vim.fn.glob(path .. "/*", false, true)
+  else
+    files = { path }
+  end
+
+  local error_count = 0
+  for _, file in ipairs(files) do
+    local file_name = vim.fn.fnamemodify(file, ":t")
+    if opts.skip_condition and opts.skip_condition(file_name, file) then
+      goto continue
+    end
+
+    local result = vim.fn.delete(file)
+    error_count = error_count + result
+
+    if result ~= 0 then
+      vim.notify("Couldn't delete file '" .. file_name .. "'", vim.log.levels.WARN)
+    end
+    ::continue::
+  end
+
+  if error_count == 0 then
+    vim.print(opts.success_message or "Successfully deleted all files")
+  end
+end
+
 return M

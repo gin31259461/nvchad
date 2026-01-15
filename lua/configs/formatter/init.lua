@@ -81,10 +81,6 @@ return {
       args = { "format" },
       stdin = false,
     },
-    csharpier = {
-      command = "dotnet-csharpier",
-      args = { "--write-stdout" },
-    },
   },
 
   formatters_by_ft = {
