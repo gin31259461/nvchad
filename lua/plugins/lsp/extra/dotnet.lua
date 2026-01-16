@@ -8,6 +8,8 @@ return {
     ft = { "cs" },
     ---@module 'roslyn.config'
     ---@type RoslynNvimConfig
-    opts = {},
+    opts = {
+      filewatching = "roslyn",
+    },
   },
 }

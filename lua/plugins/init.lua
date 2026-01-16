@@ -116,7 +116,7 @@ return {
             local node = state.tree:get_node()
             local path = node:get_id()
             vim.fn.setreg("+", path, "c")
-            vim.notify("Copied " .. vim.fn.fnamemodify(path, ":t") .. " to system clipboard")
+            vim.notify("Copied " .. vim.fn.fnamemodify(path, ":t") .. " full path to system clipboard")
           end,
           ["O"] = function(state)
             ---@diagnostic disable-next-line
