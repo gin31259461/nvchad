@@ -3,6 +3,7 @@ local M = {}
 M.lsp_servers = {}
 M.mason_ensure_installed = {}
 
+-- lsp server
 -- alias = { lsp_config_name, pkg_name }
 local pkgs_with_setup = {
   ------------------- python services -------------------
