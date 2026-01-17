@@ -427,16 +427,39 @@ return {
     -- wiki:            https://github.com/seblyng/roslyn.nvim/wiki
     -- diagnostic hack: https://github.com/seblyng/roslyn.nvim/blob/7d8819239c5e2c4a0d8150da1c00fa583f761704/lsp/roslyn.lua#L33
     roslyn = {
-      -- on_attach = function(client, bufnr)
-      --   local params = { textDocument = vim.lsp.util.make_text_document_params(bufnr) }
-      --
-      --   vim.api.nvim_create_autocmd({ "InsertLeave" }, {
-      --     pattern = "*",
-      --     callback = function()
-      --       client:request("textDocument/diagnostic", params, nil, bufnr)
-      --     end,
-      --   })
-      -- end,
+      on_attach = function(client, bufnr)
+        -- local params = { textDocument = vim.lsp.util.make_text_document_params(bufnr) }
+        --
+        -- vim.api.nvim_create_autocmd({ "InsertLeave" }, {
+        --   pattern = "*",
+        --   callback = function()
+        --     client:request("textDocument/diagnostic", params, nil, bufnr)
+        --   end,
+        -- })
+
+        if client:supports_method("textDocument/semanticTokens") then
+          client.server_capabilities.semanticTokensProvider = nil
+        end
+
+        local roslyn_autorestart_group = vim.api.nvim_create_augroup("RoslynSmartRestart", { clear = true })
+
+        vim.api.nvim_create_autocmd("User", {
+          pattern = { "CreateFile" },
+          group = roslyn_autorestart_group,
+          callback = function(args)
+            if client then
+              vim.schedule(function()
+                vim.notify(
+                  "Detect new .cs file, restarting Roslyn to update namespace index...",
+                  vim.log.levels.INFO,
+                  { title = "Roslyn" }
+                )
+                vim.cmd("Roslyn restart")
+              end)
+            end
+          end,
+        })
+      end,
 
       keys = {
         {

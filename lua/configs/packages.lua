@@ -48,7 +48,7 @@ local pkgs_with_setup = {
   -- csharp = { "omnisharp", "omnisharp" },
   --
   -- requirement:
-  -- .NET 10.0 runtime: https://dotnet.microsoft.com/zh-tw/download/dotnet/thank-you/runtime-10.0.2-windows-x64-installer?cid=getdotnetcore
+  -- .NET 10.0 SDK: https://dotnet.microsoft.com/zh-tw/download/dotnet/10.0
   csharp = { "roslyn", "roslyn" },
 
   xml = { "lemminx", "lemminx" },

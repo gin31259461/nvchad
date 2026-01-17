@@ -9,7 +9,8 @@ return {
     ---@module 'roslyn.config'
     ---@type RoslynNvimConfig
     opts = {
-      filewatching = "roslyn",
+      filewatching = "auto",
+      silent = true,
     },
   },
 }

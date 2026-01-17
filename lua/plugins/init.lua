@@ -104,6 +104,16 @@ return {
         follow_current_file = { enabled = true },
         use_libuv_file_watcher = true,
       },
+
+      event_handlers = {
+        {
+          event = "file_added",
+          handler = function(state)
+            vim.api.nvim_exec_autocmds("User", { pattern = "CreateFile" })
+          end,
+        },
+      },
+
       window = {
         mappings = {
           -- disable fuzzy finder because it's so slow
