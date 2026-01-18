@@ -38,7 +38,7 @@ return {
           end
         end
 
-        local config_path = NvChad.fs.config_path .. "/lua/plugins/db/template/sqlfluff.cfg"
+        local config_path = NvChad.fs.config_path .. "/lua/configs/db/template/sqlfluff.cfg"
         return { "format", "--config", config_path, "-" }
       end,
       stdin = true,

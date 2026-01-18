@@ -72,7 +72,7 @@ return {
       end, { desc = "Open Connection Config" })
 
       vim.keymap.set("n", "<leader>dT", function()
-        vim.cmd("edit " .. config_path .. "/lua/plugins/db/template")
+        vim.cmd("edit " .. config_path .. "/lua/configs/db/template/connections.json")
       end, { desc = "Open DB Config Template" })
 
       vim.filetype.add({
