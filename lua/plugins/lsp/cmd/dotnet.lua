@@ -1,3 +1,7 @@
+-- use the specified sdk:
+-- dotnet --list-sdks
+-- dotnet new globaljson --sdk-version <version>
+
 local M = {}
 
 M.title = "Dotnet"
