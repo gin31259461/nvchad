@@ -31,7 +31,7 @@ return {
         desc = "DAP New Session",
       },
       {
-        "<leader>dr",
+        "<leader>dR",
         "<cmd>DapToggleRepl<CR>",
         desc = "DAP Toggle Repl",
       },
@@ -77,6 +77,9 @@ return {
       vim.keymap.set("n", "<leader>du", function()
         dapui.toggle()
       end, { desc = "DAP Toggle UI" })
+      vim.keymap.set("n", "<leader>dr", function()
+        dap.restart()
+      end, { desc = "DAP Restart" })
     end,
   },
 }
