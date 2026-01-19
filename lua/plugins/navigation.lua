@@ -9,11 +9,18 @@ return {
       "MunifTanjim/nui.nvim",
     },
     keys = {
+      -- {
+      --   "<C-n>",
+      --   "<cmd>Neotree action=show position=left source=last toggle<CR>",
+      --   desc = "Neotree toggle window",
+      -- },
+
       {
         "<C-n>",
-        "<cmd>Neotree action=show position=left source=last toggle<CR>",
-        desc = "neotree toggle window",
+        "<cmd>Neotree position=float source=last toggle<CR>",
+        desc = "Neotree Open Float Window",
       },
+
       {
         "<leader>fe",
         function()
@@ -33,14 +40,14 @@ return {
       {
         "<leader>ge",
         function()
-          require("neo-tree.command").execute({ source = "git_status", toggle = false })
+          require("neo-tree.command").execute({ source = "git_status", toggle = false, position = "float" })
         end,
         desc = "Git Explorer",
       },
       {
         "<leader>be",
         function()
-          require("neo-tree.command").execute({ source = "buffers", toggle = false })
+          require("neo-tree.command").execute({ source = "buffers", toggle = false, position = "float" })
         end,
         desc = "Buffer Explorer",
       },
@@ -100,7 +107,7 @@ return {
             local node = state.tree:get_node()
             local path = node:get_id()
             vim.fn.setreg("+", path, "c")
-            vim.notify("Copied " .. vim.fn.fnamemodify(path, ":t") .. " full path to system clipboard")
+            vim.notify("Copy Full Path of" .. vim.fn.fnamemodify(path, ":t") .. " to Clipboard")
           end,
           ["O"] = function(state)
             ---@diagnostic disable-next-line

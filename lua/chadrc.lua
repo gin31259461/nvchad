@@ -153,7 +153,7 @@ M.ui = {
   tabufline = {
     lazyload = false,
     -- order = { "tree_offset", "buffers", "tabs", "btns" },
-    order = { "tree_offset", "buffers" },
+    order = { "buffers" },
     modules = {
       tree_offset = NvChad.ui.tree_offset,
     },
