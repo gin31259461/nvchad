@@ -9,17 +9,17 @@ return {
       "MunifTanjim/nui.nvim",
     },
     keys = {
-      -- {
-      --   "<C-n>",
-      --   "<cmd>Neotree action=show position=left source=last toggle<CR>",
-      --   desc = "Neotree toggle window",
-      -- },
-
       {
         "<C-n>",
-        "<cmd>Neotree position=float source=last toggle<CR>",
-        desc = "Neotree Open Float Window",
+        "<cmd>Neotree action=show position=left source=last toggle<CR>",
+        desc = "Neotree Toggle Window",
       },
+
+      -- {
+      --   "<C-n>",
+      --   "<cmd>Neotree position=float source=last toggle<CR>",
+      --   desc = "Neotree Open Float Window",
+      -- },
 
       {
         "<leader>fe",
