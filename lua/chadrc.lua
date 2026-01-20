@@ -160,7 +160,7 @@ M.ui = {
   },
 
   cmp = {
-    style = "flat_dark"
+    style = "default"
   }
 }
 
