@@ -1,27 +1,28 @@
-# NvChad Custom Configuration
+# NvChad Configuration
 
-## Prerequisites
+## Pre-requisites
 
-Before using this configuration, ensure the following tools are installed on
-your system:
-
-1. ****Neovim****: Version must be `>= 0.11`.
-2. ****Nerd Font****: Terminal must be configured with a font that supports
-   icons (e.g., JetBrainsMono Nerd Font).
-3. ****System Tools****:
-   - `git`, `make`, `gcc` (Windows users need MinGW or Visual Studio Build
-     Tools).
-   - `ripgrep` (Required for searching).
-   - `curl`, `unzip`, `tar`, `gzip`.
-4. ****Runtimes****:
-   - ****Node.js**** & ****npm/pnpm****: For Web development and installing
-     Mason packages.
-   - ****Python****: Virtualenv is recommended.
-   - ****Dotnet SDK****: For C# development.
+- [Neovim 0.11](https://github.com/neovim/neovim/releases/tag/stable).
+- [Nerd Font](https://www.nerdfonts.com/) as your terminal font.
+  - Make sure the nerd font you set doesn't end with <strong>Mono</strong> to
+    prevent small icons.
+  - <strong>Example : </strong> JetbrainsMono Nerd Font and not
+    **<s>JetbrainsMono Nerd Font Mono</s>**
+  - The *Mono fonts would work too but icons will slightly look smaller.
+- [Tree-sitter-cli](https://github.com/tree-sitter/tree-sitter/blob/master/crates/cli/README.md)
+  is requied by nvim-treesitter plugin to install parsers.
+- [Ripgrep](https://github.com/BurntSushi/ripgrep) is required for grep
+  searching with Telescope <strong>(OPTIONAL)</strong>.
+- GCC, Windows users must have [`mingw`](http://mingw-w64.org/downloads)
+  installed and set on path.
+- Make, Windows users must have
+  [`GnuWin32`](https://sourceforge.net/projects/gnuwin32) installed and set on
+  path.
+- Delete old neovim folders (check commands below)
 
 ## Installation
 
-### For windows setup
+### For Windows Setup
 
 - mingw
 

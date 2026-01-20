@@ -13,8 +13,16 @@ return {
     ---@module "nvim-treesitter"
     ---@type TSConfig
     ---@diagnostic disable-next-line
+    event = { "BufReadPost", "BufNewFile" },
+    cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
+    build = { ":TSUpdate | TSInstallAll", "npm install -g tree-sitter-cli" },
     opts = {
       ensure_installed = {
+        "lua",
+        "luadoc",
+        "printf",
+        "vim",
+        "vimdoc",
         "html",
         "css",
         "javascript",
@@ -27,18 +35,10 @@ return {
         "markdown",
         "sql",
         "prisma",
-        "lua",
-        "luadoc",
         "comment",
         "c_sharp",
         "xml",
       },
-
-      highlight = {
-        enable = true,
-      },
-
-      indent = { enable = true },
     },
   },
 
