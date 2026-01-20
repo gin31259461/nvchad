@@ -35,19 +35,18 @@ return {
         end,
         desc = "Explorer NeoTree (cwd)",
       },
-      { "<leader>e", "<leader>fe", desc = "Explorer NeoTree (Root Dir)", remap = true },
-      { "<leader>E", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
+
       {
         "<leader>ge",
         function()
-          require("neo-tree.command").execute({ source = "git_status", toggle = false, position = "float" })
+          require("neo-tree.command").execute({ source = "git_status", toggle = false })
         end,
         desc = "Git Explorer",
       },
       {
         "<leader>be",
         function()
-          require("neo-tree.command").execute({ source = "buffers", toggle = false, position = "float" })
+          require("neo-tree.command").execute({ source = "buffers", toggle = false })
         end,
         desc = "Buffer Explorer",
       },
