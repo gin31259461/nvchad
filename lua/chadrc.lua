@@ -158,6 +158,10 @@ M.ui = {
       tree_offset = NvChad.ui.tree_offset,
     },
   },
+
+  cmp = {
+    style = "flat_dark"
+  }
 }
 
 M.mason = {
