@@ -1,6 +1,6 @@
 local M = {}
 
-M.packages = require "configs.packages"
+M.packages = require("configs.packages")
 
 M.icons = {
   misc = {
@@ -17,15 +17,28 @@ M.icons = {
     LogPoint = ".>",
   },
   diagnostics = {
-    Error = " ",
-    Warn = " ",
-    Hint = " ",
-    Info = " ",
+    error = " ",
+    warning = " ",
+    hint = " ",
+    info = " ",
   },
   git = {
     added = " ",
     modified = " ",
     removed = " ",
+    unstaged = "󰄱",
+    staged = "󰱒",
+    unmerged = "",
+  },
+  fs = {
+    default = "󰈚",
+    folder = {
+      default = "",
+      empty = "",
+      empty_open = "",
+      open = "",
+      symlink = "",
+    },
   },
   kinds = {
     Array = " ",

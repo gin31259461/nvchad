@@ -45,10 +45,10 @@ return {
     severity_sort = true,
     signs = {
       text = {
-        [vim.diagnostic.severity.ERROR] = NvChad.config.icons.diagnostics.Error,
-        [vim.diagnostic.severity.WARN] = NvChad.config.icons.diagnostics.Warn,
-        [vim.diagnostic.severity.HINT] = NvChad.config.icons.diagnostics.Hint,
-        [vim.diagnostic.severity.INFO] = NvChad.config.icons.diagnostics.Info,
+        [vim.diagnostic.severity.ERROR] = NvChad.config.icons.diagnostics.error,
+        [vim.diagnostic.severity.WARN] = NvChad.config.icons.diagnostics.warning,
+        [vim.diagnostic.severity.HINT] = NvChad.config.icons.diagnostics.hint,
+        [vim.diagnostic.severity.INFO] = NvChad.config.icons.diagnostics.info,
       },
     },
 

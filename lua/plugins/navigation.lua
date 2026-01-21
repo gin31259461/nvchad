@@ -1,3 +1,5 @@
+local icons = require("configs").icons
+
 ---@type LazySpec[]
 return {
 
@@ -158,6 +160,7 @@ return {
   {
     "nvim-tree/nvim-tree.lua",
     dependencies = { "nvim-tree/nvim-web-devicons" },
+    ---@type NvimTreeOpts
     opts = {
       filters = { dotfiles = false },
       disable_netrw = true,
@@ -170,25 +173,28 @@ return {
       view = {
         width = 30,
         preserve_window_proportions = true,
-        signcolumn = "no",
+        signcolumn = "yes",
       },
       renderer = {
         root_folder_label = false,
-        highlight_git = true,
+        highlight_git = "all",
+        highlight_diagnostics = "all",
         indent_markers = { enable = true },
         icons = {
           glyphs = {
-            default = "󰈚",
-            folder = {
-              default = "",
-              empty = "",
-              empty_open = "",
-              open = "",
-              symlink = "",
+            default = icons.fs.default,
+            folder = icons.fs.folder,
+            git = {
+              unstaged = icons.git.unstaged,
+              staged = icons.git.staged,
+              unmerged = icons.git.unmerged,
             },
-            git = { unmerged = "" },
           },
         },
+      },
+      diagnostics = {
+        enable = true,
+        icons = icons.diagnostics,
       },
     },
     config = function(_, opts)
