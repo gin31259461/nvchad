@@ -1,4 +1,8 @@
-vim.o.relativenumber = true
+local opt = vim.opt
+local o = vim.o
+local g = vim.g
 
-vim.g.snacks_animate = false
-vim.g.enable_db_plugins = true
+o.relativenumber = true
+
+g.snacks_animate = false
+g.enable_db_plugins = true

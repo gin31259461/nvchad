@@ -450,7 +450,7 @@ return {
             if client then
               vim.schedule(function()
                 vim.notify(
-                  "Detect new .cs file, restarting Roslyn to update namespace index...",
+                  "Detect new .cs file, restarting Roslyn to update namespace index",
                   vim.log.levels.INFO,
                   { title = "Roslyn" }
                 )
