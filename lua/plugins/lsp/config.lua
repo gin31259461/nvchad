@@ -18,10 +18,11 @@
 
 local data_path = vim.fs.normalize(vim.fn.stdpath("data"))
 
----@param opts lsp.ClientCapabilities
+---@param opts? lsp.ClientCapabilities
 local make_client_capabilities = function(opts)
   local capabilities = vim.lsp.protocol.make_client_capabilities()
-  return vim.tbl_deep_extend("force", capabilities, opts)
+  capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
+  return vim.tbl_deep_extend("force", capabilities, opts or {})
 end
 
 ---@type Lsp.Config.Spec
@@ -88,42 +89,7 @@ return {
     end
   end,
 
-  capabilities = make_client_capabilities({
-    textDocument = {
-      completion = {
-        completionItem = {
-          documentationFormat = { "markdown", "plaintext" },
-          snippetSupport = true,
-          preselectSupport = true,
-          insertReplaceSupport = true,
-          labelDetailsSupport = true,
-          deprecatedSupport = true,
-          commitCharactersSupport = true,
-          tagSupport = { valueSet = { 1 } },
-          resolveSupport = {
-            properties = {
-              "documentation",
-              "detail",
-              "additionalTextEdits",
-            },
-          },
-        },
-      },
-    },
-
-    -- workspace = {
-    --   fileOperations = {
-    --     didCreate = true,
-    --     didDelete = true,
-    --     didRename = true,
-    --     dynamicRegistration = true,
-    --   },
-    --   didChangeWatchedFiles = {
-    --     dynamicRegistration = true,
-    --   },
-    -- },
-    --
-  }),
+  capabilities = make_client_capabilities(),
 
   -- https://www.reddit.com/r/neovim/comments/1guifug/lsp_extreme_lag
   -- flags = {
