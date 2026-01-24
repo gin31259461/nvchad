@@ -1,3 +1,5 @@
+-- NOTE: It also requires the correct .NET runtime based on the .NET version used in your project. 
+
 local M = {}
 
 local function pick_dll()
@@ -14,10 +16,6 @@ local function get_dotnet_project_name()
   return vim.fn.getcwd() .. "/bin/Debug/" .. vim.fn.fnamemodify(csproj_files[1], ":t:r") .. ".dll"
 end
 
-local function get_build_cmd()
-  return { "dotnet", "build", "-c", "Debug", "-o", vim.fn.getcwd() .. "/bin/Debug/" }
-end
-
 M.setup = function()
   local dap = require("dap")
   local executable = "netcoredbg"
@@ -30,7 +28,7 @@ M.setup = function()
 
   dap.adapters.coreclr = function(callback, config)
     vim.notify("Building project", vim.log.levels.INFO, { title = "Dotnet" })
-    local build_cmd = get_build_cmd()
+    local build_cmd = require("plugins.lsp.cmd.dotnet").get_build_cmd()
 
     vim.fn.jobstart(build_cmd, {
       -- refer to nvim doc: https://neovim.io/doc/user/job_control.html#on_exit

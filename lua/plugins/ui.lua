@@ -1,8 +1,3 @@
-local ignore_msg = {
-  "man.lua",
-  "roslyn: %-32000",
-}
-
 ---@type LazySpec[]
 return {
   {
@@ -59,7 +54,7 @@ return {
         },
         timeout = 3000,
         filter = function(notif)
-          for _, msg in ipairs(ignore_msg) do
+          for _, msg in ipairs(require("configs").ignore_msgs.notify) do
             if notif.msg:find(msg) then
               return false
             end

@@ -1,5 +1,8 @@
+-- lsp full doc: https://neovim.io/doc/user/lsp.html
+
 -- load defaults i.e lua_lsp
 -- require("nvchad.configs.lspconfig").defaults()
+
 pcall(function()
   dofile(vim.g.base46_cache .. "lsp")
 end)
@@ -35,11 +38,6 @@ for _, server in ipairs(NvChad.config.packages.lsp_servers) do
   vim.lsp.enable(server)
 end
 
-local ignore_messages = {
-  "is not accessed",
-  "Unused local",
-}
-
 local default_handler = vim.lsp.handlers["textDocument/publishDiagnostics"]
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = function(err, result, ctx, config)
@@ -47,7 +45,7 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = function(err, result, ctx,
     local filtered_diagnostics = {}
     for _, diagnostic in ipairs(result.diagnostics) do
       local should_keep = true
-      for _, msg in ipairs(ignore_messages) do
+      for _, msg in ipairs(require("configs").ignore_msgs.lsp) do
         if diagnostic.message:find(msg) then
           should_keep = false
           break

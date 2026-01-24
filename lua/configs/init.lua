@@ -84,4 +84,16 @@ M.icons = {
   },
 }
 
+M.ignore_msgs = {
+  lsp = {
+    "is not accessed",
+    "Unused local",
+  },
+
+  notify = {
+    "man.lua",
+    "roslyn: %-32000",
+  },
+}
+
 return M
