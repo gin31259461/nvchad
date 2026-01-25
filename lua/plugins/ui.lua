@@ -67,6 +67,11 @@ return {
       picker = {
         enabled = true,
         win = {
+          list = {
+            wo = {
+              wrap = true,
+            },
+          },
           input = {
             keys = {
               ["<C-u>"] = { "preview_scroll_up", mode = { "i", "n" } },
