@@ -20,7 +20,7 @@ M.setup = function()
   local dap = require("dap")
   local executable = "netcoredbg"
 
-  if NvChad.shell.is_win() then
+  if Core.shell.is_win() then
     -- FIX: The netcoredbg executable must have the .exe extension on Windows, not .cmd
     -- this path will not work because it's .cmd: vim.fn.exepath("netcoredbg")
     executable = vim.fn.stdpath("data") .. "/mason/packages/netcoredbg/netcoredbg/" .. executable .. ".exe"

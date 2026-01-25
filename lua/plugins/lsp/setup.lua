@@ -21,7 +21,7 @@ local default_lsp_config = {
   capabilities = lspconfig_opts.capabilities,
 }
 
-for _, server in ipairs(NvChad.config.packages.lsp_servers) do
+for _, server in ipairs(Core.config.packages.lsp_servers) do
   local server_opts = vim.tbl_deep_extend("force", default_lsp_config, servers[server] or {})
 
   if type(lspconfig_opts.disable_default_settings[server]) == "table" then

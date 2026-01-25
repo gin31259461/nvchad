@@ -46,26 +46,26 @@ M.path = function()
     return ""
   end
 
-  local relative_path = NvChad.fs.pretty_path(nil, { only_cwd = true })
+  local relative_path = Core.fs.pretty_path(nil, { only_cwd = true })
   local dir = vim.fs.dirname(relative_path)
   local filename = vim.fn.fnamemodify(relative_path, ":t")
-  local icon = NvChad.hl.statusline.current_file .. "󰈚"
+  local icon = Core.hl.statusline.current_file .. "󰈚"
 
   if filename ~= "" then
-    icon = NvChad.ui.get_file_icon(filename, { has_hl = true })
+    icon = Core.ui.get_file_icon(filename, { has_hl = true })
   end
 
   filename = (filename == "" and "Empty") or filename
 
   -- set hl and indent
   icon = icon .. " "
-  filename = NvChad.hl.statusline.current_file .. filename
+  filename = Core.hl.statusline.current_file .. filename
 
   if dir == "." then
     return icon .. filename
   end
 
-  return icon .. NvChad.hl.statusline.text .. dir .. "/" .. filename
+  return icon .. Core.hl.statusline.text .. dir .. "/" .. filename
 end
 
 M.lsp_symbols = function()
@@ -84,7 +84,7 @@ M.lsp_symbols = function()
     local symbols = M.state.lsp_symbols()
 
     if symbols ~= "" then
-      return NvChad.hl.statusline.current_file .. sep .. M.pretty_symbol_path(symbols, 3)
+      return Core.hl.statusline.current_file .. sep .. M.pretty_symbol_path(symbols, 3)
     end
   end
 
@@ -95,7 +95,7 @@ M.current_lsp = function()
   if rawget(vim, "lsp") then
     for _, client in ipairs(vim.lsp.get_clients()) do
       if client.attached_buffers[M.stbufnr()] then
-        return NvChad.hl.statusline.active_context
+        return Core.hl.statusline.active_context
           .. ((vim.o.columns > 100 and "   LSP ~ " .. client.name .. " ") or "   LSP ")
         -- return hl .. "   LSP "
       end

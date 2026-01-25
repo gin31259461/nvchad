@@ -2,7 +2,7 @@
 -- custom command of debug console: https://github.com/mfussenegger/nvim-dap/blob/a479e25ed5b5d331fb46ee4b9e160ff02ac64310/doc/dap.txt#L955
 
 local debugger_path = vim.fn.stdpath("config") .. "/lua/plugins/debugger"
-local debuggers = NvChad.fs.scandir(debugger_path, "file")
+local debuggers = Core.fs.scandir(debugger_path, "file")
 
 ---@type LazySpec[]
 return {

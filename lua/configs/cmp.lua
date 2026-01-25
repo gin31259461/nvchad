@@ -2,7 +2,7 @@ pcall(function()
   dofile(vim.g.base46_cache .. "cmp")
 end)
 
-vim.o.pumheight = select(2, NvChad.ui.get_completion_window_size())
+vim.o.pumheight = select(2, Core.ui.get_completion_window_size())
 
 local cmp = require("cmp")
 local cmp_types = require("cmp.types")
@@ -23,8 +23,8 @@ local options = {
       -- border = defaults.window.documentation.border,
 
       scrollbar = true,
-      max_width = select(1, NvChad.ui.get_doc_window_size()),
-      max_height = select(2, NvChad.ui.get_doc_window_size()),
+      max_width = select(1, Core.ui.get_doc_window_size()),
+      max_height = select(2, Core.ui.get_doc_window_size()),
     },
   },
   completion = { completeopt = "menu,menuone,noinsert" .. (auto_select and "" or ",noselect") },
@@ -60,7 +60,7 @@ local options = {
       end,
     }),
 
-    ["<CR>"] = NvChad.cmp.confirm({
+    ["<CR>"] = Core.cmp.confirm({
       select = auto_select,
     }),
 
@@ -100,8 +100,8 @@ local options = {
   formatting = {
     fields = { "kind", "abbr", "menu" },
     format = function(entry, item)
-      local icons = NvChad.config.icons.kinds
-      local max_width = select(1, NvChad.ui.get_completion_window_size())
+      local icons = Core.config.icons.kinds
+      local max_width = select(1, Core.ui.get_completion_window_size())
       if icons[item.kind] then
         -- with text
         -- item.kind = icons[item.kind] .. item.kind

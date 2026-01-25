@@ -12,10 +12,10 @@ return {
         cmd = "DB",
       },
     },
-    ft = NvChad.ft.sql_ft,
+    ft = Core.ft.sql_ft,
     init = function()
       vim.api.nvim_create_autocmd("FileType", {
-        pattern = NvChad.ft.sql_ft,
+        pattern = Core.ft.sql_ft,
         callback = function()
           local cmp = require("cmp")
 
@@ -36,7 +36,7 @@ return {
   {
     "kristijanhusak/vim-dadbod-ui",
     -- event = { "VeryLazy" },
-    ft = NvChad.ft.sql_ft,
+    ft = Core.ft.sql_ft,
     cmd = { "DBUI", "DBUIToggle", "DBUIAddConnection", "DBUIFindBuffer" },
     dependencies = "tpope/vim-dadbod",
     keys = {
@@ -68,7 +68,7 @@ return {
       })
 
       vim.keymap.set("n", "<leader>dC", function()
-        vim.cmd("edit " .. NvChad.str.rstrip_slash(vim.g.db_ui_save_location) .. "/connections.json")
+        vim.cmd("edit " .. Core.str.rstrip_slash(vim.g.db_ui_save_location) .. "/connections.json")
       end, { desc = "Open Connection Config" })
 
       vim.keymap.set("n", "<leader>dT", function()

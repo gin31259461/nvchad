@@ -31,19 +31,19 @@ return {
     ["sqlfluff"] = {
       command = "sqlfluff",
       args = function()
-        for _, file in ipairs(NvChad.fs.sqlfluff_pattern) do
-          local path = NvChad.fs.get_root() .. "/" .. file
+        for _, file in ipairs(Core.fs.sqlfluff_pattern) do
+          local path = Core.fs.get_root() .. "/" .. file
           if vim.loop.fs_stat(path) == 0 then
             return { "format", "-" }
           end
         end
 
-        local config_path = NvChad.fs.config_path .. "/lua/configs/db/template/sqlfluff.cfg"
+        local config_path = Core.fs.config_path .. "/lua/configs/db/template/sqlfluff.cfg"
         return { "format", "--config", config_path, "-" }
       end,
       stdin = true,
       -- cwd = util.root_file(NvChad.fs.sqlfluff_pattern),
-      cwd = NvChad.fs.get_root,
+      cwd = Core.fs.get_root,
       require_cwd = true,
     },
     ["sql_formatter"] = {
@@ -69,7 +69,7 @@ return {
     },
     ["prisma_fmt"] = {
       command = function()
-        if NvChad.shell.is_win() then
+        if Core.shell.is_win() then
           return vim.fn.getcwd() .. "/node_modules/.bin/prisma.CMD"
         end
 

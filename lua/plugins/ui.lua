@@ -92,7 +92,7 @@ return {
       {
         "<leader>D",
         function()
-          NvChad.snacks.dashboard()
+          Core.snacks.dashboard()
         end,
         desc = "Open Dashboard",
       },
@@ -101,7 +101,7 @@ return {
       {
         "<leader>n",
         function()
-          NvChad.snacks.picker.notifications()
+          Core.snacks.picker.notifications()
         end,
         desc = "Notification History",
       },
@@ -110,42 +110,42 @@ return {
       {
         "<leader>fb",
         function()
-          NvChad.snacks.picker.buffers()
+          Core.snacks.picker.buffers()
         end,
         desc = "Buffers",
       },
       {
         "<leader>fc",
         function()
-          NvChad.snacks.picker.files({ cwd = vim.fn.stdpath("config") })
+          Core.snacks.picker.files({ cwd = vim.fn.stdpath("config") })
         end,
         desc = "Find Config File",
       },
       {
         "<leader>ff",
         function()
-          NvChad.snacks.picker.files()
+          Core.snacks.picker.files()
         end,
         desc = "Find Files",
       },
       {
         "<leader>fg",
         function()
-          NvChad.snacks.picker.git_files()
+          Core.snacks.picker.git_files()
         end,
         desc = "Find Git Files",
       },
       {
         "<leader>fp",
         function()
-          NvChad.snacks.picker.projects()
+          Core.snacks.picker.projects()
         end,
         desc = "Projects",
       },
       {
         "<leader>fr",
         function()
-          NvChad.snacks.picker.recent()
+          Core.snacks.picker.recent()
         end,
         desc = "Recent",
       },
@@ -154,49 +154,49 @@ return {
       {
         "<leader>gb",
         function()
-          NvChad.snacks.picker.git_branches()
+          Core.snacks.picker.git_branches()
         end,
         desc = "Git Branches",
       },
       {
         "<leader>gl",
         function()
-          NvChad.snacks.picker.git_log()
+          Core.snacks.picker.git_log()
         end,
         desc = "Git Log",
       },
       {
         "<leader>gL",
         function()
-          NvChad.snacks.picker.git_log_line()
+          Core.snacks.picker.git_log_line()
         end,
         desc = "Git Log Line",
       },
       {
         "<leader>gs",
         function()
-          NvChad.snacks.picker.git_status()
+          Core.snacks.picker.git_status()
         end,
         desc = "Git Status",
       },
       {
         "<leader>gS",
         function()
-          NvChad.snacks.picker.git_stash()
+          Core.snacks.picker.git_stash()
         end,
         desc = "Git Stash",
       },
       {
         "<leader>gd",
         function()
-          NvChad.snacks.picker.git_diff()
+          Core.snacks.picker.git_diff()
         end,
         desc = "Git Diff (Hunks)",
       },
       {
         "<leader>gf",
         function()
-          NvChad.snacks.picker.git_log_file()
+          Core.snacks.picker.git_log_file()
         end,
         desc = "Git Log File",
       },
@@ -204,28 +204,28 @@ return {
       {
         "<leader>sb",
         function()
-          NvChad.snacks.picker.lines()
+          Core.snacks.picker.lines()
         end,
         desc = "Buffer Lines",
       },
       {
         "<leader>sB",
         function()
-          NvChad.snacks.picker.grep_buffers()
+          Core.snacks.picker.grep_buffers()
         end,
         desc = "Grep Open Buffers",
       },
       {
         "<leader>sg",
         function()
-          NvChad.snacks.picker.grep()
+          Core.snacks.picker.grep()
         end,
         desc = "Grep",
       },
       {
         "<leader>sw",
         function()
-          NvChad.snacks.picker.grep_word()
+          Core.snacks.picker.grep_word()
         end,
         desc = "Visual selection or word",
         mode = { "n", "x" },
@@ -235,49 +235,49 @@ return {
       {
         '<leader>s"',
         function()
-          NvChad.snacks.picker.registers()
+          Core.snacks.picker.registers()
         end,
         desc = "Registers",
       },
       {
         "<leader>s/",
         function()
-          NvChad.snacks.picker.search_history()
+          Core.snacks.picker.search_history()
         end,
         desc = "Search History",
       },
       {
         "<leader>sa",
         function()
-          NvChad.snacks.picker.autocmds()
+          Core.snacks.picker.autocmds()
         end,
         desc = "Autocmds",
       },
       {
         "<leader>sc",
         function()
-          NvChad.snacks.picker.command_history()
+          Core.snacks.picker.command_history()
         end,
         desc = "Command History",
       },
       {
         "<leader>sC",
         function()
-          NvChad.snacks.picker.commands()
+          Core.snacks.picker.commands()
         end,
         desc = "Commands",
       },
       {
         "<leader>sd",
         function()
-          NvChad.snacks.picker.diagnostics()
+          Core.snacks.picker.diagnostics()
         end,
         desc = "Diagnostics",
       },
       {
         "<leader>sD",
         function()
-          NvChad.snacks.picker.diagnostics_buffer()
+          Core.snacks.picker.diagnostics_buffer()
         end,
         desc = "Buffer Diagnostics",
       },
@@ -291,77 +291,77 @@ return {
       {
         "<leader>sH",
         function()
-          NvChad.snacks.picker.highlights()
+          Core.snacks.picker.highlights()
         end,
         desc = "Highlights",
       },
       {
         "<leader>si",
         function()
-          NvChad.snacks.picker.icons()
+          Core.snacks.picker.icons()
         end,
         desc = "Icons",
       },
       {
         "<leader>sj",
         function()
-          NvChad.snacks.picker.jumps()
+          Core.snacks.picker.jumps()
         end,
         desc = "Jumps",
       },
       {
         "<leader>sk",
         function()
-          NvChad.snacks.picker.keymaps()
+          Core.snacks.picker.keymaps()
         end,
         desc = "Keymaps",
       },
       {
         "<leader>sl",
         function()
-          NvChad.snacks.picker.loclist()
+          Core.snacks.picker.loclist()
         end,
         desc = "Location List",
       },
       {
         "<leader>sm",
         function()
-          NvChad.snacks.picker.marks()
+          Core.snacks.picker.marks()
         end,
         desc = "Marks",
       },
       {
         "<leader>sM",
         function()
-          NvChad.snacks.picker.man()
+          Core.snacks.picker.man()
         end,
         desc = "Man Pages",
       },
       {
         "<leader>sp",
         function()
-          NvChad.snacks.picker.lazy()
+          Core.snacks.picker.lazy()
         end,
         desc = "Search for Plugin Spec",
       },
       {
         "<leader>sq",
         function()
-          NvChad.snacks.picker.qflist()
+          Core.snacks.picker.qflist()
         end,
         desc = "Quickfix List",
       },
       {
         "<leader>sR",
         function()
-          NvChad.snacks.picker.resume()
+          Core.snacks.picker.resume()
         end,
         desc = "Resume",
       },
       {
         "<leader>su",
         function()
-          NvChad.snacks.picker.undo()
+          Core.snacks.picker.undo()
         end,
         desc = "Undo History",
       },
@@ -377,7 +377,7 @@ return {
       {
         "<leader>gg",
         function()
-          NvChad.snacks.lazygit()
+          Core.snacks.lazygit()
         end,
         desc = "Lazygit",
       },
@@ -495,8 +495,8 @@ return {
 
             -- HACK
             size = {
-              max_width = select(1, NvChad.ui.get_doc_window_size()),
-              max_height = select(2, NvChad.ui.get_doc_window_size()),
+              max_width = select(1, Core.ui.get_doc_window_size()),
+              max_height = select(2, Core.ui.get_doc_window_size()),
             },
           },
         },
@@ -516,8 +516,8 @@ return {
 
             -- HACK
             size = {
-              max_width = select(1, NvChad.ui.get_doc_window_size()),
-              max_height = select(2, NvChad.ui.get_doc_window_size()),
+              max_width = select(1, Core.ui.get_doc_window_size()),
+              max_height = select(2, Core.ui.get_doc_window_size()),
             },
           },
         },

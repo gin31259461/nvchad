@@ -29,7 +29,7 @@ M.harpoon.short_path_length = 8
 ---@param path string
 ---@return string
 M.harpoon.format_display = function(path)
-  local icon = NvChad.ui.get_file_icon(path)
+  local icon = Core.ui.get_file_icon(path)
   return "  " .. icon .. " " .. path
 end
 
@@ -42,13 +42,13 @@ M.harpoon.highlight_current_file = function()
         end
 
         local short_path =
-          NvChad.fs.pretty_path(cx.current_file, { length = M.harpoon.short_path_length, only_cwd = true })
+          Core.fs.pretty_path(cx.current_file, { length = M.harpoon.short_path_length, only_cwd = true })
 
         if short_path == "" then
           return
         end
 
-        local format_path = NvChad.ui.harpoon.format_display(short_path)
+        local format_path = Core.ui.harpoon.format_display(short_path)
         -- name_of_harpoon = string.gsub(name_of_harpoon, "%-", "%%-")
         name_of_harpoon = string.gsub(name_of_harpoon, "([%-%[%]])", "%%%1")
         if string.find(format_path, name_of_harpoon) then
@@ -57,7 +57,7 @@ M.harpoon.highlight_current_file = function()
 
           vim.api.nvim_buf_set_extmark(cx.bufnr, vim.api.nvim_create_namespace("harpoon"), line_number - 1, 2, {
             end_col = #line,
-            hl_group = NvChad.hl.util.get_hl_name_without_syntax(NvChad.hl.statusline.active_context),
+            hl_group = Core.hl.util.get_hl_name_without_syntax(Core.hl.statusline.active_context),
           })
           -- set the position of the cursor in the harpoon menu to the start of the current buffer line
           vim.api.nvim_win_set_cursor(cx.win_id, { line_number, 0 })

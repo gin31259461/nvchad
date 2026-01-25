@@ -4,7 +4,7 @@ local M = {}
 local debugpy_exists = function()
   local venv_path = py_cmd.get_venv_path()
 
-  if NvChad.shell.is_win() then
+  if Core.shell.is_win() then
     venv_path = venv_path .. "/Scripts/debugpy.exe"
   else
     venv_path = venv_path .. "/bin/debugpy"

@@ -12,7 +12,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("options")
-_G.NvChad = require("utils")
+_G.Core = require("utils")
 
 -- load plugins
 require("lazy").setup({
@@ -26,9 +26,9 @@ require("lazy").setup({
   { import = "plugins" },
 }, require("configs.lazy"))
 
-_G.NvChad.snacks = require("snacks")
+_G.Core.snacks = require("snacks")
 -- setup all required tools
-NvChad.setup()
+Core.setup()
 
 -- load theme
 pcall(function()

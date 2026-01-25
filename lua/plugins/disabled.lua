@@ -24,7 +24,7 @@ local disabled_plugins = {
       {
         "<leader>fe",
         function()
-          require("neo-tree.command").execute({ toggle = false, dir = NvChad.fs.get_root() })
+          require("neo-tree.command").execute({ toggle = false, dir = Core.fs.get_root() })
         end,
         desc = "Explorer NeoTree (Root Dir)",
       },
@@ -132,7 +132,7 @@ local disabled_plugins = {
     },
     config = function(_, opts)
       local function on_move(data)
-        NvChad.snacks.rename.on_rename_file(data.source, data.destination)
+        Core.snacks.rename.on_rename_file(data.source, data.destination)
       end
 
       local events = require("neo-tree.events")

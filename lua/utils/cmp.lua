@@ -121,7 +121,7 @@ function M.confirm(opts)
   }, opts or {})
   return function(fallback)
     if cmp.core.view:visible() or vim.fn.pumvisible() == 1 then
-      NvChad.create_undo()
+      Core.create_undo()
       if cmp.confirm(opts) then
         return
       end
@@ -147,7 +147,7 @@ function M.expand(snippet)
     local msg = ok and "Failed to parse snippet,\nbut was able to fix it automatically."
       or ("Failed to parse snippet.\n" .. err)
 
-    NvChad[ok and "warn" or "error"](
+    Core[ok and "warn" or "error"](
       ([[%s
   ```%s
   %s
@@ -176,18 +176,18 @@ function M.setup(opts)
     if ok then
       return ret
     end
-    return NvChad.cmp.snippet_preview(input)
+    return Core.cmp.snippet_preview(input)
   end
 
   local cmp = require("cmp")
   cmp.setup(opts)
   cmp.event:on("confirm_done", function(event)
     if vim.tbl_contains(opts.auto_brackets or {}, vim.bo.filetype) then
-      NvChad.cmp.auto_brackets(event.entry)
+      Core.cmp.auto_brackets(event.entry)
     end
   end)
   cmp.event:on("menu_opened", function(event)
-    NvChad.cmp.add_missing_snippet_docs(event.window)
+    Core.cmp.add_missing_snippet_docs(event.window)
   end)
 end
 

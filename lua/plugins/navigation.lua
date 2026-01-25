@@ -114,7 +114,7 @@ return {
         --
         create_list_item = function(config, value)
           value = value
-            or NvChad.fs.make_relative_path(
+            or Core.fs.make_relative_path(
               vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()),
               config.get_root_dir()
             )
@@ -130,9 +130,9 @@ return {
             context = {
               row = pos[1],
               col = pos[2],
-              short_path = NvChad.fs.pretty_path(
+              short_path = Core.fs.pretty_path(
                 value,
-                { length = NvChad.ui.harpoon.short_path_length, only_cwd = true }
+                { length = Core.ui.harpoon.short_path_length, only_cwd = true }
               ),
             },
           }
@@ -140,7 +140,7 @@ return {
 
         display = function(list_item)
           local path = list_item.context.short_path or ""
-          return NvChad.ui.harpoon.format_display(path)
+          return Core.ui.harpoon.format_display(path)
         end,
       },
     },
@@ -151,7 +151,7 @@ return {
       harpoon:setup(opts)
 
       -- this will set cursor to current file
-      harpoon:extend(NvChad.ui.harpoon.highlight_current_file())
+      harpoon:extend(Core.ui.harpoon.highlight_current_file())
 
       vim.keymap.set("n", "<leader>a", function()
         harpoon:list():add()

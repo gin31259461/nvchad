@@ -49,15 +49,15 @@ local plugins = {
     ---@param opts Lsp.Config.Spec
     config = function(_, opts)
       -- mapping each lspconfig-opt.servers.[server_name].keys
-      NvChad.lsp.on_attach(function(client, buffer)
+      Core.lsp.on_attach(function(client, buffer)
         require("plugins.lsp.keymaps").on_attach(client, buffer)
       end)
 
       -- setup servers
       require("plugins.lsp.setup")
 
-      NvChad.lsp.setup()
-      NvChad.lsp.on_dynamic_capability(require("plugins.lsp.keymaps").on_attach)
+      Core.lsp.setup()
+      Core.lsp.on_dynamic_capability(require("plugins.lsp.keymaps").on_attach)
 
       -- diagnostics signs
       if vim.fn.has("nvim-0.10.0") == 0 then
@@ -73,7 +73,7 @@ local plugins = {
       if vim.fn.has("nvim-0.10") == 1 then
         -- inlay hints
         if opts.inlay_hints.enabled then
-          NvChad.lsp.on_supports_method("textDocument/inlayHint", function(client, buffer)
+          Core.lsp.on_supports_method("textDocument/inlayHint", function(client, buffer)
             if
               vim.api.nvim_buf_is_valid(buffer)
               and vim.bo[buffer].buftype == ""
@@ -86,7 +86,7 @@ local plugins = {
 
         -- code lens
         if opts.codelens.enabled and vim.lsp.codelens then
-          NvChad.lsp.on_supports_method("textDocument/codeLens", function(client, buffer)
+          Core.lsp.on_supports_method("textDocument/codeLens", function(client, buffer)
             vim.lsp.codelens.refresh()
             vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
               buffer = buffer,
@@ -99,7 +99,7 @@ local plugins = {
       if type(opts.diagnostics.virtual_text) == "table" and opts.diagnostics.virtual_text.prefix == "icons" then
         opts.diagnostics.virtual_text.prefix = vim.fn.has("nvim-0.10.0") == 0 and "●"
           or function(diagnostic)
-            local icons = NvChad.config.icons.diagnostics
+            local icons = Core.config.icons.diagnostics
             for d, icon in pairs(icons) do
               if diagnostic.severity == vim.diagnostic.severity[d:upper()] then
                 return icon
@@ -118,7 +118,7 @@ local plugins = {
     opts = function()
       local opts = require("configs.formatter")
 
-      for _, ft in ipairs(NvChad.ft.sql_ft) do
+      for _, ft in ipairs(Core.ft.sql_ft) do
         opts.formatters_by_ft[ft] = opts.formatters_by_ft[ft] or {}
         table.insert(opts.formatters_by_ft[ft], "sqlfluff")
       end
@@ -147,11 +147,11 @@ local plugins = {
 }
 
 local lsp_path = vim.fn.stdpath("config") .. "/lua/plugins/lsp/extra"
-local extra = NvChad.fs.scandir(lsp_path, "file")
+local extra = Core.fs.scandir(lsp_path, "file")
 
 for _, v in ipairs(extra) do
   local extra_plugins = require("plugins.lsp.extra." .. vim.fn.fnamemodify(v, ":r"))
-  plugins = NvChad.merge_plugins_table(plugins, extra_plugins)
+  plugins = Core.merge_plugins_table(plugins, extra_plugins)
 end
 
 return plugins

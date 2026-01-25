@@ -139,13 +139,13 @@ M.ui = {
       "cursor",
     },
     modules = {
-      mode_override = NvChad.statusline.mode,
-      current_lsp = NvChad.statusline.current_lsp,
-      git_hl = NvChad.hl.statusline.git,
-      git_override = NvChad.statusline.git,
-      path = NvChad.statusline.path,
-      lsp_symbols = NvChad.statusline.lsp_symbols,
-      break_point = NvChad.statusline.break_point,
+      mode_override = Core.statusline.mode,
+      current_lsp = Core.statusline.current_lsp,
+      git_hl = Core.hl.statusline.git,
+      git_override = Core.statusline.git,
+      path = Core.statusline.path,
+      lsp_symbols = Core.statusline.lsp_symbols,
+      break_point = Core.statusline.break_point,
     },
   },
 
@@ -165,7 +165,7 @@ M.ui = {
 }
 
 M.mason = {
-  pkgs = NvChad.config.packages.mason_ensure_installed,
+  pkgs = Core.config.packages.mason_ensure_installed,
 }
 
 return M

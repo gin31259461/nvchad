@@ -39,7 +39,7 @@ map("n", "<S-tab>", function()
 end, { desc = "buffer goto prev" })
 
 map("n", "<leader>cd", function()
-  vim.cmd("cd " .. NvChad.fs.get_root())
+  vim.cmd("cd " .. Core.fs.get_root())
 end, { desc = "enter current buffer root" })
 
 -- nvim-tree 
@@ -60,19 +60,19 @@ end, { desc = "terminal new vertical term" })
 
 -- toggleable
 map({ "n", "t" }, "<M-v>", function()
-  if NvChad.ui.check_toggle_nvterm() then
+  if Core.ui.check_toggle_nvterm() then
     require("nvchad.term").toggle({ pos = "vsp", id = "vtoggleTerm" })
   end
 end, { desc = "terminal toggleable vertical term" })
 
 map({ "n", "t" }, "<M-h>", function()
-  if NvChad.ui.check_toggle_nvterm() then
+  if Core.ui.check_toggle_nvterm() then
     require("nvchad.term").toggle({ pos = "sp", id = "htoggleTerm" })
   end
 end, { desc = "terminal toggleable horizontal term" })
 
 map({ "n", "t" }, "<M-i>", function()
-  if NvChad.ui.check_toggle_nvterm() then
+  if Core.ui.check_toggle_nvterm() then
     require("nvchad.term").toggle({ pos = "float", id = "floatTerm" })
   end
 end, { desc = "terminal toggle floating term" })
