@@ -82,7 +82,11 @@ return {
           height = 0.80,
         },
         mappings = {
-          n = { ["q"] = require("telescope.actions").close },
+          n = {
+            ["q"] = require("telescope.actions").close,
+            ["<C-j>"] = require("telescope.actions").move_selection_next,
+            ["<C-k>"] = require("telescope.actions").move_selection_previous,
+          },
         },
       },
 
@@ -130,10 +134,7 @@ return {
             context = {
               row = pos[1],
               col = pos[2],
-              short_path = Core.fs.pretty_path(
-                value,
-                { length = Core.ui.harpoon.short_path_length, only_cwd = true }
-              ),
+              short_path = Core.fs.pretty_path(value, { length = Core.ui.harpoon.short_path_length, only_cwd = true }),
             },
           }
         end,

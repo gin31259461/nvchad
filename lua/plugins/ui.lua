@@ -630,6 +630,13 @@ return {
     "folke/todo-comments.nvim",
     lazy = false,
     dependencies = { "nvim-lua/plenary.nvim" },
+    keys = {
+      {
+        "<leader>tt",
+        "<cmd>TodoTelescope<cr>",
+        desc = "Open ToDo Telescope",
+      },
+    },
     opts = {},
   },
 }

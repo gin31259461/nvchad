@@ -23,6 +23,11 @@ map("n", "<C-c>", "<cmd>%y+<CR>", { desc = "general copy whole file" })
 map({ "n", "x" }, "<leader>fm", function()
   require("conform").format({ lsp_fallback = true })
 end, { desc = "Format file" })
+map("n", "<leader>fu", function()
+  vim.cmd("e ++ff=dos")
+  vim.cmd("set ff=unix")
+  vim.cmd("w")
+end, { desc = "Reload File as UNIX Format (From DOS)" })
 
 -------------------- navigation & buffer --------------------
 map("n", "<leader>bb", "<cmd>enew<CR>", { desc = "buffer new" })
@@ -42,7 +47,7 @@ map("n", "<leader>cd", function()
   vim.cmd("cd " .. Core.fs.get_root())
 end, { desc = "enter current buffer root" })
 
--- nvim-tree 
+-- nvim-tree
 map("n", "<C-n>", "<cmd>NvimTreeToggle<CR>", { desc = "NvimTree Toggle Window" })
 map("n", "<leader>e", "<cmd>NvimTreeFocus<CR>", { desc = "NvimTree Focus Window" })
 
