@@ -21,6 +21,10 @@ M.setup = function()
 
     -- this option only modifiable in MS-Windows, so set value here
     vim.o.shellslash = true
+
+    -- https://github.com/nvim-treesitter/nvim-treesitter/issues/8292#issuecomment-3734228891
+    -- FIX: Compiler detection bug on Windows (treesitter)
+    vim.env.CC = "gcc"
   else
     vim.o.shellcmdflag = "-c"
     vim.o.shellquote = ""

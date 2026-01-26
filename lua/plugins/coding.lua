@@ -5,18 +5,22 @@ end)
 
 ---@type LazySpec[]
 return {
-
   {
+    -- https://github.com/nvim-treesitter/nvim-treesitter/issues/8350
+    -- [Lua]: Invalid node type "substitute"
+    -- Solution: delete nvim-treesitter manually and reinstall
     "nvim-treesitter/nvim-treesitter",
     lazy = false,
+    branch = "main",
+    event = { "BufReadPost", "BufNewFile" },
+    cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
+    build = { ":TSUpdate | TSInstallAll", "npm install -g tree-sitter-cli" },
 
     ---@module "nvim-treesitter"
     ---@type TSConfig
     ---@diagnostic disable-next-line
-    event = { "BufReadPost", "BufNewFile" },
-    cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
-    build = { ":TSUpdate | TSInstallAll", "npm install -g tree-sitter-cli" },
     opts = {
+      install_dir = vim.fn.stdpath("data") .. "/site",
       ensure_installed = {
         "lua",
         "luadoc",
