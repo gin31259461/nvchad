@@ -1,8 +1,8 @@
----@class NvChad.utils.cmp
+---@class Core.util.cmp
 local M = {}
 
----@alias NvChad.utils.cmp.Action fun():boolean?
----@type table<string, NvChad.utils.cmp.Action>
+---@alias Core.util.cmp.Action fun():boolean?
+---@type table<string, Core.util.cmp.Action>
 M.actions = {
   -- Native Snippets
   snippet_forward = function()
@@ -74,7 +74,6 @@ end
 function M.auto_brackets(entry)
   local cmp = require("cmp")
   local Kind = cmp.lsp.CompletionItemKind
-  -- local item = entry:get_completion_item()
   local item = entry.completion_item
   if vim.tbl_contains({ Kind.Function, Kind.Method }, item.kind) then
     local cursor = vim.api.nvim_win_get_cursor(0)
@@ -95,7 +94,6 @@ function M.add_missing_snippet_docs(window)
   local entries = window:get_entries()
   for _, entry in ipairs(entries) do
     if entry:get_kind() == Kind.Snippet then
-      -- local item = entry:get_completion_item()
       local item = entry.completion_item
       if not item.documentation and item.insertText then
         item.documentation = {
@@ -114,10 +112,9 @@ end
 ---@param opts? {select: boolean, behavior: cmp.ConfirmBehavior}
 function M.confirm(opts)
   local cmp = require("cmp")
-  local cmp_types = require("cmp.types")
   opts = vim.tbl_extend("force", {
     select = true,
-    behavior = cmp_types.cmp.ConfirmBehavior.Insert,
+    behavior = cmp.ConfirmBehavior.Insert,
   }, opts or {})
   return function(fallback)
     if cmp.core.view:visible() or vim.fn.pumvisible() == 1 then
@@ -139,7 +136,6 @@ function M.expand(snippet)
   local session = vim.snippet.active() and vim.snippet._session or nil
 
   local ok, err = pcall(vim.snippet.expand, snippet)
-
   if not ok then
     local fixed = M.snippet_fix(snippet)
     ok = pcall(vim.snippet.expand, fixed)
@@ -149,9 +145,9 @@ function M.expand(snippet)
 
     Core[ok and "warn" or "error"](
       ([[%s
-  ```%s
-  %s
-  ```]]):format(msg, vim.bo.filetype, snippet),
+```%s
+%s
+```]]):format(msg, vim.bo.filetype, snippet),
       { title = "vim.snippet" }
     )
   end
@@ -169,7 +165,6 @@ function M.setup(opts)
   end
 
   local parse = require("cmp.utils.snippet").parse
-
   ---@diagnostic disable-next-line
   require("cmp.utils.snippet").parse = function(input)
     local ok, ret = pcall(parse, input)

@@ -88,7 +88,7 @@ map("n", "<leader>wk", function()
   vim.cmd("WhichKey " .. vim.fn.input("WhichKey: "))
 end, { desc = "whichkey query lookup" })
 
--------------------- QoL --------------------
+-------------------- Common --------------------
 map("n", ";", ":", { desc = "CMD enter command mode" })
 map("n", "<", "<<", { desc = "indent backward easily" })
 map("n", ">", ">>", { desc = "indent forward easily" })
@@ -124,6 +124,13 @@ map("n", "<leader>ch", "<cmd>NvCheatsheet<CR>", { desc = "toggle nvcheatsheet" }
 map("n", "<leader>th", function()
   require("nvchad.themes").open()
 end, { desc = "telescope nvchad themes" })
+
+-- Clear search and stop snippet on escape
+map({ "i", "n", "s" }, "<esc>", function()
+  vim.cmd("noh")
+  Core.cmp.actions.snippet_stop()
+  return "<esc>"
+end, { expr = true, desc = "Escape and Clear hlsearch" })
 
 -- map("n", "<leader>n", "<cmd>set nu!<CR>", { desc = "toggle line number" })
 -- map("n", "<leader>rn", "<cmd>set rnu!<CR>", { desc = "toggle relative number" })

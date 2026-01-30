@@ -11,7 +11,7 @@ end
 
 vim.opt.rtp:prepend(lazypath)
 
-require("options")
+require("configs.options")
 _G.Core = require("utils")
 
 -- load plugins
@@ -38,8 +38,8 @@ end)
 
 require("nvchad.options")
 require("nvchad.autocmds")
-require("autocmds")
+require("configs.autocmds")
 
 vim.schedule(function()
-  require("keymaps")
+  require("configs.keymaps")
 end)
