@@ -69,7 +69,7 @@ return {
         win = {
           list = {
             wo = {
-              wrap = true,
+              wrap = false,
             },
           },
           input = {

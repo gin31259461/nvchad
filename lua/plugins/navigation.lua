@@ -69,7 +69,7 @@ return {
         selection_caret = " ",
         entry_prefix = " ",
         sorting_strategy = "ascending",
-        wrap_results = true,
+        wrap_results = false,
         path_display = {
           shorten = { len = 8, exclude = { 1, -1 } },
         },
