@@ -21,9 +21,9 @@ return {
         update_root = false,
       },
       view = {
-        width = 30,
+        width = 40,
         preserve_window_proportions = true,
-        signcolumn = "yes",
+        signcolumn = "no",
       },
       renderer = {
         root_folder_label = false,
