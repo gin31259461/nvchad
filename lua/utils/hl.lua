@@ -135,9 +135,27 @@ M.setup_dynamic_theme = function()
   })
 end
 
+M.setup_dap = function()
+  local colors = require("base46").get_theme_tb("base_30")
+
+  vim.api.nvim_set_hl(0, "DapBreakpointColor", {
+    fg = colors.red,
+  })
+
+  local dap_signs = {
+    DapBreakpoint = { text = "", texthl = "DapBreakpointColor", linehl = "", numhl = "" },
+  }
+
+  for name, sign in pairs(dap_signs) do
+    -- refer to: https://github.com/mfussenegger/nvim-dap/issues/1341#issuecomment-2381393267
+    vim.fn.sign_define(name, sign)
+  end
+end
+
 M.setup = function()
   M.setup_diagnostic()
   M.setup_dynamic_theme()
+  M.setup_dap()
 
   for k, v in pairs(all_underline_hl) do
     vim.api.nvim_set_hl(0, k, vim.tbl_extend("keep", v, shared_underline_hl))
