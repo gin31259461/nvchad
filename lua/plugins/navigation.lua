@@ -43,7 +43,7 @@ return {
         },
       },
       diagnostics = {
-        enable = true,
+        enable = false,
         icons = icons.diagnostics,
       },
     },
