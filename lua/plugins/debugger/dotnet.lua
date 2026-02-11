@@ -1,4 +1,5 @@
 -- NOTE: It also requires the correct .NET runtime based on the .NET version used in your project. 
+-- this dap config refer to: https://codeberg.org/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation#user-content-dotnet
 
 local M = {}
 
@@ -55,7 +56,8 @@ M.setup = function()
       request = "launch",
       program = get_dotnet_project_name,
       cwd = vim.fn.getcwd(),
-      justMyCode = false,
+      justMyCode = true,
+      stopAtEntry = false,
       env = {
         ASPNETCORE_ENVIRONMENT = "Development",
       },
@@ -67,7 +69,8 @@ M.setup = function()
       request = "launch",
       program = pick_dll,
       cwd = vim.fn.getcwd(),
-      justMyCode = false,
+      justMyCode = true,
+      stopAtEntry = false,
       env = {
         ASPNETCORE_ENVIRONMENT = "Development",
       },

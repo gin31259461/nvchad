@@ -143,7 +143,7 @@ M.setup_dap = function()
   })
 
   local dap_signs = {
-    DapBreakpoint = { text = "", texthl = "DapBreakpointColor", linehl = "", numhl = "" },
+    DapBreakpoint = { text = "●", texthl = "DapBreakpointColor", linehl = "", numhl = "" },
   }
 
   for name, sign in pairs(dap_signs) do
