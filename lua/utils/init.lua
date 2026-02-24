@@ -1,18 +1,36 @@
 local LazyUtil = require("lazy.core.util")
 local M = {}
 
+local modules = {
+  lsp = "utils.lsp",
+  ft = "utils.ft",
+  shell = "utils.shell",
+  config = "configs",
+  fs = "utils.fs",
+  statusline = "utils.statusline",
+  cmp = "utils.cmp",
+  hl = "utils.hl",
+  ui = "utils.ui",
+  str = "utils.str",
+  table = "utils.table",
+}
+
 setmetatable(M, {
   __index = function(t, k)
+    if modules[k] then
+      local mod = require(modules[k])
+
+      -- add module into cache
+      t[k] = mod
+
+      return mod
+    end
+
     if LazyUtil[k] then
       return LazyUtil[k]
     end
-    if k == "lazygit" or k == "toggle" then -- HACK: special case for lazygit
-      return M.deprecated[k]()
-    end
-    ---@diagnostic disable-next-line: no-unknown
-    t[k] = require("utils." .. k)
-    M.deprecated.decorate(k, t[k])
-    return t[k]
+
+    return nil
   end,
 })
 
@@ -22,18 +40,6 @@ function M.create_undo()
     vim.api.nvim_feedkeys(M.CREATE_UNDO, "n", false)
   end
 end
-
-M.lsp = require("utils.lsp")
-M.ft = require("utils.ft")
-M.shell = require("utils.shell")
-M.config = require("configs")
-M.fs = require("utils.fs")
-M.statusline = require("utils.statusline")
-M.cmp = require("utils.cmp")
-M.hl = require("utils.hl")
-M.ui = require("utils.ui")
-M.str = require("utils.str")
-M.table = require("utils.table")
 
 ---@diagnostic disable: deprecated
 M.unpack = table.unpack or unpack

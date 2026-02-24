@@ -1,3 +1,15 @@
+-- LSP Lifecycle
+--
+-- 1. Start
+-- 2. Initialize Handshake
+--  - nvim send initialize request
+--  - server response capabilities
+-- 3. Attach
+--  - attach client to current buffer
+-- 4. Handlers
+--  - ex. textDocument/hover
+
+
 local M = {}
 
 ---@alias lsp.Client.filter {id?: number, bufnr?: number, name?: string, method?: string, filter?:fun(client: lsp.Client.filter):boolean}
