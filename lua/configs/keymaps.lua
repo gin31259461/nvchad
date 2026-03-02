@@ -47,10 +47,6 @@ map("n", "<leader>cd", function()
   vim.cmd("cd " .. Core.fs.get_root())
 end, { desc = "enter current buffer root" })
 
--- nvim-tree
-map("n", "<C-n>", "<cmd>NvimTreeToggle<CR>", { desc = "NvimTree Toggle Window" })
-map("n", "<leader>e", "<cmd>NvimTreeFocus<CR>", { desc = "NvimTree Focus Window" })
-
 -------------------- terminal --------------------
 map("t", "<C-x>", "<C-\\><C-N>", { desc = "terminal escape terminal mode" })
 
