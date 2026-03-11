@@ -1,30 +1,30 @@
 local LazyUtil = require("lazy.core.util")
 local M = {}
 
-local modules = {
-  lsp = "utils.lsp",
-  ft = "utils.ft",
-  shell = "utils.shell",
-  config = "configs",
-  fs = "utils.fs",
-  statusline = "utils.statusline",
-  cmp = "utils.cmp",
-  hl = "utils.hl",
-  ui = "utils.ui",
-  str = "utils.str",
-  table = "utils.table",
-}
+-- local modules = {
+--   lsp = "utils.lsp",
+--   ft = "utils.ft",
+--   shell = "utils.shell",
+--   config = "configs",
+--   fs = "utils.fs",
+--   statusline = "utils.statusline",
+--   cmp = "utils.cmp",
+--   hl = "utils.hl",
+--   ui = "utils.ui",
+--   str = "utils.str",
+--   table = "utils.table",
+-- }
 
 setmetatable(M, {
   __index = function(t, k)
-    if modules[k] then
-      local mod = require(modules[k])
-
-      -- add module into cache
-      t[k] = mod
-
-      return mod
-    end
+    -- if modules[k] then
+    --   local mod = require(modules[k])
+    --
+    --   -- add module into cache
+    --   t[k] = mod
+    --
+    --   return mod
+    -- end
 
     if LazyUtil[k] then
       return LazyUtil[k]
@@ -33,6 +33,18 @@ setmetatable(M, {
     return nil
   end,
 })
+
+M.lsp = require("utils.lsp")
+M.ft = require("utils.ft")
+M.shell = require("utils.shell")
+M.config = require("configs")
+M.fs = require("utils.fs")
+M.statusline = require("utils.statusline")
+M.cmp = require("utils.cmp")
+M.hl = require("utils.hl")
+M.ui = require("utils.ui")
+M.str = require("utils.str")
+M.table = require("utils.table")
 
 M.CREATE_UNDO = vim.api.nvim_replace_termcodes("<c-G>u", true, true, true)
 function M.create_undo()
