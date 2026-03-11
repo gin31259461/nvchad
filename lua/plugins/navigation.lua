@@ -9,6 +9,7 @@ return {
   -- https://github.com/stevearc/oil.nvim
   {
     "stevearc/oil.nvim",
+    cond = false,
     ---@module 'oil'
     ---@type oil.SetupOpts
     opts = {},
@@ -183,7 +184,7 @@ return {
   -- doc: https://github.com/nvim-tree/nvim-tree.lua
   {
     "nvim-tree/nvim-tree.lua",
-    cond = false,
+    cond = true,
     dependencies = { "nvim-tree/nvim-web-devicons" },
     ---@type NvimTreeOpts
     opts = {
@@ -220,6 +221,10 @@ return {
       diagnostics = {
         enable = false,
         icons = icons.diagnostics,
+      },
+      git = {
+        enable = true,
+        timeout = 5000,
       },
     },
     keys = {

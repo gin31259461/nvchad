@@ -32,6 +32,7 @@ local pkgs_with_lsp_setup = {
   ------------------- Web -------------------
   html = "html-lsp",
   cssls = "css-lsp",
+  tailwindcss = "tailwindcss-language-server",
   -- vtsls = "vtsls",
   -- ts_ls = "typescript-language-server",
 
