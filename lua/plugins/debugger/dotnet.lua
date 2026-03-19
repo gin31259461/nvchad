@@ -1,4 +1,4 @@
--- NOTE: It also requires the correct .NET runtime based on the .NET version used in your project. 
+-- NOTE: It also requires the correct .NET runtime based on the .NET version used in your project.
 -- this dap config refer to: https://codeberg.org/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation#user-content-dotnet
 
 local M = {}
@@ -60,6 +60,7 @@ M.setup = function()
       stopAtEntry = false,
       env = {
         ASPNETCORE_ENVIRONMENT = "Development",
+        ASPNETCORE_URLS = "http://localhost:5000;http://localhost:5001",
       },
     },
 
