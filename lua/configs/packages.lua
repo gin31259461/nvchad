@@ -1,5 +1,29 @@
 local M = {}
 
+M.treesitter_ensure_installed = {
+  "lua",
+  "luadoc",
+  "printf",
+  "vim",
+  "vimdoc",
+  "html",
+  "css",
+  "javascript",
+  "typescript",
+  "tsx",
+  "c",
+  "cpp",
+  "python",
+  "bash",
+  "markdown",
+  "sql",
+  "prisma",
+  "comment",
+  "c_sharp",
+  "xml",
+  "go",
+}
+
 M.lsp_servers = {}
 M.mason_ensure_installed = {}
 
@@ -50,6 +74,7 @@ local pkgs_with_lsp_setup = {
   jsonls = "json-lsp",
   lua_ls = "lua-language-server",
   sqls = "sqls",
+  gopls = "gopls",
 
   -- also need install bundle from: https://github.com/PowerShell/PowerShellEditorServices
   -- extract zip file to C:/PSES
