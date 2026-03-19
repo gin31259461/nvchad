@@ -74,6 +74,7 @@ M.setup = function()
       stopAtEntry = false,
       env = {
         ASPNETCORE_ENVIRONMENT = "Development",
+        ASPNETCORE_URLS = "http://localhost:5000;http://localhost:5001",
       },
     },
   }
