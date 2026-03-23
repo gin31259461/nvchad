@@ -13,6 +13,7 @@ https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/visual-studio-publ
     <WebPublishMethod>FileSystem</WebPublishMethod>
     <PublishProvider>FileSystem</PublishProvider>
     <PublishProtocol>FileSystem</PublishProtocol>
+    <PublishDir>$(MSBuildProjectDirectory)\bin\Publish</PublishDir>
 
     <!-- <Platform>Any CPU</Platform> -->
     <Configuration>Release</Configuration>
