@@ -241,6 +241,7 @@ return {
         markdown = true,
         help = true,
       },
+      copilot_model = vim.g.copilot_model,
     },
   },
 
