@@ -108,8 +108,8 @@ return {
     event = { "BufReadPre", "BufNewFile" },
 
     ---@type nvim-ts-autotag.PluginSetup
+    ---@diagnostic disable-next-line
     opts = {
-
       opts = {
         -- Defaults
         enable_close = true, -- Auto close tags
@@ -219,4 +219,84 @@ return {
       dofile(vim.g.base46_cache .. "blankline")
     end,
   },
+
+  {
+    "zbirenbaum/copilot.lua",
+    cmd = "Copilot",
+    build = ":Copilot auth",
+    event = "BufReadPost",
+    opts = {
+      suggestion = {
+        enabled = not vim.g.ai_cmp,
+        auto_trigger = true,
+        hide_during_completion = vim.g.ai_cmp,
+        keymap = {
+          accept = false, -- handled by nvim-cmp / blink.cmp
+          next = "<M-]>",
+          prev = "<M-[>",
+        },
+      },
+      panel = { enabled = false },
+      filetypes = {
+        markdown = true,
+        help = true,
+      },
+    },
+  },
+
+  -- add ai_accept action
+  {
+    "zbirenbaum/copilot.lua",
+    opts = function()
+      Core.cmp.actions.ai_accept = function()
+        if require("copilot.suggestion").is_visible() then
+          Core.create_undo()
+          require("copilot.suggestion").accept()
+          return true
+        end
+      end
+
+      vim.keymap.set("i", "<M-l>", Core.cmp.actions.ai_accept, { desc = "accept ai suggestion" })
+    end,
+  },
+
+  -- refer to: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/plugins/extras/ai/copilot.lua
+  vim.g.ai_cmp
+      and {
+        -- copilot cmp source
+        {
+          "hrsh7th/nvim-cmp",
+          optional = true,
+          dependencies = { -- this will only be evaluated if nvim-cmp is enabled
+            {
+              "zbirenbaum/copilot-cmp",
+              opts = {},
+              config = function(_, opts)
+                local copilot_cmp = require("copilot_cmp")
+                copilot_cmp.setup(opts)
+                -- attach cmp source whenever copilot attaches
+                -- fixes lazy-loading issues with the copilot cmp source
+                Core.snacks.util.lsp.on({ name = "copilot" }, function()
+                  copilot_cmp._on_insert_enter({})
+                end)
+              end,
+              specs = {
+                {
+                  "hrsh7th/nvim-cmp",
+                  optional = true,
+                  ---@param opts cmp.ConfigSchema
+                  opts = function(_, opts)
+                    table.insert(opts.sources, 1, {
+                      name = "copilot",
+                      group_index = 1,
+                      priority = 100,
+                    })
+                  end,
+                },
+              },
+            },
+          },
+        },
+      }
+    or nil,
 }

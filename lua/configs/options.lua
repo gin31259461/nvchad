@@ -10,3 +10,4 @@ o.fileformats = "unix,dos"
 
 g.snacks_animate = false
 g.enable_db_plugins = true
+g.ai_cmp = false
