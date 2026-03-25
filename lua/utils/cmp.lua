@@ -22,6 +22,7 @@ M.actions = {
 
 ---@param actions string[]
 ---@param fallback? string|fun()
+---@return fun(): boolean?
 function M.map(actions, fallback)
   return function()
     for _, name in ipairs(actions) do
@@ -62,6 +63,8 @@ function M.snippet_preview(snippet)
 end
 
 -- This function replaces nested placeholders in a snippet with LSP placeholders.
+---@param snippet string
+---@return string
 function M.snippet_fix(snippet)
   local texts = {} ---@type table<number, string>
   return M.snippet_replace(snippet, function(placeholder)
@@ -110,6 +113,7 @@ end
 --  * create an undo point before confirming
 -- This function is both faster and more reliable.
 ---@param opts? {select: boolean, behavior: cmp.ConfirmBehavior}
+---@return fun(fallback: fun())
 function M.confirm(opts)
   local cmp = require("cmp")
   opts = vim.tbl_extend("force", {
@@ -118,7 +122,7 @@ function M.confirm(opts)
   }, opts or {})
   return function(fallback)
     if cmp.core.view:visible() or vim.fn.pumvisible() == 1 then
-      Core.create_undo()
+      require("utils").create_undo()
       if cmp.confirm(opts) then
         return
       end
@@ -127,6 +131,8 @@ function M.confirm(opts)
   end
 end
 
+---Expands a snippet string, with automatic repair on parse failure.
+---@param snippet string
 function M.expand(snippet)
   -- Native sessions don't support nested snippet sessions.
   -- Always use the top-level session.
@@ -143,7 +149,7 @@ function M.expand(snippet)
     local msg = ok and "Failed to parse snippet,\nbut was able to fix it automatically."
       or ("Failed to parse snippet.\n" .. err)
 
-    Core[ok and "warn" or "error"](
+    require("utils")[ok and "warn" or "error"](
       ([[%s
 ```%s
 %s
@@ -171,18 +177,18 @@ function M.setup(opts)
     if ok then
       return ret
     end
-    return Core.cmp.snippet_preview(input)
+    return M.snippet_preview(input)
   end
 
   local cmp = require("cmp")
   cmp.setup(opts)
   cmp.event:on("confirm_done", function(event)
     if vim.tbl_contains(opts.auto_brackets or {}, vim.bo.filetype) then
-      Core.cmp.auto_brackets(event.entry)
+      M.auto_brackets(event.entry)
     end
   end)
   cmp.event:on("menu_opened", function(event)
-    Core.cmp.add_missing_snippet_docs(event.window)
+    M.add_missing_snippet_docs(event.window)
   end)
 end
 

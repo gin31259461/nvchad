@@ -46,6 +46,8 @@ function M.on_attach(on_attach, name)
   })
 end
 
+---Proxy table: indexing with an LSP action name returns a function that applies it.
+---@type table<string, fun()>
 M.action = setmetatable({}, {
   __index = function(_, action)
     return function()
@@ -163,6 +165,7 @@ function M.on_supports_method(method, fn)
   })
 end
 
+---Toggles LSP inlay hints for the current buffer.
 function M.toggle_inlay_hints()
   vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end

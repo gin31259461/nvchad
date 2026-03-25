@@ -2,6 +2,9 @@ if not vim.g.enable_db_plugins then
   return {}
 end
 
+local ft = require("utils.ft")
+local str = require("utils.str")
+
 ---@type LazySpec[]
 return {
   {
@@ -12,10 +15,10 @@ return {
         cmd = "DB",
       },
     },
-    ft = Core.ft.sql_ft,
+    ft = ft.sql_ft,
     init = function()
       vim.api.nvim_create_autocmd("FileType", {
-        pattern = Core.ft.sql_ft,
+        pattern = ft.sql_ft,
         callback = function()
           local cmp = require("cmp")
 
@@ -36,7 +39,7 @@ return {
   {
     "kristijanhusak/vim-dadbod-ui",
     -- event = { "VeryLazy" },
-    ft = Core.ft.sql_ft,
+    ft = ft.sql_ft,
     cmd = { "DBUI", "DBUIToggle", "DBUIAddConnection", "DBUIFindBuffer" },
     dependencies = "tpope/vim-dadbod",
     keys = {
@@ -68,7 +71,7 @@ return {
       })
 
       vim.keymap.set("n", "<leader>dC", function()
-        vim.cmd("edit " .. Core.str.rstrip_slash(vim.g.db_ui_save_location) .. "/connections.json")
+        vim.cmd("edit " .. str.rstrip_slash(vim.g.db_ui_save_location) .. "/connections.json")
       end, { desc = "Open Connection Config" })
 
       vim.keymap.set("n", "<leader>dT", function()

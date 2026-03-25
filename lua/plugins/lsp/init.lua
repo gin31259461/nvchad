@@ -1,5 +1,8 @@
 dofile(vim.g.base46_cache .. "mason")
 
+local utils_lsp = require("utils.lsp")
+local configs = require("configs")
+
 ---@type LazySpec[]
 local plugins = {
   {
@@ -12,9 +15,9 @@ local plugins = {
 
       ui = {
         icons = {
-          package_pending = " ",
-          package_installed = " ",
-          package_uninstalled = " ",
+          package_pending = " ",
+          package_installed = " ",
+          package_uninstalled = " ",
         },
       },
 
@@ -26,13 +29,6 @@ local plugins = {
       },
     },
   },
-
-  -- {
-  --   "williamboman/mason-lspconfig.nvim",
-  --   opts = {
-  --     automatic_enable = false,
-  --   },
-  -- },
 
   {
 
@@ -49,15 +45,15 @@ local plugins = {
     ---@param opts Lsp.Config.Spec
     config = function(_, opts)
       -- mapping each lspconfig-opt.servers.[server_name].keys
-      Core.lsp.on_attach(function(client, buffer)
+      utils_lsp.on_attach(function(client, buffer)
         require("plugins.lsp.keymaps").on_attach(client, buffer)
       end)
 
       -- setup servers
       require("plugins.lsp.setup")
 
-      Core.lsp.setup()
-      Core.lsp.on_dynamic_capability(require("plugins.lsp.keymaps").on_attach)
+      utils_lsp.setup()
+      utils_lsp.on_dynamic_capability(require("plugins.lsp.keymaps").on_attach)
 
       -- diagnostics signs
       if vim.fn.has("nvim-0.10.0") == 0 then
@@ -73,7 +69,7 @@ local plugins = {
       if vim.fn.has("nvim-0.10") == 1 then
         -- inlay hints
         if opts.inlay_hints.enabled then
-          Core.lsp.on_supports_method("textDocument/inlayHint", function(client, buffer)
+          utils_lsp.on_supports_method("textDocument/inlayHint", function(client, buffer)
             if
               vim.api.nvim_buf_is_valid(buffer)
               and vim.bo[buffer].buftype == ""
@@ -86,7 +82,7 @@ local plugins = {
 
         -- code lens
         if opts.codelens.enabled and vim.lsp.codelens then
-          Core.lsp.on_supports_method("textDocument/codeLens", function(client, buffer)
+          utils_lsp.on_supports_method("textDocument/codeLens", function(client, buffer)
             vim.lsp.codelens.refresh()
             vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
               buffer = buffer,
@@ -99,7 +95,7 @@ local plugins = {
       if type(opts.diagnostics.virtual_text) == "table" and opts.diagnostics.virtual_text.prefix == "icons" then
         opts.diagnostics.virtual_text.prefix = vim.fn.has("nvim-0.10.0") == 0 and "●"
           or function(diagnostic)
-            local icons = Core.config.icons.diagnostics
+            local icons = configs.icons.diagnostics
             for d, icon in pairs(icons) do
               if diagnostic.severity == vim.diagnostic.severity[d:upper()] then
                 return icon
@@ -112,46 +108,23 @@ local plugins = {
     end,
   },
 
+  { "microsoft/python-type-stubs" },
+
+  { "Hoffs/omnisharp-extended-lsp.nvim", lazy = true },
+
+  -- https://github.com/seblyng/roslyn.nvim?tab=readme-ov-file#%EF%B8%8F-configuration
   {
-    "stevearc/conform.nvim",
-    event = { "BufWritePost", "BufReadPost", "InsertLeave" },
-    opts = function()
-      local opts = require("configs.formatter")
-
-      for _, ft in ipairs(Core.ft.sql_ft) do
-        opts.formatters_by_ft[ft] = opts.formatters_by_ft[ft] or {}
-        table.insert(opts.formatters_by_ft[ft], "sqlfluff")
-      end
-
-      return opts
-    end,
-  },
-
-  {
-    "mfussenegger/nvim-lint",
-    event = { "BufReadPost", "BufWritePost", "BufNewFile" },
-    opts = function()
-      vim.env.ESLINT_D_PPID = vim.fn.getpid()
-
-      local opts = require("configs.linter")
-
-      -- for _, ft in ipairs(NvChad.ft.sql_ft) do
-      --   opts.linters_by_ft[ft] = opts.linters_by_ft[ft] or {}
-      --   table.insert(opts.linters_by_ft[ft], "sqlfluff")
-      -- end
-
-      return opts
-    end,
-    config = require("plugins.lsp.lint"),
+    "seblyng/roslyn.nvim",
+    ft = { "cs" },
+    ---@module 'roslyn.config'
+    ---@type RoslynNvimConfig
+    opts = {
+      filewatching = "auto",
+      silent = true,
+    },
   },
 }
 
-local lsp_path = vim.fn.stdpath("config") .. "/lua/plugins/lsp/extra"
-local extra = Core.fs.scandir(lsp_path, "file")
-
-for _, v in ipairs(extra) do
-  local extra_plugins = require("plugins.lsp.extra." .. vim.fn.fnamemodify(v, ":r"))
-  plugins = Core.merge_plugins_table(plugins, extra_plugins)
-end
+vim.list_extend(plugins, require("plugins.lsp.typescript-tools"))
 
 return plugins

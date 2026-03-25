@@ -1,5 +1,9 @@
 ---@module "ui"
 
+local statusline = require("utils.statusline")
+local hl = require("utils.hl")
+local configs = require("configs")
+
 -- https://github.com/NvChad/ui/blob/v2.5/lua/nvconfig.lua
 ---@type ChadrcConfig
 local M = {}
@@ -139,13 +143,13 @@ M.ui = {
       "cursor",
     },
     modules = {
-      mode_override = Core.statusline.mode,
-      current_lsp = Core.statusline.current_lsp,
-      git_hl = Core.hl.statusline.git,
-      git_override = Core.statusline.git,
-      path = Core.statusline.path,
-      lsp_symbols = Core.statusline.lsp_symbols,
-      break_point = Core.statusline.break_point,
+      mode_override = statusline.mode,
+      current_lsp = statusline.current_lsp,
+      git_hl = hl.statusline.git,
+      git_override = statusline.git,
+      path = statusline.path,
+      lsp_symbols = statusline.lsp_symbols,
+      break_point = statusline.break_point,
     },
   },
 
@@ -165,7 +169,7 @@ M.ui = {
 }
 
 M.mason = {
-  pkgs = Core.config.packages.mason_ensure_installed,
+  pkgs = configs.packages.mason_ensure_installed,
 }
 
 return M

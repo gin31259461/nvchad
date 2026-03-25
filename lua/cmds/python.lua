@@ -1,5 +1,8 @@
 local M = {}
 
+local shell = require("utils.shell")
+local fs = require("utils.fs")
+
 M.title = "Python"
 
 M.get_venv_path = function()
@@ -21,7 +24,7 @@ M.get_virtual_python_path = function()
 
   local executable_python_path = ""
 
-  if Core.shell.is_win() then
+  if shell.is_win() then
     executable_python_path = venv_path .. "/Scripts/pythonw.exe"
   else
     executable_python_path = venv_path .. "/bin/python"
@@ -57,7 +60,7 @@ end
 
 vim.api.nvim_create_user_command("PyrightReCreateStub", function()
   local typing_path = vim.fn.getcwd() .. "/typings"
-  local exist_stubs = Core.fs.scandir(typing_path, "directory")
+  local exist_stubs = fs.scandir(typing_path, "directory")
   local cmd = M.get_pyright_create_stub_cmd()
 
   vim.ui.select(exist_stubs, { prompt = "Choose exist stub" }, function(item, idx)

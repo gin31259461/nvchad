@@ -72,6 +72,9 @@ M.sqlfluff_pattern = {
   -- "tox.ini",
 }
 
+---@param startpath string
+---@param markers string[]
+---@return string?
 local function find_root_marker(startpath, markers)
   local Path = vim.fn.expand(startpath)
   for _, marker in ipairs(markers) do
@@ -86,6 +89,7 @@ local function find_root_marker(startpath, markers)
   end
 end
 
+---@return string
 function M.get_root()
   local bufname = vim.api.nvim_buf_get_name(0)
 

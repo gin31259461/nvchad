@@ -97,6 +97,7 @@ M.statusline = {
   active_context = "%#active_context#",
 }
 
+---Applies diagnostic highlight overrides using the current theme palette.
 M.setup_diagnostic = function()
   local colors = require("base46").get_theme_tb("base_30")
   local color_tool = require("base46.colors")
@@ -119,6 +120,7 @@ M.setup_diagnostic = function()
   all_hl = vim.tbl_deep_extend("force", all_hl, hl)
 end
 
+---Applies dynamic theme-dependent highlights (FloatBorder, LspInlayHint, etc.).
 M.setup_dynamic_theme = function()
   ---@type Base30Palette
   local colors = require("base46").get_theme_tb("base_30")
@@ -135,6 +137,7 @@ M.setup_dynamic_theme = function()
   })
 end
 
+---Defines DAP (debugger) sign highlights.
 M.setup_dap = function()
   local colors = require("base46").get_theme_tb("base_30")
 
@@ -152,6 +155,7 @@ M.setup_dap = function()
   end
 end
 
+---Runs all highlight setup routines (diagnostic, theme, DAP, underline overrides).
 M.setup = function()
   M.setup_diagnostic()
   M.setup_dynamic_theme()

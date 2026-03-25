@@ -1,6 +1,7 @@
 -- NOTE: It also requires the correct .NET runtime based on the .NET version used in your project.
 -- this dap config refer to: https://codeberg.org/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation#user-content-dotnet
 
+local shell = require("utils.shell")
 local M = {}
 
 local function pick_dll()
@@ -21,7 +22,7 @@ M.setup = function()
   local dap = require("dap")
   local executable = "netcoredbg"
 
-  if Core.shell.is_win() then
+  if shell.is_win() then
     -- FIX: The netcoredbg executable must have the .exe extension on Windows, not .cmd
     -- this path will not work because it's .cmd: vim.fn.exepath("netcoredbg")
     executable = vim.fn.stdpath("data") .. "/mason/packages/netcoredbg/netcoredbg/" .. executable .. ".exe"
@@ -29,7 +30,7 @@ M.setup = function()
 
   dap.adapters.coreclr = function(callback, config)
     vim.notify("Building project", vim.log.levels.INFO, { title = "Dotnet" })
-    local build_cmd = require("plugins.lsp.cmd.dotnet").get_build_cmd()
+    local build_cmd = require("cmds.dotnet").get_build_cmd()
 
     vim.fn.jobstart(build_cmd, {
       -- refer to nvim doc: https://neovim.io/doc/user/job_control.html#on_exit

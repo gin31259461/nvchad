@@ -1,7 +1,11 @@
-pcall(function()
+local ok, err = pcall(function()
   dofile(vim.g.base46_cache .. "syntax")
   dofile(vim.g.base46_cache .. "treesitter")
 end)
+if not ok then vim.notify("[theme] " .. tostring(err), vim.log.levels.WARN) end
+
+local utils = require("utils")
+local utils_cmp = require("utils.cmp")
 
 ---@type LazySpec[]
 return {
@@ -249,15 +253,15 @@ return {
   {
     "zbirenbaum/copilot.lua",
     opts = function()
-      Core.cmp.actions.ai_accept = function()
+      utils_cmp.actions.ai_accept = function()
         if require("copilot.suggestion").is_visible() then
-          Core.create_undo()
+          utils.create_undo()
           require("copilot.suggestion").accept()
           return true
         end
       end
 
-      vim.keymap.set("i", "<M-l>", Core.cmp.actions.ai_accept, { desc = "accept ai suggestion" })
+      vim.keymap.set("i", "<M-l>", utils_cmp.actions.ai_accept, { desc = "accept ai suggestion" })
     end,
   },
 
@@ -277,7 +281,7 @@ return {
                 copilot_cmp.setup(opts)
                 -- attach cmp source whenever copilot attaches
                 -- fixes lazy-loading issues with the copilot cmp source
-                Core.snacks.util.lsp.on({ name = "copilot" }, function()
+                require("snacks").util.lsp.on({ name = "copilot" }, function()
                   copilot_cmp._on_insert_enter({})
                 end)
               end,

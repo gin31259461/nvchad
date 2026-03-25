@@ -20,49 +20,55 @@ M.get_build_cmd = function(project)
   return { "dotnet", "build", project or "", "-c", "Debug", "-o", vim.fn.getcwd() .. "/bin/Debug/" }
 end
 
-vim.api.nvim_create_user_command("DotnetPublish", function(args)
-  vim.ui.select(M.get_csproj_files(), { prompt = "Choose csproj to publish" }, function(item, idx)
-    if item == nil then
-      return
-    end
+---@param verb string prompt verb (e.g. "publish", "build")
+---@param get_cmd fun(project: string): string[]
+---@param msg_start string
+---@param msg_ok string
+---@param msg_fail string
+---@return function
+local function make_dotnet_command(verb, get_cmd, msg_start, msg_ok, msg_fail)
+  return function(_)
+    vim.ui.select(M.get_csproj_files(), { prompt = "Choose csproj to " .. verb }, function(item, _)
+      if item == nil then
+        return
+      end
 
-    vim.notify("Publishing project", vim.log.levels.INFO, { title = M.title })
+      vim.notify(msg_start, vim.log.levels.INFO, { title = M.title })
 
-    local cmd = M.get_publish_cmd(item)
+      vim.fn.jobstart(get_cmd(item), {
+        on_exit = function(_, exit_code, _)
+          if exit_code == 0 then
+            vim.notify(msg_ok, vim.log.levels.INFO, { title = M.title })
+          else
+            vim.notify(msg_fail, vim.log.levels.ERROR, { title = M.title })
+          end
+        end,
+      })
+    end)
+  end
+end
 
-    vim.fn.jobstart(cmd, {
-      on_exit = function(job_id, exit_code, event_type)
-        if exit_code == 0 then
-          vim.notify("Publish project successfully", vim.log.levels.INFO, { title = M.title })
-        else
-          vim.notify("Error occur when publish project", vim.log.levels.ERROR, { title = M.title })
-        end
-      end,
-    })
-  end)
-end, { desc = "Dotnet Publish" })
+vim.api.nvim_create_user_command(
+  "DotnetPublish",
+  make_dotnet_command(
+    "publish", M.get_publish_cmd,
+    "Publishing project",
+    "Publish project successfully",
+    "Error occur when publish project"
+  ),
+  { desc = "Dotnet Publish" }
+)
 
-vim.api.nvim_create_user_command("DotnetBuild", function(args)
-  vim.ui.select(M.get_csproj_files(), { prompt = "Choose csproj to publish" }, function(item, idx)
-    if item == nil then
-      return
-    end
-
-    vim.notify("Building project", vim.log.levels.INFO, { title = M.title })
-
-    local cmd = M.get_build_cmd(item)
-
-    vim.fn.jobstart(cmd, {
-      on_exit = function(job_id, exit_code, event_type)
-        if exit_code == 0 then
-          vim.notify("Build project successfully", vim.log.levels.INFO, { title = M.title })
-        else
-          vim.notify("Error occur when Build project", vim.log.levels.ERROR, { title = M.title })
-        end
-      end,
-    })
-  end)
-end, { desc = "Dotnet Build" })
+vim.api.nvim_create_user_command(
+  "DotnetBuild",
+  make_dotnet_command(
+    "build", M.get_build_cmd,
+    "Building project",
+    "Build project successfully",
+    "Error occur when Build project"
+  ),
+  { desc = "Dotnet Build" }
+)
 
 vim.api.nvim_create_user_command("DotnetGlobalJson", function()
   -- 1. Check if global.json exists in the current working directory

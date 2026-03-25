@@ -1,11 +1,17 @@
 local M = {}
 
+local fs = require("utils.fs")
+local hl = require("utils.hl")
+local ui = require("utils.ui")
+
 local _ignore_ft = { "neo%-tree", "nvdash", "NvTerm_", "trouble", "noice", "harpoon" }
 
+---@return integer
 M.stbufnr = function()
   return vim.api.nvim_win_get_buf(vim.g.statusline_winid or 0)
 end
 
+---@return boolean
 M.is_ignore_ft = function()
   local current_ft = vim.bo.filetype
 
@@ -21,9 +27,9 @@ end
 -- local sep = "  "
 local sep = "  "
 
---- @param symbols string
---- @param length number
---- @return string
+---@param symbols string
+---@param length number
+---@return string
 M.pretty_symbol_path = function(symbols, length)
   -- symbol = icon + name (include hl)
   local parts = {}
@@ -41,33 +47,35 @@ M.pretty_symbol_path = function(symbols, length)
   return table.concat(short_parts, sep)
 end
 
+---@return string
 M.path = function()
   if M.is_ignore_ft() then
     return ""
   end
 
-  local relative_path = Core.fs.pretty_path(nil, { only_cwd = true })
+  local relative_path = fs.pretty_path(nil, { only_cwd = true })
   local dir = vim.fs.dirname(relative_path)
   local filename = vim.fn.fnamemodify(relative_path, ":t")
-  local icon = Core.hl.statusline.current_file .. "󰈚"
+  local icon = hl.statusline.current_file .. "󰈚"
 
   if filename ~= "" then
-    icon = Core.ui.get_file_icon(filename, { has_hl = true })
+    icon = ui.get_file_icon(filename, { has_hl = true })
   end
 
   filename = (filename == "" and "Empty") or filename
 
   -- set hl and indent
   icon = icon .. " "
-  filename = Core.hl.statusline.current_file .. filename
+  filename = hl.statusline.current_file .. filename
 
   if dir == "." then
     return icon .. filename
   end
 
-  return icon .. Core.hl.statusline.text .. dir .. "/" .. filename
+  return icon .. hl.statusline.text .. dir .. "/" .. filename
 end
 
+---@return string
 M.lsp_symbols = function()
   if M.is_ignore_ft() then
     return ""
@@ -84,18 +92,19 @@ M.lsp_symbols = function()
     local symbols = M.state.lsp_symbols()
 
     if symbols ~= "" then
-      return Core.hl.statusline.current_file .. sep .. M.pretty_symbol_path(symbols, 3)
+      return hl.statusline.current_file .. sep .. M.pretty_symbol_path(symbols, 3)
     end
   end
 
   return ""
 end
 
+---@return string
 M.current_lsp = function()
   if rawget(vim, "lsp") then
     for _, client in ipairs(vim.lsp.get_clients()) do
       if client.attached_buffers[M.stbufnr()] then
-        return Core.hl.statusline.active_context
+        return hl.statusline.active_context
           .. ((vim.o.columns > 100 and "   LSP ~ " .. client.name .. " ") or "   LSP ")
         -- return hl .. "   LSP "
       end
@@ -105,6 +114,7 @@ M.current_lsp = function()
   return ""
 end
 
+---@return string
 M.mode = function()
   if type(M.state.mode) == "function" then
     return M.state.mode()
@@ -113,6 +123,7 @@ M.mode = function()
   return ""
 end
 
+---@return string
 M.git = function()
   if not vim.b[M.stbufnr()].gitsigns_head or vim.b[M.stbufnr()].gitsigns_git_status then
     return ""
@@ -129,6 +140,7 @@ M.git = function()
   return " " .. branch_name .. added .. changed .. removed
 end
 
+---@return string
 M.break_point = function()
   return "  %<"
 end

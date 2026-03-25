@@ -1,4 +1,6 @@
 local snacks = require("snacks")
+local ui = require("utils.ui")
+local utils_lsp = require("utils.lsp")
 
 local M = {}
 
@@ -34,8 +36,8 @@ function M.get()
           focus = true,
           silent = true,
           border = "single",
-          max_width = select(1, Core.ui.get_doc_window_size()),
-          max_height = select(2, Core.ui.get_doc_window_size()),
+          max_width = select(1, ui.get_doc_window_size()),
+          max_height = select(2, ui.get_doc_window_size()),
         })
       end,
       desc = "Hover",
@@ -46,8 +48,8 @@ function M.get()
         return vim.lsp.buf.signature_help({
           focus = false,
           silent = true,
-          max_width = select(1, Core.ui.get_doc_window_size()),
-          max_height = select(2, Core.ui.get_doc_window_size()),
+          max_width = select(1, ui.get_doc_window_size()),
+          max_height = select(2, ui.get_doc_window_size()),
           border = "single",
         })
       end,
@@ -60,8 +62,8 @@ function M.get()
         return vim.lsp.buf.signature_help({
           focus = false,
           silent = true,
-          max_width = select(1, Core.ui.get_doc_window_size()),
-          max_height = select(2, Core.ui.get_doc_window_size()),
+          max_width = select(1, ui.get_doc_window_size()),
+          max_height = select(2, ui.get_doc_window_size()),
           border = "single",
         })
       end,
@@ -86,7 +88,7 @@ function M.get()
     },
     { "<leader>cC", vim.lsp.codelens.run, desc = "Run Codelens", mode = { "n", "v" }, has = "codeLens" },
     { "<leader>cc", vim.lsp.codelens.refresh, desc = "Refresh & Display Codelens", mode = { "n" }, has = "codeLens" },
-    { "<leader>ci", Core.lsp.toggle_inlay_hints, desc = "Toggle Inlay Hints", mode = { "n" }, has = "inlayHint" },
+    { "<leader>ci", utils_lsp.toggle_inlay_hints, desc = "Toggle Inlay Hints", mode = { "n" }, has = "inlayHint" },
     {
       "<leader>cR",
       function()
@@ -97,7 +99,7 @@ function M.get()
       has = { "workspace/didRenameFiles", "workspace/willRenameFiles" },
     },
     { "<leader>cr", vim.lsp.buf.rename, desc = "Rename", has = "rename" },
-    { "<leader>cA", Core.lsp.action.source, desc = "Source Action", has = "codeAction" },
+    { "<leader>cA", utils_lsp.action.source, desc = "Source Action", has = "codeAction" },
     {
       "]]",
       function()
@@ -158,7 +160,7 @@ function M.has(buffer, method)
     return false
   end
   method = method:find("/") and method or "textDocument/" .. method
-  local clients = Core.lsp.get_clients({ bufnr = buffer })
+  local clients = utils_lsp.get_clients({ bufnr = buffer })
   for _, client in ipairs(clients) do
     if client:supports_method(method) then
       return true
@@ -175,7 +177,7 @@ function M.resolve(buffer)
   end
   local spec = vim.tbl_extend("force", {}, M.get())
   local opts = require("plugins.lsp.config")
-  local clients = Core.lsp.get_clients({ bufnr = buffer })
+  local clients = utils_lsp.get_clients({ bufnr = buffer })
   for _, client in ipairs(clients) do
     local maps = opts.servers[client.name] and opts.servers[client.name].keys or {}
     vim.list_extend(spec, maps)

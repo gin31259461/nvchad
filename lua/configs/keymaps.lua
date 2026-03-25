@@ -1,21 +1,13 @@
--- nvchad default mappings
--- require "nvchad.mappings"
-
 local map = vim.keymap.set
+local fs = require("utils.fs")
+local ui = require("utils.ui")
+local utils_cmp = require("utils.cmp")
 
 -------------------- movement --------------------
--- map("i", "<C-j>", "<Down>", { desc = "move down" })
--- map("i", "<C-k>", "<Up>", { desc = "move up" })
--- map("i", "<C-h>", "<Left>", { desc = "move left" })
--- map("i", "<C-l>", "<Right>", { desc = "move right" })
-
 map("n", "<C-h>", "<C-w>h", { desc = "switch window left" })
 map("n", "<C-l>", "<C-w>l", { desc = "switch window right" })
 map("n", "<C-j>", "<C-w>j", { desc = "switch window down" })
 map("n", "<C-k>", "<C-w>k", { desc = "switch window up" })
-
--- map("i", "<C-e>", "<End>", { desc = "move end of line" })
--- map("i", "<C-b>", "<ESC>^i", { desc = "move beginning of line" })
 
 -------------------- file --------------------
 map("n", "<C-s>", "<cmd>w<CR>", { desc = "general save file" })
@@ -44,7 +36,7 @@ map("n", "<S-tab>", function()
 end, { desc = "buffer goto prev" })
 
 map("n", "<leader>cd", function()
-  vim.cmd("cd " .. Core.fs.get_root())
+  vim.cmd("cd " .. fs.get_root())
 end, { desc = "enter current buffer root" })
 
 -------------------- terminal --------------------
@@ -61,24 +53,24 @@ end, { desc = "terminal new vertical term" })
 
 -- toggleable
 map({ "n", "t" }, "<M-v>", function()
-  if Core.ui.check_toggle_nvterm() then
+  if ui.check_toggle_nvterm() then
     require("nvchad.term").toggle({ pos = "vsp", id = "vtoggleTerm" })
   end
 end, { desc = "terminal toggleable vertical term" })
 
 map({ "n", "t" }, "<M-h>", function()
-  if Core.ui.check_toggle_nvterm() then
+  if ui.check_toggle_nvterm() then
     require("nvchad.term").toggle({ pos = "sp", id = "htoggleTerm" })
   end
 end, { desc = "terminal toggleable horizontal term" })
 
 map({ "n", "t" }, "<M-i>", function()
-  if Core.ui.check_toggle_nvterm() then
+  if ui.check_toggle_nvterm() then
     require("nvchad.term").toggle({ pos = "float", id = "floatTerm" })
   end
 end, { desc = "terminal toggle floating term" })
 
--------------------- whick key --------------------
+-------------------- which-key --------------------
 map("n", "<leader>wK", "<cmd>WhichKey <CR>", { desc = "whichkey all keymaps" })
 map("n", "<leader>wk", function()
   vim.cmd("WhichKey " .. vim.fn.input("WhichKey: "))
@@ -111,8 +103,6 @@ map("n", "<leader>fd", function()
   vim.diagnostic.open_float()
 end, { desc = "floating diagnostic" })
 
--- map("n", "<leader>ds", vim.diagnostic.setloclist, { desc = "LSP diagnostic loclist" })
-
 -------------------- other --------------------
 map("n", "<leader>mp", "<cmd>MarkdownPreview<CR>", { desc = "toggle markdown preview server" })
 map("n", "<leader>ch", "<cmd>NvCheatsheet<CR>", { desc = "toggle nvcheatsheet" })
@@ -124,9 +114,6 @@ end, { desc = "telescope nvchad themes" })
 -- Clear search and stop snippet on escape
 map({ "i", "n", "s" }, "<esc>", function()
   vim.cmd("noh")
-  Core.cmp.actions.snippet_stop()
+  utils_cmp.actions.snippet_stop()
   return "<esc>"
 end, { expr = true, desc = "Escape and Clear hlsearch" })
-
--- map("n", "<leader>n", "<cmd>set nu!<CR>", { desc = "toggle line number" })
--- map("n", "<leader>rn", "<cmd>set rnu!<CR>", { desc = "toggle relative number" })

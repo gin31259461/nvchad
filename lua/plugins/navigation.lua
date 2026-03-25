@@ -1,12 +1,16 @@
-pcall(function()
+local ok, err = pcall(function()
   dofile(vim.g.base46_cache .. "telescope")
 end)
+if not ok then vim.notify("[theme] " .. tostring(err), vim.log.levels.WARN) end
 
+local fs = require("utils.fs")
+local ui = require("utils.ui")
 local icons = require("configs").icons
 
 ---@type LazySpec[]
 return {
   -- https://github.com/stevearc/oil.nvim
+  -- Disabled: replaced by nvim-tree (below) which provides better NvChad integration
   {
     "stevearc/oil.nvim",
     cond = false,
@@ -27,6 +31,7 @@ return {
     },
   },
 
+  -- Disabled: nvim-tree (below) is used instead; kept for reference
   {
     "nvim-neo-tree/neo-tree.nvim",
     cond = false,
@@ -43,16 +48,10 @@ return {
         desc = "Neotree Toggle Window",
       },
 
-      -- {
-      --   "<C-n>",
-      --   "<cmd>Neotree position=float source=last toggle<CR>",
-      --   desc = "Neotree Open Float Window",
-      -- },
-
       {
         "<leader>fe",
         function()
-          require("neo-tree.command").execute({ toggle = false, dir = Core.fs.get_root() })
+          require("neo-tree.command").execute({ toggle = false, dir = fs.get_root() })
         end,
         desc = "Explorer NeoTree (Root Dir)",
       },
@@ -160,7 +159,7 @@ return {
     },
     config = function(_, opts)
       local function on_move(data)
-        Core.snacks.rename.on_rename_file(data.source, data.destination)
+        require("snacks").rename.on_rename_file(data.source, data.destination)
       end
 
       local events = require("neo-tree.events")
@@ -310,7 +309,7 @@ return {
         --
         create_list_item = function(config, value)
           value = value
-            or Core.fs.make_relative_path(
+            or fs.make_relative_path(
               vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()),
               config.get_root_dir()
             )
@@ -326,14 +325,14 @@ return {
             context = {
               row = pos[1],
               col = pos[2],
-              short_path = Core.fs.pretty_path(value, { length = Core.ui.harpoon.short_path_length, only_cwd = true }),
+              short_path = fs.pretty_path(value, { length = ui.harpoon.short_path_length, only_cwd = true }),
             },
           }
         end,
 
         display = function(list_item)
           local path = list_item.context.short_path or ""
-          return Core.ui.harpoon.format_display(path)
+          return ui.harpoon.format_display(path)
         end,
       },
     },
@@ -344,7 +343,7 @@ return {
       harpoon:setup(opts)
 
       -- this will set cursor to current file
-      harpoon:extend(Core.ui.harpoon.highlight_current_file())
+      harpoon:extend(ui.harpoon.highlight_current_file())
 
       vim.keymap.set("n", "<leader>a", function()
         harpoon:list():add()
