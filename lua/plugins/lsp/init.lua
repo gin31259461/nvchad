@@ -1,9 +1,6 @@
 dofile(vim.g.base46_cache .. "mason")
 
-local utils = require("utils")
 local utils_lsp = require("utils.lsp")
-local fs = require("utils.fs")
-local ft = require("utils.ft")
 local configs = require("configs")
 
 ---@type LazySpec[]
@@ -18,9 +15,9 @@ local plugins = {
 
       ui = {
         icons = {
-          package_pending = " ",
-          package_installed = " ",
-          package_uninstalled = " ",
+          package_pending = " ",
+          package_installed = " ",
+          package_uninstalled = " ",
         },
       },
 
@@ -32,13 +29,6 @@ local plugins = {
       },
     },
   },
-
-  -- {
-  --   "williamboman/mason-lspconfig.nvim",
-  --   opts = {
-  --     automatic_enable = false,
-  --   },
-  -- },
 
   {
 
@@ -118,46 +108,23 @@ local plugins = {
     end,
   },
 
+  { "microsoft/python-type-stubs" },
+
+  { "Hoffs/omnisharp-extended-lsp.nvim", lazy = true },
+
+  -- https://github.com/seblyng/roslyn.nvim?tab=readme-ov-file#%EF%B8%8F-configuration
   {
-    "stevearc/conform.nvim",
-    event = { "BufWritePost", "BufReadPost", "InsertLeave" },
-    opts = function()
-      local opts = require("configs.formatter")
-
-      for _, ft in ipairs(ft.sql_ft) do
-        opts.formatters_by_ft[ft] = opts.formatters_by_ft[ft] or {}
-        table.insert(opts.formatters_by_ft[ft], "sqlfluff")
-      end
-
-      return opts
-    end,
-  },
-
-  {
-    "mfussenegger/nvim-lint",
-    event = { "BufReadPost", "BufWritePost", "BufNewFile" },
-    opts = function()
-      vim.env.ESLINT_D_PPID = vim.fn.getpid()
-
-      local opts = require("configs.linter")
-
-      -- for _, ft in ipairs(NvChad.ft.sql_ft) do
-      --   opts.linters_by_ft[ft] = opts.linters_by_ft[ft] or {}
-      --   table.insert(opts.linters_by_ft[ft], "sqlfluff")
-      -- end
-
-      return opts
-    end,
-    config = require("plugins.lsp.lint"),
+    "seblyng/roslyn.nvim",
+    ft = { "cs" },
+    ---@module 'roslyn.config'
+    ---@type RoslynNvimConfig
+    opts = {
+      filewatching = "auto",
+      silent = true,
+    },
   },
 }
 
-local lsp_path = vim.fn.stdpath("config") .. "/lua/plugins/lsp/extra"
-local extra = fs.scandir(lsp_path, "file")
-
-for _, v in ipairs(extra) do
-  local extra_plugins = require("plugins.lsp.extra." .. vim.fn.fnamemodify(v, ":r"))
-  plugins = utils.merge_plugins_table(plugins, extra_plugins)
-end
+vim.list_extend(plugins, require("plugins.lsp.typescript-tools"))
 
 return plugins

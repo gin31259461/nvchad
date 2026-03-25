@@ -30,7 +30,7 @@ M.setup = function()
 
   dap.adapters.coreclr = function(callback, config)
     vim.notify("Building project", vim.log.levels.INFO, { title = "Dotnet" })
-    local build_cmd = require("plugins.lsp.cmd.dotnet").get_build_cmd()
+    local build_cmd = require("cmds.dotnet").get_build_cmd()
 
     vim.fn.jobstart(build_cmd, {
       -- refer to nvim doc: https://neovim.io/doc/user/job_control.html#on_exit

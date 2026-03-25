@@ -48,7 +48,7 @@ if shell.is_win() then
   end, { desc = "Clears all the .tmp shada files" })
 end
 
-local cmds = fs.scandir(fs.config_path .. "/lua/plugins/lsp/cmd", "file")
+local cmds = fs.scandir(fs.config_path .. "/lua/cmds", "file")
 for _, v in ipairs(cmds) do
-  require("plugins.lsp.cmd." .. vim.fn.fnamemodify(v, ":r"))
+  require("cmds." .. vim.fn.fnamemodify(v, ":r"))
 end

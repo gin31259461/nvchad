@@ -17,9 +17,13 @@ return {
     opts = function()
       for _, v in ipairs(debuggers) do
         if v ~= "init.lua" then
-          pcall(function()
-            require("plugins.debugger." .. vim.fn.fnamemodify(v, ":r")).setup()
+          local mod_name = vim.fn.fnamemodify(v, ":r")
+          local ok, err = pcall(function()
+            require("plugins.debugger." .. mod_name).setup()
           end)
+          if not ok then
+            vim.notify("[debugger] failed to load " .. mod_name .. ": " .. tostring(err), vim.log.levels.WARN)
+          end
         end
       end
     end,

@@ -1,6 +1,9 @@
-pcall(function()
+local ok, err = pcall(function()
   dofile(vim.g.base46_cache .. "git")
 end)
+if not ok then
+  vim.notify("[theme] " .. tostring(err), vim.log.levels.WARN)
+end
 
 local configs = require("configs")
 
