@@ -12,7 +12,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("configs.options")
-_G.Core = require("utils")
+local utils = require("utils")
 
 -- load plugins
 require("lazy").setup({
@@ -26,15 +26,15 @@ require("lazy").setup({
   { import = "plugins" },
 }, require("configs.lazy"))
 
-_G.Core.snacks = require("snacks")
 -- setup all required tools
-Core.setup()
+utils.setup()
 
 -- load theme
-pcall(function()
+local ok, err = pcall(function()
   dofile(vim.g.base46_cache .. "defaults")
   dofile(vim.g.base46_cache .. "statusline")
 end)
+if not ok then vim.notify("[theme] " .. tostring(err), vim.log.levels.WARN) end
 
 require("nvchad.options")
 require("nvchad.autocmds")

@@ -6,7 +6,8 @@
 -- attributes: https://code.visualstudio.com/docs/debugtest/debugging-configuration#_launchjson-attributes
 
 local debugger_path = vim.fn.stdpath("config") .. "/lua/plugins/debugger"
-local debuggers = Core.fs.scandir(debugger_path, "file")
+local fs = require("utils.fs")
+local debuggers = fs.scandir(debugger_path, "file")
 
 ---@type LazySpec[]
 return {

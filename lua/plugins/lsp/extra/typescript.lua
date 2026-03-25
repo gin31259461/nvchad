@@ -1,8 +1,11 @@
+local ft = require("utils.ft")
+local utils_table = require("utils.table")
+
 ---@type LazySpec[]
 return {
   {
     "pmizio/typescript-tools.nvim",
-    ft = Core.ft.ts,
+    ft = ft.ts,
     dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
     -- https://github.com/pmizio/typescript-tools.nvim?tab=readme-ov-file#%EF%B8%8F-configuration
     opts = {
@@ -39,7 +42,7 @@ return {
         ---@type lsp.Handler
         ["textDocument/publishDiagnostics"] = function(err, res, ctx)
           local filtered = {}
-          res.diagnostics = Core.table.unique_by_key(res.diagnostics, "message")
+          res.diagnostics = utils_table.unique_by_key(res.diagnostics, "message")
           for _, diag in ipairs(res.diagnostics) do
             if diag.source == "tsserver" then
               table.insert(filtered, diag)

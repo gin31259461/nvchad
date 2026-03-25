@@ -2,6 +2,8 @@ pcall(function()
   dofile(vim.g.base46_cache .. "git")
 end)
 
+local configs = require("configs")
+
 ---@type LazySpec[]
 return {
   {
@@ -17,9 +19,9 @@ return {
         untracked = { text = "▎" },
       },
       signs_staged = {
-        add = { text = Core.config.icons.git.added },
-        change = { text = Core.config.icons.git.modified },
-        delete = { text = Core.config.icons.git.removed },
+        add = { text = configs.icons.git.added },
+        change = { text = configs.icons.git.modified },
+        delete = { text = configs.icons.git.removed },
         topdelete = { text = "" },
         changedelete = { text = "▎" },
       },

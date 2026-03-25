@@ -7,6 +7,9 @@
 --   end,
 -- })
 
+local shell = require("utils.shell")
+local fs = require("utils.fs")
+
 -- FIX: roslyn progress spec issue: https://github.com/dotnet/roslyn/issues/79939
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "cs" },
@@ -29,7 +32,7 @@ vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
 
 -- FIX: (temp): issue: https://github.com/neovim/neovim/issues/8587
 -- this method is from: https://github.com/neovim/neovim/issues/8587#issuecomment-2176399196
-if Core.shell.is_win() then
+if shell.is_win() then
   vim.api.nvim_create_user_command("ClearShada", function()
     local shada_path = vim.fn.expand(vim.fn.stdpath("data") .. "/shada")
     require("utils.fs").delete_files(shada_path, {
@@ -45,7 +48,7 @@ if Core.shell.is_win() then
   end, { desc = "Clears all the .tmp shada files" })
 end
 
-local cmds = Core.fs.scandir(Core.fs.config_path .. "/lua/plugins/lsp/cmd", "file")
+local cmds = fs.scandir(fs.config_path .. "/lua/plugins/lsp/cmd", "file")
 for _, v in ipairs(cmds) do
   require("plugins.lsp.cmd." .. vim.fn.fnamemodify(v, ":r"))
 end

@@ -1,7 +1,16 @@
 local M = {}
 
+local fs = require("utils.fs")
+local hl = require("utils.hl")
+
+local CONFIG = {
+  completion = { max_w = 60, max_h = 15, pct_w = 0.4, pct_h = 0.3 },
+  doc        = { max_w = 80, max_h = 20, pct_w = 0.5, pct_h = 0.4 },
+}
+
 M.harpoon = {}
 
+---@return integer width of the neo-tree window, or 0 if not open
 M.get_neo_tree_width = function()
   local winid = nil
   for _, win in ipairs(vim.api.nvim_list_wins()) do
@@ -19,6 +28,7 @@ M.get_neo_tree_width = function()
   end
 end
 
+---@return string statusline segment with neo-tree offset padding, or empty string
 M.tree_offset = function()
   local w = M.get_neo_tree_width()
   return w == 0 and "" or "%#NeoTreeNormal#" .. string.rep(" ", w) .. "%#NeoTreeWinSeparator#" .. "│"
@@ -29,10 +39,12 @@ M.harpoon.short_path_length = 8
 ---@param path string
 ---@return string
 M.harpoon.format_display = function(path)
-  local icon = Core.ui.get_file_icon(path)
+  local icon = M.get_file_icon(path)
   return "  " .. icon .. " " .. path
 end
 
+---Returns a harpoon extension table that highlights the current file entry.
+---@return table harpoon extension spec
 M.harpoon.highlight_current_file = function()
   return {
     UI_CREATE = function(cx)
@@ -42,13 +54,13 @@ M.harpoon.highlight_current_file = function()
         end
 
         local short_path =
-          Core.fs.pretty_path(cx.current_file, { length = M.harpoon.short_path_length, only_cwd = true })
+          fs.pretty_path(cx.current_file, { length = M.harpoon.short_path_length, only_cwd = true })
 
         if short_path == "" then
           return
         end
 
-        local format_path = Core.ui.harpoon.format_display(short_path)
+        local format_path = M.harpoon.format_display(short_path)
         -- name_of_harpoon = string.gsub(name_of_harpoon, "%-", "%%-")
         name_of_harpoon = string.gsub(name_of_harpoon, "([%-%[%]])", "%%%1")
         if string.find(format_path, name_of_harpoon) then
@@ -57,7 +69,7 @@ M.harpoon.highlight_current_file = function()
 
           vim.api.nvim_buf_set_extmark(cx.bufnr, vim.api.nvim_create_namespace("harpoon"), line_number - 1, 2, {
             end_col = #line,
-            hl_group = Core.hl.util.get_hl_name_without_syntax(Core.hl.statusline.active_context),
+            hl_group = hl.util.get_hl_name_without_syntax(hl.statusline.active_context),
           })
           -- set the position of the cursor in the harpoon menu to the start of the current buffer line
           vim.api.nvim_win_set_cursor(cx.win_id, { line_number, 0 })
@@ -100,6 +112,7 @@ M.get_file_icon = function(path, opts)
   return icon
 end
 
+---@return boolean true when toggling an nvterm terminal is safe
 M.check_toggle_nvterm = function()
   local current_ft = vim.bo.filetype
 
@@ -119,14 +132,14 @@ M.win_is_floating = function(winid)
 end
 
 function M.get_completion_window_size()
-  local max_width = math.min(60, math.floor(vim.o.columns * 0.4))
-  local max_height = math.min(15, math.floor(vim.o.lines * 0.3))
+  local max_width  = math.min(CONFIG.completion.max_w, math.floor(vim.o.columns * CONFIG.completion.pct_w))
+  local max_height = math.min(CONFIG.completion.max_h, math.floor(vim.o.lines   * CONFIG.completion.pct_h))
   return max_width, max_height
 end
 
 function M.get_doc_window_size()
-  local max_width = math.min(80, math.floor(vim.o.columns * 0.5))
-  local max_height = math.min(20, math.floor(vim.o.lines * 0.4))
+  local max_width  = math.min(CONFIG.doc.max_w, math.floor(vim.o.columns * CONFIG.doc.pct_w))
+  local max_height = math.min(CONFIG.doc.max_h, math.floor(vim.o.lines   * CONFIG.doc.pct_h))
   return max_width, max_height
 end
 

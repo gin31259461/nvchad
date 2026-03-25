@@ -1,6 +1,8 @@
 -- config for conform.nvim
 
 local util = require("conform.util")
+local fs = require("utils.fs")
+local shell = require("utils.shell")
 
 return {
   default_format_opts = {
@@ -31,19 +33,19 @@ return {
     ["sqlfluff"] = {
       command = "sqlfluff",
       args = function()
-        for _, file in ipairs(Core.fs.sqlfluff_pattern) do
-          local path = Core.fs.get_root() .. "/" .. file
+        for _, file in ipairs(fs.sqlfluff_pattern) do
+          local path = fs.get_root() .. "/" .. file
           if vim.loop.fs_stat(path) == 0 then
             return { "format", "-" }
           end
         end
 
-        local config_path = Core.fs.config_path .. "/lua/configs/db/template/sqlfluff.cfg"
+        local config_path = fs.config_path .. "/lua/configs/db/template/sqlfluff.cfg"
         return { "format", "--config", config_path, "-" }
       end,
       stdin = true,
       -- cwd = util.root_file(NvChad.fs.sqlfluff_pattern),
-      cwd = Core.fs.get_root,
+      cwd = fs.get_root,
       require_cwd = true,
     },
     ["sql_formatter"] = {
@@ -69,7 +71,7 @@ return {
     },
     ["prisma_fmt"] = {
       command = function()
-        if Core.shell.is_win() then
+        if shell.is_win() then
           return vim.fn.getcwd() .. "/node_modules/.bin/prisma.CMD"
         end
 

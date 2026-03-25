@@ -7,6 +7,7 @@ pcall(function()
   dofile(vim.g.base46_cache .. "lsp")
 end)
 
+local configs = require("configs")
 local lspconfig_opts = require("plugins.lsp.config")
 local servers = lspconfig_opts.servers
 local setup = lspconfig_opts.setup
@@ -21,7 +22,7 @@ local default_lsp_config = {
   capabilities = lspconfig_opts.capabilities,
 }
 
-for _, server in ipairs(Core.config.packages.lsp_servers) do
+for _, server in ipairs(configs.packages.lsp_servers) do
   local server_opts = vim.tbl_deep_extend("force", default_lsp_config, servers[server] or {})
 
   if type(lspconfig_opts.disable_default_settings[server]) == "table" then

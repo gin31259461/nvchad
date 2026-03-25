@@ -1,5 +1,7 @@
 -- config for nvim-lint
 
+local fs = require("utils.fs")
+
 ---@class LinterExtend
 ---@field condition? boolean
 
@@ -79,14 +81,14 @@ return {
     sqlfluff = {
       command = "sqlfluff",
       args = (function()
-        for _, file in ipairs(Core.fs.sqlfluff_pattern) do
-          local path = Core.fs.get_root() .. "/" .. file
+        for _, file in ipairs(fs.sqlfluff_pattern) do
+          local path = fs.get_root() .. "/" .. file
           if vim.loop.fs_stat(path) == 0 then
             return { "lint", "--format=json" }
           end
         end
 
-        local config_path = Core.fs.config_path .. "/lua/configs/db/template/sqlfluff.cfg"
+        local config_path = fs.config_path .. "/lua/configs/db/template/sqlfluff.cfg"
         return { "lint", "--format=json", "--config", config_path }
       end)(),
     },
@@ -94,7 +96,7 @@ return {
     ["markdownlint-cli2"] = {
       cmd = "markdownlint-cli2",
       args = (function()
-        local config_path = Core.fs.config_path .. "/lua/configs/linter/template/.markdownlint.yaml"
+        local config_path = fs.config_path .. "/lua/configs/linter/template/.markdownlint.yaml"
         return { "--config", config_path }
       end)(),
       ignore_exitcode = true,

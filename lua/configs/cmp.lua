@@ -1,8 +1,13 @@
-pcall(function()
+local ok, err = pcall(function()
   dofile(vim.g.base46_cache .. "cmp")
 end)
+if not ok then vim.notify("[theme] " .. tostring(err), vim.log.levels.WARN) end
 
-vim.o.pumheight = select(2, Core.ui.get_completion_window_size())
+local ui = require("utils.ui")
+local configs = require("configs")
+local utils_cmp = require("utils.cmp")
+
+vim.o.pumheight = select(2, ui.get_completion_window_size())
 
 local cmp = require("cmp")
 local cmp_types = require("cmp.types")
@@ -23,8 +28,8 @@ local options = {
       -- border = defaults.window.documentation.border,
 
       scrollbar = true,
-      max_width = select(1, Core.ui.get_doc_window_size()),
-      max_height = select(2, Core.ui.get_doc_window_size()),
+      max_width = select(1, ui.get_doc_window_size()),
+      max_height = select(2, ui.get_doc_window_size()),
     },
   },
   completion = { completeopt = "menu,menuone,noinsert" .. (auto_select and "" or ",noselect") },
@@ -60,19 +65,11 @@ local options = {
       end,
     }),
 
-    ["<CR>"] = Core.cmp.confirm({
+    ["<CR>"] = utils_cmp.confirm({
       select = auto_select,
     }),
 
     ["<Tab>"] = cmp.mapping(function(fallback)
-      -- if cmp.visible() then
-      --   cmp.select_next_item({ behavior = cmp_types.cmp.SelectBehavior.Insert })
-      -- elseif require("luasnip").expand_or_jumpable() then
-      --   require("luasnip").expand_or_jump()
-      -- else
-      --   fallback()
-      -- end
-
       if (not cmp.visible()) and require("luasnip").expand_or_jumpable() then
         require("luasnip").expand_or_jump()
       else
@@ -81,14 +78,6 @@ local options = {
     end, { "i", "s" }),
 
     ["<S-Tab>"] = cmp.mapping(function(fallback)
-      -- if cmp.visible() then
-      --   cmp.select_prev_item({ behavior = cmp_types.cmp.SelectBehavior.Insert })
-      -- elseif require("luasnip").jumpable(-1) then
-      --   require("luasnip").jump(-1)
-      -- else
-      --   fallback()
-      -- end
-
       if (not cmp.visible()) and require("luasnip").jumpable(-1) then
         require("luasnip").jump(-1)
       else
@@ -100,8 +89,8 @@ local options = {
   formatting = {
     fields = { "kind", "abbr", "menu" },
     format = function(entry, item)
-      local icons = Core.config.icons.kinds
-      local max_width = select(1, Core.ui.get_completion_window_size())
+      local icons = configs.icons.kinds
+      local max_width = select(1, ui.get_completion_window_size())
       if icons[item.kind] then
         -- with text
         -- item.kind = icons[item.kind] .. item.kind

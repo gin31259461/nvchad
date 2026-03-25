@@ -1,10 +1,11 @@
 local py_cmd = require("cmds.python")
+local shell = require("utils.shell")
 local M = {}
 
 local debugpy_exists = function()
   local venv_path = py_cmd.get_venv_path()
 
-  if Core.shell.is_win() then
+  if shell.is_win() then
     venv_path = venv_path .. "/Scripts/debugpy.exe"
   else
     venv_path = venv_path .. "/bin/debugpy"
