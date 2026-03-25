@@ -1,8 +1,6 @@
 ---@class Core.util.cmp
 local M = {}
 
-local utils = require("utils")
-
 ---@alias Core.util.cmp.Action fun():boolean?
 ---@type table<string, Core.util.cmp.Action>
 M.actions = {
@@ -124,7 +122,7 @@ function M.confirm(opts)
   }, opts or {})
   return function(fallback)
     if cmp.core.view:visible() or vim.fn.pumvisible() == 1 then
-      utils.create_undo()
+      require("utils").create_undo()
       if cmp.confirm(opts) then
         return
       end
@@ -151,7 +149,7 @@ function M.expand(snippet)
     local msg = ok and "Failed to parse snippet,\nbut was able to fix it automatically."
       or ("Failed to parse snippet.\n" .. err)
 
-    utils[ok and "warn" or "error"](
+    require("utils")[ok and "warn" or "error"](
       ([[%s
 ```%s
 %s
