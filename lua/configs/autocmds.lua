@@ -14,11 +14,14 @@ local fs = require("utils.fs")
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "cs" },
   callback = function()
-    vim.api.nvim_clear_autocmds({
-      group = "noice_lsp_progress",
-      event = "LspProgress",
-      pattern = "*",
-    })
+    local ok, group = pcall(vim.api.nvim_get_autocmds, { group = "noice_lsp_progress" })
+    if ok and #group > 0 then
+      vim.api.nvim_clear_autocmds({
+        group = "noice_lsp_progress",
+        event = "LspProgress",
+        pattern = "*",
+      })
+    end
   end,
 })
 
