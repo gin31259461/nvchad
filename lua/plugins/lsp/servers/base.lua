@@ -11,10 +11,14 @@
 ---@field capabilities lsp.ClientCapabilities
 ---
 ---@field disable_default_settings {[string]: table}
----@field setup {[string]: function}
+---@field setup {[string]: fun()}
 ---@field diagnostics vim.diagnostic.Opts
 ---@field inlay_hints {enabled: boolean, exclude: table}
 ---@field codelens {enabled: boolean, autocmd: boolean}
+
+---@class Lsp.Server.Module
+---@field servers? Lsp.Config.Servers
+---@field setup? {[string]: fun()}
 
 local configs = require("configs")
 

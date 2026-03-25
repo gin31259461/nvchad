@@ -1,5 +1,6 @@
 local data_path = vim.fs.normalize(vim.fn.stdpath("data"))
 
+---@type Lsp.Server.Module
 return {
   servers = {
     lua_ls = {

@@ -1,3 +1,4 @@
+---@type Lsp.Server.Module
 return {
   servers = {
     prismals = {

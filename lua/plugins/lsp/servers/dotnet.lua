@@ -3,6 +3,7 @@
 -- wiki:            https://github.com/seblyng/roslyn.nvim/wiki
 -- diagnostic hack: https://github.com/seblyng/roslyn.nvim/blob/7d8819239c5e2c4a0d8150da1c00fa583f761704/lsp/roslyn.lua#L33
 
+---@type Lsp.Server.Module
 return {
   servers = {
     omnisharp = {

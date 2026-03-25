@@ -1,8 +1,8 @@
 local M = {}
 
---- @param list table
---- @param key string
---- @return table
+---@param list table
+---@param key string
+---@return table
 M.unique_by_key = function(list, key)
   local result = {}
   local seen = {}

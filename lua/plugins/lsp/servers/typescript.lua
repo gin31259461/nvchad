@@ -3,6 +3,7 @@ local ft = require("utils.ft")
 local utils = require("utils")
 
 -- https://github.com/yioneko/vtsls/blob/main/packages/service/configuration.schema.json
+---@type Lsp.Server.Module
 return {
   servers = {
     vtsls = {

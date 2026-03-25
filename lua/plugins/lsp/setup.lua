@@ -3,9 +3,12 @@
 -- load defaults i.e lua_lsp
 -- require("nvchad.configs.lspconfig").defaults()
 
-pcall(function()
+local ok, err = pcall(function()
   dofile(vim.g.base46_cache .. "lsp")
 end)
+if not ok then
+  vim.notify("[theme] " .. tostring(err), vim.log.levels.WARN)
+end
 
 local configs = require("configs")
 local lspconfig_opts = require("plugins.lsp.config")

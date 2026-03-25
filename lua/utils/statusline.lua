@@ -6,10 +6,12 @@ local ui = require("utils.ui")
 
 local _ignore_ft = { "neo%-tree", "nvdash", "NvTerm_", "trouble", "noice", "harpoon" }
 
+---@return integer
 M.stbufnr = function()
   return vim.api.nvim_win_get_buf(vim.g.statusline_winid or 0)
 end
 
+---@return boolean
 M.is_ignore_ft = function()
   local current_ft = vim.bo.filetype
 
@@ -25,9 +27,9 @@ end
 -- local sep = "  "
 local sep = "  "
 
---- @param symbols string
---- @param length number
---- @return string
+---@param symbols string
+---@param length number
+---@return string
 M.pretty_symbol_path = function(symbols, length)
   -- symbol = icon + name (include hl)
   local parts = {}
@@ -45,6 +47,7 @@ M.pretty_symbol_path = function(symbols, length)
   return table.concat(short_parts, sep)
 end
 
+---@return string
 M.path = function()
   if M.is_ignore_ft() then
     return ""
@@ -72,6 +75,7 @@ M.path = function()
   return icon .. hl.statusline.text .. dir .. "/" .. filename
 end
 
+---@return string
 M.lsp_symbols = function()
   if M.is_ignore_ft() then
     return ""
@@ -95,6 +99,7 @@ M.lsp_symbols = function()
   return ""
 end
 
+---@return string
 M.current_lsp = function()
   if rawget(vim, "lsp") then
     for _, client in ipairs(vim.lsp.get_clients()) do
@@ -109,6 +114,7 @@ M.current_lsp = function()
   return ""
 end
 
+---@return string
 M.mode = function()
   if type(M.state.mode) == "function" then
     return M.state.mode()
@@ -117,6 +123,7 @@ M.mode = function()
   return ""
 end
 
+---@return string
 M.git = function()
   if not vim.b[M.stbufnr()].gitsigns_head or vim.b[M.stbufnr()].gitsigns_git_status then
     return ""
@@ -133,6 +140,7 @@ M.git = function()
   return " " .. branch_name .. added .. changed .. removed
 end
 
+---@return string
 M.break_point = function()
   return "  %<"
 end
