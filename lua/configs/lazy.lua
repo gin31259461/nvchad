@@ -1,3 +1,4 @@
+---@type LazyConfig
 return {
   defaults = { lazy = true },
   install = { colorscheme = { "nvchad" } },
@@ -43,5 +44,10 @@ return {
         "ftplugin",
       },
     },
+  },
+
+  rocks = {
+    enabled = false,
+    herorocks = false,
   },
 }

@@ -2,7 +2,7 @@
 
 ## Pre-requisites
 
-- [Neovim 0.11](https://github.com/neovim/neovim/releases/tag/stable).
+- [Neovim 0.12](https://github.com/neovim/neovim/releases/tag/stable).
 - [Nerd Font](https://www.nerdfonts.com/) as your terminal font.
   - Make sure the nerd font you set doesn't end with <strong>Mono</strong> to
     prevent small icons.
