@@ -5,26 +5,21 @@
 -- refer to: https://github.com/mfussenegger/nvim-dap/blob/master/doc/dap.txt#L327-L331
 -- attributes: https://code.visualstudio.com/docs/debugtest/debugging-configuration#_launchjson-attributes
 
-local debugger_path = vim.fn.stdpath("config") .. "/lua/plugins/debugger"
-local fs = require("utils.fs")
-local debuggers = fs.scandir(debugger_path, "file")
-
 ---@type LazySpec[]
 return {
   {
     "mfussenegger/nvim-dap",
     event = { "VeryLazy" },
     opts = function()
-      for _, v in ipairs(debuggers) do
-        if v ~= "init.lua" then
-          local mod_name = vim.fn.fnamemodify(v, ":r")
-          local ok, err = pcall(function()
-            require("plugins.debugger." .. mod_name).setup()
-          end)
-          if not ok then
-            vim.notify("[debugger] failed to load " .. mod_name .. ": " .. tostring(err), vim.log.levels.WARN)
-          end
-        end
+      local config = require("plugins.debugger.config")
+      local dap = require("dap")
+
+      for name, adapter in pairs(config.adapters) do
+        dap.adapters[name] = adapter
+      end
+
+      for ft, configurations in pairs(config.configurations) do
+        dap.configurations[ft] = configurations
       end
     end,
     config = function() end,
