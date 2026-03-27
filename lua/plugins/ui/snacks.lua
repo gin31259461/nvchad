@@ -25,7 +25,7 @@ return {
       dashboard = {
         enabled = true,
         preset = {
-          header = require("configs.header").wolf_snack,
+          header = require("configs.header").phantom_snack,
         },
 
         -- built-in sections: https://github.com/folke/snacks.nvim/blob/main/docs/dashboard.md#-features

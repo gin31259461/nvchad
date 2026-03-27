@@ -80,7 +80,7 @@ M.base46 = {
 
 M.nvdash = {
   load_on_startup = false,
-  header = require("configs.header").wolf,
+  header = require("configs.header").phantom,
   buttons = {
     { txt = "  Explorer", keys = "e", cmd = ":Neotree action=focus position=float source=filesystem" },
     { txt = "  Find File", keys = "f", cmd = ":lua Snacks.picker.files()" },
