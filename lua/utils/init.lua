@@ -14,6 +14,7 @@ setmetatable(M, {
 M.lsp = require("utils.lsp")
 M.ft = require("utils.ft")
 M.shell = require("utils.shell")
+M.os = require("utils.os")
 M.config = require("configs")
 M.fs = require("utils.fs")
 M.statusline = require("utils.statusline")

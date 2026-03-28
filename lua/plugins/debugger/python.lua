@@ -1,10 +1,10 @@
 local py_cmd = require("cmds.python")
-local shell = require("utils.shell")
+local os_utils = require("utils.os")
 
 local debugpy_exists = function()
   local venv_path = py_cmd.get_venv_path()
 
-  if shell.is_win() then
+  if os_utils.is_win() then
     venv_path = venv_path .. "/Scripts/debugpy.exe"
   else
     venv_path = venv_path .. "/bin/debugpy"

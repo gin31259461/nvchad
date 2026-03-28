@@ -2,7 +2,7 @@
 
 local util = require("conform.util")
 local fs = require("utils.fs")
-local shell = require("utils.shell")
+local os_utils = require("utils.os")
 
 return {
   default_format_opts = {
@@ -71,7 +71,7 @@ return {
     },
     ["prisma_fmt"] = {
       command = function()
-        if shell.is_win() then
+        if os_utils.is_win() then
           return vim.fn.getcwd() .. "/node_modules/.bin/prisma.CMD"
         end
 

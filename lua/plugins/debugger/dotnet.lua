@@ -1,7 +1,7 @@
 -- NOTE: It also requires the correct .NET runtime based on the .NET version used in your project.
 -- this dap config refer to: https://codeberg.org/mfussenegter/nvim-dap/wiki/Debug-Adapter-installation#user-content-dotnet
 
-local shell = require("utils.shell")
+local os_utils = require("utils.os")
 
 local function pick_dll()
   return vim.fn.input("Path to dll: ", vim.fn.getcwd() .. "/bin/Debug/", "file")
@@ -19,7 +19,7 @@ end
 
 local executable = "netcoredbg"
 
-if shell.is_win() then
+if os_utils.is_win() then
   -- FIX: The netcoredbg executable must have the .exe extension on Windows, not .cmd
   -- this path will not work because it's .cmd: vim.fn.exepath("netcoredbg")
   executable = vim.fn.stdpath("data") .. "/mason/packages/netcoredbg/netcoredbg/" .. executable .. ".exe"

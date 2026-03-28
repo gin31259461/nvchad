@@ -7,7 +7,7 @@
 --   end,
 -- })
 
-local shell = require("utils.shell")
+local os_utils = require("utils.os")
 local fs = require("utils.fs")
 
 -- FIX: roslyn progress spec issue: https://github.com/dotnet/roslyn/issues/79939
@@ -35,7 +35,7 @@ vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
 
 -- FIX: (temp): issue: https://github.com/neovim/neovim/issues/8587
 -- this method is from: https://github.com/neovim/neovim/issues/8587#issuecomment-2176399196
-if shell.is_win() then
+if os_utils.is_win() then
   vim.api.nvim_create_user_command("ClearShada", function()
     local shada_path = vim.fn.expand(vim.fn.stdpath("data") .. "/shada")
     require("utils.fs").delete_files(shada_path, {
