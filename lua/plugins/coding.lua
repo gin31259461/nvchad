@@ -2,7 +2,9 @@ local ok, err = pcall(function()
   dofile(vim.g.base46_cache .. "syntax")
   dofile(vim.g.base46_cache .. "treesitter")
 end)
-if not ok then vim.notify("[theme] " .. tostring(err), vim.log.levels.WARN) end
+if not ok then
+  vim.notify("[theme] " .. tostring(err), vim.log.levels.WARN)
+end
 
 local utils = require("utils")
 local utils_cmp = require("utils.cmp")
@@ -140,6 +142,7 @@ return {
         -- snippet plugin
         "L3MON4D3/LuaSnip",
         dependencies = "rafamadriz/friendly-snippets",
+        build = { "make install_jsregexp" },
         opts = { history = true, updateevents = "TextChanged,TextChangedI" },
         config = function(_, opts)
           require("luasnip").config.set_config(opts)
@@ -266,42 +269,40 @@ return {
   },
 
   -- refer to: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/plugins/extras/ai/copilot.lua
-  vim.g.ai_cmp
-      and {
-        -- copilot cmp source
+  vim.g.ai_cmp and {
+    -- copilot cmp source
+    {
+      "hrsh7th/nvim-cmp",
+      optional = true,
+      dependencies = { -- this will only be evaluated if nvim-cmp is enabled
         {
-          "hrsh7th/nvim-cmp",
-          optional = true,
-          dependencies = { -- this will only be evaluated if nvim-cmp is enabled
+          "zbirenbaum/copilot-cmp",
+          opts = {},
+          config = function(_, opts)
+            local copilot_cmp = require("copilot_cmp")
+            copilot_cmp.setup(opts)
+            -- attach cmp source whenever copilot attaches
+            -- fixes lazy-loading issues with the copilot cmp source
+            require("snacks").util.lsp.on({ name = "copilot" }, function()
+              copilot_cmp._on_insert_enter({})
+            end)
+          end,
+          specs = {
             {
-              "zbirenbaum/copilot-cmp",
-              opts = {},
-              config = function(_, opts)
-                local copilot_cmp = require("copilot_cmp")
-                copilot_cmp.setup(opts)
-                -- attach cmp source whenever copilot attaches
-                -- fixes lazy-loading issues with the copilot cmp source
-                require("snacks").util.lsp.on({ name = "copilot" }, function()
-                  copilot_cmp._on_insert_enter({})
-                end)
+              "hrsh7th/nvim-cmp",
+              optional = true,
+              ---@param opts cmp.ConfigSchema
+              opts = function(_, opts)
+                table.insert(opts.sources, 1, {
+                  name = "copilot",
+                  group_index = 1,
+                  priority = 100,
+                })
               end,
-              specs = {
-                {
-                  "hrsh7th/nvim-cmp",
-                  optional = true,
-                  ---@param opts cmp.ConfigSchema
-                  opts = function(_, opts)
-                    table.insert(opts.sources, 1, {
-                      name = "copilot",
-                      group_index = 1,
-                      priority = 100,
-                    })
-                  end,
-                },
-              },
             },
           },
         },
-      }
-    or nil,
+      },
+    },
+  } or nil,
 }

@@ -22,6 +22,7 @@ M.treesitter_ensure_installed = {
   "c_sharp",
   "xml",
   "go",
+  "regex",
 }
 
 M.lsp_servers = {}
