@@ -6,7 +6,7 @@ Personal Neovim config built on [NvChad v2.5](https://github.com/NvChad/NvChad).
 
 | Tool | Purpose |
 |---|---|
-| [Neovim ≥ 0.10](https://github.com/neovim/neovim/releases/tag/stable) | Editor |
+| [Neovim ≥ 0.12](https://github.com/neovim/neovim/releases/tag/stable) | Editor |
 | [Nerd Font](https://www.nerdfonts.com/) (non-Mono variant) | Icons & glyphs |
 | [Ripgrep](https://github.com/BurntSushi/ripgrep) | Live grep (Snacks/Telescope) |
 | [tree-sitter-cli](https://github.com/tree-sitter/tree-sitter) | Treesitter parser builds |
