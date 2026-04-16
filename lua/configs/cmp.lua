@@ -1,10 +1,12 @@
 local ok, err = pcall(function()
   dofile(vim.g.base46_cache .. "cmp")
 end)
-if not ok then vim.notify("[theme] " .. tostring(err), vim.log.levels.WARN) end
+if not ok then
+  vim.notify("[theme] " .. tostring(err), vim.log.levels.WARN)
+end
 
-local ui = require("utils.ui")
 local configs = require("configs")
+local ui = require("utils.ui")
 local utils_cmp = require("utils.cmp")
 
 vim.o.pumheight = select(2, ui.get_completion_window_size())
@@ -13,6 +15,7 @@ local cmp = require("cmp")
 local cmp_types = require("cmp.types")
 local defaults = require("cmp.config.default")()
 local auto_select = true
+local enable_ghost_text = false
 
 -- https://github.com/hrsh7th/nvim-cmp/blob/b5311ab3ed9c846b585c0c15b7559be131ec4be9/doc/cmp.txt#L450
 ---@type cmp.ConfigSchema
@@ -123,7 +126,7 @@ local options = {
   sorting = defaults.sorting,
 
   experimental = {
-    ghost_text = {
+    ghost_text = enable_ghost_text and {
       hl_group = "CmpGhostText",
     },
   },
