@@ -90,7 +90,8 @@ return {
   capabilities = make_client_capabilities(),
 
   disable_default_settings = {
-    -- roslyn = { "on_init" },
+    -- this base.lua on_init will override the on_init of roslyn.lua, so we need to disable it to let roslyn.lua handle the on_init
+    roslyn = { "on_init" },
   },
 
   servers = {},

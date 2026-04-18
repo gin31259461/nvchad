@@ -121,7 +121,7 @@ local plugins = {
     ---@module 'roslyn.config'
     ---@type RoslynNvimConfig
     opts = {
-      filewatching = "auto",
+      filewatching = "roslyn",
       silent = true,
     },
   },
