@@ -12,6 +12,11 @@ M.get_csproj_files = function()
   return vim.fn.glob("*.csproj", false, true)
 end
 
+---@return string[]
+M.get_sln_files = function()
+  return vim.fn.glob("*.sln", false, true)
+end
+
 ---@param project string
 ---@param config? string  "Debug" or "Release" (default "Debug")
 ---@return string[]
@@ -87,6 +92,55 @@ local function select_csproj(ctx, callback)
     title     = "Select Project",
     on_select = function(item, c) callback(item._raw, c) end,
   })
+end
+
+---Push a sln-file selector onto the left panel, then call callback(file, ctx).
+---If only one .sln exists it is selected automatically.
+---@param ctx      DotnetUICtx
+---@param callback fun(file: string, ctx: DotnetUICtx)
+local function select_sln(ctx, callback)
+  local files = M.get_sln_files()
+  if #files == 0 then
+    ctx.clear()
+    ctx.append("No .sln files found in: " .. vim.fn.getcwd())
+    return
+  end
+  if #files == 1 then
+    callback(files[1], ctx)
+    return
+  end
+
+  local ui = require("utils.ui")
+  local items = {}
+  for _, f in ipairs(files) do
+    table.insert(items, {
+      _raw    = f,
+      icon    = ui.get_file_icon(f),
+      icon_hl = "Special",
+      name    = f,
+    })
+  end
+
+  ctx.select(items, {
+    title     = "Select Solution",
+    on_select = function(item, c) callback(item._raw, c) end,
+  })
+end
+
+---Parse the output of `dotnet sln <sln> list` into project paths.
+---@param lines string[]
+---@return string[]
+local function parse_sln_projects(lines)
+  local projects = {}
+  local in_data = false
+  for _, line in ipairs(lines) do
+    if line:match("^%-%-%-%-") then
+      in_data = true
+    elseif in_data and line:match("%S") then
+      table.insert(projects, vim.trim(line))
+    end
+  end
+  return projects
 end
 
 -- ── template helpers ──────────────────────────────────────────────────────────
@@ -368,6 +422,87 @@ M.commands = {
               )
             end)
           end)
+        end,
+      })
+    end,
+  },
+  {
+    name    = "Solution",
+    icon    = "󰘐 ",
+    icon_hl = "DiagnosticHint",
+    desc    = "dotnet sln management",
+    action  = function(ctx)
+      ctx.select({
+        { _raw = "list",   icon = "󰈚 ", icon_hl = "Comment",       name = "List Projects" },
+        { _raw = "add",    icon = "󰐕 ", icon_hl = "DiagnosticOk",   name = "Add Project" },
+        { _raw = "remove", icon = "󰍴 ", icon_hl = "DiagnosticError", name = "Remove Project" },
+        { _raw = "new",    icon = "󰝒 ", icon_hl = "DiagnosticInfo",  name = "New Solution" },
+      }, {
+        title     = "Solution Action",
+        on_select = function(item, c)
+          local action = item._raw
+
+          if action == "new" then
+            vim.cmd("stopinsert")
+            vim.ui.input({ prompt = "Solution name: " }, function(name)
+              if not name or name == "" then return end
+              vim.schedule(function()
+                run_job({ "dotnet", "new", "sln", "-n", name }, c)
+              end)
+            end)
+            return
+          end
+
+          if action == "list" then
+            select_sln(c, function(sln, c2)
+              run_job({ "dotnet", "sln", sln, "list" }, c2)
+            end)
+            return
+          end
+
+          if action == "add" then
+            select_sln(c, function(sln, c2)
+              select_csproj(c2, function(proj, c3)
+                run_job({ "dotnet", "sln", sln, "add", proj }, c3)
+              end)
+            end)
+            return
+          end
+
+          if action == "remove" then
+            select_sln(c, function(sln, c2)
+              c2.clear()
+              local raw = vim.fn.systemlist({ "dotnet", "sln", sln, "list" })
+              if vim.v.shell_error ~= 0 then
+                c2.append("Failed to list projects in " .. sln)
+                return
+              end
+
+              local projects = parse_sln_projects(raw)
+              if #projects == 0 then
+                c2.append("No projects found in " .. sln)
+                return
+              end
+
+              local items = {}
+              for _, p in ipairs(projects) do
+                table.insert(items, {
+                  _raw    = p,
+                  icon    = "󰈚 ",
+                  icon_hl = "Special",
+                  name    = p,
+                })
+              end
+
+              c2.select(items, {
+                title     = "Remove Project",
+                on_select = function(proj_item, c3)
+                  run_job({ "dotnet", "sln", sln, "remove", proj_item._raw }, c3)
+                end,
+              })
+            end)
+            return
+          end
         end,
       })
     end,

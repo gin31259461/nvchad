@@ -122,12 +122,18 @@ end
 
 -- ── list rendering ────────────────────────────────────────────────────────────
 
+local function current_sub()
+  return S.sub_stack and S.sub_stack[#S.sub_stack]
+end
+
 local function current_items()
-  return S.sub and S.sub.items or S.filtered
+  local sub = current_sub()
+  return sub and sub.items or S.filtered
 end
 
 local function current_selected()
-  return S.sub and S.sub.selected or S.selected
+  local sub = current_sub()
+  return sub and sub.selected or S.selected
 end
 
 local function render_list()
@@ -218,49 +224,53 @@ local function filter_commands(query)
 end
 
 local function filter_sub(query)
-  if not S.sub then return end
+  local sub = current_sub()
+  if not sub then return end
   if not query or query == "" then
-    S.sub.items = vim.deepcopy(S.sub.all_items)
+    sub.items = vim.deepcopy(sub.all_items)
   else
     local q = query:lower()
-    S.sub.items = {}
-    for _, item in ipairs(S.sub.all_items) do
+    sub.items = {}
+    for _, item in ipairs(sub.all_items) do
       local text = type(item) == "string" and item or (item.name or "")
       if text:lower():find(q, 1, true) then
-        table.insert(S.sub.items, item)
+        table.insert(sub.items, item)
       end
     end
   end
-  S.sub.selected = math.min(S.sub.selected, math.max(1, #S.sub.items))
+  sub.selected = math.min(sub.selected, math.max(1, #sub.items))
 end
 
 -- ── input query helpers ───────────────────────────────────────────────────────
 
-local function clear_input_query()
-  if not (S.input_buf and api.nvim_buf_is_valid(S.input_buf)) then return end
-  S.saved_query = S.last_query or ""
+---Clear the input prompt text and return the previous query.
+---@return string
+local function take_input_query()
+  if not (S.input_buf and api.nvim_buf_is_valid(S.input_buf)) then return "" end
+  local saved = S.last_query or ""
   local line = api.nvim_buf_get_lines(S.input_buf, 0, 1, false)[1] or S.prompt
   local plen = #S.prompt
   if #line > plen then
     api.nvim_buf_set_text(S.input_buf, 0, plen, 0, #line, { "" })
   end
   S.last_query = ""
+  return saved
 end
 
-local function restore_input_query()
+---Set the input prompt text to a specific query.
+---@param query string
+local function put_input_query(query)
   if not (S.input_buf and api.nvim_buf_is_valid(S.input_buf)) then return end
-  local saved = S.saved_query or ""
-  S.saved_query = nil
   local line = api.nvim_buf_get_lines(S.input_buf, 0, 1, false)[1] or S.prompt
   local plen = #S.prompt
   if #line > plen then
     api.nvim_buf_set_text(S.input_buf, 0, plen, 0, #line, { "" })
   end
-  if saved ~= "" then
+  if query ~= "" then
     line = api.nvim_buf_get_lines(S.input_buf, 0, 1, false)[1] or S.prompt
-    api.nvim_buf_set_text(S.input_buf, 0, #line, 0, #line, { saved })
+    api.nvim_buf_set_text(S.input_buf, 0, #line, 0, #line, { query })
   end
-  S.last_query = saved
+  S.last_query = query
 end
 
 -- ── focus helpers ─────────────────────────────────────────────────────────────
@@ -298,18 +308,20 @@ local function make_ctx()
     clear  = out_clear,
     append = function(line) out_write({ line }) end,
 
-    ---Push a temporary sub-selection list into the left panel.
+    ---Push a sub-selection list onto the left panel.
     ---@param items  string[]|table[]
     ---@param opts   {title?: string, on_select: fun(item: any, ctx: table), on_cancel?: fun()}
     select = function(items, opts)
-      clear_input_query()
-      S.sub = {
-        all_items = items,
-        items     = vim.deepcopy(items),
-        selected  = 1,
-        on_select = opts.on_select,
-        on_cancel = opts.on_cancel,
-      }
+      local saved = take_input_query()
+      table.insert(S.sub_stack, {
+        all_items   = items,
+        items       = vim.deepcopy(items),
+        selected    = 1,
+        on_select   = opts.on_select,
+        on_cancel   = opts.on_cancel,
+        title       = opts.title or "Select",
+        saved_query = saved,
+      })
       pcall(api.nvim_win_set_config, S.input_win, {
         title     = " " .. (opts.title or "Select") .. " ",
         title_pos = "center",
@@ -333,33 +345,28 @@ local function run_selected()
   local item = items[sel]
   if not item then return end
 
-  if S.sub then
-    local on_select = S.sub.on_select
-    S.sub = nil
-    pcall(api.nvim_win_set_config, S.input_win, {
-      title     = " " .. S.list_title .. " ",
-      title_pos = "center",
-    })
-    restore_input_query()
-    filter_commands(S.last_query or "")
-    render_list()
-    if on_select then
-      on_select(item, make_ctx())
+  local sub = current_sub()
+  if sub then
+    if sub.on_select then
+      sub.on_select(item, make_ctx())
     end
+    render_list()
   else
     if item.action then
       item.action(make_ctx())
     end
   end
 
-  -- Restore focus to input, preserving the mode the user was in when Enter was pressed.
+  -- Restore focus to input, preserving the mode the user was in when Enter
+  -- was pressed. Skip if an external window (e.g. vim.ui.input) took focus.
   vim.schedule(function()
-    if is_open() and not S.sub
-      and S.input_win and api.nvim_win_is_valid(S.input_win)
-    then
-      api.nvim_set_current_win(S.input_win)
-      if was_insert then
-        vim.cmd("startinsert")
+    if is_open() and S.input_win and api.nvim_win_is_valid(S.input_win) then
+      local cur = api.nvim_get_current_win()
+      if cur == S.input_win or cur == S.list_win or cur == S.output_win then
+        api.nvim_set_current_win(S.input_win)
+        if was_insert then
+          vim.cmd("startinsert")
+        end
       end
     end
   end)
@@ -370,8 +377,9 @@ end
 local function move(delta)
   local n = #current_items()
   if n == 0 then return end
-  if S.sub then
-    S.sub.selected = (S.sub.selected - 1 + delta) % n + 1
+  local sub = current_sub()
+  if sub then
+    sub.selected = (sub.selected - 1 + delta) % n + 1
   else
     S.selected = (S.selected - 1 + delta) % n + 1
   end
@@ -379,17 +387,31 @@ local function move(delta)
 end
 
 local function handle_esc()
-  if S.sub then
-    local on_cancel = S.sub.on_cancel
-    S.sub = nil
-    pcall(api.nvim_win_set_config, S.input_win, {
-      title     = " " .. S.list_title .. " ",
-      title_pos = "center",
-    })
-    restore_input_query()
-    filter_commands(S.last_query or "")
+  if #S.sub_stack > 0 then
+    local popped = table.remove(S.sub_stack)
+    if popped.on_cancel then popped.on_cancel() end
+
+    -- Restore title to parent sub or main menu
+    if #S.sub_stack > 0 then
+      local parent = S.sub_stack[#S.sub_stack]
+      pcall(api.nvim_win_set_config, S.input_win, {
+        title     = " " .. parent.title .. " ",
+        title_pos = "center",
+      })
+    else
+      pcall(api.nvim_win_set_config, S.input_win, {
+        title     = " " .. S.list_title .. " ",
+        title_pos = "center",
+      })
+    end
+
+    put_input_query(popped.saved_query or "")
+    if #S.sub_stack > 0 then
+      filter_sub(S.last_query)
+    else
+      filter_commands(S.last_query or "")
+    end
     render_list()
-    if on_cancel then on_cancel() end
   else
     do_close()
   end
@@ -449,8 +471,9 @@ local function setup_autocmds()
       local line  = api.nvim_get_current_line()
       local query = line:sub(promptw + 1)
       S.last_query = query
-      if S.sub then
-        S.sub.selected = 1
+      local sub = current_sub()
+      if sub then
+        sub.selected = 1
         filter_sub(query)
       else
         S.selected = 1
@@ -513,7 +536,7 @@ M.open = function(commands, opts)
     commands    = commands,
     filtered    = vim.deepcopy(commands),
     selected    = 1,
-    sub         = nil,
+    sub_stack   = {},
     last_query  = "",
     prompt      = prompt,
     list_h      = list_h,
