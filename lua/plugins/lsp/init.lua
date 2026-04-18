@@ -1,7 +1,7 @@
 dofile(vim.g.base46_cache .. "mason")
 
-local utils_lsp = require("utils.lsp")
 local configs = require("configs")
+local utils_lsp = require("utils.lsp")
 
 ---@type LazySpec[]
 local plugins = {
@@ -82,11 +82,13 @@ local plugins = {
 
         -- code lens
         if opts.codelens.enabled and vim.lsp.codelens then
-          utils_lsp.on_supports_method("textDocument/codeLens", function(client, buffer)
-            vim.lsp.codelens.refresh()
+          utils_lsp.on_supports_method("textDocument/codeLens", function(client, bufnr)
+            vim.lsp.codelens.enable(true)
             vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-              buffer = buffer,
-              callback = vim.lsp.codelens.refresh,
+              buffer = bufnr,
+              callback = function()
+                vim.lsp.codelens.enable(true, { bufnr = bufnr })
+              end,
             })
           end)
         end

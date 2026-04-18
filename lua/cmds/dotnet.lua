@@ -11,9 +11,13 @@ M.title = "Dotnet"
 ---@return number?
 local _sdk_major
 local function get_sdk_major()
-  if _sdk_major then return _sdk_major end
+  if _sdk_major then
+    return _sdk_major
+  end
   local out = vim.fn.system("dotnet --version")
-  if vim.v.shell_error ~= 0 then return nil end
+  if vim.v.shell_error ~= 0 then
+    return nil
+  end
   local major = vim.trim(out):match("^(%d+)")
   _sdk_major = major and tonumber(major)
   return _sdk_major
@@ -28,7 +32,7 @@ end
 
 ---@return string[]
 M.get_sln_files = function()
-  local sln  = vim.fn.glob("*.sln", false, true)
+  local sln = vim.fn.glob("*.sln", false, true)
   local slnx = vim.fn.glob("*.slnx", false, true)
   vim.list_extend(sln, slnx)
   return sln
@@ -62,14 +66,20 @@ local function run_job(cmd, ctx, on_complete)
   vim.fn.jobstart(cmd, {
     stdout_buffered = false,
     stderr_buffered = false,
-    on_stdout = function(_, data) ctx.write(data) end,
-    on_stderr = function(_, data) ctx.write(data) end,
+    on_stdout = function(_, data)
+      ctx.write(data)
+    end,
+    on_stderr = function(_, data)
+      ctx.write(data)
+    end,
     on_exit = function(_, code)
       ctx.append("")
       if code == 0 then
         ctx.append("✓  Completed successfully")
         if on_complete then
-          vim.schedule(function() on_complete(ctx) end)
+          vim.schedule(function()
+            on_complete(ctx)
+          end)
         end
       else
         ctx.append("✗  Failed  (exit code " .. code .. ")")
@@ -94,20 +104,22 @@ local function select_csproj(ctx, callback)
     return
   end
 
-  local ui  = require("utils.ui")
+  local ui = require("utils.ui")
   local items = {}
   for _, f in ipairs(files) do
     table.insert(items, {
-      _raw    = f,
-      icon    = ui.get_file_icon(f),
+      _raw = f,
+      icon = ui.get_file_icon(f),
       icon_hl = "DevIconCs",
-      name    = f,
+      name = f,
     })
   end
 
   ctx.select(items, {
-    title     = "Select Project",
-    on_select = function(item, c) callback(item._raw, c) end,
+    title = "Select Project",
+    on_select = function(item, c)
+      callback(item._raw, c)
+    end,
   })
 end
 
@@ -131,16 +143,18 @@ local function select_sln(ctx, callback)
   local items = {}
   for _, f in ipairs(files) do
     table.insert(items, {
-      _raw    = f,
-      icon    = ui.get_file_icon(f),
+      _raw = f,
+      icon = ui.get_file_icon(f),
       icon_hl = "Special",
-      name    = f,
+      name = f,
     })
   end
 
   ctx.select(items, {
-    title     = "Select Solution",
-    on_select = function(item, c) callback(item._raw, c) end,
+    title = "Select Solution",
+    on_select = function(item, c)
+      callback(item._raw, c)
+    end,
   })
 end
 
@@ -175,7 +189,7 @@ local function parse_dotnet_templates(lines)
       local parts = vim.split(vim.trim(line), "%s%s+")
       if #parts >= 2 then
         table.insert(templates, {
-          name       = vim.trim(parts[1]),
+          name = vim.trim(parts[1]),
           short_name = vim.trim(parts[2]),
         })
       end
@@ -216,7 +230,7 @@ local function configure_publish_profile(project_dir, ctx)
     end
   end
 
-  local profile_dir  = project_dir .. "/Properties/PublishProfiles"
+  local profile_dir = project_dir .. "/Properties/PublishProfiles"
   vim.fn.mkdir(profile_dir, "p")
   local profile_path = profile_dir .. "/FolderProfile.pubxml"
   vim.fn.writefile(template_lines, profile_path)
@@ -230,82 +244,86 @@ end
 
 M.commands = {
   {
-    name    = "Build",
-    icon    = "󰒓 ",
+    name = "Build",
+    icon = "󰒓 ",
     icon_hl = "DiagnosticOk",
-    desc    = "dotnet build",
-    action  = function(ctx)
+    desc = "dotnet build",
+    action = function(ctx)
       ctx.select({
-        { _raw = "Debug",   icon = "󰃤 ", icon_hl = "DiagnosticWarn", name = "Debug" },
-        { _raw = "Release", icon = "󰑊 ", icon_hl = "DiagnosticOk",   name = "Release" },
+        { _raw = "Debug", icon = "󰃤 ", icon_hl = "DiagnosticWarn", name = "Debug" },
+        { _raw = "Release", icon = "󰑊 ", icon_hl = "DiagnosticOk", name = "Release" },
       }, {
-        title     = "Build Configuration",
+        title = "Build Configuration",
         on_select = function(item, c)
           local config = item._raw
-          select_csproj(c, function(f, c2) run_job(M.get_build_cmd(f, config), c2) end)
+          select_csproj(c, function(f, c2)
+            run_job(M.get_build_cmd(f, config), c2)
+          end)
         end,
       })
     end,
   },
   {
-    name    = "Publish",
-    icon    = "󰆦 ",
+    name = "Publish",
+    icon = "󰆦 ",
     icon_hl = "DiagnosticInfo",
-    desc    = "dotnet publish",
-    action  = function(ctx)
-      select_csproj(ctx, function(f, c) run_job(M.get_publish_cmd(f), c) end)
+    desc = "dotnet publish",
+    action = function(ctx)
+      select_csproj(ctx, function(f, c)
+        run_job(M.get_publish_cmd(f), c)
+      end)
     end,
   },
   {
-    name    = "Restore",
-    icon    = "󰁨 ",
+    name = "Restore",
+    icon = "󰁨 ",
     icon_hl = "DiagnosticWarn",
-    desc    = "dotnet restore packages",
-    action  = function(ctx)
+    desc = "dotnet restore packages",
+    action = function(ctx)
       select_csproj(ctx, function(f, c)
         run_job({ "dotnet", "restore", f }, c)
       end)
     end,
   },
   {
-    name    = "Run",
-    icon    = "󰐊 ",
+    name = "Run",
+    icon = "󰐊 ",
     icon_hl = "String",
-    desc    = "dotnet run --project",
-    action  = function(ctx)
+    desc = "dotnet run --project",
+    action = function(ctx)
       select_csproj(ctx, function(f, c)
         run_job({ "dotnet", "run", "--project", f }, c)
       end)
     end,
   },
   {
-    name    = "Test",
-    icon    = "󰙨 ",
+    name = "Test",
+    icon = "󰙨 ",
     icon_hl = "DiagnosticHint",
-    desc    = "dotnet test",
-    action  = function(ctx)
+    desc = "dotnet test",
+    action = function(ctx)
       select_csproj(ctx, function(f, c)
         run_job({ "dotnet", "test", f, "-v", "minimal" }, c)
       end)
     end,
   },
   {
-    name    = "Clean",
-    icon    = "󰃢 ",
+    name = "Clean",
+    icon = "󰃢 ",
     icon_hl = "DiagnosticError",
-    desc    = "dotnet clean",
-    action  = function(ctx)
+    desc = "dotnet clean",
+    action = function(ctx)
       select_csproj(ctx, function(f, c)
         run_job({ "dotnet", "clean", f }, c)
       end)
     end,
   },
   {
-    name    = "Global JSON",
-    icon    = "󰘦 ",
+    name = "Global JSON",
+    icon = "󰘦 ",
     icon_hl = "Special",
-    desc    = "pin SDK version via global.json",
-    action  = function(ctx)
+    desc = "pin SDK version via global.json",
+    action = function(ctx)
       ctx.clear()
 
       -- Read existing version (if any) for display
@@ -331,7 +349,7 @@ M.commands = {
       end
 
       ctx.select(choices, {
-        title     = "Select .NET SDK",
+        title = "Select .NET SDK",
         on_select = function(choice, c)
           local version = choice:match("^(%S+)")
           if not version then
@@ -371,11 +389,11 @@ M.commands = {
     end,
   },
   {
-    name    = "List SDKs",
-    icon    = "󰈚 ",
+    name = "List SDKs",
+    icon = "󰈚 ",
     icon_hl = "Comment",
-    desc    = "dotnet --list-sdks",
-    action  = function(ctx)
+    desc = "dotnet --list-sdks",
+    action = function(ctx)
       ctx.clear()
       ctx.append("$ dotnet --list-sdks")
       ctx.append("")
@@ -388,11 +406,11 @@ M.commands = {
     end,
   },
   {
-    name    = "List Runtimes",
-    icon    = "󰈚 ",
+    name = "List Runtimes",
+    icon = "󰈚 ",
     icon_hl = "Comment",
-    desc    = "dotnet --list-runtimes",
-    action  = function(ctx)
+    desc = "dotnet --list-runtimes",
+    action = function(ctx)
       ctx.clear()
       ctx.append("$ dotnet --list-runtimes")
       ctx.append("")
@@ -405,11 +423,11 @@ M.commands = {
     end,
   },
   {
-    name    = "New Project",
-    icon    = "󰝒 ",
+    name = "New Project",
+    icon = "󰝒 ",
     icon_hl = "DiagnosticInfo",
-    desc    = "dotnet new",
-    action  = function(ctx)
+    desc = "dotnet new",
+    action = function(ctx)
       ctx.clear()
 
       -- SDK 7+ uses `dotnet new list`, older SDKs use `dotnet new --list`
@@ -434,39 +452,37 @@ M.commands = {
       local items = {}
       for _, t in ipairs(templates) do
         table.insert(items, {
-          _raw    = t,
-          icon    = "󰈚 ",
+          _raw = t,
+          icon = "󰈚 ",
           icon_hl = "Special",
-          name    = t.name .. "  (" .. t.short_name .. ")",
+          name = t.name .. "  (" .. t.short_name .. ")",
         })
       end
 
       ctx.select(items, {
-        title     = "Select Template",
+        title = "Select Template",
         on_select = function(item, c)
           local tpl = item._raw
           vim.cmd("stopinsert")
           vim.ui.input({ prompt = "Project name: " }, function(name)
-            if not name or name == "" then return end
+            if not name or name == "" then
+              return
+            end
             vim.schedule(function()
-              run_job(
-                { "dotnet", "new", tpl.short_name, "-n", name, "-o", name },
-                c,
-                function(ctx2)
-                  -- ask whether to set up publish profile from template
-                  vim.schedule(function()
-                    vim.ui.select({ "Yes", "No" }, {
-                      prompt = "Configure publish profile (.pubxml) from custom template?",
-                    }, function(choice)
-                      if choice == "Yes" then
-                        vim.schedule(function()
-                          configure_publish_profile(name, ctx2)
-                        end)
-                      end
-                    end)
+              run_job({ "dotnet", "new", tpl.short_name, "-n", name, "-o", name }, c, function(ctx2)
+                -- ask whether to set up publish profile from template
+                vim.schedule(function()
+                  vim.ui.select({ "Yes", "No" }, {
+                    prompt = "Configure publish profile (.pubxml) from custom template?",
+                  }, function(choice)
+                    if choice == "Yes" then
+                      vim.schedule(function()
+                        configure_publish_profile(name, ctx2)
+                      end)
+                    end
                   end)
-                end
-              )
+                end)
+              end)
             end)
           end)
         end,
@@ -474,25 +490,27 @@ M.commands = {
     end,
   },
   {
-    name    = "Solution",
-    icon    = "󰘐 ",
+    name = "Solution",
+    icon = "󰘐 ",
     icon_hl = "DiagnosticHint",
-    desc    = "dotnet sln management",
-    action  = function(ctx)
+    desc = "dotnet sln management",
+    action = function(ctx)
       ctx.select({
-        { _raw = "list",   icon = "󰈚 ", icon_hl = "Comment",       name = "List Projects" },
-        { _raw = "add",    icon = "󰐕 ", icon_hl = "DiagnosticOk",   name = "Add Project" },
+        { _raw = "list", icon = "󰈚 ", icon_hl = "Comment", name = "List Projects" },
+        { _raw = "add", icon = "󰐕 ", icon_hl = "DiagnosticOk", name = "Add Project" },
         { _raw = "remove", icon = "󰍴 ", icon_hl = "DiagnosticError", name = "Remove Project" },
-        { _raw = "new",    icon = "󰝒 ", icon_hl = "DiagnosticInfo",  name = "New Solution" },
+        { _raw = "new", icon = "󰝒 ", icon_hl = "DiagnosticInfo", name = "New Solution" },
       }, {
-        title     = "Solution Action",
+        title = "Solution Action",
         on_select = function(item, c)
           local action = item._raw
 
           if action == "new" then
             vim.cmd("stopinsert")
             vim.ui.input({ prompt = "Solution name: " }, function(name)
-              if not name or name == "" then return end
+              if not name or name == "" then
+                return
+              end
               vim.schedule(function()
                 run_job({ "dotnet", "new", "sln", "-n", name }, c)
               end)
@@ -534,15 +552,15 @@ M.commands = {
               local items = {}
               for _, p in ipairs(projects) do
                 table.insert(items, {
-                  _raw    = p,
-                  icon    = "󰈚 ",
+                  _raw = p,
+                  icon = "󰈚 ",
                   icon_hl = "Special",
-                  name    = p,
+                  name = p,
                 })
               end
 
               c2.select(items, {
-                title     = "Remove Project",
+                title = "Remove Project",
                 on_select = function(proj_item, c3)
                   run_job({ "dotnet", "sln", sln, "remove", proj_item._raw }, c3)
                 end,
@@ -562,25 +580,25 @@ local function notify_job(cmd, msg_start, msg_ok, msg_fail)
   vim.notify(msg_start, vim.log.levels.INFO, { title = M.title })
   vim.fn.jobstart(cmd, {
     on_exit = function(_, code)
-      local ok  = code == 0
-      vim.notify(
-        ok and msg_ok or msg_fail,
-        ok and vim.log.levels.INFO or vim.log.levels.ERROR,
-        { title = M.title }
-      )
+      local ok = code == 0
+      vim.notify(ok and msg_ok or msg_fail, ok and vim.log.levels.INFO or vim.log.levels.ERROR, { title = M.title })
     end,
   })
 end
 
 vim.api.nvim_create_user_command("DotnetBuild", function()
   vim.ui.select(M.get_csproj_files(), { prompt = "Choose project to build" }, function(f)
-    if f then notify_job(M.get_build_cmd(f), "Building…", "Build succeeded", "Build failed") end
+    if f then
+      notify_job(M.get_build_cmd(f), "Building…", "Build succeeded", "Build failed")
+    end
   end)
 end, { desc = "Dotnet Build" })
 
 vim.api.nvim_create_user_command("DotnetPublish", function()
   vim.ui.select(M.get_csproj_files(), { prompt = "Choose project to publish" }, function(f)
-    if f then notify_job(M.get_publish_cmd(f), "Publishing…", "Publish succeeded", "Publish failed") end
+    if f then
+      notify_job(M.get_publish_cmd(f), "Publishing…", "Publish succeeded", "Publish failed")
+    end
   end)
 end, { desc = "Dotnet Publish" })
 
@@ -603,13 +621,16 @@ vim.api.nvim_create_user_command("DotnetGlobalJson", function()
     table.insert(choices, (sdk_lines[i]:gsub("[\r\n]", "")))
   end
   vim.ui.select(choices, {
-    prompt = existing_version
-        and ("Current: " .. existing_version .. " — Select new SDK version:")
-        or "Select .NET SDK version:",
+    prompt = existing_version and ("Current: " .. existing_version .. " — Select new SDK version:")
+      or "Select .NET SDK version:",
   }, function(choice)
-    if not choice then return end
+    if not choice then
+      return
+    end
     local version = choice:match("^(%S+)")
-    if not version then return end
+    if not version then
+      return
+    end
 
     if existing_version then
       local raw = table.concat(vim.fn.readfile("global.json"), "\n")
@@ -618,7 +639,11 @@ vim.api.nvim_create_user_command("DotnetGlobalJson", function()
         data.sdk = data.sdk or {}
         data.sdk.version = version
         vim.fn.writefile({ vim.json.encode(data) }, "global.json")
-        vim.notify("Updated global.json (SDK " .. existing_version .. " → " .. version .. ")", vim.log.levels.INFO, { title = M.title })
+        vim.notify(
+          "Updated global.json (SDK " .. existing_version .. " → " .. version .. ")",
+          vim.log.levels.INFO,
+          { title = M.title }
+        )
       else
         vim.notify("Failed to parse existing global.json", vim.log.levels.ERROR, { title = M.title })
       end
@@ -637,5 +662,58 @@ end, { desc = "Dotnet global.json – pin SDK version" })
 vim.api.nvim_create_user_command("DotnetManager", function()
   require("utils.dotnet-ui").open(M.commands, { title = "Dotnet Manager" })
 end, { desc = "Open Dotnet Manager UI" })
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    local bufnr = args.buf
+
+    if client and (client.name == "roslyn" or client.name == "roslyn_ls") then
+      vim.api.nvim_create_autocmd("InsertCharPre", {
+        desc = "Roslyn: Trigger an auto insert on '/'.",
+        buffer = bufnr,
+        callback = function()
+          local char = vim.v.char
+
+          if char ~= "/" then
+            return
+          end
+
+          local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+          row, col = row - 1, col + 1
+          local uri = vim.uri_from_bufnr(bufnr)
+
+          local params = {
+            _vs_textDocument = { uri = uri },
+            _vs_position = { line = row, character = col },
+            _vs_ch = char,
+            _vs_options = {
+              tabSize = vim.bo[bufnr].tabstop,
+              insertSpaces = vim.bo[bufnr].expandtab,
+            },
+          }
+
+          -- NOTE: We should send textDocument/_vs_onAutoInsert request only after
+          -- buffer has changed.
+          vim.defer_fn(function()
+            client:request(
+              ---@diagnostic disable-next-line: param-type-mismatch
+              "textDocument/_vs_onAutoInsert",
+              params,
+              function(err, result, _)
+                if err or not result then
+                  return
+                end
+
+                vim.snippet.expand(result._vs_textEdit.newText)
+              end,
+              bufnr
+            )
+          end, 1)
+        end,
+      })
+    end
+  end,
+})
 
 return M

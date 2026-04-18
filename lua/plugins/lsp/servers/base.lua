@@ -90,7 +90,7 @@ return {
   capabilities = make_client_capabilities(),
 
   disable_default_settings = {
-    roslyn = { "on_init" },
+    -- roslyn = { "on_init" },
   },
 
   servers = {},

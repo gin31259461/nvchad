@@ -3,14 +3,17 @@
 -- wiki:            https://github.com/seblyng/roslyn.nvim/wiki
 -- diagnostic hack: https://github.com/seblyng/roslyn.nvim/blob/7d8819239c5e2c4a0d8150da1c00fa583f761704/lsp/roslyn.lua#L33
 
+local fs = require("utils.fs")
+local os = require("utils.os")
+
 ---@type Lsp.Server.Module
 return {
   servers = {
     omnisharp = {
       handlers = {
-        ["textDocument/definition"]     = require("omnisharp_extended").definition_handler,
+        ["textDocument/definition"] = require("omnisharp_extended").definition_handler,
         ["textDocument/typeDefinition"] = require("omnisharp_extended").type_definition_handler,
-        ["textDocument/references"]     = require("omnisharp_extended").references_handler,
+        ["textDocument/references"] = require("omnisharp_extended").references_handler,
         ["textDocument/implementation"] = require("omnisharp_extended").implementation_handler,
       },
 
@@ -55,8 +58,28 @@ return {
       },
     },
 
+    -- to use this ls, must download roslyn_ls from azure devops and put it in `data/roslyn_ls` folder
+    -- refer to: https://github.com/dotnet/roslyn/issues/71474#issuecomment-2177303207
+    -- TODO: auto download roslyn_ls and put it in `data/roslyn_ls` folder
     roslyn = {
-      on_attach = function(client, _)
+      filetypes = { "cs" },
+
+      cmd = {
+        "dotnet",
+        fs.data_path
+          .. "/roslyn_ls/content/LanguageServer"
+          .. "/"
+          .. (os.is_win() and "win" or "linux")
+          .. "-x64"
+          .. "/Microsoft.CodeAnalysis.LanguageServer.dll",
+        "--logLevel", -- this property is required by the server
+        "Information",
+        "--extensionLogDirectory", -- this property is required by the server
+        vim.fs.joinpath(vim.uv.os_tmpdir(), "roslyn_ls/logs"),
+        "--stdio",
+      },
+
+      on_attach = function(client, bufnr)
         if client:supports_method("textDocument/semanticTokens") then
           client.server_capabilities.semanticTokensProvider = nil
         end
@@ -73,7 +96,7 @@ return {
                   vim.log.levels.INFO,
                   { title = "Roslyn" }
                 )
-                vim.cmd("Roslyn restart")
+                vim.cmd("lsp restart roslyn")
               end)
             end
           end,
@@ -105,6 +128,11 @@ return {
         },
         ["csharp|code_lens"] = {
           dotnet_enable_references_code_lens = true,
+        },
+
+        ["csharp|background_analysis"] = {
+          dotnet_analyzer_diagnostics_scope = "fullSolution",
+          dotnet_compiler_diagnostics_scope = "fullSolution",
         },
       },
     },
