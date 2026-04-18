@@ -286,7 +286,7 @@ local function unfocus_output()
   end
   if S.input_win and api.nvim_win_is_valid(S.input_win) then
     api.nvim_set_current_win(S.input_win)
-    vim.cmd("startinsert")
+    if S.insert_mode then vim.cmd("startinsert") end
   end
 end
 
@@ -317,7 +317,7 @@ local function make_ctx()
       render_list()
       if S.input_win and api.nvim_win_is_valid(S.input_win) then
         api.nvim_set_current_win(S.input_win)
-        vim.cmd("startinsert")
+        if S.insert_mode then vim.cmd("startinsert") end
       end
     end,
   }
@@ -326,8 +326,9 @@ end
 -- ── execute selected ──────────────────────────────────────────────────────────
 
 local function run_selected()
-  local items   = current_items()
-  local sel     = current_selected()
+  local was_insert = api.nvim_get_mode().mode == "i"
+  local items      = current_items()
+  local sel        = current_selected()
   if #items == 0 then return end
   local item = items[sel]
   if not item then return end
@@ -351,13 +352,15 @@ local function run_selected()
     end
   end
 
-  -- Ensure focus returns to input after action completes
+  -- Restore focus to input, preserving the mode the user was in when Enter was pressed.
   vim.schedule(function()
     if is_open() and not S.sub
       and S.input_win and api.nvim_win_is_valid(S.input_win)
     then
       api.nvim_set_current_win(S.input_win)
-      vim.cmd("startinsert")
+      if was_insert then
+        vim.cmd("startinsert")
+      end
     end
   end)
 end
@@ -490,7 +493,7 @@ end
 
 ---Open the two-panel Dotnet Manager UI.
 ---@param commands DotnetUICommand[]
----@param opts?    {title?: string}
+---@param opts?    {title?: string, insert_mode?: boolean}  insert_mode defaults to false (normal mode)
 M.open = function(commands, opts)
   if is_open() then do_close() end
   opts = opts or {}
@@ -507,16 +510,17 @@ M.open = function(commands, opts)
   local title     = opts.title or "Commands"
 
   S = {
-    commands   = commands,
-    filtered   = vim.deepcopy(commands),
-    selected   = 1,
-    sub        = nil,
-    last_query = "",
-    prompt     = prompt,
-    list_h     = list_h,
-    list_title = title,
-    ns         = api.nvim_create_namespace("DotnetUI"),
-    out_ns     = api.nvim_create_namespace("DotnetUIOutput"),
+    commands    = commands,
+    filtered    = vim.deepcopy(commands),
+    selected    = 1,
+    sub         = nil,
+    last_query  = "",
+    prompt      = prompt,
+    list_h      = list_h,
+    list_title  = title,
+    insert_mode = opts.insert_mode == true,
+    ns          = api.nvim_create_namespace("DotnetUI"),
+    out_ns      = api.nvim_create_namespace("DotnetUIOutput"),
   }
 
   -- ── buffers ───────────────────────────────────────────────────────────────
@@ -589,12 +593,12 @@ M.open = function(commands, opts)
   vim.bo[S.input_buf].buftype = "prompt"
   vim.fn.prompt_setprompt(S.input_buf, prompt)
   vim.fn.prompt_setcallback(S.input_buf, function() end)
-  vim.cmd("startinsert")
 
   -- ── initial render ────────────────────────────────────────────────────────
   render_list()
   setup_keymaps()
   setup_autocmds()
+  if S.insert_mode then vim.cmd("startinsert") end
 end
 
 return M
