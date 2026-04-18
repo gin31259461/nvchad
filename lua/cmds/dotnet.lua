@@ -29,7 +29,8 @@ end
 ---Run a shell command, streaming stdout/stderr into the output panel.
 ---@param cmd  string[]
 ---@param ctx  DotnetUICtx
-local function run_job(cmd, ctx)
+---@param on_complete? fun(ctx: DotnetUICtx)  called on exit-code 0
+local function run_job(cmd, ctx, on_complete)
   ctx.clear()
   ctx.append("$ " .. table.concat(cmd, " "))
   ctx.append("")
@@ -43,6 +44,9 @@ local function run_job(cmd, ctx)
       ctx.append("")
       if code == 0 then
         ctx.append("✓  Completed successfully")
+        if on_complete then
+          vim.schedule(function() on_complete(ctx) end)
+        end
       else
         ctx.append("✗  Failed  (exit code " .. code .. ")")
       end
@@ -83,12 +87,78 @@ local function select_csproj(ctx, callback)
   })
 end
 
+-- ── template helpers ──────────────────────────────────────────────────────────
+
+---Parse the tabular output of `dotnet new list` into template records.
+---@param lines string[]
+---@return {name: string, short_name: string}[]
+local function parse_dotnet_templates(lines)
+  local templates = {}
+  local in_data = false
+  for _, line in ipairs(lines) do
+    if line:match("^%-%-%-%-") then
+      in_data = true
+    elseif in_data and line:match("%S") then
+      local parts = vim.split(vim.trim(line), "%s%s+")
+      if #parts >= 2 then
+        table.insert(templates, {
+          name       = vim.trim(parts[1]),
+          short_name = vim.trim(parts[2]),
+        })
+      end
+    end
+  end
+  return templates
+end
+
+---Read TargetFramework from a .csproj, copy the publish-profile template, and
+---fill in the correct framework value.
+---@param project_dir string
+---@param ctx         DotnetUICtx
+local function configure_publish_profile(project_dir, ctx)
+  -- locate the .csproj inside the new project folder
+  local csproj_files = vim.fn.glob(project_dir .. "/*.csproj", false, true)
+  if #csproj_files == 0 then
+    ctx.append("⚠  No .csproj found in " .. project_dir)
+    return
+  end
+
+  local csproj_content = table.concat(vim.fn.readfile(csproj_files[1]), "\n")
+  local target_fw = csproj_content:match("<TargetFramework>(.+)</TargetFramework>")
+  if not target_fw then
+    ctx.append("⚠  Could not detect TargetFramework from " .. csproj_files[1])
+    return
+  end
+
+  local template_path = vim.fn.stdpath("config") .. "/lua/configs/lsp/template/dotnet.csproj"
+  if vim.fn.filereadable(template_path) ~= 1 then
+    ctx.append("⚠  Publish-profile template not found: " .. template_path)
+    return
+  end
+
+  local template_lines = vim.fn.readfile(template_path)
+  for i, line in ipairs(template_lines) do
+    if line:find("TargetFramework") and line:find("netx%.x") then
+      template_lines[i] = "    <TargetFramework>" .. target_fw .. "</TargetFramework>"
+    end
+  end
+
+  local profile_dir  = project_dir .. "/Properties/PublishProfiles"
+  vim.fn.mkdir(profile_dir, "p")
+  local profile_path = profile_dir .. "/FolderProfile.pubxml"
+  vim.fn.writefile(template_lines, profile_path)
+
+  ctx.append("")
+  ctx.append("✓  Created publish profile: " .. profile_path)
+  ctx.append("   TargetFramework: " .. target_fw)
+end
+
 -- ── command specs (consumed by DotnetManager UI) ──────────────────────────────
 
 M.commands = {
   {
     name    = "Build",
-    icon    = " ",
+    icon    = "󰒓 ",
     icon_hl = "DiagnosticOk",
     desc    = "dotnet build",
     action  = function(ctx)
@@ -168,7 +238,7 @@ M.commands = {
 
       local choices = {}
       for i = #sdk_lines, 1, -1 do
-        table.insert(choices, sdk_lines[i]:gsub("[\r\n]", ""))
+        table.insert(choices, (sdk_lines[i]:gsub("[\r\n]", "")))
       end
 
       ctx.select(choices, {
@@ -227,6 +297,70 @@ M.commands = {
       end
     end,
   },
+  {
+    name    = "New Project",
+    icon    = "󰝒 ",
+    icon_hl = "DiagnosticInfo",
+    desc    = "dotnet new",
+    action  = function(ctx)
+      ctx.clear()
+      ctx.append("$ dotnet new list")
+      ctx.append("")
+
+      local raw = vim.fn.systemlist("dotnet new list")
+      if vim.v.shell_error ~= 0 then
+        ctx.append("Failed to list templates. Is dotnet installed?")
+        return
+      end
+
+      local templates = parse_dotnet_templates(raw)
+      if #templates == 0 then
+        ctx.append("No templates found.")
+        return
+      end
+
+      local items = {}
+      for _, t in ipairs(templates) do
+        table.insert(items, {
+          _raw    = t,
+          icon    = "󰈚 ",
+          icon_hl = "Special",
+          name    = t.name .. "  (" .. t.short_name .. ")",
+        })
+      end
+
+      ctx.select(items, {
+        title     = "Select Template",
+        on_select = function(item, c)
+          local tpl = item._raw
+          vim.cmd("stopinsert")
+          vim.ui.input({ prompt = "Project name: " }, function(name)
+            if not name or name == "" then return end
+            vim.schedule(function()
+              run_job(
+                { "dotnet", "new", tpl.short_name, "-n", name, "-o", name },
+                c,
+                function(ctx2)
+                  -- ask whether to set up publish profile from template
+                  vim.schedule(function()
+                    vim.ui.select({ "Yes", "No" }, {
+                      prompt = "Configure publish profile (.pubxml) from custom template?",
+                    }, function(choice)
+                      if choice == "Yes" then
+                        vim.schedule(function()
+                          configure_publish_profile(name, ctx2)
+                        end)
+                      end
+                    end)
+                  end)
+                end
+              )
+            end)
+          end)
+        end,
+      })
+    end,
+  },
 }
 
 -- ── individual user commands (work without the UI) ────────────────────────────
@@ -269,7 +403,7 @@ vim.api.nvim_create_user_command("DotnetGlobalJson", function()
   end
   local choices = {}
   for i = #sdk_lines, 1, -1 do
-    table.insert(choices, sdk_lines[i]:gsub("[\r\n]", ""))
+    table.insert(choices, (sdk_lines[i]:gsub("[\r\n]", "")))
   end
   vim.ui.select(choices, { prompt = "Select .NET SDK version:" }, function(choice)
     if not choice then return end
@@ -287,7 +421,7 @@ vim.api.nvim_create_user_command("DotnetGlobalJson", function()
 end, { desc = "Dotnet global.json – pin SDK version" })
 
 vim.api.nvim_create_user_command("DotnetManager", function()
-  require("utils.dotnet_ui").open(M.commands, { title = "Dotnet Manager" })
+  require("utils.dotnet-ui").open(M.commands, { title = "Dotnet Manager" })
 end, { desc = "Open Dotnet Manager UI" })
 
 return M

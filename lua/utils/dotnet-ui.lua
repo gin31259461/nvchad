@@ -3,7 +3,7 @@
 -- Right: output / preview panel
 --
 -- Usage:
---   require("utils.dotnet_ui").open(commands, { title = "..." })
+--   require("utils.dotnet-ui").open(commands, { title = "..." })
 --
 -- Command spec:
 --   { name, icon, icon_hl?, desc?, action: fun(ctx) }
@@ -23,6 +23,43 @@ local S = {}
 
 local function is_open()
   return S.ns ~= nil
+end
+
+-- ── output highlight patterns ─────────────────────────────────────────────────
+local OUT_HL_PATTERNS = {
+  { pat = "^%$ ",              line_hl = "Comment" },
+  { pat = "✓",                 line_hl = "DiagnosticOk" },
+  { pat = "✗",                 line_hl = "DiagnosticError" },
+  { pat = "Build succeeded",   line_hl = "DiagnosticOk" },
+  { pat = "Build FAILED",      line_hl = "DiagnosticError" },
+  { pat = "[Ww]arning%s",      line_hl = "DiagnosticWarn" },
+  { pat = "[Ee]rror%s",        line_hl = "DiagnosticError" },
+  { pat = "Restored%s",        line_hl = "DiagnosticOk" },
+  { pat = "Passed!",           line_hl = "DiagnosticOk" },
+  { pat = "Failed!",           line_hl = "DiagnosticError" },
+}
+
+-- ── output highlight helper ───────────────────────────────────────────────────
+
+---Apply line-level highlights to output lines matching known patterns.
+---@param start_line integer  0-based first line
+---@param end_line   integer  0-based one-past-last line
+local function highlight_output(start_line, end_line)
+  if not (S.output_buf and api.nvim_buf_is_valid(S.output_buf)) then return end
+  if not S.out_ns then return end
+
+  local lines = api.nvim_buf_get_lines(S.output_buf, start_line, end_line, false)
+  for i, line in ipairs(lines) do
+    local row = start_line + i - 1
+    for _, rule in ipairs(OUT_HL_PATTERNS) do
+      if line:find(rule.pat) then
+        api.nvim_buf_set_extmark(S.output_buf, S.out_ns, row, 0, {
+          line_hl_group = rule.line_hl,
+        })
+        break
+      end
+    end
+  end
 end
 
 -- ── output helpers ────────────────────────────────────────────────────────────
@@ -51,6 +88,8 @@ local function out_write(lines)
   api.nvim_buf_set_lines(S.output_buf, start, -1, false, to_write)
   vim.bo[S.output_buf].modifiable = false
 
+  highlight_output(start, start + #to_write)
+
   if S.output_win and api.nvim_win_is_valid(S.output_win) then
     local new_n = api.nvim_buf_line_count(S.output_buf)
     pcall(api.nvim_win_set_cursor, S.output_win, { new_n, 0 })
@@ -62,6 +101,9 @@ local function out_clear()
   vim.bo[S.output_buf].modifiable = true
   api.nvim_buf_set_lines(S.output_buf, 0, -1, false, {})
   vim.bo[S.output_buf].modifiable = false
+  if S.out_ns then
+    api.nvim_buf_clear_namespace(S.output_buf, S.out_ns, 0, -1)
+  end
 end
 
 -- ── close ─────────────────────────────────────────────────────────────────────
@@ -118,19 +160,30 @@ local function render_list()
     local is_sel = (i == sel)
 
     if is_sel then
-      api.nvim_buf_add_highlight(S.list_buf, S.ns, "Visual", row, 0, -1)
+      api.nvim_buf_set_extmark(S.list_buf, S.ns, row, 0, {
+        line_hl_group = "Visual",
+      })
     end
 
     if type(item) ~= "string" then
       local icon_hl = item.icon_hl or "String"
       local icon_start = 2
       local icon_end   = icon_start + #item.icon
-      api.nvim_buf_add_highlight(S.list_buf, S.ns, icon_hl, row, icon_start, icon_end)
+      api.nvim_buf_set_extmark(S.list_buf, S.ns, row, icon_start, {
+        end_col  = icon_end,
+        hl_group = icon_hl,
+      })
       local name_hl = is_sel and "CursorLineNr" or "Normal"
-      api.nvim_buf_add_highlight(S.list_buf, S.ns, name_hl, row, icon_end + 2, -1)
+      api.nvim_buf_set_extmark(S.list_buf, S.ns, row, icon_end + 2, {
+        end_col  = #lines[i],
+        hl_group = name_hl,
+      })
     else
       local hl = is_sel and "CursorLineNr" or "Normal"
-      api.nvim_buf_add_highlight(S.list_buf, S.ns, hl, row, 2, -1)
+      api.nvim_buf_set_extmark(S.list_buf, S.ns, row, 2, {
+        end_col  = #lines[i],
+        hl_group = hl,
+      })
     end
   end
 
@@ -260,11 +313,16 @@ local function setup_keymaps()
   end
 
   -- navigate from the input (insert mode)
-  km("i", "<C-n>",   function() move(1) end,  S.input_buf)
-  km("i", "<C-p>",   function() move(-1) end, S.input_buf)
+  km("i", "<C-j>",   function() move(1) end,  S.input_buf)
+  km("i", "<C-k>",   function() move(-1) end, S.input_buf)
   km("i", "<Down>",  function() move(1) end,  S.input_buf)
   km("i", "<Up>",    function() move(-1) end, S.input_buf)
   km("i", "<CR>",    run_selected,            S.input_buf)
+
+  -- navigate from the input (normal mode)
+  km("n", "j",    function() move(1) end,  S.input_buf)
+  km("n", "k",    function() move(-1) end, S.input_buf)
+  km("n", "<CR>", run_selected,            S.input_buf)
 
   -- navigate from the list (normal mode)
   km("n", "j",    function() move(1) end,  S.list_buf)
@@ -368,6 +426,7 @@ M.open = function(commands, opts)
     list_h     = list_h,
     list_title = title,
     ns         = api.nvim_create_namespace("DotnetUI"),
+    out_ns     = api.nvim_create_namespace("DotnetUIOutput"),
   }
 
   -- ── buffers ───────────────────────────────────────────────────────────────
