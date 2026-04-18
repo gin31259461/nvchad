@@ -107,6 +107,9 @@ end, { desc = "floating diagnostic" })
 map("n", "<leader>mp", "<cmd>MarkdownPreview<CR>", { desc = "toggle markdown preview server" })
 map("n", "<leader>ch", "<cmd>NvCheatsheet<CR>", { desc = "toggle nvcheatsheet" })
 
+-------------------- dotnet --------------------
+map("n", "<leader>dp", "<cmd>DotnetManager<CR>", { desc = "open dotnet manager" })
+
 map("n", "<leader>th", function()
   require("nvchad.themes").open()
 end, { desc = "telescope nvchad themes" })

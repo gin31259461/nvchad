@@ -1,130 +1,293 @@
--- use the specified sdk:
--- dotnet --list-sdks
--- dotnet new globaljson --sdk-version <version>
+-- Dotnet CLI commands – individual user commands + DotnetManager UI
+-- SDK pinning: dotnet --list-sdks / dotnet new globaljson --sdk-version <v>
 
 local M = {}
 
 M.title = "Dotnet"
+
+-- ── project helpers ───────────────────────────────────────────────────────────
 
 ---@return string[]
 M.get_csproj_files = function()
   return vim.fn.glob("*.csproj", false, true)
 end
 
+---@param project string
+---@return string[]
+M.get_build_cmd = function(project)
+  return { "dotnet", "build", project, "-c", "Debug", "-o", vim.fn.getcwd() .. "/bin/Debug/" }
+end
+
+---@param project string
+---@return string[]
 M.get_publish_cmd = function(project)
   return { "dotnet", "publish", project, "-p:PublishProfile=FolderProfile", "-c", "Release" }
 end
 
----@param project? string
-M.get_build_cmd = function(project)
-  return { "dotnet", "build", project or "", "-c", "Debug", "-o", vim.fn.getcwd() .. "/bin/Debug/" }
+-- ── UI helpers ────────────────────────────────────────────────────────────────
+
+---Run a shell command, streaming stdout/stderr into the output panel.
+---@param cmd  string[]
+---@param ctx  DotnetUICtx
+local function run_job(cmd, ctx)
+  ctx.clear()
+  ctx.append("$ " .. table.concat(cmd, " "))
+  ctx.append("")
+
+  vim.fn.jobstart(cmd, {
+    stdout_buffered = false,
+    stderr_buffered = false,
+    on_stdout = function(_, data) ctx.write(data) end,
+    on_stderr = function(_, data) ctx.write(data) end,
+    on_exit = function(_, code)
+      ctx.append("")
+      if code == 0 then
+        ctx.append("✓  Completed successfully")
+      else
+        ctx.append("✗  Failed  (exit code " .. code .. ")")
+      end
+    end,
+  })
 end
 
----@param verb string prompt verb (e.g. "publish", "build")
----@param get_cmd fun(project: string): string[]
----@param msg_start string
----@param msg_ok string
----@param msg_fail string
----@return function
-local function make_dotnet_command(verb, get_cmd, msg_start, msg_ok, msg_fail)
-  return function(_)
-    vim.ui.select(M.get_csproj_files(), { prompt = "Choose csproj to " .. verb }, function(item, _)
-      if item == nil then
+---Push a csproj-file selector onto the left panel, then call callback(file, ctx).
+---If only one .csproj exists it is selected automatically.
+---@param ctx      DotnetUICtx
+---@param callback fun(file: string, ctx: DotnetUICtx)
+local function select_csproj(ctx, callback)
+  local files = M.get_csproj_files()
+  if #files == 0 then
+    ctx.clear()
+    ctx.append("No .csproj files found in: " .. vim.fn.getcwd())
+    return
+  end
+  if #files == 1 then
+    callback(files[1], ctx)
+    return
+  end
+
+  local ui  = require("utils.ui")
+  local items = {}
+  for _, f in ipairs(files) do
+    table.insert(items, {
+      _raw    = f,
+      icon    = ui.get_file_icon(f),
+      icon_hl = "DevIconCs",
+      name    = f,
+    })
+  end
+
+  ctx.select(items, {
+    title     = "Select Project",
+    on_select = function(item, c) callback(item._raw, c) end,
+  })
+end
+
+-- ── command specs (consumed by DotnetManager UI) ──────────────────────────────
+
+M.commands = {
+  {
+    name    = "Build",
+    icon    = " ",
+    icon_hl = "DiagnosticOk",
+    desc    = "dotnet build",
+    action  = function(ctx)
+      select_csproj(ctx, function(f, c) run_job(M.get_build_cmd(f), c) end)
+    end,
+  },
+  {
+    name    = "Publish",
+    icon    = "󰆦 ",
+    icon_hl = "DiagnosticInfo",
+    desc    = "dotnet publish",
+    action  = function(ctx)
+      select_csproj(ctx, function(f, c) run_job(M.get_publish_cmd(f), c) end)
+    end,
+  },
+  {
+    name    = "Restore",
+    icon    = "󰁨 ",
+    icon_hl = "DiagnosticWarn",
+    desc    = "dotnet restore packages",
+    action  = function(ctx)
+      select_csproj(ctx, function(f, c)
+        run_job({ "dotnet", "restore", f }, c)
+      end)
+    end,
+  },
+  {
+    name    = "Run",
+    icon    = "󰐊 ",
+    icon_hl = "String",
+    desc    = "dotnet run --project",
+    action  = function(ctx)
+      select_csproj(ctx, function(f, c)
+        run_job({ "dotnet", "run", "--project", f }, c)
+      end)
+    end,
+  },
+  {
+    name    = "Test",
+    icon    = "󰙨 ",
+    icon_hl = "DiagnosticHint",
+    desc    = "dotnet test",
+    action  = function(ctx)
+      select_csproj(ctx, function(f, c)
+        run_job({ "dotnet", "test", f, "-v", "minimal" }, c)
+      end)
+    end,
+  },
+  {
+    name    = "Clean",
+    icon    = "󰃢 ",
+    icon_hl = "DiagnosticError",
+    desc    = "dotnet clean",
+    action  = function(ctx)
+      select_csproj(ctx, function(f, c)
+        run_job({ "dotnet", "clean", f }, c)
+      end)
+    end,
+  },
+  {
+    name    = "Global JSON",
+    icon    = "󰘦 ",
+    icon_hl = "Special",
+    desc    = "pin SDK version via global.json",
+    action  = function(ctx)
+      ctx.clear()
+      if vim.fn.filereadable("global.json") == 1 then
+        ctx.append("global.json already exists in " .. vim.fn.getcwd())
         return
       end
 
-      vim.notify(msg_start, vim.log.levels.INFO, { title = M.title })
+      local sdk_lines = vim.fn.systemlist("dotnet --list-sdks")
+      if vim.v.shell_error ~= 0 or #sdk_lines == 0 then
+        ctx.append("Failed to list .NET SDKs. Is dotnet installed?")
+        return
+      end
 
-      vim.fn.jobstart(get_cmd(item), {
-        on_exit = function(_, exit_code, _)
-          if exit_code == 0 then
-            vim.notify(msg_ok, vim.log.levels.INFO, { title = M.title })
+      local choices = {}
+      for i = #sdk_lines, 1, -1 do
+        table.insert(choices, sdk_lines[i]:gsub("[\r\n]", ""))
+      end
+
+      ctx.select(choices, {
+        title     = "Select .NET SDK",
+        on_select = function(choice, c)
+          local version = choice:match("^(%S+)")
+          if not version then
+            c.append("Could not parse SDK version from: " .. choice)
+            return
+          end
+          local cmd = "dotnet new globaljson --sdk-version " .. version
+          c.clear()
+          c.append("$ " .. cmd)
+          c.append("")
+          local out = vim.fn.system(cmd)
+          if vim.v.shell_error == 0 then
+            c.append("✓  Created global.json  (SDK " .. version .. ")")
           else
-            vim.notify(msg_fail, vim.log.levels.ERROR, { title = M.title })
+            c.append("✗  Error: " .. out)
           end
         end,
       })
-    end)
-  end
+    end,
+  },
+  {
+    name    = "List SDKs",
+    icon    = "󰈚 ",
+    icon_hl = "Comment",
+    desc    = "dotnet --list-sdks",
+    action  = function(ctx)
+      ctx.clear()
+      ctx.append("$ dotnet --list-sdks")
+      ctx.append("")
+      local lines = vim.fn.systemlist("dotnet --list-sdks")
+      if vim.v.shell_error ~= 0 then
+        ctx.append("Command failed.")
+      else
+        ctx.write(lines)
+      end
+    end,
+  },
+  {
+    name    = "List Runtimes",
+    icon    = "󰈚 ",
+    icon_hl = "Comment",
+    desc    = "dotnet --list-runtimes",
+    action  = function(ctx)
+      ctx.clear()
+      ctx.append("$ dotnet --list-runtimes")
+      ctx.append("")
+      local lines = vim.fn.systemlist("dotnet --list-runtimes")
+      if vim.v.shell_error ~= 0 then
+        ctx.append("Command failed.")
+      else
+        ctx.write(lines)
+      end
+    end,
+  },
+}
+
+-- ── individual user commands (work without the UI) ────────────────────────────
+
+local function notify_job(cmd, msg_start, msg_ok, msg_fail)
+  vim.notify(msg_start, vim.log.levels.INFO, { title = M.title })
+  vim.fn.jobstart(cmd, {
+    on_exit = function(_, code)
+      local ok  = code == 0
+      vim.notify(
+        ok and msg_ok or msg_fail,
+        ok and vim.log.levels.INFO or vim.log.levels.ERROR,
+        { title = M.title }
+      )
+    end,
+  })
 end
 
-vim.api.nvim_create_user_command(
-  "DotnetPublish",
-  make_dotnet_command(
-    "publish", M.get_publish_cmd,
-    "Publishing project",
-    "Publish project successfully",
-    "Error occur when publish project"
-  ),
-  { desc = "Dotnet Publish" }
-)
+vim.api.nvim_create_user_command("DotnetBuild", function()
+  vim.ui.select(M.get_csproj_files(), { prompt = "Choose project to build" }, function(f)
+    if f then notify_job(M.get_build_cmd(f), "Building…", "Build succeeded", "Build failed") end
+  end)
+end, { desc = "Dotnet Build" })
 
-vim.api.nvim_create_user_command(
-  "DotnetBuild",
-  make_dotnet_command(
-    "build", M.get_build_cmd,
-    "Building project",
-    "Build project successfully",
-    "Error occur when Build project"
-  ),
-  { desc = "Dotnet Build" }
-)
+vim.api.nvim_create_user_command("DotnetPublish", function()
+  vim.ui.select(M.get_csproj_files(), { prompt = "Choose project to publish" }, function(f)
+    if f then notify_job(M.get_publish_cmd(f), "Publishing…", "Publish succeeded", "Publish failed") end
+  end)
+end, { desc = "Dotnet Publish" })
 
 vim.api.nvim_create_user_command("DotnetGlobalJson", function()
-  -- 1. Check if global.json exists in the current working directory
   if vim.fn.filereadable("global.json") == 1 then
-    vim.notify("global.json already exists. Skipping operation.", vim.log.levels.WARN)
+    vim.notify("global.json already exists.", vim.log.levels.WARN, { title = M.title })
     return
   end
-
-  -- 2. Fetch installed SDKs using the dotnet CLI
-  -- Output format example: "8.0.100 [/usr/share/dotnet/sdk]"
-  local sdk_output = vim.fn.systemlist("dotnet --list-sdks")
-
-  -- Handle case where dotnet command fails or no SDKs are returned
-  if vim.v.shell_error ~= 0 or #sdk_output == 0 then
-    vim.notify("Failed to retrieve .NET SDK list. Is dotnet installed?", vim.log.levels.ERROR)
+  local sdk_lines = vim.fn.systemlist("dotnet --list-sdks")
+  if vim.v.shell_error ~= 0 or #sdk_lines == 0 then
+    vim.notify("Failed to retrieve SDK list.", vim.log.levels.ERROR, { title = M.title })
     return
   end
-
-  -- 3. Prepare data for selection
-  -- We reverse the list to show the latest versions first (optional preference)
   local choices = {}
-  for i = #sdk_output, 1, -1 do
-    -- Remove Carriage Return (^M) and extra whitespace
-    local line = sdk_output[i]:gsub("[\r\n]", "")
-    table.insert(choices, line)
+  for i = #sdk_lines, 1, -1 do
+    table.insert(choices, sdk_lines[i]:gsub("[\r\n]", ""))
   end
-
-  -- 4. Prompt the user to select a version
-  vim.ui.select(choices, {
-    prompt = "Select .NET SDK Version:",
-    format_item = function(item)
-      -- Display the full line so the user can see the path if needed
-      return item
-    end,
-  }, function(choice)
-    -- If the user cancels the selection (e.g., presses Esc), choice will be nil
-    if not choice then
-      return
-    end
-
-    -- Extract just the version number (the first part of the string)
-    -- e.g., "8.0.100" from "8.0.100 [/path/to/sdk]"
+  vim.ui.select(choices, { prompt = "Select .NET SDK version:" }, function(choice)
+    if not choice then return end
     local version = choice:match("^(%S+)")
-
     if version then
-      -- 5. Execute the creation command
-      local cmd = string.format("dotnet new globaljson --sdk-version %s", version)
-      local output = vim.fn.system(cmd)
-
-      if vim.v.shell_error == 0 then
-        vim.notify("Successfully created global.json with SDK: " .. version, vim.log.levels.INFO)
-      else
-        vim.notify("Error creating global.json: " .. output, vim.log.levels.ERROR)
-      end
+      local out = vim.fn.system("dotnet new globaljson --sdk-version " .. version)
+      local ok  = vim.v.shell_error == 0
+      vim.notify(
+        ok and "Created global.json (SDK " .. version .. ")" or "Error: " .. out,
+        ok and vim.log.levels.INFO or vim.log.levels.ERROR,
+        { title = M.title }
+      )
     end
   end)
-end, { desc = "Dotnet New global.json (for .NET SDK Version Control)" })
+end, { desc = "Dotnet global.json – pin SDK version" })
+
+vim.api.nvim_create_user_command("DotnetManager", function()
+  require("utils.dotnet_ui").open(M.commands, { title = "Dotnet Manager" })
+end, { desc = "Open Dotnet Manager UI" })
 
 return M
