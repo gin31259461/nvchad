@@ -1,3 +1,8 @@
+---
+name: lsp-server
+description: "Configure LSP servers with a modular, capability-aware approach."
+---
+
 # Skill: LSP Server Configuration
 
 ## Architecture
@@ -20,8 +25,7 @@ lua/plugins/lsp/
 
 1. `base.lua` returns `---@type Lsp.Config.Spec` with diagnostics, capabilities,
    and `on_init`.
-2. `config.lua` requires base, then deep-merges each module in
-   `server_modules`.
+2. `config.lua` requires base, then deep-merges each module in `server_modules`.
 3. `setup.lua` iterates the merged spec and calls `lspconfig[name].setup(cfg)`
    (or defers to `spec.setup[name]()` for custom setups like roslyn.nvim).
 4. `keymaps.lua` is called from `on_attach` and only registers keymaps for
@@ -130,8 +134,8 @@ local server_modules = {
   disable_default_settings = { roslyn = { "on_init" } }
   ```
 - **Capability-aware keymaps** — `keymaps.lua` checks
-  `client:supports_method(...)` before registering. This avoids dead keymaps
-  for servers that don't support certain LSP methods.
+  `client:supports_method(...)` before registering. This avoids dead keymaps for
+  servers that don't support certain LSP methods.
 - **Diagnostic filtering** — `utils/lsp.lua` provides helpers that filter out
   noisy diagnostics ("is not accessed", "Unused local"). These are applied
   globally via `vim.lsp.handlers`.

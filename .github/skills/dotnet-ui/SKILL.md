@@ -1,10 +1,17 @@
+---
+name: dotnet-ui
+description: A custom two-panel floating UI for command-palette workflows, used by the Dotnet
+---
+
 # Skill: Dotnet-UI — Two-Panel Picker
 
 ## What it is
 
-`lua/utils/dotnet-ui.lua` is a custom Telescope-style floating UI with two panels:
+`lua/utils/dotnet-ui.lua` is a custom Telescope-style floating UI with two
+panels:
 
-- **Left panel** — prompt input (top, `buftype=prompt`) + scrollable item list (below).
+- **Left panel** — prompt input (top, `buftype=prompt`) + scrollable item list
+  (below).
 - **Right panel** — read-only output with pattern-based line highlighting.
 
 It is used by `lua/cmds/dotnet.lua` (the `DotnetManager` command) but is generic
@@ -50,12 +57,12 @@ require("utils.dotnet-ui").open(commands, { title = "My Manager" })
 
 Every `action` receives a `ctx` table:
 
-| Method                        | Description                                          |
-| ----------------------------- | ---------------------------------------------------- |
-| `ctx.write(lines)`            | Append `string` or `string[]` to the output panel    |
-| `ctx.clear()`                 | Clear the entire output panel                        |
-| `ctx.append(line)`            | Shorthand for `ctx.write({ line })`                  |
-| `ctx.select(items, opts)`     | Push a sub-selection list onto the left panel         |
+| Method                    | Description                                       |
+| ------------------------- | ------------------------------------------------- |
+| `ctx.write(lines)`        | Append `string` or `string[]` to the output panel |
+| `ctx.clear()`             | Clear the entire output panel                     |
+| `ctx.append(line)`        | Shorthand for `ctx.write({ line })`               |
+| `ctx.select(items, opts)` | Push a sub-selection list onto the left panel     |
 
 ### `ctx.select` options
 
@@ -74,8 +81,8 @@ ctx.select(items, {
   items in real time.
 - Sub-selections can be **chained**: an `on_select` handler can call
   `ctx.select(...)` again to push another level.
-- The parent input text is automatically saved when entering a sub-selection
-  and restored when the user cancels out.
+- The parent input text is automatically saved when entering a sub-selection and
+  restored when the user cancels out.
 
 ## Adding a New Command
 
@@ -104,18 +111,18 @@ appends a ✓/✗ status line.
 
 ## UI Behaviour Reference
 
-| Key         | Mode     | Context       | Action                                 |
-| ----------- | -------- | ------------- | -------------------------------------- |
-| `C-j`       | i / n    | input / list  | Select next item (wraps around)        |
-| `C-k`       | i / n    | input / list  | Select previous item (wraps around)    |
-| `j` / `k`   | n        | input / list  | Same as C-j / C-k                      |
-| `↓` / `↑`   | i        | input         | Same as C-j / C-k                      |
-| `Enter`     | i / n    | input / list  | Execute selected item / confirm sub    |
-| `Esc`       | i / n    | input         | Cancel sub-selection, or close UI      |
-| `q`         | n        | input / list  | Same as Esc                            |
-| `Tab`       | i / n    | input         | Focus output panel                     |
-| `Tab`       | n        | output        | Return focus to input                  |
-| `Esc` / `q` | n        | output        | Return focus to input (does NOT close) |
+| Key         | Mode  | Context      | Action                                 |
+| ----------- | ----- | ------------ | -------------------------------------- |
+| `C-j`       | i / n | input / list | Select next item (wraps around)        |
+| `C-k`       | i / n | input / list | Select previous item (wraps around)    |
+| `j` / `k`   | n     | input / list | Same as C-j / C-k                      |
+| `↓` / `↑`   | i     | input        | Same as C-j / C-k                      |
+| `Enter`     | i / n | input / list | Execute selected item / confirm sub    |
+| `Esc`       | i / n | input        | Cancel sub-selection, or close UI      |
+| `q`         | n     | input / list | Same as Esc                            |
+| `Tab`       | i / n | input        | Focus output panel                     |
+| `Tab`       | n     | output       | Return focus to input                  |
+| `Esc` / `q` | n     | output       | Return focus to input (does NOT close) |
 
 ## Output Highlighting
 
@@ -141,16 +148,16 @@ To add new patterns, append to the `OUT_HL_PATTERNS` table at the top of
 
 All UI state lives in a module-local table `S`. Key fields:
 
-| Field          | Type    | Purpose                                    |
-| -------------- | ------- | ------------------------------------------ |
-| `S.ns`         | int     | Namespace for extmarks; nil = UI closed     |
-| `S.input_buf`  | int     | Prompt buffer (top-left)                    |
-| `S.list_buf`   | int     | Item-list buffer (bottom-left)              |
-| `S.output_buf` | int     | Output buffer (right)                       |
-| `S.sub`        | table?  | Active sub-selection state                  |
-| `S.selected`   | int     | 1-based index in main command list          |
-| `S.filtered`   | table   | Commands matching current query             |
-| `S.last_query` | string  | Current input text (after prompt)           |
-| `S.saved_query`| string? | Saved query when entering sub-selection     |
+| Field           | Type    | Purpose                                 |
+| --------------- | ------- | --------------------------------------- |
+| `S.ns`          | int     | Namespace for extmarks; nil = UI closed |
+| `S.input_buf`   | int     | Prompt buffer (top-left)                |
+| `S.list_buf`    | int     | Item-list buffer (bottom-left)          |
+| `S.output_buf`  | int     | Output buffer (right)                   |
+| `S.sub`         | table?  | Active sub-selection state              |
+| `S.selected`    | int     | 1-based index in main command list      |
+| `S.filtered`    | table   | Commands matching current query         |
+| `S.last_query`  | string  | Current input text (after prompt)       |
+| `S.saved_query` | string? | Saved query when entering sub-selection |
 
 Closing the UI resets `S = {}`.

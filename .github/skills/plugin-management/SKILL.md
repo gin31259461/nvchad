@@ -1,3 +1,8 @@
+---
+name: plugin-management
+description: "Manage Neovim plugins using lazy.nvim with best practices for performance and maintainability."
+---
+
 # Skill: Plugin Management (lazy.nvim)
 
 ## Directory Layout
@@ -23,17 +28,17 @@ lazy.nvim discovers specs from the `lua/plugins/` directory automatically (via
 
 ### Step 1 — Choose the right file
 
-| Category         | File                            |
-| ---------------- | ------------------------------- |
-| LSP-related      | `plugins/lsp/` (sub-directory) |
-| Debugging        | `plugins/debugger/`            |
-| UI / aesthetics  | `plugins/ui/`                  |
-| Editor features  | `plugins/coding.lua`           |
-| Navigation       | `plugins/navigation.lua`       |
-| Formatting       | `plugins/formatter.lua`        |
-| Linting          | `plugins/linter.lua`           |
-| Database         | `plugins/db/`                  |
-| Anything else    | `plugins/misc.lua`             |
+| Category        | File                           |
+| --------------- | ------------------------------ |
+| LSP-related     | `plugins/lsp/` (sub-directory) |
+| Debugging       | `plugins/debugger/`            |
+| UI / aesthetics | `plugins/ui/`                  |
+| Editor features | `plugins/coding.lua`           |
+| Navigation      | `plugins/navigation.lua`       |
+| Formatting      | `plugins/formatter.lua`        |
+| Linting         | `plugins/linter.lua`           |
+| Database        | `plugins/db/`                  |
+| Anything else   | `plugins/misc.lua`             |
 
 ### Step 2 — Write the spec
 
@@ -85,8 +90,8 @@ Commit it to pin versions.
    - Colorscheme plugins loaded at startup
 3. **`VeryLazy` event** — for plugins needed early but not at startup (e.g.,
    which-key, indent guides).
-4. **`BufReadPost` / `BufNewFile`** — for editor-feature plugins that operate
-   on buffers.
+4. **`BufReadPost` / `BufNewFile`** — for editor-feature plugins that operate on
+   buffers.
 
 ## Mason Package Registration
 
@@ -136,13 +141,13 @@ linters_by_ft = {
 
 ## Conventions
 
-- **Keep specs small** — if a plugin needs > 30 lines of config, extract it
-  into its own file or a sub-directory.
+- **Keep specs small** — if a plugin needs > 30 lines of config, extract it into
+  its own file or a sub-directory.
 - **Don't duplicate keymaps** — if a keymap belongs to a plugin, define it in
   the spec's `keys` field, not in `configs/keymaps.lua`.
 - **Use `opts` over `config`** when possible — it's more declarative and
   supports deep-merging by lazy.nvim.
 - **Pin versions** — always commit `lazy-lock.json` after adding or updating
   plugins.
-- **Test with `:Lazy profile`** — ensure the new plugin doesn't degrade
-  startup time below the 100 ms target.
+- **Test with `:Lazy profile`** — ensure the new plugin doesn't degrade startup
+  time below the 100 ms target.

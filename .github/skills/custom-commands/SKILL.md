@@ -1,3 +1,8 @@
+---
+name: custom-commands
+description: "Create domain-specific CLI commands with optional interactive UIs."
+---
+
 # Skill: Custom Commands (`lua/cmds/`)
 
 ## Purpose
@@ -130,8 +135,8 @@ plugin.
 
 ## Conventions
 
-- **Use `vim.fn.jobstart` with list args** (not a string) to avoid shell
-  quoting issues.
+- **Use `vim.fn.jobstart` with list args** (not a string) to avoid shell quoting
+  issues.
 - **Stream output** — set `stdout_buffered = false` and pipe chunks via
   `ctx.write(data)` for a live-updating experience.
 - **Icons** — use Nerd Font icons directly in cmds/ files. Reference
