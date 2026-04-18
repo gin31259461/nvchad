@@ -38,12 +38,20 @@ M.get_sln_files = function()
   return sln
 end
 
----@param project string
+---@param project? string
 ---@param config? string  "Debug" or "Release" (default "Debug")
 ---@return string[]
 M.get_build_cmd = function(project, config)
   config = config or "Debug"
-  return { "dotnet", "build", project, "-c", config, "-o", vim.fn.getcwd() .. "/bin/" .. config .. "/" }
+  local out_dir = vim.fs.joinpath(vim.fn.getcwd(), "bin", config)
+  local cmd = { "dotnet", "build" }
+
+  if project and project ~= "" then
+    table.insert(cmd, project)
+  end
+
+  vim.list_extend(cmd, { "-c", config, "-o", out_dir })
+  return cmd
 end
 
 ---@param project string

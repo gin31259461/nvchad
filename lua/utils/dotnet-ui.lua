@@ -15,6 +15,8 @@
 --   ctx.select(items, opts) – push a sub-selection list onto the left panel
 --     opts: { title?, on_select: fun(item, ctx), on_cancel?: fun() }
 
+-- TODO: windows: output stop showing ** ^M **
+
 local M   = {}
 local api = vim.api
 
