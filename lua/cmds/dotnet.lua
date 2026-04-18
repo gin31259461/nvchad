@@ -13,9 +13,11 @@ M.get_csproj_files = function()
 end
 
 ---@param project string
+---@param config? string  "Debug" or "Release" (default "Debug")
 ---@return string[]
-M.get_build_cmd = function(project)
-  return { "dotnet", "build", project, "-c", "Debug", "-o", vim.fn.getcwd() .. "/bin/Debug/" }
+M.get_build_cmd = function(project, config)
+  config = config or "Debug"
+  return { "dotnet", "build", project, "-c", config, "-o", vim.fn.getcwd() .. "/bin/" .. config .. "/" }
 end
 
 ---@param project string
@@ -162,7 +164,16 @@ M.commands = {
     icon_hl = "DiagnosticOk",
     desc    = "dotnet build",
     action  = function(ctx)
-      select_csproj(ctx, function(f, c) run_job(M.get_build_cmd(f), c) end)
+      ctx.select({
+        { _raw = "Debug",   icon = "󰃤 ", icon_hl = "DiagnosticWarn", name = "Debug" },
+        { _raw = "Release", icon = "󰑊 ", icon_hl = "DiagnosticOk",   name = "Release" },
+      }, {
+        title     = "Build Configuration",
+        on_select = function(item, c)
+          local config = item._raw
+          select_csproj(c, function(f, c2) run_job(M.get_build_cmd(f, config), c2) end)
+        end,
+      })
     end,
   },
   {
