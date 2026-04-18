@@ -5,6 +5,20 @@ local M = {}
 
 M.title = "Dotnet"
 
+-- ── SDK helpers ───────────────────────────────────────────────────────────────
+
+---Get the major version number of the active .NET SDK (cached per session).
+---@return number?
+local _sdk_major
+local function get_sdk_major()
+  if _sdk_major then return _sdk_major end
+  local out = vim.fn.system("dotnet --version")
+  if vim.v.shell_error ~= 0 then return nil end
+  local major = vim.trim(out):match("^(%d+)")
+  _sdk_major = major and tonumber(major)
+  return _sdk_major
+end
+
 -- ── project helpers ───────────────────────────────────────────────────────────
 
 ---@return string[]
@@ -14,7 +28,10 @@ end
 
 ---@return string[]
 M.get_sln_files = function()
-  return vim.fn.glob("*.sln", false, true)
+  local sln  = vim.fn.glob("*.sln", false, true)
+  local slnx = vim.fn.glob("*.slnx", false, true)
+  vim.list_extend(sln, slnx)
+  return sln
 end
 
 ---@param project string
@@ -102,7 +119,7 @@ local function select_sln(ctx, callback)
   local files = M.get_sln_files()
   if #files == 0 then
     ctx.clear()
-    ctx.append("No .sln files found in: " .. vim.fn.getcwd())
+    ctx.append("No .sln/.slnx files found in: " .. vim.fn.getcwd())
     return
   end
   if #files == 1 then
@@ -290,9 +307,16 @@ M.commands = {
     desc    = "pin SDK version via global.json",
     action  = function(ctx)
       ctx.clear()
+
+      -- Read existing version (if any) for display
+      local existing_version
       if vim.fn.filereadable("global.json") == 1 then
-        ctx.append("global.json already exists in " .. vim.fn.getcwd())
-        return
+        local ok, data = pcall(vim.json.decode, table.concat(vim.fn.readfile("global.json"), "\n"))
+        if ok and data and data.sdk and data.sdk.version then
+          existing_version = data.sdk.version
+          ctx.append("Current SDK version: " .. existing_version)
+          ctx.append("")
+        end
       end
 
       local sdk_lines = vim.fn.systemlist("dotnet --list-sdks")
@@ -314,15 +338,33 @@ M.commands = {
             c.append("Could not parse SDK version from: " .. choice)
             return
           end
-          local cmd = "dotnet new globaljson --sdk-version " .. version
-          c.clear()
-          c.append("$ " .. cmd)
-          c.append("")
-          local out = vim.fn.system(cmd)
-          if vim.v.shell_error == 0 then
-            c.append("✓  Created global.json  (SDK " .. version .. ")")
+
+          if existing_version then
+            -- Modify existing global.json
+            local raw = table.concat(vim.fn.readfile("global.json"), "\n")
+            local ok, data = pcall(vim.json.decode, raw)
+            if ok and data then
+              data.sdk = data.sdk or {}
+              data.sdk.version = version
+              local encoded = vim.json.encode(data)
+              vim.fn.writefile({ encoded }, "global.json")
+              c.clear()
+              c.append("✓  Updated global.json  (SDK " .. existing_version .. " → " .. version .. ")")
+            else
+              c.append("✗  Failed to parse existing global.json")
+            end
           else
-            c.append("✗  Error: " .. out)
+            -- Create new global.json
+            local cmd = "dotnet new globaljson --sdk-version " .. version
+            c.clear()
+            c.append("$ " .. cmd)
+            c.append("")
+            local out = vim.fn.system(cmd)
+            if vim.v.shell_error == 0 then
+              c.append("✓  Created global.json  (SDK " .. version .. ")")
+            else
+              c.append("✗  Error: " .. out)
+            end
           end
         end,
       })
@@ -369,10 +411,15 @@ M.commands = {
     desc    = "dotnet new",
     action  = function(ctx)
       ctx.clear()
-      ctx.append("$ dotnet new list")
+
+      -- SDK 7+ uses `dotnet new list`, older SDKs use `dotnet new --list`
+      local major = get_sdk_major()
+      local list_cmd = (major and major >= 7) and "dotnet new list" or "dotnet new --list"
+
+      ctx.append("$ " .. list_cmd)
       ctx.append("")
 
-      local raw = vim.fn.systemlist("dotnet new list")
+      local raw = vim.fn.systemlist(list_cmd)
       if vim.v.shell_error ~= 0 then
         ctx.append("Failed to list templates. Is dotnet installed?")
         return
@@ -538,10 +585,14 @@ vim.api.nvim_create_user_command("DotnetPublish", function()
 end, { desc = "Dotnet Publish" })
 
 vim.api.nvim_create_user_command("DotnetGlobalJson", function()
+  local existing_version
   if vim.fn.filereadable("global.json") == 1 then
-    vim.notify("global.json already exists.", vim.log.levels.WARN, { title = M.title })
-    return
+    local ok, data = pcall(vim.json.decode, table.concat(vim.fn.readfile("global.json"), "\n"))
+    if ok and data and data.sdk and data.sdk.version then
+      existing_version = data.sdk.version
+    end
   end
+
   local sdk_lines = vim.fn.systemlist("dotnet --list-sdks")
   if vim.v.shell_error ~= 0 or #sdk_lines == 0 then
     vim.notify("Failed to retrieve SDK list.", vim.log.levels.ERROR, { title = M.title })
@@ -551,12 +602,29 @@ vim.api.nvim_create_user_command("DotnetGlobalJson", function()
   for i = #sdk_lines, 1, -1 do
     table.insert(choices, (sdk_lines[i]:gsub("[\r\n]", "")))
   end
-  vim.ui.select(choices, { prompt = "Select .NET SDK version:" }, function(choice)
+  vim.ui.select(choices, {
+    prompt = existing_version
+        and ("Current: " .. existing_version .. " — Select new SDK version:")
+        or "Select .NET SDK version:",
+  }, function(choice)
     if not choice then return end
     local version = choice:match("^(%S+)")
-    if version then
+    if not version then return end
+
+    if existing_version then
+      local raw = table.concat(vim.fn.readfile("global.json"), "\n")
+      local ok, data = pcall(vim.json.decode, raw)
+      if ok and data then
+        data.sdk = data.sdk or {}
+        data.sdk.version = version
+        vim.fn.writefile({ vim.json.encode(data) }, "global.json")
+        vim.notify("Updated global.json (SDK " .. existing_version .. " → " .. version .. ")", vim.log.levels.INFO, { title = M.title })
+      else
+        vim.notify("Failed to parse existing global.json", vim.log.levels.ERROR, { title = M.title })
+      end
+    else
       local out = vim.fn.system("dotnet new globaljson --sdk-version " .. version)
-      local ok  = vim.v.shell_error == 0
+      local ok = vim.v.shell_error == 0
       vim.notify(
         ok and "Created global.json (SDK " .. version .. ")" or "Error: " .. out,
         ok and vim.log.levels.INFO or vim.log.levels.ERROR,
