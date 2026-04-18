@@ -89,7 +89,9 @@ function M.get()
     { "<leader>cC", vim.lsp.codelens.run, desc = "Run Codelens", mode = { "n", "v" }, has = "codeLens" },
     {
       "<leader>cc",
-      vim.lsp.codelens.enable(vim.lsp.codelens.is_enabled()),
+      function()
+        vim.lsp.codelens.enable(vim.lsp.codelens.is_enabled())
+      end,
       desc = "Toggle Display Codelens",
       mode = { "n" },
       has = "codeLens",
