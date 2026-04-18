@@ -1,8 +1,8 @@
 -- config for conform.nvim
 
-local util = require("conform.util")
 local fs = require("utils.fs")
 local os_utils = require("utils.os")
+local util = require("conform.util")
 
 return {
   default_format_opts = {
@@ -93,10 +93,15 @@ return {
     -- web dev
     css = { "deno_fmt" },
     html = { "deno_fmt" },
-    typescriptreact = { "deno_fmt", "eslint_d" },
-    javascriptreact = { "deno_fmt", "eslint_d" },
-    typescript = { "deno_fmt", "eslint_d" },
-    javascript = { "deno_fmt", "eslint_d" },
+    -- typescriptreact = { "deno_fmt", "eslint_d" },
+    -- javascriptreact = { "deno_fmt", "eslint_d" },
+    -- typescript = { "deno_fmt", "eslint_d" },
+    -- javascript = { "deno_fmt", "eslint_d" },
+    typescriptreact = { "eslint_d" },
+    javascriptreact = { "eslint_d" },
+    typescript = { "eslint_d" },
+    javascript = { "eslint_d" },
+
     json = { "deno_fmt" },
     toml = { "tombi" },
     prisma = { "prisma_fmt" },

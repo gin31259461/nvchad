@@ -7,8 +7,8 @@
 --   end,
 -- })
 
-local os_utils = require("utils.os")
 local fs = require("utils.fs")
+local os_utils = require("utils.os")
 
 -- FIX: roslyn progress spec issue: https://github.com/dotnet/roslyn/issues/79939
 vim.api.nvim_create_autocmd("FileType", {
@@ -50,6 +50,15 @@ if os_utils.is_win() then
     })
   end, { desc = "Clears all the .tmp shada files" })
 end
+
+vim.filetype.add({
+  filename = {
+    ["docker-compose.yaml"] = "yaml.docker-compose",
+    ["docker-compose.yml"] = "yaml.docker-compose",
+    ["compose.yaml"] = "yaml.docker-compose",
+    ["compose.yml"] = "yaml.docker-compose",
+  },
+})
 
 local cmds = fs.scandir(fs.config_path .. "/lua/cmds", "file")
 for _, v in ipairs(cmds) do
