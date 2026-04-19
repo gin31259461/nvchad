@@ -190,19 +190,41 @@ require("utils.dotnet-ui").open(commands, { title = "Dotnet Manager" })
 | `ctx.append(line)`        | Append a single line                   |
 | `ctx.select(items, opts)` | Push a sub-selection list (filterable) |
 
-`ctx.select` options: `{ title?, on_select: fun(item, ctx), on_cancel?: fun() }`
+`ctx.select` options: `{ title?, multi_select?, on_select: fun(item_or_items, ctx), on_cancel?: fun() }`
 
 ### UI Behaviour
 
 - **Left panel:** prompt input (top) + scrollable item list (below).
 - **Right panel:** output with pattern-based highlighting.
-- `Tab` toggles focus to output (title shows "(focused)", cursorline on).
+- `C-l` toggles focus to output (title shows "(focused)", cursorline on).
 - `Esc` / `q` in output returns focus to input — does **not** close the UI.
 - `Esc` in input cancels sub-selection or closes the UI.
 - `C-j` / `C-k` navigate the list in both insert and normal mode.
 - List selection **wraps around** (bottom → top, top → bottom).
 - Sub-selection menus are **filterable** — typing filters the sub-items.
 - Input text is saved / restored when entering / leaving sub-selections.
+
+### Multi-Select
+
+Sub-selections can opt into multi-select mode by passing
+`multi_select = true` in `ctx.select()` options. When enabled:
+
+- `Tab` toggles a **mark** (✓) on the current item, then advances to the next.
+- The title shows the count of marked items (e.g., `"Remove Project (2 selected)"`).
+- `Enter` confirms: `on_select` receives an **array** of all marked items.
+  If nothing is marked, the currently highlighted item is wrapped in a
+  single-element array.
+- After confirmation the multi-select sub is **popped** automatically (the user
+  returns to the parent level).
+
+`ctx.select` options for multi-select:
+```lua
+ctx.select(items, {
+  title        = "Remove Project",
+  multi_select = true,
+  on_select    = function(selected_items, ctx) ... end,
+})
+```
 
 ### Output Highlight Patterns
 

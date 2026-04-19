@@ -599,8 +599,13 @@ M.commands = {
 
               c2.select(items, {
                 title = "Remove Project",
-                on_select = function(proj_item, c3)
-                  run_job({ "dotnet", "sln", sln, "remove", proj_item._raw }, c3)
+                multi_select = true,
+                on_select = function(selected, c3)
+                  local cmd = { "dotnet", "sln", sln, "remove" }
+                  for _, proj_item in ipairs(selected) do
+                    table.insert(cmd, proj_item._raw)
+                  end
+                  run_job(cmd, c3)
                 end,
               })
             end)

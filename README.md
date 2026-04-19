@@ -304,6 +304,18 @@ Enabled when `vim.g.enable_db_plugins = true` (default: on).
 | `<leader>tQ` | Quickfix list |
 | `<leader>tt` | Todo comments (Telescope) |
 
+### Dotnet Manager
+
+| Key | Action |
+|---|---|
+| `<leader>dp` | Open Dotnet Manager |
+| `<C-j>` / `<C-k>` | Navigate list (insert & normal) |
+| `<Tab>` | Toggle multi-select mark |
+| `<CR>` | Confirm selection |
+| `<C-l>` | Focus / unfocus output panel |
+| `<Esc>` | Cancel sub-selection / close |
+| `q` | Same as `<Esc>` (normal mode) |
+
 ### Other
 
 | Key | Action |

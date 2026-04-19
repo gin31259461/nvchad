@@ -13,7 +13,7 @@
 --   ctx.clear()        – clear output
 --   ctx.append(line)   – append a single line
 --   ctx.select(items, opts) – push a sub-selection list onto the left panel
---     opts: { title?, on_select: fun(item, ctx), on_cancel?: fun() }
+--     opts: { title?, multi_select?, on_select: fun(item_or_items, ctx), on_cancel?: fun() }
 
 
 local M   = {}
@@ -138,22 +138,38 @@ local function current_selected()
   return sub and sub.selected or S.selected
 end
 
+---Get a stable key for tracking multi-select marks.
+---@param item any
+---@return any
+local function get_mark_key(item)
+  if type(item) == "table" then return item._idx end
+  return item
+end
+
 local function render_list()
   if not (S.list_buf and api.nvim_buf_is_valid(S.list_buf)) then return end
 
   local items    = current_items()
   local sel      = current_selected()
+  local sub      = current_sub()
+  local is_multi = sub and sub.multi_select
 
   api.nvim_buf_clear_namespace(S.list_buf, S.ns, 0, -1)
   vim.bo[S.list_buf].modifiable = true
 
   local lines = {}
-  for _, item in ipairs(items) do
+  local mark_offsets = {}
+  for idx, item in ipairs(items) do
+    local mark = ""
+    if is_multi then
+      local key = get_mark_key(item)
+      mark = sub.marked[key] and "✓ " or "  "
+    end
+    mark_offsets[idx] = #mark
     if type(item) == "string" then
-      table.insert(lines, "  " .. item)
+      table.insert(lines, "  " .. mark .. item)
     else
-      -- table item: must have .icon and .name
-      table.insert(lines, "  " .. item.icon .. "  " .. item.name)
+      table.insert(lines, "  " .. mark .. item.icon .. "  " .. item.name)
     end
   end
   -- pad to fill the window height so highlights don't stop short
@@ -166,6 +182,7 @@ local function render_list()
   for i, item in ipairs(items) do
     local row    = i - 1
     local is_sel = (i == sel)
+    local moff   = mark_offsets[i] or 0
 
     if is_sel then
       api.nvim_buf_set_extmark(S.list_buf, S.ns, row, 0, {
@@ -173,9 +190,16 @@ local function render_list()
       })
     end
 
+    if is_multi and moff > 0 and sub.marked[get_mark_key(item)] then
+      api.nvim_buf_set_extmark(S.list_buf, S.ns, row, 2, {
+        end_col  = 2 + moff,
+        hl_group = "DiagnosticOk",
+      })
+    end
+
     if type(item) ~= "string" then
-      local icon_hl = item.icon_hl or "String"
-      local icon_start = 2
+      local icon_hl    = item.icon_hl or "String"
+      local icon_start = 2 + moff
       local icon_end   = icon_start + #item.icon
       api.nvim_buf_set_extmark(S.list_buf, S.ns, row, icon_start, {
         end_col  = icon_end,
@@ -188,7 +212,7 @@ local function render_list()
       })
     else
       local hl = is_sel and "CursorLineNr" or "Normal"
-      api.nvim_buf_set_extmark(S.list_buf, S.ns, row, 2, {
+      api.nvim_buf_set_extmark(S.list_buf, S.ns, row, 2 + moff, {
         end_col  = #lines[i],
         hl_group = hl,
       })
@@ -312,17 +336,25 @@ local function make_ctx()
 
     ---Push a sub-selection list onto the left panel.
     ---@param items  string[]|table[]
-    ---@param opts   {title?: string, on_select: fun(item: any, ctx: table), on_cancel?: fun()}
+    ---@param opts   {title?: string, multi_select?: boolean, on_select: fun(item: any, ctx: table), on_cancel?: fun()}
     select = function(items, opts)
       local saved = take_input_query()
+      local all = vim.deepcopy(items)
+      for i, it in ipairs(all) do
+        if type(it) == "table" then
+          it._idx = i
+        end
+      end
       table.insert(S.sub_stack, {
-        all_items   = items,
-        items       = vim.deepcopy(items),
-        selected    = 1,
-        on_select   = opts.on_select,
-        on_cancel   = opts.on_cancel,
-        title       = opts.title or "Select",
-        saved_query = saved,
+        all_items    = all,
+        items        = vim.deepcopy(all),
+        selected     = 1,
+        on_select    = opts.on_select,
+        on_cancel    = opts.on_cancel,
+        title        = opts.title or "Select",
+        saved_query  = saved,
+        multi_select = opts.multi_select or false,
+        marked       = {},
       })
       pcall(api.nvim_win_set_config, S.input_win, {
         title     = " " .. (opts.title or "Select") .. " ",
@@ -349,10 +381,50 @@ local function run_selected()
 
   local sub = current_sub()
   if sub then
-    if sub.on_select then
-      sub.on_select(item, make_ctx())
+    if sub.multi_select then
+      -- Collect marked items, or current item if none marked
+      local selected_items = {}
+      if vim.tbl_count(sub.marked) > 0 then
+        for _, it in ipairs(sub.all_items) do
+          if sub.marked[get_mark_key(it)] then
+            table.insert(selected_items, it)
+          end
+        end
+      else
+        selected_items = { item }
+      end
+
+      local on_sel = sub.on_select
+      -- Pop the sub-selection (confirmed)
+      local popped = table.remove(S.sub_stack)
+      if #S.sub_stack > 0 then
+        local parent = S.sub_stack[#S.sub_stack]
+        pcall(api.nvim_win_set_config, S.input_win, {
+          title     = " " .. parent.title .. " ",
+          title_pos = "center",
+        })
+      else
+        pcall(api.nvim_win_set_config, S.input_win, {
+          title     = " " .. S.list_title .. " ",
+          title_pos = "center",
+        })
+      end
+      put_input_query(popped.saved_query or "")
+      if #S.sub_stack > 0 then
+        filter_sub(S.last_query)
+      else
+        filter_commands(S.last_query or "")
+      end
+      render_list()
+      if on_sel and #selected_items > 0 then
+        on_sel(selected_items, make_ctx())
+      end
+    else
+      if sub.on_select then
+        sub.on_select(item, make_ctx())
+      end
+      render_list()
     end
-    render_list()
   else
     if item.action then
       item.action(make_ctx())
@@ -419,6 +491,39 @@ local function handle_esc()
   end
 end
 
+-- ── multi-select helpers ──────────────────────────────────────────────────────
+
+local function update_multi_title()
+  local sub = current_sub()
+  if not sub or not sub.multi_select then return end
+  local count = vim.tbl_count(sub.marked)
+  local title = sub.title
+  if count > 0 then
+    title = title .. " (" .. count .. " selected)"
+  end
+  pcall(api.nvim_win_set_config, S.input_win, {
+    title     = " " .. title .. " ",
+    title_pos = "center",
+  })
+end
+
+local function toggle_mark()
+  local sub = current_sub()
+  if not sub or not sub.multi_select then return end
+  local items = sub.items
+  local sel = sub.selected
+  if sel < 1 or sel > #items then return end
+  local item = items[sel]
+  local key = get_mark_key(item)
+  if sub.marked[key] then
+    sub.marked[key] = nil
+  else
+    sub.marked[key] = true
+  end
+  update_multi_title()
+  move(1)
+end
+
 -- ── keymaps ───────────────────────────────────────────────────────────────────
 
 local function setup_keymaps()
@@ -455,9 +560,13 @@ local function setup_keymaps()
   km("n", "k",    function() move(-1) end, S.list_buf)
   km("n", "<CR>", run_selected,            S.list_buf)
 
-  -- Tab: toggle focus between input and output
-  km({ "n", "i" }, "<Tab>", focus_output, S.input_buf)
-  km("n", "<Tab>", unfocus_output, S.output_buf)
+  -- Tab: toggle multi-select mark
+  km({ "n", "i" }, "<Tab>", toggle_mark, S.input_buf)
+  km("n", "<Tab>", toggle_mark, S.list_buf)
+
+  -- C-l: toggle focus between input and output
+  km({ "n", "i" }, "<C-l>", focus_output, S.input_buf)
+  km("n", "<C-l>", unfocus_output, S.output_buf)
 end
 
 -- ── autocmds ─────────────────────────────────────────────────────────────────
@@ -514,7 +623,7 @@ end
 ---@field write   fun(lines: string[]|string)
 ---@field clear   fun()
 ---@field append  fun(line: string)
----@field select  fun(items: any[], opts: {title?: string, on_select: fun(item: any, ctx: DotnetUICtx), on_cancel?: fun()})
+---@field select  fun(items: any[], opts: {title?: string, multi_select?: boolean, on_select: fun(item_or_items: any, ctx: DotnetUICtx), on_cancel?: fun()})
 
 ---Open the two-panel Dotnet Manager UI.
 ---@param commands DotnetUICommand[]
