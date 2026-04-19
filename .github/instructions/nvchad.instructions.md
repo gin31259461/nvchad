@@ -1,27 +1,27 @@
 # NvChad Custom Configuration — Repository Guidelines
 
-> This document is the authoritative reference for AI assistants, contributors, and
-> future sessions working on this Neovim configuration. Read it before making any
-> changes.
+> This document is the authoritative reference for AI assistants, contributors,
+> and future sessions working on this Neovim configuration. Read it before
+> making any changes.
 
 ## 1. Overview
 
-This is a **NvChad v2.5** custom configuration for Neovim (≥ 0.12). It provides a
-full-featured IDE experience for **C# / .NET**, **Python**, **TypeScript**,
+This is a **NvChad v2.5** custom configuration for Neovim (≥ 0.12). It provides
+a full-featured IDE experience for **C# / .NET**, **Python**, **TypeScript**,
 **Lua**, **Go**, **C/C++**, and web technologies, with custom UI components,
 debugger integration, and project-management tooling.
 
-| Layer        | Location          | Purpose                                         |
-| ------------ | ----------------- | ----------------------------------------------- |
-| Entry point  | `init.lua`        | Bootstrap lazy.nvim, load options & plugins      |
-| Options      | `lua/configs/`    | Neovim settings, keymaps, packages, formatters   |
-| Plugins      | `lua/plugins/`    | lazy.nvim specs grouped by concern               |
-| LSP servers  | `lua/plugins/lsp/servers/` | Per-language server configs              |
-| Debugger     | `lua/plugins/debugger/`    | DAP adapters & UI                        |
-| Utilities    | `lua/utils/`      | Shared helpers (LSP, FS, UI, shell, statusline)  |
-| Commands     | `lua/cmds/`       | Domain-specific CLI wrappers (.NET, Python)      |
-| Types        | `lua/types/`      | `---@meta` type-annotation files                 |
-| Theme        | `lua/chadrc.lua`  | NvChad theme, statusline, highlight overrides    |
+| Layer       | Location                   | Purpose                                         |
+| ----------- | -------------------------- | ----------------------------------------------- |
+| Entry point | `init.lua`                 | Bootstrap lazy.nvim, load options & plugins     |
+| Options     | `lua/configs/`             | Neovim settings, keymaps, packages, formatters  |
+| Plugins     | `lua/plugins/`             | lazy.nvim specs grouped by concern              |
+| LSP servers | `lua/plugins/lsp/servers/` | Per-language server configs                     |
+| Debugger    | `lua/plugins/debugger/`    | DAP adapters & UI                               |
+| Utilities   | `lua/utils/`               | Shared helpers (LSP, FS, UI, shell, statusline) |
+| Commands    | `lua/cmds/`                | Domain-specific CLI wrappers (.NET, Python)     |
+| Types       | `lua/types/`               | `---@meta` type-annotation files                |
+| Theme       | `lua/chadrc.lua`           | NvChad theme, statusline, highlight overrides   |
 
 ## 2. Code Style
 
@@ -46,14 +46,14 @@ enabled = true
 
 ### Naming
 
-| Thing            | Convention             | Example                          |
-| ---------------- | ---------------------- | -------------------------------- |
-| Modules          | `snake_case`           | `utils.fs`, `cmds.dotnet`        |
-| Functions        | `snake_case`           | `get_csproj_files()`             |
-| Local variables  | `snake_case`           | `local list_h`                   |
-| Type annotations | `PascalCase`           | `Lsp.Config.Spec`, `DotnetUICtx` |
-| Files            | `snake_case` or kebab  | `dotnet-ui.lua`, `lua_ls.lua`    |
-| Constants        | `UPPER_SNAKE`          | `OUT_HL_PATTERNS`                |
+| Thing            | Convention            | Example                          |
+| ---------------- | --------------------- | -------------------------------- |
+| Modules          | `snake_case`          | `utils.fs`, `cmds.dotnet`        |
+| Functions        | `snake_case`          | `get_csproj_files()`             |
+| Local variables  | `snake_case`          | `local list_h`                   |
+| Type annotations | `PascalCase`          | `Lsp.Config.Spec`, `DotnetUICtx` |
+| Files            | `snake_case` or kebab | `dotnet-ui.lua`, `lua_ls.lua`    |
+| Constants        | `UPPER_SNAKE`         | `OUT_HL_PATTERNS`                |
 
 ### Module Export Pattern
 
@@ -82,7 +82,7 @@ For complex shared types, create `---@meta` files under `lua/types/`.
 
 ### Comments
 
-- Use comments only when the *why* is non-obvious. Do not comment trivial code.
+- Use comments only when the _why_ is non-obvious. Do not comment trivial code.
 - Section headers use box-drawing separators:
 
 ```lua
@@ -137,8 +137,8 @@ return {
 
 ### Utilities (`lua/utils/`)
 
-- `utils/init.lua` is the barrel file — it re-exports all submodules and
-  proxies `lazy.core.util`.
+- `utils/init.lua` is the barrel file — it re-exports all submodules and proxies
+  `lazy.core.util`.
 - Add new util files and register them in `utils/init.lua`.
 - Utilities must be stateless and side-effect-free at require time.
   `utils.setup()` is the one-time init entry point.
@@ -183,12 +183,12 @@ require("utils.dotnet-ui").open(commands, { title = "Dotnet Manager" })
 
 ### Context API (passed to actions)
 
-| Method                     | Description                              |
-| -------------------------- | ---------------------------------------- |
-| `ctx.write(lines)`         | Append string or `string[]` to output    |
-| `ctx.clear()`              | Clear the output panel                   |
-| `ctx.append(line)`         | Append a single line                     |
-| `ctx.select(items, opts)`  | Push a sub-selection list (filterable)   |
+| Method                    | Description                            |
+| ------------------------- | -------------------------------------- |
+| `ctx.write(lines)`        | Append string or `string[]` to output  |
+| `ctx.clear()`             | Clear the output panel                 |
+| `ctx.append(line)`        | Append a single line                   |
+| `ctx.select(items, opts)` | Push a sub-selection list (filterable) |
 
 `ctx.select` options: `{ title?, on_select: fun(item, ctx), on_cancel?: fun() }`
 
@@ -208,17 +208,17 @@ require("utils.dotnet-ui").open(commands, { title = "Dotnet Manager" })
 
 Lines matching these patterns get line-level highlights:
 
-| Pattern            | Highlight Group    |
-| ------------------ | ------------------ |
-| `^$ `              | `Comment`          |
-| `✓`                | `DiagnosticOk`     |
-| `✗`                | `DiagnosticError`  |
-| `Build succeeded`  | `DiagnosticOk`     |
-| `Build FAILED`     | `DiagnosticError`  |
-| `[Ww]arning`       | `DiagnosticWarn`   |
-| `[Ee]rror`         | `DiagnosticError`  |
-| `Passed!`          | `DiagnosticOk`     |
-| `Failed!`          | `DiagnosticError`  |
+| Pattern           | Highlight Group   |
+| ----------------- | ----------------- |
+| `^$`              | `Comment`         |
+| `✓`               | `DiagnosticOk`    |
+| `✗`               | `DiagnosticError` |
+| `Build succeeded` | `DiagnosticOk`    |
+| `Build FAILED`    | `DiagnosticError` |
+| `[Ww]arning`      | `DiagnosticWarn`  |
+| `[Ee]rror`        | `DiagnosticError` |
+| `Passed!`         | `DiagnosticOk`    |
+| `Failed!`         | `DiagnosticError` |
 
 ## 5. Adding a New Language
 
@@ -226,12 +226,13 @@ Lines matching these patterns get line-level highlights:
 
 1. **Treesitter parser** — add to `configs/packages.lua` →
    `treesitter_ensure_installed`.
-2. **LSP server** — add to `configs/packages.lua` → `pkgs_with_lsp_setup`
-   (key = lspconfig name, value = Mason package name).
+2. **LSP server** — add to `configs/packages.lua` → `pkgs_with_lsp_setup` (key =
+   lspconfig name, value = Mason package name).
 3. **Server config** — create `lua/plugins/lsp/servers/<lang>.lua` returning
    `---@type Lsp.Server.Module`, then add it to the `server_modules` list in
    `lua/plugins/lsp/config.lua`.
-4. **Formatter** — add to `lua/configs/formatter/init.lua` (conform.nvim format).
+4. **Formatter** — add to `lua/configs/formatter/init.lua` (conform.nvim
+   format).
 5. **Linter** — add to `lua/configs/linter/init.lua` (nvim-lint format).
 6. **Debugger** (optional) — add adapter in `lua/plugins/debugger/<lang>.lua`,
    register in `lua/plugins/debugger/config.lua`.
@@ -268,16 +269,22 @@ init.lua
 
 1. **Never `require()` at module top-level if the target is a plugin** — use
    lazy-loading or wrap in a function / `vim.schedule`.
-2. **Avoid `vim.cmd` for things the Lua API can do** — prefer
-   `vim.api`, `vim.keymap.set`, `vim.diagnostic`, etc.
+2. **Avoid `vim.cmd` for things the Lua API can do** — prefer `vim.api`,
+   `vim.keymap.set`, `vim.diagnostic`, etc.
 3. **Use `pcall` around optional dependencies** — the config must not crash if a
    plugin is disabled.
 4. **Icons come from `configs.icons`** — do not hardcode icon strings in plugin
-   specs; reference the central table instead (Nerd Font icons are acceptable
-   in cmds/ and utils/ UI code).
+   specs; reference the central table instead (Nerd Font icons are acceptable in
+   cmds/ and utils/ UI code).
 5. **Cross-platform paths** — use `vim.fn.stdpath()`, `vim.uv.fs_stat()`, and
    forward slashes. The config runs on Linux, macOS, and Windows (MSYS2).
 6. **Semantic tokens are disabled globally** via `on_init` in
    `servers/base.lua`. Do not re-enable per-server without reason.
 7. **No commits should include secrets** — `.gitignore` already excludes
    sensitive paths; keep it that way.
+
+## Commit Style
+
+- Use lowercase imperative subject lines: `fix:`, `add`, `update`, `scripts:`
+- **Never include co-authored-by trailers**
+- After every task: automatically commit — do not wait to be asked
