@@ -1,4 +1,4 @@
--- Two-panel picker UI (Telescope-style)
+-- dotnet-cli.nvim two-panel picker UI
 -- Left : search input (top) + item list (below)
 -- Right: output / preview panel
 --
@@ -15,11 +15,11 @@
 --   ctx.select(items, opts) – push a sub-selection list onto the left panel
 --     opts: { title?, multi_select?, on_select: fun(item_or_items, ctx), on_cancel?: fun() }
 
-
-local M   = {}
+local M = {}
 local api = vim.api
 
 -- ── active UI state ───────────────────────────────────────────────────────────
+
 local S = {}
 
 local function is_open()
@@ -27,27 +27,31 @@ local function is_open()
 end
 
 -- ── output highlight patterns ─────────────────────────────────────────────────
+
 local OUT_HL_PATTERNS = {
-  { pat = "^%$ ",              line_hl = "Comment" },
-  { pat = "✓",                 line_hl = "DiagnosticOk" },
-  { pat = "✗",                 line_hl = "DiagnosticError" },
-  { pat = "Build succeeded",   line_hl = "DiagnosticOk" },
-  { pat = "Build FAILED",      line_hl = "DiagnosticError" },
-  { pat = "[Ww]arning%s",      line_hl = "DiagnosticWarn" },
-  { pat = "[Ee]rror%s",        line_hl = "DiagnosticError" },
-  { pat = "Restored%s",        line_hl = "DiagnosticOk" },
-  { pat = "Passed!",           line_hl = "DiagnosticOk" },
-  { pat = "Failed!",           line_hl = "DiagnosticError" },
+  { pat = "^%$ ", line_hl = "Comment" },
+  { pat = "✓", line_hl = "DiagnosticOk" },
+  { pat = "✗", line_hl = "DiagnosticError" },
+  { pat = "Build succeeded", line_hl = "DiagnosticOk" },
+  { pat = "Build FAILED", line_hl = "DiagnosticError" },
+  { pat = "[Ww]arning%s", line_hl = "DiagnosticWarn" },
+  { pat = "[Ee]rror%s", line_hl = "DiagnosticError" },
+  { pat = "Restored%s", line_hl = "DiagnosticOk" },
+  { pat = "Passed!", line_hl = "DiagnosticOk" },
+  { pat = "Failed!", line_hl = "DiagnosticError" },
 }
 
 -- ── output highlight helper ───────────────────────────────────────────────────
 
----Apply line-level highlights to output lines matching known patterns.
----@param start_line integer  0-based first line
----@param end_line   integer  0-based one-past-last line
+---@param start_line integer 0-based first line
+---@param end_line integer 0-based one-past-last line
 local function highlight_output(start_line, end_line)
-  if not (S.output_buf and api.nvim_buf_is_valid(S.output_buf)) then return end
-  if not S.out_ns then return end
+  if not (S.output_buf and api.nvim_buf_is_valid(S.output_buf)) then
+    return
+  end
+  if not S.out_ns then
+    return
+  end
 
   local lines = api.nvim_buf_get_lines(S.output_buf, start_line, end_line, false)
   for i, line in ipairs(lines) do
@@ -66,23 +70,26 @@ end
 -- ── output helpers ────────────────────────────────────────────────────────────
 
 local function out_write(lines)
-  if not (S.output_buf and api.nvim_buf_is_valid(S.output_buf)) then return end
-  if type(lines) == "string" then lines = vim.split(lines, "\n") end
+  if not (S.output_buf and api.nvim_buf_is_valid(S.output_buf)) then
+    return
+  end
+  if type(lines) == "string" then
+    lines = vim.split(lines, "\n")
+  end
 
-  -- jobstart sends a trailing "" as a chunk-end marker; strip it.
-  -- Also strip \r (^M) that Windows-style CRLF commands emit.
+  -- Strip trailing empty string from jobstart and \r from CRLF
   local to_write = {}
   for i, l in ipairs(lines) do
     if i < #lines or l ~= "" then
       table.insert(to_write, (l:gsub("\r", "")))
     end
   end
-  if #to_write == 0 then return end
+  if #to_write == 0 then
+    return
+  end
 
   vim.bo[S.output_buf].modifiable = true
-  local n     = api.nvim_buf_line_count(S.output_buf)
-  -- When the buffer holds only the initial empty line, overwrite it rather
-  -- than appending after it (avoids a leading blank on every fresh write).
+  local n = api.nvim_buf_line_count(S.output_buf)
   local start = n
   if n == 1 and api.nvim_buf_get_lines(S.output_buf, 0, 1, false)[1] == "" then
     start = 0
@@ -99,7 +106,9 @@ local function out_write(lines)
 end
 
 local function out_clear()
-  if not (S.output_buf and api.nvim_buf_is_valid(S.output_buf)) then return end
+  if not (S.output_buf and api.nvim_buf_is_valid(S.output_buf)) then
+    return
+  end
   vim.bo[S.output_buf].modifiable = true
   api.nvim_buf_set_lines(S.output_buf, 0, -1, false, {})
   vim.bo[S.output_buf].modifiable = false
@@ -111,11 +120,13 @@ end
 -- ── close ─────────────────────────────────────────────────────────────────────
 
 local function do_close()
-  if not is_open() then return end
-  for _, win in ipairs { S.input_win, S.list_win, S.output_win } do
+  if not is_open() then
+    return
+  end
+  for _, win in ipairs({ S.input_win, S.list_win, S.output_win }) do
     pcall(api.nvim_win_close, win, true)
   end
-  for _, buf in ipairs { S.input_buf, S.list_buf, S.output_buf } do
+  for _, buf in ipairs({ S.input_buf, S.list_buf, S.output_buf }) do
     pcall(api.nvim_buf_delete, buf, { force = true })
   end
   S = {}
@@ -138,20 +149,23 @@ local function current_selected()
   return sub and sub.selected or S.selected
 end
 
----Get a stable key for tracking multi-select marks.
 ---@param item any
 ---@return any
 local function get_mark_key(item)
-  if type(item) == "table" then return item._idx end
+  if type(item) == "table" then
+    return item._idx
+  end
   return item
 end
 
 local function render_list()
-  if not (S.list_buf and api.nvim_buf_is_valid(S.list_buf)) then return end
+  if not (S.list_buf and api.nvim_buf_is_valid(S.list_buf)) then
+    return
+  end
 
-  local items    = current_items()
-  local sel      = current_selected()
-  local sub      = current_sub()
+  local items = current_items()
+  local sel = current_selected()
+  local sub = current_sub()
   local is_multi = sub and sub.multi_select
 
   api.nvim_buf_clear_namespace(S.list_buf, S.ns, 0, -1)
@@ -172,7 +186,7 @@ local function render_list()
       table.insert(lines, "  " .. mark .. item.icon .. "  " .. item.name)
     end
   end
-  -- pad to fill the window height so highlights don't stop short
+  -- Pad to fill window height
   while #lines < S.list_h do
     table.insert(lines, "")
   end
@@ -180,9 +194,9 @@ local function render_list()
   api.nvim_buf_set_lines(S.list_buf, 0, -1, false, lines)
 
   for i, item in ipairs(items) do
-    local row    = i - 1
+    local row = i - 1
     local is_sel = (i == sel)
-    local moff   = mark_offsets[i] or 0
+    local moff = mark_offsets[i] or 0
 
     if is_sel then
       api.nvim_buf_set_extmark(S.list_buf, S.ns, row, 0, {
@@ -192,28 +206,28 @@ local function render_list()
 
     if is_multi and moff > 0 and sub.marked[get_mark_key(item)] then
       api.nvim_buf_set_extmark(S.list_buf, S.ns, row, 2, {
-        end_col  = 2 + moff,
+        end_col = 2 + moff,
         hl_group = "DiagnosticOk",
       })
     end
 
     if type(item) ~= "string" then
-      local icon_hl    = item.icon_hl or "String"
+      local icon_hl = item.icon_hl or "String"
       local icon_start = 2 + moff
-      local icon_end   = icon_start + #item.icon
+      local icon_end = icon_start + #item.icon
       api.nvim_buf_set_extmark(S.list_buf, S.ns, row, icon_start, {
-        end_col  = icon_end,
+        end_col = icon_end,
         hl_group = icon_hl,
       })
       local name_hl = is_sel and "CursorLineNr" or "Normal"
       api.nvim_buf_set_extmark(S.list_buf, S.ns, row, icon_end + 2, {
-        end_col  = #lines[i],
+        end_col = #lines[i],
         hl_group = name_hl,
       })
     else
       local hl = is_sel and "CursorLineNr" or "Normal"
       api.nvim_buf_set_extmark(S.list_buf, S.ns, row, 2 + moff, {
-        end_col  = #lines[i],
+        end_col = #lines[i],
         hl_group = hl,
       })
     end
@@ -221,7 +235,6 @@ local function render_list()
 
   vim.bo[S.list_buf].modifiable = false
 
-  -- Scroll list window to keep selected item visible
   if S.list_win and api.nvim_win_is_valid(S.list_win) then
     local sel_row = current_selected()
     if sel_row > 0 and sel_row <= #items then
@@ -236,12 +249,10 @@ local function filter_commands(query)
   if not query or query == "" then
     S.filtered = vim.deepcopy(S.commands)
   else
-    local q    = query:lower()
+    local q = query:lower()
     S.filtered = {}
     for _, item in ipairs(S.commands) do
-      if item.name:lower():find(q, 1, true)
-        or (item.desc and item.desc:lower():find(q, 1, true))
-      then
+      if item.name:lower():find(q, 1, true) or (item.desc and item.desc:lower():find(q, 1, true)) then
         table.insert(S.filtered, item)
       end
     end
@@ -251,7 +262,9 @@ end
 
 local function filter_sub(query)
   local sub = current_sub()
-  if not sub then return end
+  if not sub then
+    return
+  end
   if not query or query == "" then
     sub.items = vim.deepcopy(sub.all_items)
   else
@@ -269,10 +282,11 @@ end
 
 -- ── input query helpers ───────────────────────────────────────────────────────
 
----Clear the input prompt text and return the previous query.
 ---@return string
 local function take_input_query()
-  if not (S.input_buf and api.nvim_buf_is_valid(S.input_buf)) then return "" end
+  if not (S.input_buf and api.nvim_buf_is_valid(S.input_buf)) then
+    return ""
+  end
   local saved = S.last_query or ""
   local line = api.nvim_buf_get_lines(S.input_buf, 0, 1, false)[1] or S.prompt
   local plen = #S.prompt
@@ -283,10 +297,11 @@ local function take_input_query()
   return saved
 end
 
----Set the input prompt text to a specific query.
 ---@param query string
 local function put_input_query(query)
-  if not (S.input_buf and api.nvim_buf_is_valid(S.input_buf)) then return end
+  if not (S.input_buf and api.nvim_buf_is_valid(S.input_buf)) then
+    return
+  end
   local line = api.nvim_buf_get_lines(S.input_buf, 0, 1, false)[1] or S.prompt
   local plen = #S.prompt
   if #line > plen then
@@ -302,12 +317,14 @@ end
 -- ── focus helpers ─────────────────────────────────────────────────────────────
 
 local function focus_output()
-  if not (S.output_win and api.nvim_win_is_valid(S.output_win)) then return end
+  if not (S.output_win and api.nvim_win_is_valid(S.output_win)) then
+    return
+  end
   vim.cmd("stopinsert")
   api.nvim_set_current_win(S.output_win)
   vim.wo[S.output_win].cursorline = true
   pcall(api.nvim_win_set_config, S.output_win, {
-    title     = " Output (focused) ",
+    title = " Output (focused) ",
     title_pos = "center",
   })
 end
@@ -316,13 +333,15 @@ local function unfocus_output()
   if S.output_win and api.nvim_win_is_valid(S.output_win) then
     vim.wo[S.output_win].cursorline = false
     pcall(api.nvim_win_set_config, S.output_win, {
-      title     = " Output ",
+      title = " Output ",
       title_pos = "center",
     })
   end
   if S.input_win and api.nvim_win_is_valid(S.input_win) then
     api.nvim_set_current_win(S.input_win)
-    if S.insert_mode then vim.cmd("startinsert") end
+    if S.insert_mode then
+      vim.cmd("startinsert")
+    end
   end
 end
 
@@ -330,13 +349,15 @@ end
 
 local function make_ctx()
   return {
-    write  = out_write,
-    clear  = out_clear,
-    append = function(line) out_write({ line }) end,
+    write = out_write,
+    clear = out_clear,
+    append = function(line)
+      out_write({ line })
+    end,
 
     ---Push a sub-selection list onto the left panel.
-    ---@param items  string[]|table[]
-    ---@param opts   {title?: string, multi_select?: boolean, on_select: fun(item: any, ctx: table), on_cancel?: fun()}
+    ---@param items string[]|table[]
+    ---@param opts {title?: string, multi_select?: boolean, on_select: fun(item: any, ctx: table), on_cancel?: fun()}
     select = function(items, opts)
       local saved = take_input_query()
       local all = vim.deepcopy(items)
@@ -346,24 +367,26 @@ local function make_ctx()
         end
       end
       table.insert(S.sub_stack, {
-        all_items    = all,
-        items        = vim.deepcopy(all),
-        selected     = 1,
-        on_select    = opts.on_select,
-        on_cancel    = opts.on_cancel,
-        title        = opts.title or "Select",
-        saved_query  = saved,
+        all_items = all,
+        items = vim.deepcopy(all),
+        selected = 1,
+        on_select = opts.on_select,
+        on_cancel = opts.on_cancel,
+        title = opts.title or "Select",
+        saved_query = saved,
         multi_select = opts.multi_select or false,
-        marked       = {},
+        marked = {},
       })
       pcall(api.nvim_win_set_config, S.input_win, {
-        title     = " " .. (opts.title or "Select") .. " ",
+        title = " " .. (opts.title or "Select") .. " ",
         title_pos = "center",
       })
       render_list()
       if S.input_win and api.nvim_win_is_valid(S.input_win) then
         api.nvim_set_current_win(S.input_win)
-        if S.insert_mode then vim.cmd("startinsert") end
+        if S.insert_mode then
+          vim.cmd("startinsert")
+        end
       end
     end,
   }
@@ -373,16 +396,19 @@ end
 
 local function run_selected()
   local was_insert = api.nvim_get_mode().mode == "i"
-  local items      = current_items()
-  local sel        = current_selected()
-  if #items == 0 then return end
+  local items = current_items()
+  local sel = current_selected()
+  if #items == 0 then
+    return
+  end
   local item = items[sel]
-  if not item then return end
+  if not item then
+    return
+  end
 
   local sub = current_sub()
   if sub then
     if sub.multi_select then
-      -- Collect marked items, or current item if none marked
       local selected_items = {}
       if vim.tbl_count(sub.marked) > 0 then
         for _, it in ipairs(sub.all_items) do
@@ -395,17 +421,16 @@ local function run_selected()
       end
 
       local on_sel = sub.on_select
-      -- Pop the sub-selection (confirmed)
       local popped = table.remove(S.sub_stack)
       if #S.sub_stack > 0 then
         local parent = S.sub_stack[#S.sub_stack]
         pcall(api.nvim_win_set_config, S.input_win, {
-          title     = " " .. parent.title .. " ",
+          title = " " .. parent.title .. " ",
           title_pos = "center",
         })
       else
         pcall(api.nvim_win_set_config, S.input_win, {
-          title     = " " .. S.list_title .. " ",
+          title = " " .. S.list_title .. " ",
           title_pos = "center",
         })
       end
@@ -431,8 +456,6 @@ local function run_selected()
     end
   end
 
-  -- Restore focus to input, preserving the mode the user was in when Enter
-  -- was pressed. Skip if an external window (e.g. vim.ui.input) took focus.
   vim.schedule(function()
     if is_open() and S.input_win and api.nvim_win_is_valid(S.input_win) then
       local cur = api.nvim_get_current_win()
@@ -450,7 +473,9 @@ end
 
 local function move(delta)
   local n = #current_items()
-  if n == 0 then return end
+  if n == 0 then
+    return
+  end
   local sub = current_sub()
   if sub then
     sub.selected = (sub.selected - 1 + delta) % n + 1
@@ -463,18 +488,19 @@ end
 local function handle_esc()
   if #S.sub_stack > 0 then
     local popped = table.remove(S.sub_stack)
-    if popped.on_cancel then popped.on_cancel() end
+    if popped.on_cancel then
+      popped.on_cancel()
+    end
 
-    -- Restore title to parent sub or main menu
     if #S.sub_stack > 0 then
       local parent = S.sub_stack[#S.sub_stack]
       pcall(api.nvim_win_set_config, S.input_win, {
-        title     = " " .. parent.title .. " ",
+        title = " " .. parent.title .. " ",
         title_pos = "center",
       })
     else
       pcall(api.nvim_win_set_config, S.input_win, {
-        title     = " " .. S.list_title .. " ",
+        title = " " .. S.list_title .. " ",
         title_pos = "center",
       })
     end
@@ -495,24 +521,30 @@ end
 
 local function update_multi_title()
   local sub = current_sub()
-  if not sub or not sub.multi_select then return end
+  if not sub or not sub.multi_select then
+    return
+  end
   local count = vim.tbl_count(sub.marked)
   local title = sub.title
   if count > 0 then
     title = title .. " (" .. count .. " selected)"
   end
   pcall(api.nvim_win_set_config, S.input_win, {
-    title     = " " .. title .. " ",
+    title = " " .. title .. " ",
     title_pos = "center",
   })
 end
 
 local function toggle_mark()
   local sub = current_sub()
-  if not sub or not sub.multi_select then return end
+  if not sub or not sub.multi_select then
+    return
+  end
   local items = sub.items
   local sel = sub.selected
-  if sel < 1 or sel > #items then return end
+  if sel < 1 or sel > #items then
+    return
+  end
   local item = items[sel]
   local key = get_mark_key(item)
   if sub.marked[key] then
@@ -532,7 +564,7 @@ local function setup_keymaps()
   end
 
   -- Close: Esc/q on input and list panels
-  for _, buf in ipairs { S.input_buf, S.list_buf } do
+  for _, buf in ipairs({ S.input_buf, S.list_buf }) do
     km({ "n", "i" }, "<Esc>", handle_esc, buf)
     km("n", "q", handle_esc, buf)
   end
@@ -542,56 +574,76 @@ local function setup_keymaps()
   km("n", "q", unfocus_output, S.output_buf)
 
   -- Navigate list from input (insert mode)
-  km("i", "<C-j>",   function() move(1) end,  S.input_buf)
-  km("i", "<C-k>",   function() move(-1) end, S.input_buf)
-  km("i", "<Down>",  function() move(1) end,  S.input_buf)
-  km("i", "<Up>",    function() move(-1) end, S.input_buf)
-  km("i", "<CR>",    run_selected,            S.input_buf)
+  km("i", "<C-j>", function()
+    move(1)
+  end, S.input_buf)
+  km("i", "<C-k>", function()
+    move(-1)
+  end, S.input_buf)
+  km("i", "<Down>", function()
+    move(1)
+  end, S.input_buf)
+  km("i", "<Up>", function()
+    move(-1)
+  end, S.input_buf)
+  km("i", "<CR>", run_selected, S.input_buf)
 
   -- Navigate list from input (normal mode)
-  km("n", "<C-j>", function() move(1) end,  S.input_buf)
-  km("n", "<C-k>", function() move(-1) end, S.input_buf)
-  km("n", "j",     function() move(1) end,  S.input_buf)
-  km("n", "k",     function() move(-1) end, S.input_buf)
-  km("n", "<CR>",  run_selected,            S.input_buf)
+  km("n", "<C-j>", function()
+    move(1)
+  end, S.input_buf)
+  km("n", "<C-k>", function()
+    move(-1)
+  end, S.input_buf)
+  km("n", "j", function()
+    move(1)
+  end, S.input_buf)
+  km("n", "k", function()
+    move(-1)
+  end, S.input_buf)
+  km("n", "<CR>", run_selected, S.input_buf)
 
   -- Navigate list from list panel (normal mode)
-  km("n", "j",    function() move(1) end,  S.list_buf)
-  km("n", "k",    function() move(-1) end, S.list_buf)
-  km("n", "<CR>", run_selected,            S.list_buf)
+  km("n", "j", function()
+    move(1)
+  end, S.list_buf)
+  km("n", "k", function()
+    move(-1)
+  end, S.list_buf)
+  km("n", "<CR>", run_selected, S.list_buf)
 
   -- Tab: toggle multi-select mark
   km({ "n", "i" }, "<Tab>", toggle_mark, S.input_buf)
   km("n", "<Tab>", toggle_mark, S.list_buf)
 
   -- C-l / C-h: focus and unfocus output panel
-  for _, buf in ipairs { S.input_buf, S.list_buf } do
+  for _, buf in ipairs({ S.input_buf, S.list_buf }) do
     km({ "n", "i" }, "<C-l>", focus_output, buf)
   end
   km("n", "<C-l>", focus_output, S.output_buf)
 
-  for _, buf in ipairs { S.input_buf, S.list_buf } do
+  for _, buf in ipairs({ S.input_buf, S.list_buf }) do
     km({ "n", "i" }, "<C-h>", unfocus_output, buf)
   end
   km("n", "<C-h>", unfocus_output, S.output_buf)
 
   -- Nop
-  for _, buf in ipairs { S.input_buf, S.output_buf, S.list_buf } do
-    km({ "n", "i" }, "<C-i>", '<Nop>', buf)
+  for _, buf in ipairs({ S.input_buf, S.output_buf, S.list_buf }) do
+    km({ "n", "i" }, "<C-i>", "<Nop>", buf)
   end
 end
 
--- ── autocmds ─────────────────────────────────────────────────────────────────
+-- ── autocmds ──────────────────────────────────────────────────────────────────
 
 local function setup_autocmds()
-  local aug      = api.nvim_create_augroup("DotnetUI", { clear = true })
-  local promptw  = api.nvim_strwidth(S.prompt)
+  local aug = api.nvim_create_augroup("DotnetUI", { clear = true })
+  local promptw = api.nvim_strwidth(S.prompt)
 
   api.nvim_create_autocmd("TextChangedI", {
-    group  = aug,
+    group = aug,
     buffer = S.input_buf,
     callback = function()
-      local line  = api.nvim_get_current_line()
+      local line = api.nvim_get_current_line()
       local query = line:sub(promptw + 1)
       S.last_query = query
       local sub = current_sub()
@@ -606,145 +658,140 @@ local function setup_autocmds()
     end,
   })
 
-  -- When any panel window is closed externally, close the whole UI
   api.nvim_create_autocmd("WinClosed", {
     group = aug,
     callback = function(ev)
       local closed = tonumber(ev.match)
-      if S.input_win and (
-        closed == S.input_win
-        or closed == S.list_win
-        or closed == S.output_win
-      ) then
+      if S.input_win and (closed == S.input_win or closed == S.list_win or closed == S.output_win) then
         vim.schedule(do_close)
       end
     end,
   })
 end
 
--- ── open ─────────────────────────────────────────────────────────────────────
+-- ── open ──────────────────────────────────────────────────────────────────────
 
 ---@class DotnetUICommand
----@field name     string
----@field icon     string
----@field icon_hl? string   highlight group for the icon (default "String")
----@field desc?    string   used for fuzzy filtering
----@field action   fun(ctx: DotnetUICtx)
+---@field name string
+---@field icon string
+---@field icon_hl? string highlight group for the icon (default "String")
+---@field desc? string used for fuzzy filtering
+---@field action fun(ctx: DotnetUICtx)
 
 ---@class DotnetUICtx
----@field write   fun(lines: string[]|string)
----@field clear   fun()
----@field append  fun(line: string)
----@field select  fun(items: any[], opts: {title?: string, multi_select?: boolean, on_select: fun(item_or_items: any, ctx: DotnetUICtx), on_cancel?: fun()})
+---@field write fun(lines: string[]|string)
+---@field clear fun()
+---@field append fun(line: string)
+---@field select fun(items: any[], opts: {title?: string, multi_select?: boolean, on_select: fun(item_or_items: any, ctx: DotnetUICtx), on_cancel?: fun()})
 
----Open the two-panel Dotnet Manager UI.
+---Open the two-panel picker UI.
 ---@param commands DotnetUICommand[]
----@param opts?    {title?: string, insert_mode?: boolean}  insert_mode defaults to false (normal mode)
+---@param opts? {title?: string, insert_mode?: boolean}
 M.open = function(commands, opts)
-  if is_open() then do_close() end
+  if is_open() then
+    do_close()
+  end
   opts = opts or {}
 
-  -- ── layout math ──────────────────────────────────────────────────────────
-  local total_w   = math.floor(vim.o.columns * 0.86)
-  local total_h   = math.floor(vim.o.lines   * 0.78)
-  local list_w    = math.floor(total_w * 0.38)
-  local output_w  = total_w - list_w - 4       -- 4 = left+right borders of both wins
+  -- ── layout math ─────────────────────────────────────────────────────────────
+  local total_w = math.floor(vim.o.columns * 0.86)
+  local total_h = math.floor(vim.o.lines * 0.78)
+  local list_w = math.floor(total_w * 0.38)
+  local output_w = total_w - list_w - 4
   local col_start = math.floor((vim.o.columns - total_w) / 2)
-  local row_start = math.floor((vim.o.lines   - total_h) / 2)
-  local list_h    = total_h - 3                -- 3 = input win height including borders
-  local prompt    = "   "
-  local title     = opts.title or "Commands"
+  local row_start = math.floor((vim.o.lines - total_h) / 2)
+  local list_h = total_h - 3
+  local prompt = "   "
+  local title = opts.title or "Commands"
 
   S = {
-    commands    = commands,
-    filtered    = vim.deepcopy(commands),
-    selected    = 1,
-    sub_stack   = {},
-    last_query  = "",
-    prompt      = prompt,
-    list_h      = list_h,
-    list_title  = title,
+    commands = commands,
+    filtered = vim.deepcopy(commands),
+    selected = 1,
+    sub_stack = {},
+    last_query = "",
+    prompt = prompt,
+    list_h = list_h,
+    list_title = title,
     insert_mode = opts.insert_mode == true,
-    ns          = api.nvim_create_namespace("DotnetUI"),
-    out_ns      = api.nvim_create_namespace("DotnetUIOutput"),
+    ns = api.nvim_create_namespace("DotnetUI"),
+    out_ns = api.nvim_create_namespace("DotnetUIOutput"),
   }
 
-  -- ── buffers ───────────────────────────────────────────────────────────────
-  S.input_buf  = api.nvim_create_buf(false, true)
-  S.list_buf   = api.nvim_create_buf(false, true)
+  -- ── buffers ─────────────────────────────────────────────────────────────────
+  S.input_buf = api.nvim_create_buf(false, true)
+  S.list_buf = api.nvim_create_buf(false, true)
   S.output_buf = api.nvim_create_buf(false, true)
 
-  -- ── windows ───────────────────────────────────────────────────────────────
-  -- Input (top-left)
+  -- ── windows ─────────────────────────────────────────────────────────────────
   S.input_win = api.nvim_open_win(S.input_buf, true, {
-    relative  = "editor",
-    row       = row_start,
-    col       = col_start,
-    width     = list_w,
-    height    = 1,
-    border    = "single",
-    style     = "minimal",
-    title     = " " .. title .. " ",
+    relative = "editor",
+    row = row_start,
+    col = col_start,
+    width = list_w,
+    height = 1,
+    border = "single",
+    style = "minimal",
+    title = " " .. title .. " ",
     title_pos = "center",
-    zindex    = 50,
+    zindex = 50,
   })
 
-  -- List (bottom-left, directly below input)
   S.list_win = api.nvim_open_win(S.list_buf, false, {
-    relative  = "editor",
-    row       = row_start + 3,    -- input height (1) + 2 borders
-    col       = col_start,
-    width     = list_w,
-    height    = list_h,
-    border    = "single",
-    style     = "minimal",
-    zindex    = 50,
+    relative = "editor",
+    row = row_start + 3,
+    col = col_start,
+    width = list_w,
+    height = list_h,
+    border = "single",
+    style = "minimal",
+    zindex = 50,
   })
 
-  -- Output (right side, full height, adjacent to list)
   S.output_win = api.nvim_open_win(S.output_buf, false, {
-    relative  = "editor",
-    row       = row_start,
-    col       = col_start + list_w + 2,   -- right after left panel border
-    width     = output_w,
-    height    = total_h,
-    border    = "single",
-    style     = "minimal",
-    title     = " Output ",
+    relative = "editor",
+    row = row_start,
+    col = col_start + list_w + 2,
+    width = output_w,
+    height = total_h,
+    border = "single",
+    style = "minimal",
+    title = " Output ",
     title_pos = "center",
-    zindex    = 50,
+    zindex = 50,
   })
 
-  -- ── window options ────────────────────────────────────────────────────────
+  -- ── window options ──────────────────────────────────────────────────────────
   local use_dark = vim.fn.hlID("ExBlack2Bg") ~= 0
-  local win_hl   = use_dark
-    and "Normal:ExBlack2Bg,FloatBorder:ExBlack2Border"
-    or  "Normal:NormalFloat,FloatBorder:FloatBorder"
+  local win_hl = use_dark and "Normal:ExBlack2Bg,FloatBorder:ExBlack2Border"
+    or "Normal:NormalFloat,FloatBorder:FloatBorder"
 
-  for _, win in ipairs { S.input_win, S.list_win, S.output_win } do
-    vim.wo[win].winhl         = win_hl
-    vim.wo[win].wrap          = false
-    vim.wo[win].number        = false
+  for _, win in ipairs({ S.input_win, S.list_win, S.output_win }) do
+    vim.wo[win].winhl = win_hl
+    vim.wo[win].wrap = false
+    vim.wo[win].number = false
     vim.wo[win].relativenumber = false
-    vim.wo[win].signcolumn    = "no"
-    vim.wo[win].cursorline    = false
+    vim.wo[win].signcolumn = "no"
+    vim.wo[win].cursorline = false
   end
   vim.wo[S.output_win].wrap = true
 
-  -- ── buffer options ────────────────────────────────────────────────────────
+  -- ── buffer options ──────────────────────────────────────────────────────────
   vim.bo[S.output_buf].modifiable = false
-  vim.bo[S.output_buf].buftype    = "nofile"
-  vim.bo[S.list_buf].buftype      = "nofile"
+  vim.bo[S.output_buf].buftype = "nofile"
+  vim.bo[S.list_buf].buftype = "nofile"
 
   vim.bo[S.input_buf].buftype = "prompt"
   vim.fn.prompt_setprompt(S.input_buf, prompt)
   vim.fn.prompt_setcallback(S.input_buf, function() end)
 
-  -- ── initial render ────────────────────────────────────────────────────────
+  -- ── initial render ──────────────────────────────────────────────────────────
   render_list()
   setup_keymaps()
   setup_autocmds()
-  if S.insert_mode then vim.cmd("startinsert") end
+  if S.insert_mode then
+    vim.cmd("startinsert")
+  end
 end
 
 return M
