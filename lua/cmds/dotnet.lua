@@ -191,14 +191,16 @@ end
 ---         https://api.nuget.org/v3/index.json
 ---@param lines string[]
 ---@return {name: string, url: string, enabled: boolean}[]
+local NUGET_DISABLED = { Disabled = true, ["已停用"] = true, ["已禁用"] = true }
+
 local function parse_nuget_sources(lines)
   local sources = {}
   local i = 1
   while i <= #lines do
-    local name, status = lines[i]:match("^%s*%d+%.%s+(.-)%s+%[(%a+)%]")
+    local name, status = lines[i]:match("^%s*%d+%.%s+(.-)%s+%[([^%]]+)%]")
     if name then
       local url = (lines[i + 1] or ""):match("^%s+(%S+)")
-      table.insert(sources, { name = name, url = url or "", enabled = status == "Enabled" })
+      table.insert(sources, { name = name, url = url or "", enabled = not NUGET_DISABLED[status] })
       i = i + 2
     else
       i = i + 1
