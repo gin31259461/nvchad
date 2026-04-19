@@ -173,10 +173,13 @@ local function parse_sln_projects(lines)
   local projects = {}
   local in_data = false
   for _, line in ipairs(lines) do
-    if line:match("^%-%-%-%-") then
+    local trimmed = vim.trim(line)
+
+    -- Match a separator line that consists entirely of one or more hyphens
+    if not in_data and trimmed:match("^%-+$") then
       in_data = true
-    elseif in_data and line:match("%S") then
-      table.insert(projects, vim.trim(line))
+    elseif in_data and trimmed ~= "" then
+      table.insert(projects, trimmed)
     end
   end
   return projects
