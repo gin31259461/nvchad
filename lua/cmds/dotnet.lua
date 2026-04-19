@@ -182,6 +182,31 @@ local function parse_sln_projects(lines)
   return projects
 end
 
+-- ── nuget source helpers ──────────────────────────────────────────────────────
+
+---Parse the output of `dotnet nuget list source` into source records.
+---Output format:
+---   Registered Sources:
+---     1.  nuget.org [Enabled]
+---         https://api.nuget.org/v3/index.json
+---@param lines string[]
+---@return {name: string, url: string, enabled: boolean}[]
+local function parse_nuget_sources(lines)
+  local sources = {}
+  local i = 1
+  while i <= #lines do
+    local name, status = lines[i]:match("^%s*%d+%.%s+(.-)%s+%[(%a+)%]")
+    if name then
+      local url = (lines[i + 1] or ""):match("^%s+(%S+)")
+      table.insert(sources, { name = name, url = url or "", enabled = status == "Enabled" })
+      i = i + 2
+    else
+      i = i + 1
+    end
+  end
+  return sources
+end
+
 -- ── template helpers ──────────────────────────────────────────────────────────
 
 ---Parse the tabular output of `dotnet new list` into template records.
@@ -576,6 +601,81 @@ M.commands = {
             end)
             return
           end
+        end,
+      })
+    end,
+  },
+  {
+    name = "NuGet Sources",
+    icon = "󰏗 ",
+    icon_hl = "DiagnosticHint",
+    desc = "manage NuGet package sources",
+    action = function(ctx)
+      ctx.select({
+        { _raw = "list", icon = "󰈚 ", icon_hl = "Comment", name = "List Sources" },
+        { _raw = "add", icon = "󰐕 ", icon_hl = "DiagnosticOk", name = "Add Source" },
+        { _raw = "remove", icon = "󰍴 ", icon_hl = "DiagnosticError", name = "Remove Source" },
+        { _raw = "enable", icon = "󰔡 ", icon_hl = "DiagnosticOk", name = "Enable Source" },
+        { _raw = "disable", icon = "󰨙 ", icon_hl = "DiagnosticWarn", name = "Disable Source" },
+      }, {
+        title = "NuGet Sources",
+        on_select = function(item, c)
+          local action = item._raw
+
+          if action == "list" then
+            run_job({ "dotnet", "nuget", "list", "source" }, c)
+            return
+          end
+
+          if action == "add" then
+            vim.cmd("stopinsert")
+            vim.ui.input({ prompt = "Source name: " }, function(name)
+              if not name or name == "" then
+                return
+              end
+              vim.ui.input({ prompt = "Source URL: " }, function(url)
+                if not url or url == "" then
+                  return
+                end
+                vim.schedule(function()
+                  run_job({ "dotnet", "nuget", "add", "source", url, "-n", name }, c)
+                end)
+              end)
+            end)
+            return
+          end
+
+          -- remove / enable / disable share the same flow: pick a source, run action
+          c.clear()
+          local raw = vim.fn.systemlist({ "dotnet", "nuget", "list", "source" })
+          if vim.v.shell_error ~= 0 then
+            c.append("Failed to list NuGet sources.")
+            return
+          end
+
+          local sources = parse_nuget_sources(raw)
+          if #sources == 0 then
+            c.append("No NuGet sources found.")
+            return
+          end
+
+          local items = {}
+          for _, s in ipairs(sources) do
+            local state = s.enabled and "Enabled" or "Disabled"
+            table.insert(items, {
+              _raw = s.name,
+              icon = s.enabled and "󰔡 " or "󰨙 ",
+              icon_hl = s.enabled and "DiagnosticOk" or "DiagnosticWarn",
+              name = s.name .. "  (" .. state .. ")  " .. s.url,
+            })
+          end
+
+          c.select(items, {
+            title = action:sub(1, 1):upper() .. action:sub(2) .. " Source",
+            on_select = function(src_item, c2)
+              run_job({ "dotnet", "nuget", action, "source", src_item._raw }, c2)
+            end,
+          })
         end,
       })
     end,
