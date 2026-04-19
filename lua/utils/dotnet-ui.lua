@@ -74,7 +74,7 @@ local function out_write(lines)
   local to_write = {}
   for i, l in ipairs(lines) do
     if i < #lines or l ~= "" then
-      table.insert(to_write, l:gsub("\r", ""))
+      table.insert(to_write, (l:gsub("\r", "")))
     end
   end
   if #to_write == 0 then return end
