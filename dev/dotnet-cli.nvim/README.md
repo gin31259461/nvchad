@@ -47,17 +47,6 @@ commands.
 }
 ```
 
-### Development (local)
-
-```lua
-{
-  dir = "~/path/to/dotnet-cli.nvim",
-  cmd = { "DotnetManager", "DotnetBuild", "DotnetPublish", "DotnetGlobalJson" },
-  ft = "cs",
-  opts = {},
-}
-```
-
 ## ⚙️ Configuration
 
 ```lua
