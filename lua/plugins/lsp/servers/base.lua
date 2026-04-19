@@ -87,7 +87,13 @@ return {
     end
   end,
 
-  capabilities = make_client_capabilities(),
+  capabilities = make_client_capabilities({
+    textDocument = {
+      diagnostic = {
+        dynamicRegistration = true,
+      },
+    },
+  }),
 
   disable_default_settings = {
     -- this base.lua on_init will override the on_init of roslyn.lua, so we need to disable it to let roslyn.lua handle the on_init

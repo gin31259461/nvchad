@@ -47,9 +47,6 @@ local pkgs_with_lsp_setup = {
   ruff = "ruff",
 
   ------------------- .NET -------------------
-  -- also need dotnet-sdk to be installed: https://dotnet.microsoft.com/zh-tw/download
-  -- csharp = { "omnisharp", "omnisharp" },
-  --
   -- requirement:
   -- .NET 10.0 SDK: https://dotnet.microsoft.com/zh-tw/download/dotnet/10.0
   roslyn = "roslyn",

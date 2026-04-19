@@ -10,6 +10,7 @@
 local fs = require("utils.fs")
 local os_utils = require("utils.os")
 
+-------------------- roslyn start --------------------
 -- FIX: roslyn progress spec issue: https://github.com/dotnet/roslyn/issues/79939
 -- vim.api.nvim_create_autocmd("FileType", {
 --   pattern = { "cs" },
@@ -24,6 +25,8 @@ local os_utils = require("utils.os")
 --     end
 --   end,
 -- })
+
+-------------------- roslyn end --------------------
 
 -- FIX: statusline diagnostics missing on idle buffer open
 vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {

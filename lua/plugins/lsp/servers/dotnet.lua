@@ -9,33 +9,14 @@ local os = require("utils.os")
 ---@type Lsp.Server.Module
 return {
   servers = {
+
+    -- do net alter cmd, on_init, becase roslyn.nvim will handle it, and it will cause issues if we do
+    -- refer to config example: https://github.com/seblyng/roslyn.nvim#example
     roslyn = {
-      filetypes = { "cs" },
-
-      -- installed via mason
-      cmd = {
-        "roslyn",
-        "--logLevel",
-        "Information",
-        "--extensionLogDirectory",
-        vim.fs.joinpath(vim.uv.os_tmpdir(), "roslyn_ls/logs"),
-        "--stdio",
-      },
-
-      -- to use this ls, must download roslyn_ls from azure devops and put it in `data/roslyn_ls` folder
-      -- refer to: https://github.com/dotnet/roslyn/issues/71474#issuecomment-2177303207
       -- cmd = {
-      --   "dotnet",
-      --   fs.data_path
-      --     .. "/roslyn_ls/content/LanguageServer"
-      --     .. "/"
-      --     .. (os.is_win() and "win" or "linux")
-      --     .. "-x64"
-      --     .. "/Microsoft.CodeAnalysis.LanguageServer.dll",
-      --   "--logLevel", -- this property is required by the server
-      --   "Information",
-      --   "--extensionLogDirectory", -- this property is required by the server
-      --   vim.fs.joinpath(vim.uv.os_tmpdir(), "roslyn_ls/logs"),
+      --   "roslyn",
+      --   "--logLevel=Information",
+      --   "--extensionLogDirectory=" .. vim.fs.dirname(vim.lsp.log.get_filename()),
       --   "--stdio",
       -- },
 
@@ -65,59 +46,20 @@ return {
         },
 
         ["csharp|background_analysis"] = {
-          dotnet_analyzer_diagnostics_scope = "fullSolution",
+          dotnet_analyzer_diagnostics_scope = "openFiles",
           dotnet_compiler_diagnostics_scope = "fullSolution",
+        },
+
+        ["csharp|symbol_search"] = {
+          dotnet_search_reference_assemblies = true,
+        },
+
+        ["csharp|completion"] = {
+          dotnet_show_name_completion_suggestions = true,
+          dotnet_show_completion_items_from_unimported_namespaces = true,
+          dotnet_provide_regex_completions = true,
         },
       },
     },
-
-    -- omnisharp = {
-    --   handlers = {
-    --     ["textDocument/definition"] = require("omnisharp_extended").definition_handler,
-    --     ["textDocument/typeDefinition"] = require("omnisharp_extended").type_definition_handler,
-    --     ["textDocument/references"] = require("omnisharp_extended").references_handler,
-    --     ["textDocument/implementation"] = require("omnisharp_extended").implementation_handler,
-    --   },
-    --
-    --   keys = {
-    --     {
-    --       "gd",
-    --       function()
-    --         require("omnisharp_extended").telescope_lsp_definitions()
-    --       end,
-    --       desc = "Goto Definition (C#)",
-    --     },
-    --     {
-    --       "gR",
-    --       function()
-    --         require("omnisharp_extended").telescope_lsp_references()
-    --       end,
-    --       desc = "References (C#)",
-    --     },
-    --     {
-    --       "gy",
-    --       function()
-    --         require("omnisharp_extended").telescope_lsp_type_definition()
-    --       end,
-    --       desc = "Goto Type Definition (C#)",
-    --     },
-    --     {
-    --       "gI",
-    --       function()
-    --         require("omnisharp_extended").telescope_lsp_implementation()
-    --       end,
-    --       desc = "Goto Implementation (C#)",
-    --     },
-    --   },
-    --
-    --   -- https://github.com/OmniSharp/omnisharp-roslyn/wiki/Configuration-Options
-    --   settings = {
-    --     RoslynExtensionsOptions = {
-    --       enableDecompilationSupport = true,
-    --       enableAnalyzersSupport = true,
-    --       enableImportCompletion = true,
-    --     },
-    --   },
-    -- },
   },
 }
