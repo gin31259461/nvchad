@@ -72,8 +72,27 @@ local all_hl = {}
 ---@type vim.api.keyset.highlight
 local shared_underline_hl = { undercurl = true, underline = false }
 
--- TODO: add checking method
-local support_undercurl = true
+---Detect whether the current terminal supports undercurl.
+---GUI front-ends and modern terminal emulators (kitty, WezTerm, iTerm, Ghostty)
+---are known to handle curly underlines; for everything else we fall back to
+---plain underline.
+local support_undercurl = (function()
+  if vim.g.neovide or vim.fn.has("gui_running") == 1 then
+    return true
+  end
+
+  local term = vim.env.TERM or ""
+  if term:find("kitty", 1, true) then
+    return true
+  end
+
+  local known = { WezTerm = true, ["iTerm.app"] = true, ghostty = true }
+  if known[vim.env.TERM_PROGRAM] then
+    return true
+  end
+
+  return false
+end)()
 
 if not support_undercurl then
   shared_underline_hl.undercurl = false

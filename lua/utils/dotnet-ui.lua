@@ -15,7 +15,6 @@
 --   ctx.select(items, opts) – push a sub-selection list onto the left panel
 --     opts: { title?, on_select: fun(item, ctx), on_cancel?: fun() }
 
--- TODO: windows: output stop showing ** ^M **
 
 local M   = {}
 local api = vim.api
@@ -70,11 +69,12 @@ local function out_write(lines)
   if not (S.output_buf and api.nvim_buf_is_valid(S.output_buf)) then return end
   if type(lines) == "string" then lines = vim.split(lines, "\n") end
 
-  -- jobstart sends a trailing "" as a chunk-end marker; strip it
+  -- jobstart sends a trailing "" as a chunk-end marker; strip it.
+  -- Also strip \r (^M) that Windows-style CRLF commands emit.
   local to_write = {}
   for i, l in ipairs(lines) do
     if i < #lines or l ~= "" then
-      table.insert(to_write, l)
+      table.insert(to_write, l:gsub("\r", ""))
     end
   end
   if #to_write == 0 then return end
