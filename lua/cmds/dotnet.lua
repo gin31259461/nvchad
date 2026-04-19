@@ -565,9 +565,39 @@ M.commands = {
 
           if action == "add" then
             select_sln(c, function(sln, c2)
-              select_csproj(c2, function(proj, c3)
-                run_job({ "dotnet", "sln", sln, "add", proj }, c3)
-              end)
+              local files = M.get_csproj_files()
+              if #files == 0 then
+                c2.clear()
+                c2.append("No .csproj files found in: " .. vim.fn.getcwd())
+                return
+              end
+              if #files == 1 then
+                run_job({ "dotnet", "sln", sln, "add", files[1] }, c2)
+                return
+              end
+
+              local ui = require("utils.ui")
+              local items = {}
+              for _, f in ipairs(files) do
+                table.insert(items, {
+                  _raw = f,
+                  icon = ui.get_file_icon(f),
+                  icon_hl = "DevIconCs",
+                  name = f,
+                })
+              end
+
+              c2.select(items, {
+                title = "Add Project",
+                multi_select = true,
+                on_select = function(selected, c3)
+                  local cmd = { "dotnet", "sln", sln, "add" }
+                  for _, proj_item in ipairs(selected) do
+                    table.insert(cmd, proj_item._raw)
+                  end
+                  run_job(cmd, c3)
+                end,
+              })
             end)
             return
           end
@@ -682,8 +712,31 @@ M.commands = {
 
           c.select(items, {
             title = action:sub(1, 1):upper() .. action:sub(2) .. " Source",
-            on_select = function(src_item, c2)
-              run_job({ "dotnet", "nuget", action, "source", src_item._raw }, c2)
+            multi_select = true,
+            on_select = function(selected, c2)
+              local pending = #selected
+              local failed = 0
+              c2.clear()
+              for _, src_item in ipairs(selected) do
+                local cmd = { "dotnet", "nuget", action, "source", src_item._raw }
+                c2.append("$ " .. table.concat(cmd, " "))
+                local out = vim.fn.systemlist(cmd)
+                if vim.v.shell_error ~= 0 then
+                  failed = failed + 1
+                  c2.append("✗  Failed: " .. src_item._raw)
+                else
+                  c2.write(out)
+                  c2.append("✓  " .. action .. ": " .. src_item._raw)
+                end
+                pending = pending - 1
+                if pending > 0 then c2.append("") end
+              end
+              c2.append("")
+              if failed == 0 then
+                c2.append("✓  All " .. #selected .. " source(s) processed successfully")
+              else
+                c2.append("✗  " .. failed .. " of " .. #selected .. " source(s) failed")
+              end
             end,
           })
         end,
