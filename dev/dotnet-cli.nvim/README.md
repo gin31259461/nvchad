@@ -13,7 +13,8 @@ commands.
 - **Build / Run / Test / Watch** — All common `dotnet` workflows at your
   fingertips
 - **Solution Management** — Create, list, add/remove projects from solutions
-- **NuGet Source Management** — List, add, remove, enable/disable package sources
+- **NuGet Source Management** — List, add, remove, enable/disable package
+  sources
 - **SDK Version Pinning** — Create and update `global.json` with installed SDK
   versions
 - **New Project Scaffolding** — Browse and create from all installed templates
@@ -29,8 +30,9 @@ commands.
 
 - **Neovim** ≥ 0.10
 - **.NET SDK** ≥ 6.0 (any version supported, 7+ recommended)
-- **Optional:** [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons)
-  for file icons
+- **Optional:**
+  [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) for file
+  icons
 
 ## 📥 Installation
 
@@ -81,12 +83,12 @@ lazy.nvim uses sensible defaults.
 
 ### Commands
 
-| Command            | Description                          |
-| ------------------ | ------------------------------------ |
-| `:DotnetManager`   | Open the interactive Manager UI      |
-| `:DotnetBuild`     | Build a project (with notification)  |
-| `:DotnetPublish`   | Publish a project (with notification)|
-| `:DotnetGlobalJson`| Pin SDK version via global.json      |
+| Command             | Description                           |
+| ------------------- | ------------------------------------- |
+| `:DotnetManager`    | Open the interactive Manager UI       |
+| `:DotnetBuild`      | Build a project (with notification)   |
+| `:DotnetPublish`    | Publish a project (with notification) |
+| `:DotnetGlobalJson` | Pin SDK version via global.json       |
 
 ### Keymaps (suggested)
 
@@ -95,31 +97,31 @@ vim.keymap.set("n", "<leader>dp", "<cmd>DotnetManager<CR>", { desc = "Dotnet Man
 vim.keymap.set("n", "<leader>db", "<cmd>DotnetBuild<CR>", { desc = "Dotnet Build" })
 ```
 
-## 🎨 Manager UI
+## Manager UI
 
 The Manager UI is a two-panel floating window:
 
-| Panel  | Description                                           |
-| ------ | ----------------------------------------------------- |
-| Left   | Search input (top) + scrollable command/item list     |
-| Right  | Output panel with syntax-highlighted build output     |
+| Panel | Description                                       |
+| ----- | ------------------------------------------------- |
+| Left  | Search input (top) + scrollable command/item list |
+| Right | Output panel with syntax-highlighted build output |
 
 ![dotnet-cli.nvim panels](docs/images/manager-panels.png)
 
 ### UI Keybindings
 
-| Key        | Mode     | Action                                    |
-| ---------- | -------- | ----------------------------------------- |
-| `<CR>`     | n/i      | Execute selected command/item             |
-| `<C-j>`    | n/i      | Move selection down                       |
-| `<C-k>`    | n/i      | Move selection up                         |
-| `j` / `k`  | n        | Move selection down/up                    |
-| `<Tab>`    | n/i      | Toggle multi-select mark                  |
-| `<C-l>`    | n/i      | Focus output panel                        |
-| `<C-h>`    | n/i      | Return focus to input                     |
-| `<Esc>`    | n/i      | Cancel sub-selection / close UI           |
-| `q`        | n        | Same as `<Esc>`                           |
-| Type text  | i        | Filter commands/items                     |
+| Key       | Mode | Action                          |
+| --------- | ---- | ------------------------------- |
+| `<CR>`    | n/i  | Execute selected command/item   |
+| `<C-j>`   | n/i  | Move selection down             |
+| `<C-k>`   | n/i  | Move selection up               |
+| `j` / `k` | n    | Move selection down/up          |
+| `<Tab>`   | n/i  | Toggle multi-select mark        |
+| `<C-l>`   | n/i  | Focus output panel              |
+| `<C-h>`   | n/i  | Return focus to input           |
+| `<Esc>`   | n/i  | Cancel sub-selection / close UI |
+| `q`       | n    | Same as `<Esc>`                 |
+| Type text | i    | Filter commands/items           |
 
 ### Multi-Select
 
@@ -131,27 +133,27 @@ When a command supports multi-select (e.g., Add/Remove projects from solution):
 
 ![dotnet-cli.nvim multi-select](docs/images/multi-select.png)
 
-## 📋 Manager Commands
+## Manager Commands
 
-| Command          | Description                                |
-| ---------------- | ------------------------------------------ |
-| **Build**        | Build with Debug/Release configuration     |
-| **Run**          | Run a project                              |
-| **Test**         | Run tests with minimal verbosity           |
-| **Watch**        | Hot-reload with `dotnet watch run/test`    |
-| **Restore**      | Restore NuGet packages                     |
-| **Clean**        | Clean build artifacts                      |
-| **Publish**      | Publish for deployment                     |
-| **Format**       | Run `dotnet format`                        |
-| **New Project**  | Scaffold from installed templates          |
-| **Solution**     | List/Add/Remove projects, Create solution  |
-| **NuGet Sources**| List/Add/Remove/Enable/Disable sources     |
-| **Add Package**  | Add a NuGet package to a project           |
-| **Global JSON**  | Pin SDK version                            |
-| **List SDKs**    | Show installed SDK versions                |
-| **List Runtimes**| Show installed runtimes                    |
+| Command           | Description                               |
+| ----------------- | ----------------------------------------- |
+| **Build**         | Build with Debug/Release configuration    |
+| **Run**           | Run a project                             |
+| **Test**          | Run tests with minimal verbosity          |
+| **Watch**         | Hot-reload with `dotnet watch run/test`   |
+| **Restore**       | Restore NuGet packages                    |
+| **Clean**         | Clean build artifacts                     |
+| **Publish**       | Publish for deployment                    |
+| **Format**        | Run `dotnet format`                       |
+| **New Project**   | Scaffold from installed templates         |
+| **Solution**      | List/Add/Remove projects, Create solution |
+| **NuGet Sources** | List/Add/Remove/Enable/Disable sources    |
+| **Add Package**   | Add a NuGet package to a project          |
+| **Global JSON**   | Pin SDK version                           |
+| **List SDKs**     | Show installed SDK versions               |
+| **List Runtimes** | Show installed runtimes                   |
 
-## 🏥 Health Check
+## Health Check
 
 Run `:checkhealth dotnet-cli` to verify your environment:
 
@@ -167,7 +169,7 @@ dotnet-cli.nvim
 - OK nvim-web-devicons available (file icons)
 ```
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 lua/dotnet-cli/
@@ -198,7 +200,7 @@ lua/dotnet-cli/
     └── dotnet.csproj   -- Publish profile template
 ```
 
-## 🧪 Testing
+## Testing
 
 Tests use [plenary.nvim](https://github.com/nvim-lua/plenary.nvim):
 
@@ -216,24 +218,24 @@ make format
 make check
 ```
 
-## 📐 Output Highlighting
+## Output Highlighting
 
 The output panel automatically highlights lines matching common patterns:
 
-| Pattern              | Highlight         |
-| -------------------- | ----------------- |
-| `$ command`          | Comment (dimmed)  |
-| `✓` (success)        | DiagnosticOk      |
-| `✗` (failure)        | DiagnosticError   |
-| `Build succeeded`    | DiagnosticOk      |
-| `Build FAILED`       | DiagnosticError   |
-| `Warning`            | DiagnosticWarn    |
-| `Error`              | DiagnosticError   |
-| `Restored`           | DiagnosticOk      |
-| `Passed!`            | DiagnosticOk      |
-| `Failed!`            | DiagnosticError   |
+| Pattern           | Highlight        |
+| ----------------- | ---------------- |
+| `$ command`       | Comment (dimmed) |
+| `✓` (success)     | DiagnosticOk     |
+| `✗` (failure)     | DiagnosticError  |
+| `Build succeeded` | DiagnosticOk     |
+| `Build FAILED`    | DiagnosticError  |
+| `Warning`         | DiagnosticWarn   |
+| `Error`           | DiagnosticError  |
+| `Restored`        | DiagnosticOk     |
+| `Passed!`         | DiagnosticOk     |
+| `Failed!`         | DiagnosticError  |
 
-## 🔌 API
+## API
 
 The plugin exposes submodules for programmatic use:
 
@@ -256,12 +258,20 @@ dotnet.job.run(cmd, ctx, on_complete?)  -- run async with UI ctx
 dotnet.job.run_sync(cmd)                -- string[], boolean
 ```
 
-## 📄 License
+## License
 
 MIT
 
-## 🙏 Acknowledgments
+## Notice
+
+This plugin primarily wraps the dotnet CLI, allowing lazy developers like myself
+to avoid manually typing commands. However, its functionality is not yet
+complete. While it's sufficient for my daily dotnet development, this plugin is
+suitable for those familiar with the dotnet CLI.
+
+## Acknowledgments
 
 - Built for use with [NvChad](https://github.com/NvChad/NvChad)
-- Inspired by [omnisharp-extended-lsp.nvim](https://github.com/Hoffs/omnisharp-extended-lsp.nvim)
+- Inspired by
+  [omnisharp-extended-lsp.nvim](https://github.com/Hoffs/omnisharp-extended-lsp.nvim)
   and [roslyn.nvim](https://github.com/seblj/roslyn.nvim)
