@@ -112,7 +112,7 @@ local plugins = {
 
   { "microsoft/python-type-stubs" },
 
-  { "Hoffs/omnisharp-extended-lsp.nvim", lazy = true },
+  -- { "Hoffs/omnisharp-extended-lsp.nvim", lazy = true },
 
   -- https://github.com/seblyng/roslyn.nvim?tab=readme-ov-file#%EF%B8%8F-configuration
   {
@@ -122,7 +122,7 @@ local plugins = {
     ---@type RoslynNvimConfig
     opts = {
       filewatching = "roslyn",
-      silent = true,
+      silent = false,
     },
   },
 }

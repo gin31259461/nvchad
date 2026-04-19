@@ -11,19 +11,19 @@ local fs = require("utils.fs")
 local os_utils = require("utils.os")
 
 -- FIX: roslyn progress spec issue: https://github.com/dotnet/roslyn/issues/79939
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "cs" },
-  callback = function()
-    local ok, group = pcall(vim.api.nvim_get_autocmds, { group = "noice_lsp_progress" })
-    if ok and #group > 0 then
-      vim.api.nvim_clear_autocmds({
-        group = "noice_lsp_progress",
-        event = "LspProgress",
-        pattern = "*",
-      })
-    end
-  end,
-})
+-- vim.api.nvim_create_autocmd("FileType", {
+--   pattern = { "cs" },
+--   callback = function()
+--     local ok, group = pcall(vim.api.nvim_get_autocmds, { group = "noice_lsp_progress" })
+--     if ok and #group > 0 then
+--       vim.api.nvim_clear_autocmds({
+--         group = "noice_lsp_progress",
+--         event = "LspProgress",
+--         pattern = "*",
+--       })
+--     end
+--   end,
+-- })
 
 -- FIX: statusline diagnostics missing on idle buffer open
 vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
