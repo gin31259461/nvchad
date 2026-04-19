@@ -567,6 +567,12 @@ local function setup_keymaps()
   -- C-l: toggle focus between input and output
   km({ "n", "i" }, "<C-l>", focus_output, S.input_buf)
   km("n", "<C-l>", unfocus_output, S.output_buf)
+
+  -- Disable C-h on all panels so the global "switch window left" doesn't fire
+  local noop = function() end
+  for _, buf in ipairs { S.input_buf, S.list_buf, S.output_buf } do
+    km({ "n", "i" }, "<C-h>", noop, buf)
+  end
 end
 
 -- ── autocmds ─────────────────────────────────────────────────────────────────
