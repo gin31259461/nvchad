@@ -187,6 +187,8 @@ end
 
 -- ── nuget source helpers ──────────────────────────────────────────────────────
 
+local NUGET_DISABLED = { Disabled = true, ["已停用"] = true, ["已禁用"] = true }
+
 ---Parse the output of `dotnet nuget list source` into source records.
 ---Output format:
 ---   Registered Sources:
@@ -194,8 +196,6 @@ end
 ---         https://api.nuget.org/v3/index.json
 ---@param lines string[]
 ---@return {name: string, url: string, enabled: boolean}[]
-local NUGET_DISABLED = { Disabled = true, ["已停用"] = true, ["已禁用"] = true }
-
 local function parse_nuget_sources(lines)
   local sources = {}
   local i = 1
