@@ -8,7 +8,7 @@
   "cmp-nvim-lua": { "branch": "main", "commit": "e3a22cb071eb9d6508a156306b102c45cd2d573d" },
   "cmp-path": { "branch": "main", "commit": "c642487086dbd9a93160e1679a1327be111cbc25" },
   "cmp_luasnip": { "branch": "master", "commit": "98d9cb5c2c38532bd9bdb481067b20fea8f32e90" },
-  "comet.nvim": { "branch": "main", "commit": "28ae222e30a1488896803e3c73213a35452d7ae1" },
+  "comet.nvim": { "branch": "main", "commit": "0f534c55c0de4b459fafb3153208242f8d74f9c1" },
   "conform.nvim": { "branch": "master", "commit": "086a40dc7ed8242c03be9f47fbcee68699cc2395" },
   "copilot.lua": { "branch": "master", "commit": "aeca454727486d488a6ecbcde30db72e741e3524" },
   "dotnet-cli.nvim": { "branch": "main", "commit": "04108beafa0fd48fc89a1b7d4af6252ecff97837" },
