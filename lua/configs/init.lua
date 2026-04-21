@@ -93,6 +93,7 @@ M.ignore_msgs = {
   notify = {
     "man.lua",
     "roslyn: %-32000",
+    "roslyn: %-30099",
   },
 }
 
