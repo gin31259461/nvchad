@@ -2,6 +2,9 @@
 -- this dap config refer to: https://codeberg.org/mfussenegter/nvim-dap/wiki/Debug-Adapter-installation#user-content-dotnet
 
 local os_utils = require("utils.os")
+local dotnet_job = require("dotnet-cli").job
+local dotnet_project = require("dotnet-cli").project
+local dotnet_cmd_build = require("dotnet-cli.commands.build")
 
 local function pick_dll()
   return vim.fn.input("Path to dll: ", vim.fn.getcwd() .. "/bin/Debug/", "file")
@@ -29,8 +32,17 @@ end
 return {
   adapters = {
     coreclr = function(callback, config)
+      if config.request == "attach" then
+        callback({
+          type = "executable",
+          command = executable,
+          args = { "--interpreter=vscode" },
+        })
+        return
+      end
+
       vim.notify("Building project", vim.log.levels.INFO, { title = "Dotnet" })
-      local build_cmd = require("dotnet-cli").get_build_cmd()
+      local build_cmd = dotnet_cmd_build.get_cmd(dotnet_project.get_csproj_files()[1], "Debug")
 
       vim.fn.jobstart(build_cmd, {
         -- refer to nvim doc: https://neovim.io/doc/user/job_control.html#on_exit
@@ -55,7 +67,7 @@ return {
     cs = {
       {
         type = "coreclr",
-        name = "launch .net core app (auto choose dll)",
+        name = "Launch .NET Core App (auto choose dll)",
         request = "launch",
         program = get_dotnet_project_name,
         cwd = vim.fn.getcwd(),
@@ -63,13 +75,13 @@ return {
         stopAtEntry = false,
         env = {
           ASPNETCORE_ENVIRONMENT = "Development",
-          ASPNETCORE_URLS = "http://localhost:5000;http://localhost:5001",
+          ASPNETCORE_URLS = "http://localhost:7055;http://localhost:5056",
         },
       },
 
       {
         type = "coreclr",
-        name = "launch .net core app (choose dll)",
+        name = "Launch .NET Core App (choose dll)",
         request = "launch",
         program = pick_dll,
         cwd = vim.fn.getcwd(),
@@ -77,8 +89,20 @@ return {
         stopAtEntry = false,
         env = {
           ASPNETCORE_ENVIRONMENT = "Development",
-          ASPNETCORE_URLS = "http://localhost:5000;http://localhost:5001",
+          ASPNETCORE_URLS = "http://localhost:7055;http://localhost:5056",
         },
+      },
+
+      {
+        type = "coreclr",
+        name = "Auto Attach to .NET Core Process",
+        request = "attach",
+        processId = function()
+          local pid = dotnet_job.get_netcore_pid(dotnet_project.get_current_running_project_name())
+
+          vim.notify("Attaching to process with PID: " .. pid, vim.log.levels.INFO, { title = "Dotnet" })
+          return pid
+        end,
       },
     },
   },

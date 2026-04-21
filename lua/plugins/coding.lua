@@ -194,6 +194,7 @@ return {
 
             { path = "snacks.nvim", words = { "snacks", "snacks.nvim" } },
             { path = "noice.nvim", words = { "noice", "noice.nvim" } },
+            { path = "comet.nvim", words = { "Comet", "comet.nvim" } },
             { path = "wezterm-types", mods = { "wezterm", "module.wezterm" } },
           },
         },
