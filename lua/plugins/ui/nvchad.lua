@@ -2,7 +2,7 @@
 return {
   {
     "nvchad/ui",
-    cond = false, -- replaced by gin31259461/nvchad-ui fork
+    cond = false, -- replaced by Orbit-Lua/nvchad-ui fork
     lazy = false,
     config = function()
       require("nvchad")
@@ -10,7 +10,7 @@ return {
   },
 
   {
-    "gin31259461/nvchad-ui",
+    "Orbit-Lua/nvchad-ui",
     lazy = false,
     config = function()
       require("nvchad")
