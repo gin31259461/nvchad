@@ -84,7 +84,7 @@ map("x", "<", "<gv", { desc = "indent backward and stay in visual mode" })
 map("x", ">", ">gv", { desc = "indent forward and stay in visual mode" })
 map("x", "J", ":move '>+1<CR>gv-gv", { desc = "move selected block up and stay in visual mode" })
 map("x", "K", ":move '<-2<CR>gv-gv", { desc = "move selected block down and stay in visual mode" })
-map("x", "p", 'P', { desc = "dont copy replaced text" })
+map("x", "p", "P", { desc = "dont copy replaced text" })
 map("n", "<Esc>", "<cmd>noh<CR>", { desc = "general clear highlights" })
 map("i", "jk", "<ESC>")
 
@@ -109,6 +109,7 @@ map("n", "<leader>ch", "<cmd>NvCheatsheet<CR>", { desc = "toggle nvcheatsheet" }
 
 -------------------- dotnet --------------------
 map("n", "<leader>dp", "<cmd>DotnetManager<CR>", { desc = "open dotnet manager" })
+map("n", "<leader>db", "<cmd>SqlSynapse<CR>", { desc = "open sql synapse" })
 
 map("n", "<leader>th", function()
   require("nvchad.themes").open()

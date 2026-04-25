@@ -71,7 +71,12 @@ local pkgs_with_lsp_setup = {
   tombi = "tombi",
   jsonls = "json-lsp",
   lua_ls = "lua-language-server",
-  sqls = "sqls",
+
+  -- TEST: forge-sql-ls
+  -- sqls = "sqls",
+  forge_sql_ls = "forge-sql-ls",
+
+  -- kk
   gopls = "gopls",
 
   -- also need install bundle from: https://github.com/PowerShell/PowerShellEditorServices

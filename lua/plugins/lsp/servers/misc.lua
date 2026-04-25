@@ -21,5 +21,12 @@ return {
 
     -- copilot.lua only works with its own copilot lsp server
     copilot = { enabled = false },
+
+    -- TEST: forge-sql-ls
+    forge_sql_ls = {
+      cmd = { "forge-sql-ls" },
+      filetypes = { "sql" },
+      single_file_support = true,
+    },
   },
 }

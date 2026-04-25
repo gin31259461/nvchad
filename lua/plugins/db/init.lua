@@ -115,4 +115,11 @@ return {
       },
     },
   },
+
+  -- TEST: sql-synapse.nvim
+  {
+    dir = require("utils.fs").data_path .. "/lazy/sql-synapse.nvim",
+    cmd = { "SqlSynapse" },
+    opts = {},
+  },
 }

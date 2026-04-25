@@ -78,7 +78,7 @@ return {
             border = "single",
             -- HACK: mirror the doc window dimensions set in utils.ui
             size = {
-              max_width  = select(1, ui.get_doc_window_size()),
+              max_width = select(1, ui.get_doc_window_size()),
               max_height = select(2, ui.get_doc_window_size()),
             },
           },
@@ -98,7 +98,7 @@ return {
             border = "single",
             -- HACK
             size = {
-              max_width  = select(1, ui.get_doc_window_size()),
+              max_width = select(1, ui.get_doc_window_size()),
               max_height = select(2, ui.get_doc_window_size()),
             },
           },
@@ -106,6 +106,11 @@ return {
 
         progress = {
           enabled = true,
+        },
+
+        -- FIX: turn of this because it blocks many important messages from language servers ["window/showMessage"]
+        message = {
+          enabled = false,
         },
       },
 
@@ -122,7 +127,7 @@ return {
         popup = {
           win_options = {
             winhighlight = {
-              Normal      = "CmpPmenu",
+              Normal = "CmpPmenu",
               FloatBorder = "CmpBorder",
             },
           },
