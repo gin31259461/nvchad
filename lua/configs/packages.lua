@@ -25,7 +25,8 @@ M.treesitter_ensure_installed = {
   "regex",
 }
 
-M.lsp_servers = {}
+-- NOTE: forge_sql_ls is not in mason registry, need to install it manually
+M.lsp_servers = { "forge_sql_ls" }
 M.mason_ensure_installed = {}
 
 ---@type table<string, string> --- lsp_config_name, package_name_in_mason
@@ -71,12 +72,6 @@ local pkgs_with_lsp_setup = {
   tombi = "tombi",
   jsonls = "json-lsp",
   lua_ls = "lua-language-server",
-
-  -- TEST: forge-sql-ls
-  -- sqls = "sqls",
-  forge_sql_ls = "forge-sql-ls",
-
-  -- kk
   gopls = "gopls",
 
   -- also need install bundle from: https://github.com/PowerShell/PowerShellEditorServices

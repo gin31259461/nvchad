@@ -109,7 +109,6 @@ map("n", "<leader>ch", "<cmd>NvCheatsheet<CR>", { desc = "toggle nvcheatsheet" }
 
 -------------------- dotnet --------------------
 map("n", "<leader>dp", "<cmd>DotnetManager<CR>", { desc = "open dotnet manager" })
-map("n", "<leader>db", "<cmd>SqlSynapse<CR>", { desc = "open sql synapse" })
 
 map("n", "<leader>th", function()
   require("nvchad.themes").open()
