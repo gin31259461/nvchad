@@ -27,7 +27,7 @@ return {
     ---@diagnostic disable-next-line
     opts = {
       install_dir = vim.fn.stdpath("data") .. "/site",
-      ensure_installed = require("configs.packages").treesitter_ensure_installed,
+      ensure_installed = require("config.packages").treesitter_ensure_installed,
     },
   },
 
@@ -202,7 +202,7 @@ return {
     },
 
     opts = function()
-      return require("configs.cmp")
+      return require("config.cmp")
     end,
 
     main = "utils.cmp",

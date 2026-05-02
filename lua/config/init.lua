@@ -1,6 +1,6 @@
 local M = {}
 
-M.packages = require("configs.packages")
+M.packages = require("config.packages")
 
 M.icons = {
   misc = {

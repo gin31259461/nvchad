@@ -95,7 +95,7 @@ Commit it to pin versions.
 
 ## Mason Package Registration
 
-Tools installed via Mason are listed in `lua/configs/packages.lua`:
+Tools installed via Mason are listed in `lua/config/packages.lua`:
 
 ```lua
 return {

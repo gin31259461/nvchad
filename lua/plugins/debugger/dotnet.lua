@@ -25,7 +25,10 @@ local executable = "netcoredbg"
 if os_utils.is_win() then
   -- FIX: The netcoredbg executable must have the .exe extension on Windows, not .cmd
   -- this path will not work because it's .cmd: vim.fn.exepath("netcoredbg")
-  executable = vim.fn.stdpath("data") .. "/mason/packages/netcoredbg/netcoredbg/" .. executable .. ".exe"
+  executable = vim.fn.stdpath("data")
+    .. "/mason/packages/netcoredbg/netcoredbg/"
+    .. executable
+    .. ".exe"
 end
 
 ---@type Dap.Module
@@ -100,7 +103,11 @@ return {
         processId = function()
           local pid = dotnet_job.get_netcore_pid(dotnet_project.get_current_running_project_name())
 
-          vim.notify("Attaching to process with PID: " .. pid, vim.log.levels.INFO, { title = "Dotnet" })
+          vim.notify(
+            "Attaching to process with PID: " .. pid,
+            vim.log.levels.INFO,
+            { title = "Dotnet" }
+          )
           return pid
         end,
       },

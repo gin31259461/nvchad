@@ -1,6 +1,6 @@
 dofile(vim.g.base46_cache .. "mason")
 
-local configs = require("configs")
+local configs = require("config")
 local utils_lsp = require("utils.lsp")
 
 ---@type LazySpec[]
@@ -94,7 +94,10 @@ local plugins = {
         end
       end
 
-      if type(opts.diagnostics.virtual_text) == "table" and opts.diagnostics.virtual_text.prefix == "icons" then
+      if
+        type(opts.diagnostics.virtual_text) == "table"
+        and opts.diagnostics.virtual_text.prefix == "icons"
+      then
         opts.diagnostics.virtual_text.prefix = vim.fn.has("nvim-0.10.0") == 0 and "●"
           or function(diagnostic)
             local icons = configs.icons.diagnostics

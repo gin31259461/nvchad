@@ -5,7 +5,7 @@ if not ok then
   vim.notify("[theme] " .. tostring(err), vim.log.levels.WARN)
 end
 
-local configs = require("configs")
+local config = require("config")
 local ui = require("utils.ui")
 local utils_cmp = require("utils.cmp")
 
@@ -92,7 +92,7 @@ local options = {
   formatting = {
     fields = { "kind", "abbr", "menu" },
     format = function(entry, item)
-      local icons = configs.icons.kinds
+      local icons = config.icons.kinds
       local max_width = select(1, ui.get_completion_window_size())
       if icons[item.kind] then
         -- with text

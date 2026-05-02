@@ -86,7 +86,13 @@ function M.get()
       mode = { "n", "v" },
       has = "codeAction",
     },
-    { "<leader>cC", vim.lsp.codelens.run, desc = "Run Codelens", mode = { "n", "v" }, has = "codeLens" },
+    {
+      "<leader>cC",
+      vim.lsp.codelens.run,
+      desc = "Run Codelens",
+      mode = { "n", "v" },
+      has = "codeLens",
+    },
     {
       "<leader>cc",
       function()
@@ -96,7 +102,13 @@ function M.get()
       mode = { "n" },
       has = "codeLens",
     },
-    { "<leader>ci", utils_lsp.toggle_inlay_hints, desc = "Toggle Inlay Hints", mode = { "n" }, has = "inlayHint" },
+    {
+      "<leader>ci",
+      utils_lsp.toggle_inlay_hints,
+      desc = "Toggle Inlay Hints",
+      mode = { "n" },
+      has = "inlayHint",
+    },
     {
       "<leader>cR",
       function()

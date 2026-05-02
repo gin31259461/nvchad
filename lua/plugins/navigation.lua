@@ -1,11 +1,13 @@
 local ok, err = pcall(function()
   dofile(vim.g.base46_cache .. "telescope")
 end)
-if not ok then vim.notify("[theme] " .. tostring(err), vim.log.levels.WARN) end
+if not ok then
+  vim.notify("[theme] " .. tostring(err), vim.log.levels.WARN)
+end
 
 local fs = require("utils.fs")
 local ui = require("utils.ui")
-local icons = require("configs").icons
+local icons = require("config").icons
 
 ---@type LazySpec[]
 return {
@@ -325,7 +327,10 @@ return {
             context = {
               row = pos[1],
               col = pos[2],
-              short_path = fs.pretty_path(value, { length = ui.harpoon.short_path_length, only_cwd = true }),
+              short_path = fs.pretty_path(
+                value,
+                { length = ui.harpoon.short_path_length, only_cwd = true }
+              ),
             },
           }
         end,

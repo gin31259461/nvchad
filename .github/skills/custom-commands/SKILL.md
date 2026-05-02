@@ -140,7 +140,7 @@ plugin.
 - **Stream output** — set `stdout_buffered = false` and pipe chunks via
   `ctx.write(data)` for a live-updating experience.
 - **Icons** — use Nerd Font icons directly in cmds/ files. Reference
-  `configs.icons` only when the icon is shared across multiple modules.
+  `config.icons` only when the icon is shared across multiple modules.
 - **Notifications** — use `vim.notify(msg, level, { title = M.title })` for
   headless commands.
 - **Error status** — print ✓ / ✗ lines to ctx so the output highlight patterns

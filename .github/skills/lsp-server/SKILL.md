@@ -35,7 +35,7 @@ lua/plugins/lsp/
 
 ### Step 1 — Register the package
 
-In `lua/configs/packages.lua`, add the server to `pkgs_with_lsp_setup`:
+In `lua/config/packages.lua`, add the server to `pkgs_with_lsp_setup`:
 
 ```lua
 pkgs_with_lsp_setup = {

@@ -9,7 +9,6 @@
 -- 4. Handlers
 --  - ex. textDocument/hover
 
-
 local M = {}
 
 ---@alias lsp.Client.filter {id?: number, bufnr?: number, name?: string, method?: string, filter?:fun(client: lsp.Client.filter):boolean}

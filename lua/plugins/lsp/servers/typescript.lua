@@ -63,10 +63,14 @@ return {
           end,
           desc = "File References",
         },
-        { "<leader>co", lsp.action["source.organizeImports"],        desc = "Organize Imports" },
-        { "<leader>cM", lsp.action["source.addMissingImports.ts"],   desc = "Add missing imports" },
-        { "<leader>cu", lsp.action["source.removeUnused.ts"],        desc = "Remove unused imports" },
-        { "<leader>cD", lsp.action["source.fixAll.ts"],              desc = "Fix all diagnostics" },
+        { "<leader>co", lsp.action["source.organizeImports"], desc = "Organize Imports" },
+        { "<leader>cM", lsp.action["source.addMissingImports.ts"], desc = "Add missing imports" },
+        {
+          "<leader>cu",
+          lsp.action["source.removeUnused.ts"],
+          desc = "Remove unused imports",
+        },
+        { "<leader>cD", lsp.action["source.fixAll.ts"], desc = "Fix all diagnostics" },
         {
           "<leader>cV",
           function()

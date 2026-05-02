@@ -295,7 +295,7 @@ init.lua
    `vim.keymap.set`, `vim.diagnostic`, etc.
 3. **Use `pcall` around optional dependencies** — the config must not crash if a
    plugin is disabled.
-4. **Icons come from `configs.icons`** — do not hardcode icon strings in plugin
+4. **Icons come from `config.icons`** — do not hardcode icon strings in plugin
    specs; reference the central table instead (Nerd Font icons are acceptable in
    cmds/ and utils/ UI code).
 5. **Cross-platform paths** — use `vim.fn.stdpath()`, `vim.uv.fs_stat()`, and
@@ -310,3 +310,4 @@ init.lua
 - Use lowercase imperative subject lines: `fix:`, `add`, `update`, `scripts:`
 - **Never include co-authored-by trailers**
 - After every task: automatically commit — do not wait to be asked
+

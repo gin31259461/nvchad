@@ -80,7 +80,8 @@ function M.auto_brackets(entry)
   local item = entry.completion_item
   if vim.tbl_contains({ Kind.Function, Kind.Method }, item.kind) then
     local cursor = vim.api.nvim_win_get_cursor(0)
-    local prev_char = vim.api.nvim_buf_get_text(0, cursor[1] - 1, cursor[2], cursor[1] - 1, cursor[2] + 1, {})[1]
+    local prev_char =
+      vim.api.nvim_buf_get_text(0, cursor[1] - 1, cursor[2], cursor[1] - 1, cursor[2] + 1, {})[1]
     if prev_char ~= "(" and prev_char ~= ")" then
       local keys = vim.api.nvim_replace_termcodes("()<left>", false, false, true)
       vim.api.nvim_feedkeys(keys, "i", true)
@@ -101,7 +102,11 @@ function M.add_missing_snippet_docs(window)
       if not item.documentation and item.insertText then
         item.documentation = {
           kind = cmp.lsp.MarkupKind.Markdown,
-          value = string.format("```%s\n%s\n```", vim.bo.filetype, M.snippet_preview(item.insertText)),
+          value = string.format(
+            "```%s\n%s\n```",
+            vim.bo.filetype,
+            M.snippet_preview(item.insertText)
+          ),
         }
       end
     end

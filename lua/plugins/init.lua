@@ -5,7 +5,7 @@ if not ok then
   vim.notify("[theme] " .. tostring(err), vim.log.levels.WARN)
 end
 
-local configs = require("configs")
+local configs = require("config")
 
 ---@type LazySpec[]
 return {

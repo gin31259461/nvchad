@@ -129,10 +129,22 @@ M.setup_diagnostic = function()
   }
 
   local hl = {
-    DiagnosticVirtualTextError = { bg = color_tool.mix(colors.red, colors.black, 75), fg = colors.red },
-    DiagnosticVirtualTextWarn = { bg = color_tool.mix(colors.yellow, colors.black, 75), fg = colors.yellow },
-    DiagnosticVirtualTextInfo = { bg = color_tool.mix(colors.green, colors.black, 75), fg = colors.green },
-    DiagnosticVirtualTextHint = { bg = color_tool.mix(colors.purple, colors.black, 75), fg = colors.purple },
+    DiagnosticVirtualTextError = {
+      bg = color_tool.mix(colors.red, colors.black, 75),
+      fg = colors.red,
+    },
+    DiagnosticVirtualTextWarn = {
+      bg = color_tool.mix(colors.yellow, colors.black, 75),
+      fg = colors.yellow,
+    },
+    DiagnosticVirtualTextInfo = {
+      bg = color_tool.mix(colors.green, colors.black, 75),
+      fg = colors.green,
+    },
+    DiagnosticVirtualTextHint = {
+      bg = color_tool.mix(colors.purple, colors.black, 75),
+      fg = colors.purple,
+    },
   }
 
   all_underline_hl = vim.tbl_deep_extend("force", all_underline_hl, underline_hl)

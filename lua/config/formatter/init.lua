@@ -40,7 +40,7 @@ return {
           end
         end
 
-        local config_path = fs.config_path .. "/lua/configs/db/template/sqlfluff.cfg"
+        local config_path = fs.config_path .. "/lua/config/db/template/sqlfluff.cfg"
         return { "format", "--config", config_path, "-" }
       end,
       stdin = true,

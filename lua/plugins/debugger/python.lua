@@ -23,7 +23,10 @@ return {
         end
 
         if debugpy_exists() == 0 then
-          vim.notify("debugpy not found in venv, please install debugpy in venv", vim.log.levels.WARN)
+          vim.notify(
+            "debugpy not found in venv, please install debugpy in venv",
+            vim.log.levels.WARN
+          )
           return
         end
 

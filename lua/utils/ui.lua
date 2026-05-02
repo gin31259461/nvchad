@@ -5,7 +5,7 @@ local hl = require("utils.hl")
 
 local CONFIG = {
   completion = { max_w = 60, max_h = 15, pct_w = 0.4, pct_h = 0.3 },
-  doc        = { max_w = 80, max_h = 20, pct_w = 0.5, pct_h = 0.4 },
+  doc = { max_w = 80, max_h = 20, pct_w = 0.5, pct_h = 0.4 },
 }
 
 M.harpoon = {}
@@ -31,7 +31,8 @@ end
 ---@return string statusline segment with neo-tree offset padding, or empty string
 M.tree_offset = function()
   local w = M.get_neo_tree_width()
-  return w == 0 and "" or "%#NeoTreeNormal#" .. string.rep(" ", w) .. "%#NeoTreeWinSeparator#" .. "│"
+  return w == 0 and ""
+    or "%#NeoTreeNormal#" .. string.rep(" ", w) .. "%#NeoTreeWinSeparator#" .. "│"
 end
 
 M.harpoon.short_path_length = 8
@@ -67,10 +68,16 @@ M.harpoon.highlight_current_file = function()
           -- highlight the harpoon menu line that corresponds to the current buffer
           local line = vim.api.nvim_buf_get_lines(cx.bufnr, line_number - 1, line_number, false)[1]
 
-          vim.api.nvim_buf_set_extmark(cx.bufnr, vim.api.nvim_create_namespace("harpoon"), line_number - 1, 2, {
-            end_col = #line,
-            hl_group = hl.util.get_hl_name_without_syntax(hl.statusline.active_context),
-          })
+          vim.api.nvim_buf_set_extmark(
+            cx.bufnr,
+            vim.api.nvim_create_namespace("harpoon"),
+            line_number - 1,
+            2,
+            {
+              end_col = #line,
+              hl_group = hl.util.get_hl_name_without_syntax(hl.statusline.active_context),
+            }
+          )
           -- set the position of the cursor in the harpoon menu to the start of the current buffer line
           vim.api.nvim_win_set_cursor(cx.win_id, { line_number, 0 })
         end
@@ -133,15 +140,17 @@ end
 
 ---@return integer, integer
 function M.get_completion_window_size()
-  local max_width  = math.min(CONFIG.completion.max_w, math.floor(vim.o.columns * CONFIG.completion.pct_w))
-  local max_height = math.min(CONFIG.completion.max_h, math.floor(vim.o.lines   * CONFIG.completion.pct_h))
+  local max_width =
+    math.min(CONFIG.completion.max_w, math.floor(vim.o.columns * CONFIG.completion.pct_w))
+  local max_height =
+    math.min(CONFIG.completion.max_h, math.floor(vim.o.lines * CONFIG.completion.pct_h))
   return max_width, max_height
 end
 
 ---@return integer, integer
 function M.get_doc_window_size()
-  local max_width  = math.min(CONFIG.doc.max_w, math.floor(vim.o.columns * CONFIG.doc.pct_w))
-  local max_height = math.min(CONFIG.doc.max_h, math.floor(vim.o.lines   * CONFIG.doc.pct_h))
+  local max_width = math.min(CONFIG.doc.max_w, math.floor(vim.o.columns * CONFIG.doc.pct_w))
+  local max_height = math.min(CONFIG.doc.max_h, math.floor(vim.o.lines * CONFIG.doc.pct_h))
   return max_width, max_height
 end
 

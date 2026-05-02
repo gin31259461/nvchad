@@ -10,14 +10,18 @@ if not ok then
   vim.notify("[theme] " .. tostring(err), vim.log.levels.WARN)
 end
 
-local configs = require("configs")
+local configs = require("config")
 local lspconfig_opts = require("plugins.lsp.config")
 local servers = lspconfig_opts.servers
 local setup = lspconfig_opts.setup
 
 -- copy typescript settings to javascript
-servers["vtsls"].settings.javascript =
-  vim.tbl_deep_extend("force", {}, servers["vtsls"].settings.typescript, servers["vtsls"].settings.javascript or {})
+servers["vtsls"].settings.javascript = vim.tbl_deep_extend(
+  "force",
+  {},
+  servers["vtsls"].settings.typescript,
+  servers["vtsls"].settings.javascript or {}
+)
 
 ---@type vim.lsp.Config
 local default_lsp_config = {
@@ -49,7 +53,7 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = function(err, result, ctx,
     local filtered_diagnostics = {}
     for _, diagnostic in ipairs(result.diagnostics) do
       local should_keep = true
-      for _, msg in ipairs(require("configs").ignore_msgs.lsp) do
+      for _, msg in ipairs(require("config").ignore_msgs.lsp) do
         if diagnostic.message:find(msg) then
           should_keep = false
           break

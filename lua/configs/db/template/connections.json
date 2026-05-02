@@ -1,6 +1,0 @@
-[
-  {
-    "url": "sqlserver://xx.xx.xx.xxx;database=xx;user=xx;password=xx;trustServerCertificate=true;driver={ODBC Driver 16 for SQL Server};",
-    "name": "xx"
-  }
-]

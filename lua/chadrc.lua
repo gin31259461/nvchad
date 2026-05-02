@@ -2,7 +2,7 @@
 
 local statusline = require("utils.statusline")
 local hl = require("utils.hl")
-local configs = require("configs")
+local config = require("config")
 
 -- https://github.com/NvChad/ui/blob/v2.5/lua/nvconfig.lua
 ---@type ChadrcConfig
@@ -80,13 +80,21 @@ M.base46 = {
 
 M.nvdash = {
   load_on_startup = false,
-  header = require("configs.header").phantom,
+  header = require("config.header").phantom,
   buttons = {
-    { txt = "  Explorer", keys = "e", cmd = ":Neotree action=focus position=float source=filesystem" },
+    {
+      txt = "  Explorer",
+      keys = "e",
+      cmd = ":Neotree action=focus position=float source=filesystem",
+    },
     { txt = "  Find File", keys = "f", cmd = ":lua Snacks.picker.files()" },
     { txt = "  Recent Files", keys = "o", cmd = ":lua Snacks.picker.recent()" },
     { txt = "  Projects", keys = "p", cmd = ":lua Snacks.picker.projects()" },
-    { txt = "  Config", keys = "c", cmd = ":lua Snacks.picker.files { cwd = vim.fn.stdpath 'config' }" },
+    {
+      txt = "  Config",
+      keys = "c",
+      cmd = ":lua Snacks.picker.files { cwd = vim.fn.stdpath 'config' }",
+    },
     { txt = "󱥚  Themes", keys = "th", cmd = ":lua require('nvchad.themes').open()" },
     -- { txt = "  Mappings", keys = "ch", cmd = "NvCheatsheet" },
     { txt = "─", hl = "NvDashFooter", no_gap = true, rep = true },
@@ -169,7 +177,7 @@ M.ui = {
 }
 
 M.mason = {
-  pkgs = configs.packages.mason_ensure_installed,
+  pkgs = config.packages.mason_ensure_installed,
 }
 
 return M

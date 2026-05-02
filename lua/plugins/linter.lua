@@ -5,7 +5,7 @@ return {
     event = { "BufReadPost", "BufWritePost", "BufNewFile" },
     opts = function()
       vim.env.ESLINT_D_PPID = vim.fn.getpid()
-      return require("configs.linter")
+      return require("config.linter")
     end,
     config = function(_, opts)
       local lint = require("lint")
@@ -13,7 +13,8 @@ return {
       for linter_name, linter in pairs(opts.linters) do
         if type(linter) == "table" and type(lint.linters[linter_name]) == "table" then
           ---@diagnostic disable-next-line
-          lint.linters[linter_name] = vim.tbl_deep_extend("force", lint.linters[linter_name], linter)
+          lint.linters[linter_name] =
+            vim.tbl_deep_extend("force", lint.linters[linter_name], linter)
           if type(linter.prepend_args) == "table" then
             lint.linters[linter_name].args = lint.linters[linter_name].args or {}
             vim.list_extend(lint.linters[linter_name].args, linter.prepend_args)
@@ -65,7 +66,8 @@ return {
           if not linter then
             vim.notify("Linter not found: " .. linter_name, vim.log.levels.WARN)
           end
-          return linter and not (type(linter) == "table" and linter.condition and not linter.condition(ctx))
+          return linter
+            and not (type(linter) == "table" and linter.condition and not linter.condition(ctx))
         end, linter_names)
 
         -- Run linters.
