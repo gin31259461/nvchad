@@ -117,7 +117,6 @@ Managed via [mason.nvim](https://github.com/williamboman/mason.nvim) + [nvim-lsp
 | Bash | `bashls` |
 | PowerShell | `powershell_es` (requires PSES at `C:/PSES`) |
 | Prisma | `prismals` |
-| SQL | `sqls` |
 | Docker | `dockerls`, `docker_compose_language_service` |
 | JSON | `jsonls` |
 | Markdown | `marksman` |
