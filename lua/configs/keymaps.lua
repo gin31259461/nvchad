@@ -87,6 +87,8 @@ map("x", "K", ":move '<-2<CR>gv-gv", { desc = "move selected block down and stay
 map("x", "p", "P", { desc = "dont copy replaced text" })
 map("n", "<Esc>", "<cmd>noh<CR>", { desc = "general clear highlights" })
 map("i", "jk", "<ESC>")
+map("n", "<leader>q", "q", { desc = "Record Macro" })
+map("n", "q", "<Nop>", { silent = true })
 
 -------------------- comment --------------------
 map("n", "<leader>/", "gcc", { desc = "toggle comment", remap = true })
