@@ -5,26 +5,14 @@ local str = require("utils.str")
 return {
   {
     {
-      "Orbit-Lua/forge-sql-ui.nvim",
-      ft = ft.sql_ft,
-      dependencies = {
-        "Orbit-Lua/comet.nvim",
-        {
-          "Orbit-Lua/forge-sql-ls",
-          cond = function()
-            return vim.fn.executable("go") == 1
-          end,
-          build = { "go build -o ./bin/forge-sql-ls ./cmd/forge-sql-ls" },
-        },
+      "Kurren123/mssql.nvim",
+      lazy = false,
+      opts = {
+        -- optional
+        keymap_prefix = "<leader>m",
       },
-      keys = {
-        {
-          "<leader>db",
-          "<cmd>ForgeSQLUI<CR>",
-          desc = "SQL UI",
-        },
-      },
-      opts = {},
+      -- optional
+      dependencies = { "folke/which-key.nvim" },
     },
   },
 }

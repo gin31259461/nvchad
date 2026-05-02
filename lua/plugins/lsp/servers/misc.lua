@@ -21,11 +21,5 @@ return {
 
     -- copilot.lua only works with its own copilot lsp server
     copilot = { enabled = false },
-
-    forge_sql_ls = {
-      cmd = { require("utils.fs").data_path .. "/lazy/forge-sql-ls/bin/forge-sql-ls" },
-      filetypes = { "sql" },
-      single_file_support = true,
-    },
   },
 }
