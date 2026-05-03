@@ -34,7 +34,6 @@ return {
           { pane = 2, section = "keys", gap = 1, padding = 1 },
           {
             pane = 2,
-            icon = " ",
             title = "Recent Files",
             section = "recent_files",
             indent = 2,
@@ -42,7 +41,6 @@ return {
           },
           {
             pane = 2,
-            icon = " ",
             title = "Projects",
             section = "projects",
             indent = 2,

@@ -102,13 +102,19 @@ end
 ---@return string
 M.current_lsp = function()
   if rawget(vim, "lsp") then
+    local lsp_ctx = hl.statusline.active_context
+    local margin_left = " "
+
     for _, client in ipairs(vim.lsp.get_clients()) do
       if client.attached_buffers[M.stbufnr()] then
-        return hl.statusline.active_context
-          .. ((vim.o.columns > 100 and "   LSP ~ " .. client.name .. " ") or "   LSP ")
-        -- return hl .. "   LSP "
+        if client.name == "copilot" then
+          lsp_ctx = lsp_ctx .. " "
+        end
+        -- ((vim.o.columns > 100 and "   LSP ~ " .. client.name .. " ") or "   LSP ")
       end
     end
+
+    return lsp_ctx .. margin_left
   end
 
   return ""
@@ -138,8 +144,9 @@ M.git = function()
   local removed = (git_status.removed and git_status.removed ~= 0)
       and ("  " .. git_status.removed)
     or ""
-  -- local branch_name = " " .. git_status.head
-  local branch_name = " "
+
+  local branch_name = " " .. git_status.head
+  -- local branch_name = " "
 
   return " " .. branch_name .. added .. changed .. removed
 end
