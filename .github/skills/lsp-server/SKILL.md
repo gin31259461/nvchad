@@ -18,7 +18,9 @@ lua/plugins/lsp/
 │   └── misc.lua        ← catch-all for simpler servers
 ├── config.lua          ← merges base + all server modules → Lsp.Config.Spec
 ├── setup.lua           ← iterates config, calls lspconfig/setup
-└── keymaps.lua         ← capability-aware LSP keymaps
+├── keymaps.lua         ← capability-aware LSP keymaps
+├── diagnostics.lua     ← configure signs/virtual-text + filter middleware
+└── features.lua        ← inlay hints + code lens activation (nvim ≥ 0.10)
 ```
 
 ### Data flow
@@ -30,6 +32,13 @@ lua/plugins/lsp/
    (or defers to `spec.setup[name]()` for custom setups like roslyn.nvim).
 4. `keymaps.lua` is called from `on_attach` and only registers keymaps for
    capabilities the server actually supports.
+5. `diagnostics.lua:configure(opts)` applies sign definitions, virtual-text icon
+   resolution, and commits `vim.diagnostic.config()`.
+6. `diagnostics.lua:install_filter_middleware()` installs a handler on
+   `textDocument/publishDiagnostics` that drops diagnostics matching patterns in
+   `config.ignore_msgs.lsp`.
+7. `features.lua:activate(opts)` enables inlay hints and code lens via
+   capability-aware `on_supports_method` hooks (no-ops on Neovim < 0.10).
 
 ## Adding a New LSP Server
 
@@ -136,6 +145,7 @@ local server_modules = {
 - **Capability-aware keymaps** — `keymaps.lua` checks
   `client:supports_method(...)` before registering. This avoids dead keymaps for
   servers that don't support certain LSP methods.
-- **Diagnostic filtering** — `utils/lsp.lua` provides helpers that filter out
-  noisy diagnostics ("is not accessed", "Unused local"). These are applied
-  globally via `vim.lsp.handlers`.
+- **Diagnostic filtering** — `diagnostics.lua:install_filter_middleware()`
+  installs a `textDocument/publishDiagnostics` handler override that silently
+  drops messages matching patterns in `config.ignore_msgs.lsp`. This is named
+  explicitly as middleware to communicate the GoF Middleware pattern.

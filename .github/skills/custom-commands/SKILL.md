@@ -14,11 +14,13 @@ headless user-commands and interactive UI-driven workflows.
 
 ```
 lua/cmds/
-├── dotnet.lua     ← .NET CLI commands + DotnetManager UI
-└── python.lua     ← Python-specific helpers
+├── python.lua     ← Python venv helpers + PyrightReCreateStub command
+└── system.lua     ← Platform-specific system commands (Windows: ClearShada)
 ```
 
 Each file is a self-contained module: `local M = {} ... return M`.
+All files in `lua/cmds/` are **auto-loaded** at startup by a `fs.scandir` loop
+in `init.lua` — no manual registration is needed when adding a new file.
 
 ## Anatomy of a Command Module
 
@@ -30,97 +32,79 @@ M.title = "MyDomain"   -- used in vim.notify titles
 -- ── helpers ─────────────────────────────────────────────────────────────────
 
 ---@param cmd string[]
----@param ctx DotnetUICtx
----@param on_complete? fun(ctx: DotnetUICtx)
-local function run_job(cmd, ctx, on_complete)
-  ctx.clear()
-  ctx.append("$ " .. table.concat(cmd, " "))
-  ctx.append("")
+---@param on_complete? fun(exit_code: number)
+local function run_job(cmd, on_complete)
   vim.fn.jobstart(cmd, {
-    stdout_buffered = false,
-    stderr_buffered = false,
-    on_stdout = function(_, data) ctx.write(data) end,
-    on_stderr = function(_, data) ctx.write(data) end,
-    on_exit = function(_, code)
-      ctx.append("")
-      if code == 0 then
-        ctx.append("✓  Completed successfully")
-        if on_complete then vim.schedule(function() on_complete(ctx) end) end
-      else
-        ctx.append("✗  Failed  (exit code " .. code .. ")")
+    stdout_buffered = true,
+    on_stdout = function(_, data)
+      for _, line in ipairs(data) do
+        if line ~= "" then vim.notify(line, vim.log.levels.INFO, { title = M.title }) end
       end
+    end,
+    on_exit = function(_, code)
+      if on_complete then on_complete(code) end
     end,
   })
 end
 
--- ── UI command specs ─────────────────────────────────────────────────────────
+-- ── user commands ────────────────────────────────────────────────────────────
 
-M.commands = {
-  {
-    name    = "Greet",
-    icon    = "󰊠 ",
-    icon_hl = "DiagnosticHint",
-    desc    = "say hello",
-    action  = function(ctx)
-      ctx.clear()
-      ctx.append("Hello from the command module!")
-    end,
-  },
-}
-
--- ── headless user commands ──────────────────────────────────────────────────
-
-vim.api.nvim_create_user_command("MyDomainManager", function()
-  require("utils.dotnet-ui").open(M.commands, { title = "My Domain" })
-end, { desc = "Open My Domain Manager" })
+vim.api.nvim_create_user_command("MyDomainAction", function()
+  local items = { "Option A", "Option B" }
+  vim.ui.select(items, { prompt = "Choose an action:" }, function(item)
+    if not item then return end
+    run_job({ "my-cli", item }, function(code)
+      if code == 0 then
+        vim.notify("Done!", vim.log.levels.INFO, { title = M.title })
+      else
+        vim.notify("Failed (exit " .. code .. ")", vim.log.levels.ERROR, { title = M.title })
+      end
+    end)
+  end)
+end, { desc = "Run my domain action" })
 
 return M
 ```
 
 ## Key Patterns
 
-### Selector chaining
+### Platform guards
 
-Actions can push sub-selections that chain into further sub-selections:
+Use `utils.os` helpers for platform-specific commands:
 
 ```lua
-action = function(ctx)
-  ctx.select({
-    { _raw = "Debug",   icon = "󰃤 ", icon_hl = "DiagnosticWarn", name = "Debug" },
-    { _raw = "Release", icon = "󰑊 ", icon_hl = "DiagnosticOk",   name = "Release" },
-  }, {
-    title     = "Configuration",
-    on_select = function(item, c)
-      -- item._raw is "Debug" or "Release"
-      -- c is a fresh ctx — chain another selector or run_job
-      select_project(c, function(proj, c2)
-        run_job({ "dotnet", "build", proj, "-c", item._raw }, c2)
-      end)
-    end,
-  })
+local os_utils = require("utils.os")
+
+if not os_utils.is_win() then
+  return   -- early exit: command only makes sense on Windows
 end
+
+vim.api.nvim_create_user_command("WinOnlyCmd", function()
+  -- ...
+end, { desc = "Windows-only action" })
 ```
 
 ### Auto-select when only one option
 
 ```lua
-local function select_csproj(ctx, callback)
-  local files = get_csproj_files()
-  if #files == 0 then ctx.append("No files found."); return end
-  if #files == 1 then callback(files[1], ctx); return end   -- skip UI
-  ctx.select(items, { title = "Select Project", on_select = ... })
-end
+local items = get_available_items()
+if #items == 0 then vim.notify("No items found.", vim.log.levels.WARN); return end
+if #items == 1 then process(items[1]); return end   -- skip UI when obvious
+vim.ui.select(items, { prompt = "Select:" }, process)
 ```
 
-### Headless vs UI commands
+### Headless commands with vim.ui.select
 
-- **Headless** (`DotnetBuild`, `DotnetPublish`): use `vim.ui.select` +
-  `vim.notify` for simple one-shot operations.
-- **UI** (`DotnetManager`): use `utils.dotnet-ui` for interactive multi-step
-  workflows with streaming output.
+Use `vim.ui.select` + `vim.notify` for simple one-shot interactive operations:
 
-Both styles coexist in the same file — headless commands are registered at the
-bottom with `nvim_create_user_command`.
+```lua
+vim.api.nvim_create_user_command("MyCmd", function()
+  vim.ui.select(get_choices(), { prompt = "Choose:" }, function(item)
+    if not item then return end
+    -- run action with item
+  end)
+end, { desc = "Description shown in which-key" })
+```
 
 ## Registering a Keymap
 
@@ -137,11 +121,12 @@ plugin.
 
 - **Use `vim.fn.jobstart` with list args** (not a string) to avoid shell quoting
   issues.
-- **Stream output** — set `stdout_buffered = false` and pipe chunks via
-  `ctx.write(data)` for a live-updating experience.
-- **Icons** — use Nerd Font icons directly in cmds/ files. Reference
+- **Stream output** — set `stdout_buffered = false` and handle chunks in
+  `on_stdout` for a live-updating experience.
+- **Icons** — use Nerd Font icons directly in `cmds/` files. Reference
   `config.icons` only when the icon is shared across multiple modules.
-- **Notifications** — use `vim.notify(msg, level, { title = M.title })` for
-  headless commands.
-- **Error status** — print ✓ / ✗ lines to ctx so the output highlight patterns
-  in `dotnet-ui.lua` can colorize them automatically.
+- **Notifications** — use `vim.notify(msg, level, { title = M.title })`.
+- **Platform guards** — use `require("utils.os").is_win()` for OS-specific
+  logic; prefer an early `return` over deeply nested conditionals.
+- **No dotnet commands here** — `.NET` CLI commands are owned by the
+  `Orbit-Lua/dotnet-cli.nvim` plugin. Extend via `opts`, not `cmds/`.

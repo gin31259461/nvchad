@@ -141,6 +141,13 @@ Managed via [mason.nvim](https://github.com/williamboman/mason.nvim) +
 - **Python** — debugpy
 - **.NET** — netcoredbg
 
+### .NET CLI
+
+[dotnet-cli.nvim](https://github.com/Orbit-Lua/dotnet-cli.nvim) +
+[comet.nvim](https://github.com/Orbit-Lua/comet.nvim) — interactive .NET
+manager (`<leader>dp`), plus headless `DotnetBuild`, `DotnetPublish`, and
+`DotnetGlobalJson` commands.
+
 ### Navigation
 
 | Plugin                                                             | Role                                             |
@@ -182,15 +189,12 @@ Managed via [mason.nvim](https://github.com/williamboman/mason.nvim) +
 
 ### Buffers & Tabs
 
-| Key                         | Action               |
-| --------------------------- | -------------------- |
-| `<Tab>` / `<S-Tab>`         | Next / prev buffer   |
-| `<leader>x`                 | Close current buffer |
-| `<leader>bb`                | New buffer           |
-| `<leader>bc`                | Close all buffers    |
-| `<leader>tN`                | New tab              |
-| `<leader>tn` / `<leader>tp` | Next / prev tab      |
-| `<leader>tx`                | Close tab            |
+| Key                 | Action               |
+| ------------------- | -------------------- |
+| `<Tab>` / `<S-Tab>` | Next / prev buffer   |
+| `<leader>x`         | Close current buffer |
+| `<leader>bb`        | New buffer           |
+| `<leader>bc`        | Close all buffers    |
 
 ### Windows
 
@@ -298,15 +302,12 @@ Managed via [mason.nvim](https://github.com/williamboman/mason.nvim) +
 
 ### Dotnet Manager
 
-| Key               | Action                          |
-| ----------------- | ------------------------------- |
-| `<leader>dp`      | Open Dotnet Manager             |
-| `<C-j>` / `<C-k>` | Navigate list (insert & normal) |
-| `<Tab>`           | Toggle multi-select mark        |
-| `<CR>`            | Confirm selection               |
-| `<C-l>`           | Focus / unfocus output panel    |
-| `<Esc>`           | Cancel sub-selection / close    |
-| `q`               | Same as `<Esc>` (normal mode)   |
+| Key          | Action              |
+| ------------ | ------------------- |
+| `<leader>dp` | Open Dotnet Manager |
+
+The Dotnet Manager UI is provided by `dotnet-cli.nvim` + `comet.nvim`. See
+their documentation for UI keybindings.
 
 ### Other
 
@@ -314,7 +315,6 @@ Managed via [mason.nvim](https://github.com/williamboman/mason.nvim) +
 | ------------ | ----------------------- |
 | `<leader>mp` | Toggle markdown preview |
 | `<leader>th` | Switch NvChad theme     |
-| `<leader>ch` | NvChad cheatsheet       |
 | `<leader>n`  | Notification history    |
 | `<leader>D`  | Open dashboard          |
 | `<leader>wK` | All which-key mappings  |

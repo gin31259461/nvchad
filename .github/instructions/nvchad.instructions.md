@@ -14,12 +14,12 @@ debugger integration, and project-management tooling.
 | Layer       | Location                   | Purpose                                         |
 | ----------- | -------------------------- | ----------------------------------------------- |
 | Entry point | `init.lua`                 | Bootstrap lazy.nvim, load options & plugins     |
-| Options     | `lua/configs/`             | Neovim settings, keymaps, packages, formatters  |
+| Options     | `lua/config/`              | Neovim settings, keymaps, packages, formatters  |
 | Plugins     | `lua/plugins/`             | lazy.nvim specs grouped by concern              |
 | LSP servers | `lua/plugins/lsp/servers/` | Per-language server configs                     |
 | Debugger    | `lua/plugins/debugger/`    | DAP adapters & UI                               |
 | Utilities   | `lua/utils/`               | Shared helpers (LSP, FS, UI, shell, statusline) |
-| Commands    | `lua/cmds/`                | Domain-specific CLI wrappers (.NET, Python)     |
+| Commands    | `lua/cmds/`                | Domain-specific CLI wrappers (Python, system)   |
 | Types       | `lua/types/`               | `---@meta` type-annotation files                |
 | Theme       | `lua/chadrc.lua`           | NvChad theme, statusline, highlight overrides   |
 
@@ -125,15 +125,20 @@ return {
 - `config.lua` merges base + all server modules automatically — just add a new
   file and register it in `config.lua`'s `server_modules` list.
 - Server names must match the key used by `lspconfig` / Mason.
-- Register the Mason package name in `lua/configs/packages.lua` under
+- Register the Mason package name in `lua/config/packages.lua` under
   `pkgs_with_lsp_setup`.
 
 ### Custom Commands (`lua/cmds/`)
 
-- One file per domain (e.g., `dotnet.lua`, `python.lua`).
-- Expose helpers as module functions for reuse (debugger, UI).
+- One file per domain (e.g., `python.lua`, `system.lua`).
+- Expose helpers as module functions for reuse (debugger, LSP).
 - Register `vim.api.nvim_create_user_command()` at the bottom of the file.
-- UI-driven commands use `utils.dotnet-ui` for the panel interface.
+- All files in `lua/cmds/` are auto-loaded by `init.lua` at startup via a
+  `fs.scandir` loop — no manual registration needed.
+- **Dotnet commands** (`DotnetManager`, `DotnetBuild`, `DotnetPublish`,
+  `DotnetGlobalJson`) are provided by the external
+  `Orbit-Lua/dotnet-cli.nvim` plugin (spec: `lua/plugins/ui/dotnet.lua`).
+  Do **not** create a custom `cmds/dotnet.lua`.
 
 ### Utilities (`lua/utils/`)
 
@@ -160,102 +165,61 @@ return {
   - `<leader>w` — which-key
   - `<leader>m` — markdown
 
-## 4. Dotnet-UI Component (`lua/utils/dotnet-ui.lua`)
+## 4. Dotnet Plugin (`lua/plugins/ui/dotnet.lua`)
 
-A custom two-panel Telescope-style picker used by the Dotnet Manager.
+.NET support is provided by the external **`Orbit-Lua/dotnet-cli.nvim`** plugin
+(UI powered by `Orbit-Lua/comet.nvim`). The plugin is lazy-loaded on `.cs`
+files or when one of its commands is invoked.
 
-### Public API
-
-```lua
-require("utils.dotnet-ui").open(commands, { title = "Dotnet Manager" })
-```
-
-### Command Spec
+### Plugin Spec
 
 ```lua
----@class DotnetUICommand
----@field name     string
----@field icon     string          -- Nerd Font icon
----@field icon_hl? string          -- highlight group (default "String")
----@field desc?    string          -- used for fuzzy filtering
----@field action   fun(ctx: DotnetUICtx)
+-- lua/plugins/ui/dotnet.lua
+{
+  "Orbit-Lua/dotnet-cli.nvim",
+  dependencies = { "Orbit-Lua/comet.nvim" },
+  cmd = { "DotnetManager", "DotnetBuild", "DotnetPublish", "DotnetGlobalJson" },
+  ft = "cs",
+  opts = {},
+}
 ```
 
-### Context API (passed to actions)
+### Available Commands
 
-| Method                    | Description                            |
-| ------------------------- | -------------------------------------- |
-| `ctx.write(lines)`        | Append string or `string[]` to output  |
-| `ctx.clear()`             | Clear the output panel                 |
-| `ctx.append(line)`        | Append a single line                   |
-| `ctx.select(items, opts)` | Push a sub-selection list (filterable) |
+| Command             | Description                             |
+| ------------------- | --------------------------------------- |
+| `DotnetManager`     | Opens the interactive .NET manager UI   |
+| `DotnetBuild`       | Runs `dotnet build` on the project      |
+| `DotnetPublish`     | Runs `dotnet publish` on the project    |
+| `DotnetGlobalJson`  | Manages `global.json` SDK pinning       |
 
-`ctx.select` options: `{ title?, multi_select?, on_select: fun(item_or_items, ctx), on_cancel?: fun() }`
+### Keymap
 
-### UI Behaviour
+`<leader>dp` → `<cmd>DotnetManager<CR>` (defined in `lua/config/keymaps.lua`).
 
-- **Left panel:** prompt input (top) + scrollable item list (below).
-- **Right panel:** output with pattern-based highlighting.
-- `C-l` toggles focus to output (title shows "(focused)", cursorline on).
-- `Esc` / `q` in output returns focus to input — does **not** close the UI.
-- `Esc` in input cancels sub-selection or closes the UI.
-- `C-j` / `C-k` navigate the list in both insert and normal mode.
-- List selection **wraps around** (bottom → top, top → bottom).
-- Sub-selection menus are **filterable** — typing filters the sub-items.
-- Input text is saved / restored when entering / leaving sub-selections.
+### Extending / Configuring
 
-### Multi-Select
+Pass options to the plugin via the `opts` table in `lua/plugins/ui/dotnet.lua`.
+Refer to the [dotnet-cli.nvim documentation](https://github.com/Orbit-Lua/dotnet-cli.nvim)
+for the full options reference.
 
-Sub-selections can opt into multi-select mode by passing
-`multi_select = true` in `ctx.select()` options. When enabled:
-
-- `Tab` toggles a **mark** (✓) on the current item, then advances to the next.
-- The title shows the count of marked items (e.g., `"Remove Project (2 selected)"`).
-- `Enter` confirms: `on_select` receives an **array** of all marked items.
-  If nothing is marked, the currently highlighted item is wrapped in a
-  single-element array.
-- After confirmation the multi-select sub is **popped** automatically (the user
-  returns to the parent level).
-
-`ctx.select` options for multi-select:
-```lua
-ctx.select(items, {
-  title        = "Remove Project",
-  multi_select = true,
-  on_select    = function(selected_items, ctx) ... end,
-})
-```
-
-### Output Highlight Patterns
-
-Lines matching these patterns get line-level highlights:
-
-| Pattern           | Highlight Group   |
-| ----------------- | ----------------- |
-| `^$`              | `Comment`         |
-| `✓`               | `DiagnosticOk`    |
-| `✗`               | `DiagnosticError` |
-| `Build succeeded` | `DiagnosticOk`    |
-| `Build FAILED`    | `DiagnosticError` |
-| `[Ww]arning`      | `DiagnosticWarn`  |
-| `[Ee]rror`        | `DiagnosticError` |
-| `Passed!`         | `DiagnosticOk`    |
-| `Failed!`         | `DiagnosticError` |
+Do **not** add a `lua/cmds/dotnet.lua` — all .NET command logic belongs to
+the plugin.
 
 ## 5. Adding a New Language
 
 ### Checklist
 
-1. **Treesitter parser** — add to `configs/packages.lua` →
+1. **Treesitter parser** — add to `config/packages.lua` →
    `treesitter_ensure_installed`.
-2. **LSP server** — add to `configs/packages.lua` → `pkgs_with_lsp_setup` (key =
+2. **LSP server** — add to `config/packages.lua` → `pkgs_with_lsp_setup` (key =
    lspconfig name, value = Mason package name).
 3. **Server config** — create `lua/plugins/lsp/servers/<lang>.lua` returning
    `---@type Lsp.Server.Module`, then add it to the `server_modules` list in
    `lua/plugins/lsp/config.lua`.
-4. **Formatter** — add to `lua/configs/formatter/init.lua` (conform.nvim
+4. **Formatter** — add to `lua/config/formatter/init.lua` (conform.nvim
    format).
-5. **Linter** — add to `lua/configs/linter/init.lua` (nvim-lint format).
+5. **Linter** — add to `lua/config/linter/init.lua` (nvim-lint format).
 6. **Debugger** (optional) — add adapter in `lua/plugins/debugger/<lang>.lua`,
    register in `lua/plugins/debugger/config.lua`.
 
@@ -264,19 +228,25 @@ Lines matching these patterns get line-level highlights:
 ```
 init.lua
   │
-  ├─ configs/options.lua        (vim.opt settings)
-  ├─ configs/packages.lua       (LSP / Mason / Treesitter package lists)
-  ├─ configs/keymaps.lua        (general keymaps — deferred)
+  ├─ config/options.lua         (vim.opt settings)
+  ├─ config/autocmds.lua        (DiagnosticChanged redraw fix)
+  ├─ config/filetypes.lua       (vim.filetype.add registrations)
+  ├─ config/packages.lua        (LSP / Mason / Treesitter package lists)
+  ├─ config/keymaps.lua         (general keymaps — deferred)
   │
   ├─ plugins/**                 (lazy.nvim specs)
   │   ├─ lsp/config.lua         (merges base.lua + servers/*.lua)
   │   ├─ lsp/setup.lua          (iterates config, calls lspconfig)
+  │   ├─ lsp/diagnostics.lua    (configure signs/virtual-text + filter middleware)
+  │   ├─ lsp/features.lua       (inlay hints + code lens activation)
   │   └─ debugger/config.lua    (loads DAP adapters)
   │
   ├─ utils/**                   (shared helpers, imported anywhere)
   │   └─ init.lua               (barrel, proxies lazy.core.util)
   │
-  └─ cmds/**                    (domain commands, used by plugins & debugger)
+  └─ cmds/**                    (auto-loaded domain commands)
+      ├─ python.lua             (Python venv helpers + PyrightReCreateStub)
+      └─ system.lua             (Windows-only ClearShada command)
 ```
 
 ## 7. Testing & Validation
