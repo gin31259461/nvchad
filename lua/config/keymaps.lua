@@ -9,7 +9,6 @@ map("n", "<leader>wk", function()
   vim.cmd("WhichKey " .. vim.fn.input("WhichKey: "))
 end, { desc = "whichkey query lookup" })
 
--- Clear search and stop snippet on escape
 map({ "i", "n", "s" }, "<esc>", function()
   vim.cmd("noh")
   utils_cmp.actions.snippet_stop()
@@ -38,13 +37,6 @@ end, { desc = "buffer goto next" })
 map("n", "<S-tab>", function()
   require("nvchad.tabufline").prev()
 end, { desc = "buffer goto prev" })
-
--- NOTE: the best way to manage tabs in neovim is to not manage tabs in neovim.
--- ref: https://www.reddit.com/r/neovim/comments/19929ef/what_are_the_best_ways_to_manage_tabs_in_neovim/
--- map("n", "<leader>tN", "<cmd>tabnew<cr>", { desc = "CMD enter command mode" })
--- map("n", "<leader>tn", "<cmd>tabn<cr>", { desc = "CMD enter command mode" })
--- map("n", "<leader>tp", "<cmd>tabp<cr>", { desc = "CMD enter command mode" })
--- map("n", "<leader>tx", "<cmd>tabclose<cr>", { desc = "CMD enter command mode" })
 
 -------------------- navigation  --------------------
 map("n", "<C-h>", "<C-w>h", { desc = "switch window left" })
@@ -101,7 +93,6 @@ map("n", "<leader>fd", function()
 end, { desc = "floating diagnostic" })
 
 -------------------- nvchad --------------------
--- map("n", "<leader>ch", "<cmd>NvCheatsheet<CR>", { desc = "toggle nvcheatsheet" })
 map("n", "<leader>th", function()
   require("nvchad.themes").open()
 end, { desc = "telescope nvchad themes" })

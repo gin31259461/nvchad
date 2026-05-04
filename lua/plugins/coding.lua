@@ -53,30 +53,6 @@ return {
     },
   },
 
-  -- https://github.com/nvim-treesitter/nvim-treesitter-textobjects/tree/main
-  -- {
-  --   "nvim-treesitter/nvim-treesitter-textobjects",
-  --   dependencies = { "nvim-treesitter/nvim-treesitter" },
-  --   branch = "main",
-  --   opts = {
-  --     move = {
-  --       -- whether to set jumps in the jumplist
-  --       set_jumps = true,
-  --     },
-  --   },
-  --   config = function(_, opts)
-  --     require("nvim-treesitter-textobjects").setup(opts)
-  --
-  --     local mv = require("nvim-treesitter-textobjects.move")
-  --     vim.keymap.set({ "n", "x", "o" }, "]m", function()
-  --       mv.goto_next_start("@function.outer", "textobjects")
-  --     end)
-  --     vim.keymap.set({ "n", "x", "o" }, "]M", function()
-  --       mv.goto_next_end("@function.outer", "textobjects")
-  --     end)
-  --   end,
-  -- },
-
   -- https://www.reddit.com/r/neovim/comments/1agjong/html_tags/
   -- https://github.com/andymass/vim-matchup?tab=readme-ov-file#installation
   {

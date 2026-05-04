@@ -1,10 +1,3 @@
--- installation guide: https://codeberg.org/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation
--- custom command of debug console: https://github.com/mfussenegger/nvim-dap/blob/a479e25ed5b5d331fb46ee4b9e160ff02ac64310/doc/dap.txt#L955
-
--- NOTE: launch.json:
--- refer to: https://github.com/mfussenegger/nvim-dap/blob/master/doc/dap.txt#L327-L331
--- attributes: https://code.visualstudio.com/docs/debugtest/debugging-configuration#_launchjson-attributes
-
 ---@type LazySpec[]
 return {
   {
@@ -85,9 +78,6 @@ return {
       dapui.setup(opts)
       dap.set_log_level("TRACE")
 
-      -- dap.listeners.after.event_initialized["dapui_config"] = function()
-      --   dapui.open({})
-      -- end
       dap.listeners.before.terminate["dapui_config"] = function()
         dapui.close()
       end

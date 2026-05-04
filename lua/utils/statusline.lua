@@ -24,7 +24,6 @@ M.is_ignore_ft = function()
   return false
 end
 
--- local sep = "  "
 local sep = "  "
 
 ---@param symbols string
@@ -146,7 +145,6 @@ M.git = function()
     or ""
 
   local branch_name = " " .. git_status.head
-  -- local branch_name = " "
 
   return " " .. branch_name .. added .. changed .. removed
 end
@@ -181,7 +179,6 @@ M.set_mode_state = function()
   local sep_icons = utils.separators
   local separators = (type(sep_style) == "table" and sep_style) or sep_icons[sep_style]
 
-  -- local sep_l = separators["left"]
   local sep_r = separators["right"]
 
   M.state.mode = function()
@@ -200,9 +197,7 @@ M.set_mode_state = function()
     local current_mode = "%#St_" .. modes[m][2] .. "Mode#  " .. modes[m][1]
     local mode_sep1 = "%#St_" .. modes[m][2] .. "ModeSep#" .. sep_r
 
-    -- return current_mode .. mode_sep1 .. "%#ST_EmptySpace#" .. sep_r
     return current_mode .. recording .. mode_sep1
-    -- return current_mode .. " "
   end
 end
 

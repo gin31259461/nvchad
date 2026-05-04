@@ -72,13 +72,11 @@ return {
     },
   },
 
-  -- Enable this to enable the builtin LSP inlay hints on Neovim >= 0.10.0
   inlay_hints = {
     enabled = false,
     exclude = {},
   },
 
-  -- Enable this to enable the builtin LSP code lenses on Neovim >= 0.10.0
   codelens = {
     enabled = false,
   },
@@ -101,7 +99,6 @@ return {
   }),
 
   disable_default_settings = {
-    -- this base.lua on_init will override the on_init of roslyn.lua, so we need to disable it to let roslyn.lua handle the on_init
     roslyn = { "on_init" },
   },
 

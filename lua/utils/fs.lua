@@ -117,7 +117,7 @@ function M.get_root()
   end
 
   -- fallback: cwd
-  return vim.loop.cwd()
+  return vim.uv.cwd()
 end
 
 ---@param buf_name string
@@ -140,13 +140,13 @@ end
 ---@return table
 M.scandir = function(path, mode)
   local names = {}
-  local fd = vim.loop.fs_scandir(path)
+  local fd = vim.uv.fs_scandir(path)
   if not fd then
     return names
   end
 
   while true do
-    local name, t = vim.loop.fs_scandir_next(fd)
+    local name, t = vim.uv.fs_scandir_next(fd)
     if not name then
       break
     end

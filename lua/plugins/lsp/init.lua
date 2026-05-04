@@ -1,13 +1,11 @@
 dofile(vim.g.base46_cache .. "mason")
 
-local configs = require("config")
 local utils_lsp = require("utils.lsp")
 
 ---@type LazySpec[]
 local plugins = {
   {
     "williamboman/mason.nvim",
-    -- fix error with typescript-tools
     event = "VeryLazy",
     cmd = { "Mason", "MasonInstall", "MasonUpdate" },
     opts = {
@@ -31,7 +29,6 @@ local plugins = {
   },
 
   {
-
     "neovim/nvim-lspconfig",
     lazy = false,
     event = { "BufReadPost", "BufWritePost", "BufNewFile" },
@@ -44,72 +41,18 @@ local plugins = {
     ---@param _ LazyPlugin
     ---@param opts Lsp.Config.Spec
     config = function(_, opts)
-      -- mapping each lspconfig-opt.servers.[server_name].keys
       utils_lsp.on_attach(function(client, buffer)
         require("plugins.lsp.keymaps").on_attach(client, buffer)
       end)
 
-      -- setup servers
       require("plugins.lsp.setup")
 
       utils_lsp.setup()
       utils_lsp.on_dynamic_capability(require("plugins.lsp.keymaps").on_attach)
 
-      -- diagnostics signs
-      if vim.fn.has("nvim-0.10.0") == 0 then
-        if type(opts.diagnostics.signs) ~= "boolean" then
-          for severity, icon in pairs(opts.diagnostics.signs.text) do
-            local name = vim.diagnostic.severity[severity]:lower():gsub("^%l", string.upper)
-            name = "DiagnosticSign" .. name
-            vim.fn.sign_define(name, { text = icon, texthl = name, numhl = "" })
-          end
-        end
-      end
-
-      if vim.fn.has("nvim-0.10") == 1 then
-        -- inlay hints
-        if opts.inlay_hints.enabled then
-          utils_lsp.on_supports_method("textDocument/inlayHint", function(client, buffer)
-            if
-              vim.api.nvim_buf_is_valid(buffer)
-              and vim.bo[buffer].buftype == ""
-              and not vim.tbl_contains(opts.inlay_hints.exclude, vim.bo[buffer].filetype)
-            then
-              vim.lsp.inlay_hint.enable(true, { bufnr = buffer })
-            end
-          end)
-        end
-
-        -- code lens
-        if opts.codelens.enabled and vim.lsp.codelens then
-          utils_lsp.on_supports_method("textDocument/codeLens", function(client, bufnr)
-            vim.lsp.codelens.enable(true)
-            vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-              buffer = bufnr,
-              callback = function()
-                vim.lsp.codelens.enable(true, { bufnr = bufnr })
-              end,
-            })
-          end)
-        end
-      end
-
-      if
-        type(opts.diagnostics.virtual_text) == "table"
-        and opts.diagnostics.virtual_text.prefix == "icons"
-      then
-        opts.diagnostics.virtual_text.prefix = vim.fn.has("nvim-0.10.0") == 0 and "●"
-          or function(diagnostic)
-            local icons = configs.icons.diagnostics
-            for d, icon in pairs(icons) do
-              if diagnostic.severity == vim.diagnostic.severity[d:upper()] then
-                return icon
-              end
-            end
-          end
-      end
-
-      vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
+      require("plugins.lsp.diagnostics").configure(opts)
+      require("plugins.lsp.diagnostics").install_filter_middleware()
+      require("plugins.lsp.features").activate(opts)
     end,
   },
 
