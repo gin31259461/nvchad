@@ -3,6 +3,9 @@
 -- wiki:            https://github.com/seblyng/roslyn.nvim/wiki
 -- diagnostic hack: https://github.com/seblyng/roslyn.nvim/blob/7d8819239c5e2c4a0d8150da1c00fa583f761704/lsp/roslyn.lua#L33
 
+-- NOTE: official roslyn language server
+-- https://github.com/dotnet/roslyn/tree/main/src/LanguageServer/Microsoft.CodeAnalysis.LanguageServer
+--
 local fs = require("utils.fs")
 local os = require("utils.os")
 
@@ -24,6 +27,11 @@ return {
         if client:supports_method("textDocument/semanticTokens") then
           client.server_capabilities.semanticTokensProvider = nil
         end
+        -- local on_attach = function(client, bufnr)
+        --   if client.server_capabilities.semanticTokensProvider then
+        --     vim.treesitter.stop(bufnr)
+        --   end
+        -- end
       end,
 
       settings = {
