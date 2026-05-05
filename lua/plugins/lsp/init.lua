@@ -68,6 +68,9 @@ local plugins = {
       filewatching = "roslyn",
       silent = true,
     },
+    cond = function()
+      return vim.fn.executable("dotnet") == 1
+    end,
   },
 }
 
