@@ -162,6 +162,7 @@ M.config_path = vim.fn.stdpath("config")
 M.data_path = vim.fn.stdpath("data")
 
 M.schema_paths = {
+  -- msbuild schema ref: https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-project-file-schema-reference?view=visualstudio
   ms_build = M.config_path .. "/lua/config/lsp/schema/Microsoft.Build.xsd",
 }
 

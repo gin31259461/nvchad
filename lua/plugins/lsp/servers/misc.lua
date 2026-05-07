@@ -29,7 +29,6 @@ return {
       settings = {
         xml = {
           fileAssociations = {
-
             {
               systemId = fs.schema_paths.ms_build,
               pattern = "**/*.csproj",
@@ -37,6 +36,9 @@ return {
           },
           completion = {
             autoCloseTags = true,
+          },
+          validation = {
+            enabled = false,
           },
         },
       },
