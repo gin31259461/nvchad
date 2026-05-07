@@ -161,6 +161,10 @@ end
 M.config_path = vim.fn.stdpath("config")
 M.data_path = vim.fn.stdpath("data")
 
+M.schema_paths = {
+  ms_build = M.config_path .. "/lua/config/lsp/schema/Microsoft.Build.xsd",
+}
+
 ---@class DeleteFilesOpts
 ---@field success_message? string
 ---@field skip_condition? fun(file_name: string, file_path: string): boolean

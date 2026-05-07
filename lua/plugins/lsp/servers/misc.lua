@@ -1,3 +1,5 @@
+local fs = require("utils.fs")
+
 ---@type Lsp.Server.Module
 return {
   servers = {
@@ -21,5 +23,23 @@ return {
 
     -- copilot.lua only works with its own copilot lsp server
     copilot = { enabled = false },
+
+    -- config ref: https://github.com/eclipse-lemminx/lemminx/blob/main/docs/Configuration.md
+    lemminx = {
+      settings = {
+        xml = {
+          fileAssociations = {
+
+            {
+              systemId = fs.schema_paths.ms_build,
+              pattern = "**/*.csproj",
+            },
+          },
+          completion = {
+            autoCloseTags = true,
+          },
+        },
+      },
+    },
   },
 }
