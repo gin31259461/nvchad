@@ -41,7 +41,7 @@ M.install_filter_middleware = function()
 
   vim.lsp.handlers["textDocument/publishDiagnostics"] = function(err, result, ctx, config)
     if result and result.diagnostics then
-      local suppressed_patterns = require("config").ignore_msgs.lsp
+      local suppressed_patterns = require("config").message_ignored.lsp
       local filtered = {}
       for _, diagnostic in ipairs(result.diagnostics) do
         local suppress = false

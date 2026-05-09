@@ -3,8 +3,7 @@ local M = {}
 local fs = require("utils.fs")
 local hl = require("utils.hl")
 local ui = require("utils.ui")
-
-local _ignore_ft = { "neo%-tree", "nvdash", "NvTerm_", "trouble", "noice", "harpoon" }
+local config = require("config")
 
 ---@class StatuslineMarginOpt
 ---@field left? integer number of spaces to insert on the left side of the components
@@ -39,8 +38,8 @@ end
 M.is_ignore_ft = function()
   local current_ft = vim.bo.filetype
 
-  for _, v in ipairs(_ignore_ft) do
-    if current_ft:find(v) then
+  for _, v in ipairs(config.statusline_ignored) do
+    if current_ft:match(v) then
       return true
     end
   end
@@ -189,7 +188,11 @@ end
 ---@class StatuslineState
 ---@field lsp_symbols? function function to get the current LSP symbols for the statusline
 ---@field mode? function function to get the current mode for the statusline
-M.state = { lsp_symbols = nil, mode = nil }
+
+--- store state in global variable to persist across reloads
+---@type StatuslineState
+_G.statusline_state = _G.statusline_state or { lsp_symbols = nil, mode = nil }
+M.state = _G.statusline_state
 
 M.set_lsp_symbols_state = function()
   local trouble = require("trouble")
@@ -206,14 +209,7 @@ M.set_lsp_symbols_state = function()
 end
 
 M.set_mode_state = function()
-  local config = require("nvconfig").ui.statusline
-  local sep_style = config.separator_style
   local utils = require("nvchad.stl.utils")
-
-  local sep_icons = utils.separators
-  local separators = (type(sep_style) == "table" and sep_style) or sep_icons[sep_style]
-
-  local sep_r = separators["right"]
 
   M.state.mode = function()
     if not utils.is_activewin() then
@@ -228,10 +224,14 @@ M.set_mode_state = function()
       recording = " @" .. recording
     end
 
-    local current_mode = "%#St_" .. modes[m][2] .. "Mode#  " .. modes[m][1]
-    local mode_sep1 = "%#St_" .. modes[m][2] .. "ModeSep#" .. sep_r
+    local mode_sep_left = "%#St_" .. modes[m][2] .. "ModeSep#" .. config.icons.separators.round.left
+    local current_mode = "%#St_" .. modes[m][2] .. "Mode#" .. " " .. modes[m][1]
+    local mode_sep_right = "%#St_"
+      .. modes[m][2]
+      .. "ModeSep#"
+      .. config.icons.separators.round.right
 
-    return current_mode .. recording .. mode_sep1
+    return mode_sep_left .. current_mode .. recording .. mode_sep_right
   end
 end
 

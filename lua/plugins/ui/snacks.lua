@@ -56,7 +56,7 @@ return {
         margin = { bottom = 2 },
         timeout = 3000,
         filter = function(notif)
-          for _, msg in ipairs(configs.ignore_msgs.notify) do
+          for _, msg in ipairs(configs.message_ignored.notify) do
             if notif.msg:find(msg) then
               return false
             end

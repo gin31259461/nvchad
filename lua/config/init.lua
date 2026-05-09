@@ -82,9 +82,15 @@ M.icons = {
     Value = " ",
     Variable = "󰀫 ",
   },
+  separators = {
+    default = { left = "", right = "" },
+    round = { left = "", right = "" },
+    block = { left = "█", right = "█" },
+    arrow = { left = "", right = "" },
+  },
 }
 
-M.ignore_msgs = {
+M.message_ignored = {
   lsp = {
     "is not accessed",
     "Unused local",
@@ -96,5 +102,7 @@ M.ignore_msgs = {
     "roslyn: %-30099",
   },
 }
+
+M.statusline_ignored = { "nvdash", "NvTerm_", "trouble", "noice", "harpoon", "NvimTree.-" }
 
 return M
