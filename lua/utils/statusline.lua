@@ -6,6 +6,30 @@ local ui = require("utils.ui")
 
 local _ignore_ft = { "neo%-tree", "nvdash", "NvTerm_", "trouble", "noice", "harpoon" }
 
+---@class StatuslineMarginOpt
+---@field left? integer number of spaces to insert on the left side of the components
+---@field right? integer number of spaces to insert on the right side of the components
+
+---@class StatuslineComponentOpt
+---@field gap? integer number of spaces to insert between components
+---@field separator? string separator to use between components
+---@field margin? StatuslineMarginOpt number of spaces to insert on the left and right sides of the components
+
+---@param components table
+---@param opts StatuslineComponentOpt
+M.merge_components = function(components, opts)
+  local gap = opts.gap or 1
+  local margin = vim.tbl_deep_extend("keep", opts.margin or {}, { left = 0, right = 0 })
+  local margin_left = string.rep(" ", margin.left)
+  local margin_right = string.rep(" ", margin.right)
+
+  -- filter empty components and hl components (which are used for setting highlights but don't display text)
+  local filtered_components = vim.tbl_filter(function(c)
+    return c ~= ""
+  end, components)
+  return margin_left .. table.concat(filtered_components, string.rep(" ", gap)) .. margin_right
+end
+
 ---@return integer
 M.stbufnr = function()
   return vim.api.nvim_win_get_buf(vim.g.statusline_winid or 0)
@@ -101,19 +125,23 @@ end
 ---@return string
 M.current_lsp = function()
   if rawget(vim, "lsp") then
-    local lsp_ctx = hl.statusline.active_context
-    local margin_left = " "
+    local copilot = ""
+    local lsp_client = ""
 
     for _, client in ipairs(vim.lsp.get_clients()) do
       if client.attached_buffers[M.stbufnr()] then
         if client.name == "copilot" then
-          lsp_ctx = lsp_ctx .. " "
+          copilot = copilot .. " "
+        else
+          lsp_client = vim.o.columns > 100 and "  LSP ~ " .. client.name or "  LSP"
         end
-        -- ((vim.o.columns > 100 and "   LSP ~ " .. client.name .. " ") or "   LSP ")
       end
     end
 
-    return lsp_ctx .. margin_left
+    return M.merge_components(
+      { hl.statusline.copilot .. copilot, hl.statusline.active_context .. lsp_client },
+      { gap = 1, margin = { right = 1 } }
+    )
   end
 
   return ""
@@ -136,17 +164,20 @@ M.git = function()
 
   local git_status = vim.b[M.stbufnr()].gitsigns_status_dict
 
-  local added = (git_status.added and git_status.added ~= 0) and ("  " .. git_status.added) or ""
+  local added = (git_status.added and git_status.added ~= 0) and (" " .. git_status.added) or ""
   local changed = (git_status.changed and git_status.changed ~= 0)
-      and ("  " .. git_status.changed)
+      and (" " .. git_status.changed)
     or ""
   local removed = (git_status.removed and git_status.removed ~= 0)
-      and ("  " .. git_status.removed)
+      and (" " .. git_status.removed)
     or ""
 
   local branch_name = " " .. git_status.head
 
-  return " " .. branch_name .. added .. changed .. removed
+  return M.merge_components(
+    { branch_name, added, changed, removed },
+    { gap = 1, margin = { left = 1 } }
+  )
 end
 
 ---@return string
@@ -155,6 +186,9 @@ M.break_point = function()
 end
 
 -------------------- all state --------------------
+---@class StatuslineState
+---@field lsp_symbols? function function to get the current LSP symbols for the statusline
+---@field mode? function function to get the current mode for the statusline
 M.state = { lsp_symbols = nil, mode = nil }
 
 M.set_lsp_symbols_state = function()

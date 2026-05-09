@@ -31,6 +31,8 @@
 ---@field pmenu_bg string
 ---@field folder_bg string
 
+local sethl = vim.api.nvim_set_hl
+
 vim.api.nvim_set_hl(0, "@statusline.current_file", {
   fg = "#A9B1D6",
 })
@@ -110,6 +112,7 @@ M.util = {
 
 M.statusline = {
   git = "%#@statusline.git#",
+  copilot = "%#@statusline.copilot#",
   current_file = "%#@statusline.current_file#",
   text = "%#@statusline.text#",
   trouble_text = "%#TroubleStatusline1#",
@@ -157,14 +160,18 @@ M.setup_dynamic_theme = function()
   local colors = require("base46").get_theme_tb("base_30")
   local color_tool = require("base46.colors")
 
-  vim.api.nvim_set_hl(0, "FloatBorder", {
+  sethl(0, "FloatBorder", {
     fg = color_tool.change_hex_lightness(colors.blue, 125),
   })
 
-  vim.api.nvim_set_hl(0, "LspInlayHint", {
+  sethl(0, "LspInlayHint", {
     fg = "#808080",
     bg = colors.one_bg,
     italic = true,
+  })
+
+  sethl(0, "@statusline.copilot", {
+    fg = colors.green,
   })
 end
 
