@@ -8,8 +8,10 @@
 
 This is a **NvChad v2.5** custom configuration for Neovim (≥ 0.12). It provides
 a full-featured IDE experience for **C# / .NET**, **Python**, **TypeScript**,
-**Lua**, **Go**, **C/C++**, and web technologies, with custom UI components,
-debugger integration, and project-management tooling.
+**Lua**, **Go**, **C/C++**, **Bash**, **PowerShell**, **SQL/Prisma**, **Docker**,
+and web technologies (HTML, CSS, JSON, TOML, XML, Markdown), with custom UI
+components, AI coding assistance (Copilot, OpenCode), debugger integration, and
+project-management tooling.
 
 | Layer       | Location                   | Purpose                                         |
 | ----------- | -------------------------- | ----------------------------------------------- |
@@ -18,7 +20,7 @@ debugger integration, and project-management tooling.
 | Plugins     | `lua/plugins/`             | lazy.nvim specs grouped by concern              |
 | LSP servers | `lua/plugins/lsp/servers/` | Per-language server configs                     |
 | Debugger    | `lua/plugins/debugger/`    | DAP adapters & UI                               |
-| Utilities   | `lua/utils/`               | Shared helpers (LSP, FS, UI, shell, statusline) |
+| Utilities   | `lua/utils/`               | Shared helpers (LSP, FS, UI, shell, statusline, cmp, hl, str, table) |
 | Commands    | `lua/cmds/`                | Domain-specific CLI wrappers (Python, system)   |
 | Types       | `lua/types/`               | `---@meta` type-annotation files                |
 | Theme       | `lua/chadrc.lua`           | NvChad theme, statusline, highlight overrides   |
@@ -97,9 +99,13 @@ For complex shared types, create `---@meta` files under `lua/types/`.
 - Every spec uses **lazy.nvim** format: `{ "author/repo", opts = {}, ... }`.
 - Always lazy-load via `event`, `cmd`, `ft`, or `keys` — avoid `lazy = false`
   unless the plugin must be available at startup (e.g., NvChad UI, snacks).
-- Group specs by concern: `ui.lua`, `coding.lua`, `navigation.lua`,
-  `formatter.lua`, `linter.lua`, `misc.lua`.
-- Sub-directories (`lsp/`, `debugger/`, `ui/`, `db/`) hold multi-file setups.
+- Group specs by concern: `ai.lua`, `coding.lua`, `db.lua`, `formatter.lua`,
+  `linter.lua`, `misc.lua`, `navigation.lua`, `ui.lua`.
+- The root `plugins/init.lua` holds small standalone specs (gitsigns,
+  markdown-preview.nvim, which-key).
+- Sub-directories (`lsp/`, `debugger/`, `ui/`) hold multi-file setups.
+  `ui/` is composed of `nvchad.lua`, `snacks.lua`, `noice.lua`, `trouble.lua`,
+  and `dotnet.lua`, all gathered by `plugins/ui.lua`.
 
 ### LSP Server Configuration (`lua/plugins/lsp/servers/`)
 
@@ -164,6 +170,8 @@ return {
   - `<leader>g` — git
   - `<leader>t` — trouble / todos (`th` = NvChad themes)
   - `<leader>w` — which-key
+  - `<leader>h` — terminal new horizontal term
+  - `<leader>v` — terminal new vertical term
   - `<leader>m` — markdown
   - `<leader>a` — harpoon add
   - `<leader>e` — NvimTree focus
@@ -244,6 +252,12 @@ init.lua
   ├─ config/keymaps.lua         (general keymaps — deferred)
   │
   ├─ plugins/**                 (lazy.nvim specs)
+  │   ├─ init.lua               (gitsigns, markdown-preview, which-key)
+  │   ├─ ai.lua                 (copilot, opencode)
+  │   ├─ coding.lua             (treesitter, cmp, snippets)
+  │   ├─ db.lua                 (database/SQL tooling)
+  │   ├─ navigation.lua         (nvim-tree, telescope, harpoon)
+  │   ├─ ui.lua                 (gathers ui/ submodules)
   │   ├─ lsp/config.lua         (merges base.lua + servers/*.lua)
   │   ├─ lsp/setup.lua          (iterates config, calls lspconfig)
   │   ├─ lsp/diagnostics.lua    (configure signs/virtual-text + filter middleware)
