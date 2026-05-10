@@ -275,6 +275,132 @@ init.lua
 7. **No commits should include secrets** — `.gitignore` already excludes
    sensitive paths; keep it that way.
 
+## 9. Design Principles — SoC, Low Coupling, Dependency Injection
+
+### Separation of Concerns (SoC)
+
+Each file or module has exactly **one responsibility**. Changes to one concern
+must not ripple into unrelated modules.
+
+| Concern              | Owner                                   |
+| -------------------- | --------------------------------------- |
+| Editor options       | `config/options.lua`                    |
+| Keymap registration  | `config/keymaps.lua`, `plugins/*/keys`  |
+| LSP capabilities     | `plugins/lsp/servers/base.lua`          |
+| Server-specific opts | `plugins/lsp/servers/<lang>.lua`        |
+| Formatter config     | `config/formatter/init.lua`             |
+| Linter config        | `config/linter/init.lua`                |
+| DAP adapter/config   | `plugins/debugger/<lang>.lua`           |
+| Shared helpers       | `lua/utils/<concern>.lua`               |
+| Domain commands      | `lua/cmds/<domain>.lua`                 |
+
+**Rule:** TypeScript-specific logic (e.g. copying JS settings into vtsls) belongs
+in `servers/typescript.lua`, not in the generic `setup.lua`.
+
+### Low Coupling
+
+Modules must not directly depend on **plugin internals** or reach into other
+modules' private state.
+
+**Required practices:**
+
+1. **Never `require()` a plugin at module top-level.** Plugins are loaded
+   asynchronously by lazy.nvim. A top-level require will run at spec-collection
+   time, before the plugin is available.
+
+   ```lua
+   -- ✗ bad — runs at file load time; crashes if plugin not installed
+   local snacks = require("snacks")
+
+   -- ✓ good — deferred to call time; plugin is already loaded
+   local function foo()
+     require("snacks").do_thing()
+   end
+   ```
+
+2. **Wrap `opts` in a function when it closes over plugin modules.**
+   lazy.nvim calls `opts = function()` after the plugin loads, making it safe
+   to require plugin modules inside.
+
+   ```lua
+   -- ✗ bad — telescope.actions required at spec parse time
+   opts = { mappings = { i = { ["<C-j>"] = require("telescope.actions").move_down } } }
+
+   -- ✓ good — deferred; runs after Telescope loads
+   opts = function()
+     local actions = require("telescope.actions")
+     return { mappings = { i = { ["<C-j>"] = actions.move_down } } }
+   end
+   ```
+
+3. **Internal utils (`utils.*`, `config`) may be required at top-level** — they
+   are pure Lua files with no plugin dependencies and are always present.
+
+4. **Plugin specs belong in `plugins/`; utility helpers belong in `utils/`.**
+   A plugin spec must not contain business logic; a util must not contain plugin
+   specs.
+
+### Dependency Injection (DI)
+
+Pass dependencies as function arguments rather than hard-coding module paths
+inside functions. This keeps units independently testable and replaceable.
+
+```lua
+-- ✗ bad — hard-coded dependency; cannot be tested or swapped
+M.do_work = function()
+  local tool = require("some.tool")
+  tool.run()
+end
+
+-- ✓ good — caller injects the tool; function is testable in isolation
+---@param tool {run: fun()}
+M.do_work = function(tool)
+  tool.run()
+end
+```
+
+For callbacks and autocmd handlers, prefer receiving the dependency via
+closure arguments supplied by the plugin framework (e.g. `on_attach(client,
+bufnr)`), rather than calling `vim.lsp.get_client_by_id()` internally.
+
+### pcall for Optional Dependencies
+
+Any `require()` that targets a **plugin** (not an internal module) **must**
+be wrapped in `pcall`. This ensures the config degrades gracefully when a
+plugin is disabled, not installed, or crashes during load.
+
+```lua
+-- ✗ bad — crashes Neovim startup if trouble.nvim is not installed
+local trouble = require("trouble")
+trouble.open({ mode = "lsp_command", params = params })
+
+-- ✓ good — safe even without trouble.nvim
+local ok, trouble = pcall(require, "trouble")
+if ok then
+  trouble.open({ mode = "lsp_command", params = params })
+end
+```
+
+**Decision table:**
+
+| Module type                            | Top-level require | In-function require | pcall required |
+| -------------------------------------- | :---------------: | :-----------------: | :------------: |
+| Internal (`utils.*`, `config`, `cmds`) |        ✓          |          ✓          |      ✗         |
+| NvChad core (`base46`, `nvchad.*`)     |        ✗          |          ✓          |      ✓         |
+| External plugins (`trouble`, `cmp`, …) |        ✗          |          ✓          |      ✓         |
+
+### Module Testability
+
+Design utils to be unit-testable:
+
+- **Pure functions** (no `vim.*` calls) can be tested with plain Lua or
+  `nvim --headless -l spec_file.lua`.
+- **Neovim-API functions** (`vim.uv.*`, `vim.fn.*`) must use
+  `nvim --headless -l spec_file.lua`.
+- Tests live under `spec/utils/` and are run with `bash spec/run.sh`.
+- Each test file loads `spec/helpers.lua` (minimal `describe`/`it`/`expect`
+  framework) via `dofile(vim.env.NVIM_SPEC_DIR .. "/helpers.lua")`.
+
 ## Commit Style
 
 - Use lowercase imperative subject lines: `fix:`, `add`, `update`, `scripts:`

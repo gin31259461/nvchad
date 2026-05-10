@@ -72,10 +72,13 @@ function M.execute(opts)
     arguments = opts.arguments,
   }
   if opts.open then
-    require("trouble").open({
-      mode = "lsp_command",
-      params = params,
-    })
+    local ok, trouble = pcall(require, "trouble")
+    if ok then
+      trouble.open({
+        mode = "lsp_command",
+        params = params,
+      })
+    end
   else
     return vim.lsp.buf_request(0, "workspace/executeCommand", params, opts.handler)
   end

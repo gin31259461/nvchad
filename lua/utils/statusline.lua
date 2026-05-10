@@ -195,7 +195,10 @@ _G.statusline_state = _G.statusline_state or { lsp_symbols = nil, mode = nil }
 M.state = _G.statusline_state
 
 M.set_lsp_symbols_state = function()
-  local trouble = require("trouble")
+  local ok, trouble = pcall(require, "trouble")
+  if not ok then
+    return
+  end
   local symbols = trouble.statusline({
     mode = "symbols",
     groups = {},
@@ -209,7 +212,10 @@ M.set_lsp_symbols_state = function()
 end
 
 M.set_mode_state = function()
-  local utils = require("nvchad.stl.utils")
+  local ok, utils = pcall(require, "nvchad.stl.utils")
+  if not ok then
+    return
+  end
 
   M.state.mode = function()
     if not utils.is_activewin() then
