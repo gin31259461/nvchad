@@ -111,7 +111,7 @@ Managed via [mason.nvim](https://github.com/williamboman/mason.nvim) +
 | Language                | Server                                        |
 | ----------------------- | --------------------------------------------- |
 | Python                  | `pyright`, `ruff`                             |
-| TypeScript / JavaScript | `typescript-tools` (pmizio), `ts_ls` fallback |
+| TypeScript / JavaScript | `typescript-tools.nvim` (pmizio) — active; `vtsls` config present (disabled) |
 | C# / .NET               | `roslyn.nvim` (requires .NET SDK 10+)         |
 | Lua                     | `lua_ls`                                      |
 | Web                     | `html`, `cssls`, `tailwindcss`                |
@@ -186,6 +186,7 @@ manager (`<leader>dp`), plus headless `DotnetBuild`, `DotnetPublish`, and
 | `;`           | Enter command mode              |
 | `<` / `>`     | Dedent / indent line            |
 | `<leader>/`   | Toggle comment                  |
+| `<leader>q`   | Record macro                    |
 
 ### Buffers & Tabs
 
@@ -223,64 +224,100 @@ manager (`<leader>dp`), plus headless `DotnetBuild`, `DotnetPublish`, and
 
 ### Picker (Snacks)
 
-| Key          | Action                |
-| ------------ | --------------------- |
-| `<leader>ff` | Find files            |
-| `<leader>fr` | Recent files          |
-| `<leader>fp` | Projects              |
-| `<leader>fg` | Git files             |
-| `<leader>fb` | Buffers               |
-| `<leader>fc` | Config files          |
-| `<leader>sg` | Grep                  |
-| `<leader>sw` | Grep word / selection |
-| `<leader>sb` | Buffer lines          |
-| `<leader>sd` | Diagnostics           |
-| `<leader>sk` | Keymaps               |
-| `<leader>sR` | Resume last picker    |
+| Key            | Action                      |
+| -------------- | --------------------------- |
+| `<leader>ff`   | Find files                  |
+| `<leader>fr`   | Recent files                |
+| `<leader>fp`   | Projects                    |
+| `<leader>fg`   | Git files                   |
+| `<leader>fb`   | Buffers                     |
+| `<leader>fc`   | Config files                |
+| `<leader>sg`   | Grep                        |
+| `<leader>sw`   | Grep word / selection       |
+| `<leader>sb`   | Buffer lines                |
+| `<leader>sB`   | Grep open buffers           |
+| `<leader>sd`   | Diagnostics                 |
+| `<leader>sD`   | Buffer diagnostics          |
+| `<leader>sk`   | Keymaps                     |
+| `<leader>sR`   | Resume last picker          |
+| `<leader>s"`   | Registers                   |
+| `<leader>s/`   | Search history              |
+| `<leader>sa`   | Autocmds                    |
+| `<leader>sc`   | Command history             |
+| `<leader>sC`   | Commands                    |
+| `<leader>sH`   | Highlights                  |
+| `<leader>si`   | Icons                       |
+| `<leader>sj`   | Jumps                       |
+| `<leader>sl`   | Location list               |
+| `<leader>sm`   | Marks                       |
+| `<leader>sM`   | Man pages                   |
+| `<leader>sp`   | Search plugin specs         |
+| `<leader>sq`   | Quickfix list               |
+| `<leader>su`   | Undo history                |
 
 ### Git
 
-| Key          | Action         |
-| ------------ | -------------- |
-| `<leader>gg` | Open lazygit   |
-| `<leader>gs` | Git status     |
-| `<leader>gl` | Git log        |
-| `<leader>gb` | Git branches   |
-| `<leader>gd` | Git diff hunks |
+| Key            | Action             |
+| -------------- | ------------------ |
+| `<leader>gg`   | Open lazygit       |
+| `<leader>gs`   | Git status         |
+| `<leader>gl`   | Git log            |
+| `<leader>gL`   | Git log (line)     |
+| `<leader>gb`   | Git branches       |
+| `<leader>gd`   | Git diff hunks     |
+| `<leader>gS`   | Git stash          |
+| `<leader>gf`   | Git log (file)     |
 
 ### LSP
 
-| Key            | Action                |
-| -------------- | --------------------- |
-| `gd`           | Go to definition      |
-| `gR`           | References            |
-| `gI`           | Go to implementation  |
-| `gy`           | Go to type definition |
-| `gD`           | Go to declaration     |
-| `K`            | Hover documentation   |
-| `gK` / `<M-k>` | Signature help        |
-| `<leader>ca`   | Code action           |
-| `<leader>cr`   | Rename symbol         |
-| `<leader>cR`   | Rename file           |
-| `<leader>ci`   | Toggle inlay hints    |
-| `<leader>cs`   | Symbols (Trouble)     |
-| `<leader>cl`   | LSP info              |
-| `<leader>fd`   | Floating diagnostic   |
-| `]]` / `[[`    | Next / prev reference |
+| Key            | Action                               |
+| -------------- | ------------------------------------ |
+| `gd`           | Go to definition                     |
+| `gR`           | References                           |
+| `gI`           | Go to implementation                 |
+| `gy`           | Go to type definition                |
+| `gD`           | Go to declaration                    |
+| `K`            | Hover documentation                  |
+| `gK` / `<M-k>` | Signature help                      |
+| `<leader>ca`   | Code action                          |
+| `<leader>cA`   | Source action                        |
+| `<leader>cC`   | Run codelens                         |
+| `<leader>cc`   | Toggle codelens display              |
+| `<leader>cr`   | Rename symbol                        |
+| `<leader>cR`   | Rename file                          |
+| `<leader>ci`   | Toggle inlay hints                   |
+| `<leader>cs`   | Symbols (Trouble)                    |
+| `<leader>cL`   | LSP definitions/refs (Trouble)       |
+| `<leader>cl`   | LSP info                             |
+| `<leader>fd`   | Floating diagnostic                  |
+| `]]` / `[[`    | Next / prev reference                |
+| `<a-n>` / `<a-p>` | Next / prev reference (wrap)    |
+
+#### TypeScript extras (`vtsls`)
+
+| Key            | Action                              |
+| -------------- | ----------------------------------- |
+| `<leader>co`   | Organize imports                    |
+| `<leader>cM`   | Add missing imports                 |
+| `<leader>cu`   | Remove unused imports               |
+| `<leader>cD`   | Fix all diagnostics                 |
+| `<leader>cV`   | Select TypeScript workspace version |
 
 ### Debugger (DAP)
 
-| Key          | Action            |
-| ------------ | ----------------- |
-| `<leader>dt` | Toggle breakpoint |
-| `<leader>dc` | Continue          |
-| `<leader>dn` | Step over         |
-| `<leader>di` | Step into         |
-| `<leader>do` | Step out          |
-| `<leader>du` | Toggle DAP UI     |
-| `<leader>dr` | Restart session   |
-| `<leader>ds` | New session       |
-| `<leader>dR` | Toggle REPL       |
+| Key          | Action                      |
+| ------------ | --------------------------- |
+| `<leader>dt` | Toggle breakpoint           |
+| `<leader>dc` | Continue                    |
+| `<leader>dn` | Step over                   |
+| `<leader>di` | Step into                   |
+| `<leader>do` | Step out                    |
+| `<leader>du` | Toggle DAP UI               |
+| `<leader>dr` | Restart session             |
+| `<leader>ds` | New session                 |
+| `<leader>dR` | Toggle REPL                 |
+| `<leader>dl` | Show DAP log                |
+| `<leader>dw` | Open watch window           |
 
 ### Harpoon
 
@@ -288,6 +325,7 @@ manager (`<leader>dp`), plus headless `DotnetBuild`, `DotnetPublish`, and
 | --------------------- | ------------------------ |
 | `<leader>a`           | Add file to list         |
 | `<C-e>`               | Toggle quick menu        |
+| `<C-s>` (in menu)     | Save and close menu      |
 | `<M-S-p>` / `<M-S-n>` | Prev / next harpoon file |
 
 ### Diagnostics (Trouble)
@@ -308,6 +346,14 @@ manager (`<leader>dp`), plus headless `DotnetBuild`, `DotnetPublish`, and
 
 The Dotnet Manager UI is provided by `dotnet-cli.nvim` + `comet.nvim`. See
 their documentation for UI keybindings.
+
+### AI (Copilot)
+
+| Key     | Mode   | Action                    |
+| ------- | ------ | ------------------------- |
+| `<M-l>` | insert | Accept AI suggestion      |
+| `<M-]>` | insert | Next Copilot suggestion   |
+| `<M-[>` | insert | Prev Copilot suggestion   |
 
 ### Other
 

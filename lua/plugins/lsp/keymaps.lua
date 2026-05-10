@@ -1,4 +1,3 @@
-local snacks = require("snacks")
 local ui = require("utils.ui")
 local utils_lsp = require("utils.lsp")
 
@@ -20,7 +19,7 @@ function M.get()
     {
       "<leader>cl",
       function()
-        snacks.picker.lsp_config()
+        require("snacks").picker.lsp_config()
       end,
       desc = "Lsp Info",
     },
@@ -112,7 +111,7 @@ function M.get()
     {
       "<leader>cR",
       function()
-        snacks.rename.rename_file()
+        require("snacks").rename.rename_file()
       end,
       desc = "Rename File",
       mode = { "n" },
@@ -123,45 +122,45 @@ function M.get()
     {
       "]]",
       function()
-        snacks.words.jump(vim.v.count1)
+        require("snacks").words.jump(vim.v.count1)
       end,
       has = "documentHighlight",
       desc = "Next Reference",
       cond = function()
-        return snacks.words.is_enabled()
+        return require("snacks").words.is_enabled()
       end,
     },
     {
       "[[",
       function()
-        snacks.words.jump(-vim.v.count1)
+        require("snacks").words.jump(-vim.v.count1)
       end,
       has = "documentHighlight",
       desc = "Prev Reference",
       cond = function()
-        return snacks.words.is_enabled()
+        return require("snacks").words.is_enabled()
       end,
     },
     {
       "<a-n>",
       function()
-        snacks.words.jump(vim.v.count1, true)
+        require("snacks").words.jump(vim.v.count1, true)
       end,
       has = "documentHighlight",
       desc = "Next Reference",
       cond = function()
-        return snacks.words.is_enabled()
+        return require("snacks").words.is_enabled()
       end,
     },
     {
       "<a-p>",
       function()
-        snacks.words.jump(-vim.v.count1, true)
+        require("snacks").words.jump(-vim.v.count1, true)
       end,
       has = "documentHighlight",
       desc = "Prev Reference",
       cond = function()
-        return snacks.words.is_enabled()
+        return require("snacks").words.is_enabled()
       end,
     },
   }

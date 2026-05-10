@@ -2,7 +2,6 @@
 
 local fs = require("utils.fs")
 local os_utils = require("utils.os")
-local util = require("conform.util")
 
 return {
   default_format_opts = {

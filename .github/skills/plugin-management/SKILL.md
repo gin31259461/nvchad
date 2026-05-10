@@ -95,28 +95,31 @@ Commit it to pin versions.
 
 ## Mason Package Registration
 
-Tools installed via Mason are listed in `lua/config/packages.lua`:
+Tools installed via Mason are listed in `lua/config/packages.lua`. The file has two
+private locals that feed three exported fields:
 
 ```lua
-return {
-  treesitter_ensure_installed = { "lua", "python", "c_sharp", ... },
-
-  pkgs_with_lsp_setup = {
-    server_name = "mason-package-name",
-  },
-
-  pkgs_ensure_installed = {
-    "stylua",
-    "prettier",
-    "csharpier",
-    -- formatters, linters, debuggers
-  },
+-- Private locals (edit these to add packages):
+local pkgs_with_lsp_setup = {
+  -- key = lspconfig name, value = Mason package name
+  server_name = "mason-package-name",
 }
+
+local pkgs_only = {
+  -- formatters, linters, DAP adapters (no lspconfig setup)
+  "stylua",
+  "prettier",
+  "csharpier",
+}
+
+-- Exported (computed automatically from the locals above):
+-- M.lsp_servers            — list of lspconfig server names
+-- M.mason_ensure_installed — combined list of all Mason packages
+-- M.treesitter_ensure_installed = { "lua", "python", "c_sharp", ... }
 ```
 
-- `pkgs_with_lsp_setup` — LSP servers managed by mason-lspconfig.
-- `pkgs_ensure_installed` — all other Mason tools (formatters, linters, DAP
-  adapters).
+- `pkgs_with_lsp_setup` — LSP servers (sets up both lspconfig and Mason install).
+- `pkgs_only` — all other Mason tools (formatters, linters, DAP adapters).
 
 ## Formatter / Linter Setup
 

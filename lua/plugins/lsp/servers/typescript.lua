@@ -90,6 +90,15 @@ return {
 
   setup = {
     vtsls = function()
+      -- Copy typescript settings to javascript so both share the same configuration.
+      local spec = require("plugins.lsp.config")
+      spec.servers["vtsls"].settings.javascript = vim.tbl_deep_extend(
+        "force",
+        {},
+        spec.servers["vtsls"].settings.typescript,
+        spec.servers["vtsls"].settings.javascript or {}
+      )
+
       lsp.on_attach(function(client, _)
         client.commands["_typescript.moveToFileRefactoring"] = function(command, _)
           local arg0, arg1, arg2 = utils.unpack(command.arguments)

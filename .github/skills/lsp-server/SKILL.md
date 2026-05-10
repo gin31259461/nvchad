@@ -14,7 +14,7 @@ lua/plugins/lsp/
 │   ├── lua_ls.lua      ← Lua language server
 │   ├── python.lua      ← pyright + ruff
 │   ├── typescript.lua  ← vtsls
-│   ├── dotnet.lua      ← omnisharp + roslyn
+│   ├── dotnet.lua      ← roslyn (.NET)
 │   └── misc.lua        ← catch-all for simpler servers
 ├── config.lua          ← merges base + all server modules → Lsp.Config.Spec
 ├── setup.lua           ← iterates config, calls lspconfig/setup
@@ -53,7 +53,7 @@ pkgs_with_lsp_setup = {
 },
 ```
 
-Also add any companion tools (formatter, linter) to `pkgs_ensure_installed`.
+Also add any companion tools (formatter, linter) to the local `pkgs_only` list in the same file.
 
 ### Step 2 — Create or extend a server module
 

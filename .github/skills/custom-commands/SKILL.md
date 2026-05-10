@@ -108,7 +108,7 @@ end, { desc = "Description shown in which-key" })
 
 ## Registering a Keymap
 
-Add the keymap to `lua/configs/keymaps.lua`:
+Add the keymap to `lua/config/keymaps.lua`:
 
 ```lua
 map("n", "<leader>dp", "<cmd>DotnetManager<CR>", { desc = "Dotnet Manager" })

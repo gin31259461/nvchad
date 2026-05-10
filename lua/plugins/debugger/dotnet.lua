@@ -2,9 +2,6 @@
 -- this dap config refer to: https://codeberg.org/mfussenegter/nvim-dap/wiki/Debug-Adapter-installation#user-content-dotnet
 
 local os_utils = require("utils.os")
-local dotnet_job = require("dotnet-cli").job
-local dotnet_project = require("dotnet-cli").project
-local dotnet_cmd_build = require("dotnet-cli.commands.build")
 
 local function pick_dll()
   return vim.fn.input("Path to dll: ", vim.fn.getcwd() .. "/bin/Debug/", "file")
@@ -45,6 +42,8 @@ return {
       end
 
       vim.notify("Building project", vim.log.levels.INFO, { title = "Dotnet" })
+      local dotnet_project = require("dotnet-cli").project
+      local dotnet_cmd_build = require("dotnet-cli.commands.build")
       local build_cmd = dotnet_cmd_build.get_cmd(dotnet_project.get_csproj_files()[1], "Debug")
 
       vim.fn.jobstart(build_cmd, {
@@ -101,6 +100,8 @@ return {
         name = "Auto Attach to .NET Core Process",
         request = "attach",
         processId = function()
+          local dotnet_job = require("dotnet-cli").job
+          local dotnet_project = require("dotnet-cli").project
           local pid = dotnet_job.get_netcore_pid(dotnet_project.get_current_running_project_name())
 
           vim.notify(

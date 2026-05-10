@@ -48,11 +48,11 @@ enabled = true
 
 | Thing            | Convention            | Example                          |
 | ---------------- | --------------------- | -------------------------------- |
-| Modules          | `snake_case`          | `utils.fs`, `cmds.dotnet`        |
+| Modules          | `snake_case`          | `utils.fs`, `utils.lsp`          |
 | Functions        | `snake_case`          | `get_csproj_files()`             |
 | Local variables  | `snake_case`          | `local list_h`                   |
 | Type annotations | `PascalCase`          | `Lsp.Config.Spec`, `DotnetUICtx` |
-| Files            | `snake_case` or kebab | `dotnet-ui.lua`, `lua_ls.lua`    |
+| Files            | `snake_case` or kebab | `lua_ls.lua`, `dotnet.lua`       |
 | Constants        | `UPPER_SNAKE`         | `OUT_HL_PATTERNS`                |
 
 ### Module Export Pattern
@@ -150,7 +150,7 @@ return {
 
 ### Keymaps
 
-- **General keymaps** → `lua/configs/keymaps.lua` (deferred via `vim.schedule`).
+- **General keymaps** → `lua/config/keymaps.lua` (deferred via `vim.schedule`).
 - **LSP keymaps** → `lua/plugins/lsp/keymaps.lua` (capability-aware, dynamic).
 - **Plugin keymaps** → inline in each plugin spec's `keys` field.
 - **DAP keymaps** → `lua/plugins/debugger/init.lua`.
@@ -212,8 +212,8 @@ the plugin.
 
 1. **Treesitter parser** — add to `config/packages.lua` →
    `treesitter_ensure_installed`.
-2. **LSP server** — add to `config/packages.lua` → `pkgs_with_lsp_setup` (key =
-   lspconfig name, value = Mason package name).
+2. **LSP server** — add to `config/packages.lua` → local `pkgs_with_lsp_setup` (key =
+   lspconfig name, value = Mason package name). Companion tools go in `pkgs_only`.
 3. **Server config** — create `lua/plugins/lsp/servers/<lang>.lua` returning
    `---@type Lsp.Server.Module`, then add it to the `server_modules` list in
    `lua/plugins/lsp/config.lua`.

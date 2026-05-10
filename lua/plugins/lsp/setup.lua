@@ -10,14 +10,6 @@ local lspconfig_opts = require("plugins.lsp.config")
 local servers = lspconfig_opts.servers
 local setup = lspconfig_opts.setup
 
--- copy typescript settings to javascript
-servers["vtsls"].settings.javascript = vim.tbl_deep_extend(
-  "force",
-  {},
-  servers["vtsls"].settings.typescript,
-  servers["vtsls"].settings.javascript or {}
-)
-
 ---@type vim.lsp.Config
 local default_lsp_config = {
   on_init = lspconfig_opts.on_init,

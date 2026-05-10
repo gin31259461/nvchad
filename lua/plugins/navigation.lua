@@ -81,40 +81,43 @@ return {
     "nvim-telescope/telescope.nvim",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     cmd = "Telescope",
-    opts = {
-      defaults = {
-        prompt_prefix = "   ",
-        selection_caret = " ",
-        entry_prefix = " ",
-        sorting_strategy = "ascending",
-        wrap_results = false,
-        path_display = {
-          shorten = { len = 8, exclude = { 1, -1 } },
-        },
-        layout_config = {
-          horizontal = {
-            prompt_position = "top",
-            preview_width = 0.55,
+    opts = function()
+      local actions = require("telescope.actions")
+      return {
+        defaults = {
+          prompt_prefix = "   ",
+          selection_caret = " ",
+          entry_prefix = " ",
+          sorting_strategy = "ascending",
+          wrap_results = false,
+          path_display = {
+            shorten = { len = 8, exclude = { 1, -1 } },
           },
-          width = 0.87,
-          height = 0.80,
-        },
-        mappings = {
-          n = {
-            ["q"] = require("telescope.actions").close,
-            ["<C-j>"] = require("telescope.actions").move_selection_next,
-            ["<C-k>"] = require("telescope.actions").move_selection_previous,
+          layout_config = {
+            horizontal = {
+              prompt_position = "top",
+              preview_width = 0.55,
+            },
+            width = 0.87,
+            height = 0.80,
           },
-          i = {
-            ["<C-j>"] = require("telescope.actions").move_selection_next,
-            ["<C-k>"] = require("telescope.actions").move_selection_previous,
+          mappings = {
+            n = {
+              ["q"] = actions.close,
+              ["<C-j>"] = actions.move_selection_next,
+              ["<C-k>"] = actions.move_selection_previous,
+            },
+            i = {
+              ["<C-j>"] = actions.move_selection_next,
+              ["<C-k>"] = actions.move_selection_previous,
+            },
           },
         },
-      },
 
-      -- extensions_list = { "themes", "terms", "noice" },
-      extensions = { "noice" },
-    },
+        -- extensions_list = { "themes", "terms", "noice" }
+        extensions = { "noice" },
+      }
+    end,
     config = function(_, opts)
       local telescope = require("telescope")
 
