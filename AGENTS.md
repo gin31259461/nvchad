@@ -30,18 +30,19 @@ debugger integration, and project-management tooling.
 All Lua files must conform to `.stylua.toml`:
 
 ```toml
+column_width = 100
+line_endings = "Unix"
 indent_type = "Spaces"
 indent_width = 2
-column_width = 120
-[sort_requires]
-enabled = true
+quote_style = "AutoPreferDouble"
+call_parentheses = "Always"
 ```
 
 **Key rules:**
 
 - **2-space indent**, spaces only.
-- **120-column line limit.**
-- Requires are auto-sorted — do not fight the sort order.
+- **100-column line limit.**
+- Double quotes preferred (`AutoPreferDouble`).
 - Run `stylua lua/` from the repo root to format.
 
 ### Naming
@@ -158,12 +159,20 @@ return {
   - `<leader>f` — find / format
   - `<leader>b` — buffer
   - `<leader>c` — code (LSP actions)
-  - `<leader>d` — debug / dotnet
-  - `<leader>s` — search
+  - `<leader>d` — debug / dotnet (`dp` = DotnetManager; rest = DAP)
+  - `<leader>s` — search / picker
   - `<leader>g` — git
-  - `<leader>t` — tab / theme
+  - `<leader>t` — trouble / todos (`th` = NvChad themes)
   - `<leader>w` — which-key
   - `<leader>m` — markdown
+  - `<leader>a` — harpoon add
+  - `<leader>e` — NvimTree focus
+  - `<leader>x` — close buffer
+  - `<leader>/` — toggle comment
+  - `<leader>q` — record macro
+  - `<leader>D` — Snacks dashboard
+  - `<leader>n` — notification history
+  - `<leader>cd` — cd to project root
 
 ## 4. Dotnet Plugin (`lua/plugins/ui/dotnet.lua`)
 
