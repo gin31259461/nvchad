@@ -14,14 +14,15 @@ local function get_dotnet_project_name()
     return ""
   end
 
-  return vim.fn.getcwd() .. "/bin/Debug/" .. vim.fn.fnamemodify(csproj_files[1], ":t:r") .. ".dll"
+  return vim.fn.getcwd()
+    .. "/bin/Debug/"
+    .. vim.fn.fnamemodify(csproj_files[1], ":t:r")
+    .. ".dll"
 end
 
 local executable = "netcoredbg"
 
 if os_utils.is_win() then
-  -- FIX: The netcoredbg executable must have the .exe extension on Windows, not .cmd
-  -- this path will not work because it's .cmd: vim.fn.exepath("netcoredbg")
   executable = vim.fn.stdpath("data")
     .. "/mason/packages/netcoredbg/netcoredbg/"
     .. executable
@@ -44,13 +45,18 @@ return {
       vim.notify("Building project", vim.log.levels.INFO, { title = "Dotnet" })
       local dotnet_project = require("dotnet-cli").project
       local dotnet_cmd_build = require("dotnet-cli.commands.build")
-      local build_cmd = dotnet_cmd_build.get_cmd(dotnet_project.get_csproj_files()[1], "Debug")
+      local build_cmd =
+        dotnet_cmd_build.get_cmd(dotnet_project.get_csproj_files()[1], "Debug")
 
       vim.fn.jobstart(build_cmd, {
         -- refer to nvim doc: https://neovim.io/doc/user/job_control.html#on_exit
         on_exit = function(job_id, exit_code, event_type)
           if exit_code == 0 then
-            vim.notify("Build project successfully", vim.log.levels.INFO, { title = "Dotnet" })
+            vim.notify(
+              "Build project successfully",
+              vim.log.levels.INFO,
+              { title = "Dotnet" }
+            )
 
             callback({
               type = "executable",
@@ -58,7 +64,11 @@ return {
               args = { "--interpreter=vscode" },
             })
           else
-            vim.notify("Error occur when build project", vim.log.levels.ERROR, { title = "Dotnet" })
+            vim.notify(
+              "Error occur when build project",
+              vim.log.levels.ERROR,
+              { title = "Dotnet" }
+            )
           end
         end,
       })
@@ -73,7 +83,7 @@ return {
         request = "launch",
         program = get_dotnet_project_name,
         cwd = vim.fn.getcwd(),
-        justMyCode = true,
+        justMyCode = false,
         stopAtEntry = false,
         env = {
           ASPNETCORE_ENVIRONMENT = "Development",
@@ -87,7 +97,7 @@ return {
         request = "launch",
         program = pick_dll,
         cwd = vim.fn.getcwd(),
-        justMyCode = true,
+        justMyCode = false,
         stopAtEntry = false,
         env = {
           ASPNETCORE_ENVIRONMENT = "Development",
@@ -102,7 +112,19 @@ return {
         processId = function()
           local dotnet_job = require("dotnet-cli").job
           local dotnet_project = require("dotnet-cli").project
-          local pid = dotnet_job.get_netcore_pid(dotnet_project.get_current_running_project_name())
+          local current_running_project =
+            dotnet_project.get_current_running_project_name()
+
+          if not current_running_project then
+            vim.notify(
+              "No running .NET Core process found",
+              vim.log.levels.ERROR,
+              { title = "Dotnet" }
+            )
+            return nil
+          end
+
+          local pid = dotnet_job.get_netcore_pid(current_running_project)
 
           vim.notify(
             "Attaching to process with PID: " .. pid,

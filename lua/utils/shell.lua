@@ -13,12 +13,16 @@ M.setup = function()
     vim.o.shellxquote = ""
 
     -- this option only modifiable in MS-Windows, so set value here
-    vim.o.shellslash = true
+    -- TODO: will mismatch with opencode.nvim (cwd path)
+    -- vim.o.shellslash = true
 
     -- TODO: remove this when vim.ui.open is fixed upstream.
     -- https://github.com/neovim/neovim/issues/39524
     vim.ui.open = function(uri)
-      return vim.system({ "rundll32", "url.dll,FileProtocolHandler", uri }, { detach = true })
+      return vim.system(
+        { "rundll32", "url.dll,FileProtocolHandler", uri },
+        { detach = true }
+      )
     end
     vim.g.netrw_browsex_viewer = "rundll32 url.dll,FileProtocolHandler"
 

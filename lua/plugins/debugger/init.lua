@@ -1,7 +1,10 @@
 ---@type LazySpec[]
 return {
   {
-    "mfussenegger/nvim-dap",
+    -- "mfussenegger/nvim-dap",
+    -- WORKAROUND: use my forked version to fix breakpoints not working on windows
+    -- refer to: https://github.com/mfussenegger/nvim-dap/issues/1551
+    "Orbit-Lua/nvim-dap",
     event = { "VeryLazy" },
     opts = function()
       local config = require("plugins.debugger.config")
@@ -70,7 +73,7 @@ return {
   {
     "rcarriga/nvim-dap-ui",
     event = "VeryLazy",
-    dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
+    dependencies = { "Orbit-Lua/nvim-dap", "nvim-neotest/nvim-nio" },
     config = function(_, opts)
       local dap = require("dap")
       local dapui = require("dapui")
