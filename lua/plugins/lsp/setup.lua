@@ -17,7 +17,8 @@ local default_lsp_config = {
 }
 
 for _, server in ipairs(configs.packages.lsp_servers) do
-  local server_opts = vim.tbl_deep_extend("force", default_lsp_config, servers[server] or {})
+  local server_opts =
+    vim.tbl_deep_extend("force", default_lsp_config, servers[server] or {})
 
   if type(lspconfig_opts.disable_default_settings[server]) == "table" then
     for _, v in ipairs(lspconfig_opts.disable_default_settings[server]) do

@@ -27,11 +27,16 @@ local make_client_capabilities = function(opts)
   local capabilities = vim.lsp.protocol.make_client_capabilities()
   local cmp_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
   if cmp_ok then
-    capabilities = vim.tbl_deep_extend("force", capabilities, cmp_nvim_lsp.default_capabilities())
+    capabilities = vim.tbl_deep_extend(
+      "force",
+      capabilities,
+      cmp_nvim_lsp.default_capabilities()
+    )
   end
   local nvchad_ok, nvchad_lsp = pcall(require, "nvchad.configs.lspconfig")
   if nvchad_ok then
-    capabilities = vim.tbl_deep_extend("force", capabilities, nvchad_lsp.capabilities)
+    capabilities =
+      vim.tbl_deep_extend("force", capabilities, nvchad_lsp.capabilities)
   end
   return vim.tbl_deep_extend("force", capabilities, opts or {})
 end

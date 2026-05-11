@@ -18,7 +18,11 @@ return {
         },
       },
       keys = {
-        { "<leader>co", lsp.action["source.organizeImports"], desc = "Organize Imports" },
+        {
+          "<leader>co",
+          lsp.action["source.organizeImports"],
+          desc = "Organize Imports",
+        },
       },
     },
 

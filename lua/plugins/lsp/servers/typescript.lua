@@ -63,14 +63,26 @@ return {
           end,
           desc = "File References",
         },
-        { "<leader>co", lsp.action["source.organizeImports"], desc = "Organize Imports" },
-        { "<leader>cM", lsp.action["source.addMissingImports.ts"], desc = "Add missing imports" },
+        {
+          "<leader>co",
+          lsp.action["source.organizeImports"],
+          desc = "Organize Imports",
+        },
+        {
+          "<leader>cM",
+          lsp.action["source.addMissingImports.ts"],
+          desc = "Add missing imports",
+        },
         {
           "<leader>cu",
           lsp.action["source.removeUnused.ts"],
           desc = "Remove unused imports",
         },
-        { "<leader>cD", lsp.action["source.fixAll.ts"], desc = "Fix all diagnostics" },
+        {
+          "<leader>cD",
+          lsp.action["source.fixAll.ts"],
+          desc = "Fix all diagnostics",
+        },
         {
           "<leader>cV",
           function()
@@ -83,7 +95,11 @@ return {
 
     ["typescript-tools"] = {
       keys = {
-        { "<leader>co", "<cmd>TSToolsOrganizeImports<cr>", desc = "Organize Imports" },
+        {
+          "<leader>co",
+          "<cmd>TSToolsOrganizeImports<cr>",
+          desc = "Organize Imports",
+        },
       },
     },
   },
@@ -100,7 +116,10 @@ return {
       )
 
       lsp.on_attach(function(client, _)
-        client.commands["_typescript.moveToFileRefactoring"] = function(command, _)
+        client.commands["_typescript.moveToFileRefactoring"] = function(
+          command,
+          _
+        )
           local arg0, arg1, arg2 = utils.unpack(command.arguments)
 
           ---@type string, string, lsp.Range

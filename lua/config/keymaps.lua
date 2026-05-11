@@ -77,8 +77,18 @@ map("n", "<", "<<", { desc = "indent backward easily" })
 map("n", ">", ">>", { desc = "indent forward easily" })
 map("x", "<", "<gv", { desc = "indent backward and stay in visual mode" })
 map("x", ">", ">gv", { desc = "indent forward and stay in visual mode" })
-map("x", "J", ":move '>+1<CR>gv-gv", { desc = "move selected block up and stay in visual mode" })
-map("x", "K", ":move '<-2<CR>gv-gv", { desc = "move selected block down and stay in visual mode" })
+map(
+  "x",
+  "J",
+  ":move '>+1<CR>gv-gv",
+  { desc = "move selected block up and stay in visual mode" }
+)
+map(
+  "x",
+  "K",
+  ":move '<-2<CR>gv-gv",
+  { desc = "move selected block down and stay in visual mode" }
+)
 map("x", "p", "P", { desc = "dont copy replaced text" })
 map("n", "<Esc>", "<cmd>noh<CR>", { desc = "general clear highlights" })
 map("i", "jk", "<ESC>")
@@ -98,4 +108,9 @@ map("n", "<leader>th", function()
 end, { desc = "telescope nvchad themes" })
 
 -------------------- ui --------------------
-map("n", "<leader>dp", "<cmd>DotnetManager<CR>", { desc = "open dotnet manager" })
+map(
+  "n",
+  "<leader>dp",
+  "<cmd>DotnetManager<CR>",
+  { desc = "open dotnet manager" }
+)

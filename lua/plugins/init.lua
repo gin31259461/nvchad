@@ -40,7 +40,11 @@ return {
     end,
     ft = { "markdown" },
     keys = {
-      { "<leader>mp", "<cmd>MarkdownPreviewToggle<cr>", desc = "markdown preview toggle" },
+      {
+        "<leader>mp",
+        "<cmd>MarkdownPreviewToggle<cr>",
+        desc = "markdown preview toggle",
+      },
     },
   },
 

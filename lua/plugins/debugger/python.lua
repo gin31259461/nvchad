@@ -45,7 +45,10 @@ return {
         callback({
           type = "server",
           host = host,
-          port = assert(port, "`connect.port` is required for a python `attach` configuration"),
+          port = assert(
+            port,
+            "`connect.port` is required for a python `attach` configuration"
+          ),
           options = {
             source_filetype = "python",
           },

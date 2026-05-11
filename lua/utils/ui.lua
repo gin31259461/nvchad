@@ -32,7 +32,10 @@ end
 M.tree_offset = function()
   local w = M.get_neo_tree_width()
   return w == 0 and ""
-    or "%#NeoTreeNormal#" .. string.rep(" ", w) .. "%#NeoTreeWinSeparator#" .. "│"
+    or "%#NeoTreeNormal#"
+      .. string.rep(" ", w)
+      .. "%#NeoTreeWinSeparator#"
+      .. "│"
 end
 
 M.harpoon.short_path_length = 8
@@ -54,8 +57,10 @@ M.harpoon.highlight_current_file = function()
           break
         end
 
-        local short_path =
-          fs.pretty_path(cx.current_file, { length = M.harpoon.short_path_length, only_cwd = true })
+        local short_path = fs.pretty_path(
+          cx.current_file,
+          { length = M.harpoon.short_path_length, only_cwd = true }
+        )
 
         if short_path == "" then
           return
@@ -66,7 +71,12 @@ M.harpoon.highlight_current_file = function()
         name_of_harpoon = string.gsub(name_of_harpoon, "([%-%[%]])", "%%%1")
         if string.find(format_path, name_of_harpoon) then
           -- highlight the harpoon menu line that corresponds to the current buffer
-          local line = vim.api.nvim_buf_get_lines(cx.bufnr, line_number - 1, line_number, false)[1]
+          local line = vim.api.nvim_buf_get_lines(
+            cx.bufnr,
+            line_number - 1,
+            line_number,
+            false
+          )[1]
 
           vim.api.nvim_buf_set_extmark(
             cx.bufnr,
@@ -75,7 +85,9 @@ M.harpoon.highlight_current_file = function()
             2,
             {
               end_col = #line,
-              hl_group = hl.util.get_hl_name_without_syntax(hl.statusline.active_context),
+              hl_group = hl.util.get_hl_name_without_syntax(
+                hl.statusline.active_context
+              ),
             }
           )
           -- set the position of the cursor in the harpoon menu to the start of the current buffer line
@@ -108,7 +120,8 @@ M.get_file_icon = function(path, opts)
   local devicon_hl_name = ""
 
   if filename ~= "" then
-    devicon, devicon_hl_name = web_devicons.get_icon(filename, filename:match("%.([^%.]+)$"))
+    devicon, devicon_hl_name =
+      web_devicons.get_icon(filename, filename:match("%.([^%.]+)$"))
     icon = (devicon or "")
   end
 
@@ -140,17 +153,23 @@ end
 
 ---@return integer, integer
 function M.get_completion_window_size()
-  local max_width =
-    math.min(CONFIG.completion.max_w, math.floor(vim.o.columns * CONFIG.completion.pct_w))
-  local max_height =
-    math.min(CONFIG.completion.max_h, math.floor(vim.o.lines * CONFIG.completion.pct_h))
+  local max_width = math.min(
+    CONFIG.completion.max_w,
+    math.floor(vim.o.columns * CONFIG.completion.pct_w)
+  )
+  local max_height = math.min(
+    CONFIG.completion.max_h,
+    math.floor(vim.o.lines * CONFIG.completion.pct_h)
+  )
   return max_width, max_height
 end
 
 ---@return integer, integer
 function M.get_doc_window_size()
-  local max_width = math.min(CONFIG.doc.max_w, math.floor(vim.o.columns * CONFIG.doc.pct_w))
-  local max_height = math.min(CONFIG.doc.max_h, math.floor(vim.o.lines * CONFIG.doc.pct_h))
+  local max_width =
+    math.min(CONFIG.doc.max_w, math.floor(vim.o.columns * CONFIG.doc.pct_w))
+  local max_height =
+    math.min(CONFIG.doc.max_h, math.floor(vim.o.lines * CONFIG.doc.pct_h))
   return max_width, max_height
 end
 

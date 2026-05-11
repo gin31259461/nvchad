@@ -68,7 +68,8 @@ end
 function M.snippet_fix(snippet)
   local texts = {} ---@type table<number, string>
   return M.snippet_replace(snippet, function(placeholder)
-    texts[placeholder.n] = texts[placeholder.n] or M.snippet_preview(placeholder.text)
+    texts[placeholder.n] = texts[placeholder.n]
+      or M.snippet_preview(placeholder.text)
     return "${" .. placeholder.n .. ":" .. texts[placeholder.n] .. "}"
   end)
 end
@@ -80,10 +81,17 @@ function M.auto_brackets(entry)
   local item = entry.completion_item
   if vim.tbl_contains({ Kind.Function, Kind.Method }, item.kind) then
     local cursor = vim.api.nvim_win_get_cursor(0)
-    local prev_char =
-      vim.api.nvim_buf_get_text(0, cursor[1] - 1, cursor[2], cursor[1] - 1, cursor[2] + 1, {})[1]
+    local prev_char = vim.api.nvim_buf_get_text(
+      0,
+      cursor[1] - 1,
+      cursor[2],
+      cursor[1] - 1,
+      cursor[2] + 1,
+      {}
+    )[1]
     if prev_char ~= "(" and prev_char ~= ")" then
-      local keys = vim.api.nvim_replace_termcodes("()<left>", false, false, true)
+      local keys =
+        vim.api.nvim_replace_termcodes("()<left>", false, false, true)
       vim.api.nvim_feedkeys(keys, "i", true)
     end
   end
@@ -151,7 +159,8 @@ function M.expand(snippet)
     local fixed = M.snippet_fix(snippet)
     ok = pcall(vim.snippet.expand, fixed)
 
-    local msg = ok and "Failed to parse snippet,\nbut was able to fix it automatically."
+    local msg = ok
+        and "Failed to parse snippet,\nbut was able to fix it automatically."
       or ("Failed to parse snippet.\n" .. err)
 
     require("utils")[ok and "warn" or "error"](

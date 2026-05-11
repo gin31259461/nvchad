@@ -18,7 +18,8 @@ local config = require("config")
 ---@param opts StatuslineComponentOpt
 M.merge_components = function(components, opts)
   local gap = opts.gap or 1
-  local margin = vim.tbl_deep_extend("keep", opts.margin or {}, { left = 0, right = 0 })
+  local margin =
+    vim.tbl_deep_extend("keep", opts.margin or {}, { left = 0, right = 0 })
   local margin_left = string.rep(" ", margin.left)
   local margin_right = string.rep(" ", margin.right)
 
@@ -26,7 +27,9 @@ M.merge_components = function(components, opts)
   local filtered_components = vim.tbl_filter(function(c)
     return c ~= ""
   end, components)
-  return margin_left .. table.concat(filtered_components, string.rep(" ", gap)) .. margin_right
+  return margin_left
+    .. table.concat(filtered_components, string.rep(" ", gap))
+    .. margin_right
 end
 
 ---@return integer
@@ -64,7 +67,10 @@ M.pretty_symbol_path = function(symbols, length)
   end
 
   local short_parts = { parts[1], "…" }
-  vim.list_extend(short_parts, vim.list_slice(parts, #parts - length + 2, #parts))
+  vim.list_extend(
+    short_parts,
+    vim.list_slice(parts, #parts - length + 2, #parts)
+  )
 
   return table.concat(short_parts, sep)
 end
@@ -114,7 +120,9 @@ M.lsp_symbols = function()
     local symbols = M.state.lsp_symbols()
 
     if symbols ~= "" then
-      return hl.statusline.current_file .. sep .. M.pretty_symbol_path(symbols, 3)
+      return hl.statusline.current_file
+        .. sep
+        .. M.pretty_symbol_path(symbols, 3)
     end
   end
 
@@ -132,13 +140,17 @@ M.current_lsp = function()
         if client.name == "copilot" then
           copilot = copilot .. " "
         else
-          lsp_client = vim.o.columns > 100 and "  LSP ~ " .. client.name or "  LSP"
+          lsp_client = vim.o.columns > 100 and "  LSP ~ " .. client.name
+            or "  LSP"
         end
       end
     end
 
     return M.merge_components(
-      { hl.statusline.copilot .. copilot, hl.statusline.active_context .. lsp_client },
+      {
+        hl.statusline.copilot .. copilot,
+        hl.statusline.active_context .. lsp_client,
+      },
       { gap = 1, margin = { right = 1 } }
     )
   end
@@ -157,13 +169,18 @@ end
 
 ---@return string
 M.git = function()
-  if not vim.b[M.stbufnr()].gitsigns_head or vim.b[M.stbufnr()].gitsigns_git_status then
+  if
+    not vim.b[M.stbufnr()].gitsigns_head
+    or vim.b[M.stbufnr()].gitsigns_git_status
+  then
     return ""
   end
 
   local git_status = vim.b[M.stbufnr()].gitsigns_status_dict
 
-  local added = (git_status.added and git_status.added ~= 0) and (" " .. git_status.added) or ""
+  local added = (git_status.added and git_status.added ~= 0)
+      and (" " .. git_status.added)
+    or ""
   local changed = (git_status.changed and git_status.changed ~= 0)
       and (" " .. git_status.changed)
     or ""
@@ -230,8 +247,15 @@ M.set_mode_state = function()
       recording = " @" .. recording
     end
 
-    local mode_sep_left = "%#St_" .. modes[m][2] .. "ModeSep#" .. config.icons.separators.round.left
-    local current_mode = "%#St_" .. modes[m][2] .. "Mode#" .. " " .. modes[m][1]
+    local mode_sep_left = "%#St_"
+      .. modes[m][2]
+      .. "ModeSep#"
+      .. config.icons.separators.round.left
+    local current_mode = "%#St_"
+      .. modes[m][2]
+      .. "Mode#"
+      .. " "
+      .. modes[m][1]
     local mode_sep_right = "%#St_"
       .. modes[m][2]
       .. "ModeSep#"

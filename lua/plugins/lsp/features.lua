@@ -15,7 +15,10 @@ M.activate = function(opts)
       if
         vim.api.nvim_buf_is_valid(buffer)
         and vim.bo[buffer].buftype == ""
-        and not vim.tbl_contains(opts.inlay_hints.exclude, vim.bo[buffer].filetype)
+        and not vim.tbl_contains(
+          opts.inlay_hints.exclude,
+          vim.bo[buffer].filetype
+        )
       then
         vim.lsp.inlay_hint.enable(true, { bufnr = buffer })
       end

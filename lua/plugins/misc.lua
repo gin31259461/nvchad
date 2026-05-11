@@ -5,7 +5,8 @@ return {
   {
     "obsidian-nvim/obsidian.nvim",
     version = "*", -- use latest release, remove to use latest commit
-    cond = vim.fn.isdirectory(vim.fn.expand("~") .. "/OneDrive/Knowledge_Base") == 1,
+    cond = vim.fn.isdirectory(vim.fn.expand("~") .. "/OneDrive/Knowledge_Base")
+      == 1,
     lazy = true,
     ft = "markdown",
     ---@module 'obsidian'

@@ -39,7 +39,8 @@ return {
           end
         end
 
-        local config_path = fs.config_path .. "/lua/config/db/template/sqlfluff.cfg"
+        local config_path = fs.config_path
+          .. "/lua/config/db/template/sqlfluff.cfg"
         return { "format", "--config", config_path, "-" }
       end,
       stdin = true,
@@ -50,7 +51,8 @@ return {
     ["sql_formatter"] = {
       args = function()
         local current_dir = vim.fn.expand("%:h")
-        local current_config_path = string.format("%s/.sql-formatter.json", current_dir)
+        local current_config_path =
+          string.format("%s/.sql-formatter.json", current_dir)
 
         return { "--config", current_config_path }
       end,

@@ -150,7 +150,8 @@ M.setup_diagnostic = function()
     },
   }
 
-  all_underline_hl = vim.tbl_deep_extend("force", all_underline_hl, underline_hl)
+  all_underline_hl =
+    vim.tbl_deep_extend("force", all_underline_hl, underline_hl)
   all_hl = vim.tbl_deep_extend("force", all_hl, hl)
 end
 
@@ -184,7 +185,12 @@ M.setup_dap = function()
   })
 
   local dap_signs = {
-    DapBreakpoint = { text = "●", texthl = "DapBreakpointColor", linehl = "", numhl = "" },
+    DapBreakpoint = {
+      text = "●",
+      texthl = "DapBreakpointColor",
+      linehl = "",
+      numhl = "",
+    },
   }
 
   for name, sign in pairs(dap_signs) do

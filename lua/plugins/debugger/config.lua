@@ -19,8 +19,10 @@ local spec = { adapters = {}, configurations = {} }
 
 for _, mod_name in ipairs(modules) do
   local mod = require(mod_name)
-  spec.adapters = vim.tbl_deep_extend("force", spec.adapters, mod.adapters or {})
-  spec.configurations = vim.tbl_deep_extend("force", spec.configurations, mod.configurations or {})
+  spec.adapters =
+    vim.tbl_deep_extend("force", spec.adapters, mod.adapters or {})
+  spec.configurations =
+    vim.tbl_deep_extend("force", spec.configurations, mod.configurations or {})
 end
 
 return spec

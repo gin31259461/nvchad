@@ -35,18 +35,30 @@ local options = {
       max_height = select(2, ui.get_doc_window_size()),
     },
   },
-  completion = { completeopt = "menu,menuone,noinsert" .. (auto_select and "" or ",noselect") },
-  preselect = auto_select and cmp_types.cmp.PreselectMode.Item or cmp_types.cmp.PreselectMode.None,
+  completion = {
+    completeopt = "menu,menuone,noinsert"
+      .. (auto_select and "" or ",noselect"),
+  },
+  preselect = auto_select and cmp_types.cmp.PreselectMode.Item
+    or cmp_types.cmp.PreselectMode.None,
   snippet = {
     expand = function(args)
       require("luasnip").lsp_expand(args.body)
     end,
   },
   mapping = {
-    ["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp_types.cmp.SelectBehavior.Select }),
-    ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp_types.cmp.SelectBehavior.Select }),
-    ["<C-j>"] = cmp.mapping.select_next_item({ behavior = cmp_types.cmp.SelectBehavior.Select }),
-    ["<C-k>"] = cmp.mapping.select_prev_item({ behavior = cmp_types.cmp.SelectBehavior.Select }),
+    ["<C-p>"] = cmp.mapping.select_prev_item({
+      behavior = cmp_types.cmp.SelectBehavior.Select,
+    }),
+    ["<C-n>"] = cmp.mapping.select_next_item({
+      behavior = cmp_types.cmp.SelectBehavior.Select,
+    }),
+    ["<C-j>"] = cmp.mapping.select_next_item({
+      behavior = cmp_types.cmp.SelectBehavior.Select,
+    }),
+    ["<C-k>"] = cmp.mapping.select_prev_item({
+      behavior = cmp_types.cmp.SelectBehavior.Select,
+    }),
     ["<C-u>"] = cmp.mapping.scroll_docs(-4),
     ["<C-d>"] = cmp.mapping.scroll_docs(4),
 
@@ -101,8 +113,10 @@ local options = {
       end
 
       local widths = {
-        abbr = vim.g.cmp_widths and vim.g.cmp_widths.abbr or math.floor(max_width * 4 / 7),
-        menu = vim.g.cmp_widths and vim.g.cmp_widths.menu or math.floor(max_width * 3 / 7),
+        abbr = vim.g.cmp_widths and vim.g.cmp_widths.abbr
+          or math.floor(max_width * 4 / 7),
+        menu = vim.g.cmp_widths and vim.g.cmp_widths.menu
+          or math.floor(max_width * 3 / 7),
       }
 
       for key, width in pairs(widths) do

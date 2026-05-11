@@ -9,7 +9,8 @@ M.configure = function(opts)
   if vim.fn.has("nvim-0.10.0") == 0 then
     if type(opts.diagnostics.signs) ~= "boolean" then
       for severity, icon in pairs(opts.diagnostics.signs.text) do
-        local name = vim.diagnostic.severity[severity]:lower():gsub("^%l", string.upper)
+        local name =
+          vim.diagnostic.severity[severity]:lower():gsub("^%l", string.upper)
         name = "DiagnosticSign" .. name
         vim.fn.sign_define(name, { text = icon, texthl = name, numhl = "" })
       end
@@ -20,7 +21,8 @@ M.configure = function(opts)
     type(opts.diagnostics.virtual_text) == "table"
     and opts.diagnostics.virtual_text.prefix == "icons"
   then
-    opts.diagnostics.virtual_text.prefix = vim.fn.has("nvim-0.10.0") == 0 and "●"
+    opts.diagnostics.virtual_text.prefix = vim.fn.has("nvim-0.10.0") == 0
+        and "●"
       or function(diagnostic)
         local icons = configs.icons.diagnostics
         for d, icon in pairs(icons) do
@@ -39,7 +41,12 @@ end
 M.install_filter_middleware = function()
   local default_handler = vim.lsp.handlers["textDocument/publishDiagnostics"]
 
-  vim.lsp.handlers["textDocument/publishDiagnostics"] = function(err, result, ctx, config)
+  vim.lsp.handlers["textDocument/publishDiagnostics"] = function(
+    err,
+    result,
+    ctx,
+    config
+  )
     if result and result.diagnostics then
       local suppressed_patterns = require("config").message_ignored.lsp
       local filtered = {}

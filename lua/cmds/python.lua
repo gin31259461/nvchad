@@ -50,9 +50,17 @@ local pyright_create_stub = function(cmd)
   vim.fn.jobstart(cmd, {
     on_exit = function(_, exit_code)
       if exit_code == 0 then
-        vim.notify("Create stub successfully", vim.log.levels.INFO, { title = M.title })
+        vim.notify(
+          "Create stub successfully",
+          vim.log.levels.INFO,
+          { title = M.title }
+        )
       else
-        vim.notify("Error occor when create stub", vim.log.levels.ERROR, { title = M.title })
+        vim.notify(
+          "Error occor when create stub",
+          vim.log.levels.ERROR,
+          { title = M.title }
+        )
       end
     end,
   })
@@ -63,19 +71,27 @@ vim.api.nvim_create_user_command("PyrightReCreateStub", function()
   local exist_stubs = fs.scandir(typing_path, "directory")
   local cmd = M.get_pyright_create_stub_cmd()
 
-  vim.ui.select(exist_stubs, { prompt = "Choose exist stub" }, function(item, idx)
-    if item == nil then
-      return
-    end
+  vim.ui.select(
+    exist_stubs,
+    { prompt = "Choose exist stub" },
+    function(item, idx)
+      if item == nil then
+        return
+      end
 
-    local success = vim.fn.delete(typing_path .. "/" .. item, "rf")
-    if success == 0 then
-      table.insert(cmd, item)
-      pyright_create_stub(cmd)
-    else
-      vim.notify("Error occor when delete existing stub", vim.log.levels.ERROR, { title = M.title })
+      local success = vim.fn.delete(typing_path .. "/" .. item, "rf")
+      if success == 0 then
+        table.insert(cmd, item)
+        pyright_create_stub(cmd)
+      else
+        vim.notify(
+          "Error occor when delete existing stub",
+          vim.log.levels.ERROR,
+          { title = M.title }
+        )
+      end
     end
-  end)
+  )
 end, { desc = "pyright re-generate stub (delete old)" })
 
 return M

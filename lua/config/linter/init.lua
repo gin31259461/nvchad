@@ -60,9 +60,12 @@ return {
 
       ---@diagnostic disable-next-line
       cmd = function()
-        local local_binary =
-          vim.fn.fnamemodify("./node_modules/.bin/" .. eslint_d_binary_name, ":p")
-        return vim.loop.fs_stat(local_binary) and local_binary or eslint_d_binary_name
+        local local_binary = vim.fn.fnamemodify(
+          "./node_modules/.bin/" .. eslint_d_binary_name,
+          ":p"
+        )
+        return vim.loop.fs_stat(local_binary) and local_binary
+          or eslint_d_binary_name
       end,
 
       parser = function(output, bufnr)
@@ -89,7 +92,8 @@ return {
           end
         end
 
-        local config_path = fs.config_path .. "/lua/config/db/template/sqlfluff.cfg"
+        local config_path = fs.config_path
+          .. "/lua/config/db/template/sqlfluff.cfg"
         return { "lint", "--format=json", "--config", config_path }
       end)(),
     },
@@ -97,7 +101,8 @@ return {
     ["markdownlint-cli2"] = {
       cmd = "markdownlint-cli2",
       args = (function()
-        local config_path = fs.config_path .. "/lua/config/linter/template/.markdownlint.yaml"
+        local config_path = fs.config_path
+          .. "/lua/config/linter/template/.markdownlint.yaml"
         return { "--config", config_path }
       end)(),
       ignore_exitcode = true,

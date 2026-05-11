@@ -42,7 +42,8 @@ return {
         ---@type lsp.Handler
         ["textDocument/publishDiagnostics"] = function(err, res, ctx)
           local filtered = {}
-          res.diagnostics = utils_table.unique_by_key(res.diagnostics, "message")
+          res.diagnostics =
+            utils_table.unique_by_key(res.diagnostics, "message")
           for _, diag in ipairs(res.diagnostics) do
             if diag.source == "tsserver" then
               table.insert(filtered, diag)

@@ -41,7 +41,12 @@ local specs = {
         end
       end
 
-      vim.keymap.set("i", "<M-l>", utils_cmp.actions.ai_accept, { desc = "accept ai suggestion" })
+      vim.keymap.set(
+        "i",
+        "<M-l>",
+        utils_cmp.actions.ai_accept,
+        { desc = "accept ai suggestion" }
+      )
     end,
   },
 
@@ -77,7 +82,12 @@ local specs = {
       { "<C-a>", mode = { "n", "x" }, desc = "ask opencode…" },
       { "<C-x>", mode = { "n", "x" }, desc = "execute opencode action…" },
       { "<C-.>", mode = { "n", "t" }, desc = "toggle opencode" },
-      { "go", mode = { "n", "x" }, desc = "add range to opencode", expr = true },
+      {
+        "go",
+        mode = { "n", "x" },
+        desc = "add range to opencode",
+        expr = true,
+      },
       { "goo", mode = "n", desc = "add line to opencode", expr = true },
       { "<S-C-u>", mode = "n", desc = "scroll opencode up" },
       { "<S-C-d>", mode = "n", desc = "scroll opencode down" },
@@ -116,8 +126,18 @@ local specs = {
       end, { desc = "scroll opencode down" })
 
       -- You may want these if you use the opinionated `<C-a>` and `<C-x>` keymaps above — otherwise consider `<leader>o…` (and remove terminal mode from the `toggle` keymap)
-      vim.keymap.set("n", "+", "<C-a>", { desc = "Increment under cursor", noremap = true })
-      vim.keymap.set("n", "-", "<C-x>", { desc = "Decrement under cursor", noremap = true })
+      vim.keymap.set(
+        "n",
+        "+",
+        "<C-a>",
+        { desc = "Increment under cursor", noremap = true }
+      )
+      vim.keymap.set(
+        "n",
+        "-",
+        "<C-x>",
+        { desc = "Decrement under cursor", noremap = true }
+      )
     end,
   },
 }

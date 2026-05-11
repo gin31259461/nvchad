@@ -58,7 +58,8 @@ return {
     init = function()
       -- modify your configuration vars here
       vim.g.matchup_treesitter_stopline = 500
-      vim.g.matchup_matchparen_offscreen = { method = "popup", fullwidth = 1, border = 0 }
+      vim.g.matchup_matchparen_offscreen =
+        { method = "popup", fullwidth = 1, border = 0 }
 
       -- or call the setup function provided as a helper. It defines the
       -- configuration vars for you
@@ -135,7 +136,10 @@ return {
 
           -- setup cmp for autopairs
           local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-          require("cmp").event:on("confirm_done", cmp_autopairs.on_confirm_done())
+          require("cmp").event:on(
+            "confirm_done",
+            cmp_autopairs.on_confirm_done()
+          )
         end,
       },
 
@@ -195,7 +199,10 @@ return {
       dofile(vim.g.base46_cache .. "blankline")
 
       local hooks = require("ibl.hooks")
-      hooks.register(hooks.type.WHITESPACE, hooks.builtin.hide_first_space_indent_level)
+      hooks.register(
+        hooks.type.WHITESPACE,
+        hooks.builtin.hide_first_space_indent_level
+      )
       require("ibl").setup(opts)
 
       dofile(vim.g.base46_cache .. "blankline")

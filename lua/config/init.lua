@@ -103,6 +103,7 @@ M.message_ignored = {
   },
 }
 
-M.statusline_ignored = { "nvdash", "NvTerm_", "trouble", "noice", "harpoon", "NvimTree.-" }
+M.statusline_ignored =
+  { "nvdash", "NvTerm_", "trouble", "noice", "harpoon", "NvimTree.-" }
 
 return M

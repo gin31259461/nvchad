@@ -35,7 +35,10 @@ M.pretty_path = function(path, opts)
   end
 
   local short_parts = { parts[1], "…" }
-  vim.list_extend(short_parts, vim.list_slice(parts, #parts - length + 2, #parts))
+  vim.list_extend(
+    short_parts,
+    vim.list_slice(parts, #parts - length + 2, #parts)
+  )
 
   return table.concat(short_parts, sep)
 end
@@ -192,7 +195,10 @@ M.delete_files = function(path, opts)
     error_count = error_count + result
 
     if result ~= 0 then
-      vim.notify("Couldn't delete file '" .. file_name .. "'", vim.log.levels.WARN)
+      vim.notify(
+        "Couldn't delete file '" .. file_name .. "'",
+        vim.log.levels.WARN
+      )
     end
     ::continue::
   end

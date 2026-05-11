@@ -23,7 +23,12 @@ function M.get()
       end,
       desc = "Lsp Info",
     },
-    { "gd", vim.lsp.buf.definition, desc = "Goto Definition", has = "definition" },
+    {
+      "gd",
+      vim.lsp.buf.definition,
+      desc = "Goto Definition",
+      has = "definition",
+    },
     { "gR", vim.lsp.buf.references, desc = "References", nowait = true },
     { "gI", vim.lsp.buf.implementation, desc = "Goto Implementation" },
     { "gy", vim.lsp.buf.type_definition, desc = "Goto Type Definition" },
@@ -76,7 +81,8 @@ function M.get()
         vim.lsp.buf.code_action({
           -- refer to: https://github.com/pmizio/typescript-tools.nvim/issues/238#issuecomment-3114629296
           filter = function(action)
-            local exclude_actions = { ["Move to a new file"] = true, ["Move to file"] = true }
+            local exclude_actions =
+              { ["Move to a new file"] = true, ["Move to file"] = true }
             return not exclude_actions[action.title]
           end,
         })
@@ -118,7 +124,12 @@ function M.get()
       has = { "workspace/didRenameFiles", "workspace/willRenameFiles" },
     },
     { "<leader>cr", vim.lsp.buf.rename, desc = "Rename", has = "rename" },
-    { "<leader>cA", utils_lsp.action.source, desc = "Source Action", has = "codeAction" },
+    {
+      "<leader>cA",
+      utils_lsp.action.source,
+      desc = "Source Action",
+      has = "codeAction",
+    },
     {
       "]]",
       function()
@@ -198,7 +209,8 @@ function M.resolve(buffer)
   local opts = require("plugins.lsp.config")
   local clients = utils_lsp.get_clients({ bufnr = buffer })
   for _, client in ipairs(clients) do
-    local maps = opts.servers[client.name] and opts.servers[client.name].keys or {}
+    local maps = opts.servers[client.name] and opts.servers[client.name].keys
+      or {}
     vim.list_extend(spec, maps)
   end
   return Keys.resolve(spec)
@@ -210,7 +222,11 @@ function M.on_attach(_, buffer)
 
   for _, keys in pairs(keymaps) do
     local has = not keys.has or M.has(buffer, keys.has)
-    local cond = not (keys.cond == false or ((type(keys.cond) == "function") and not keys.cond()))
+    local cond = not (
+      keys.cond == false or (
+        (type(keys.cond) == "function") and not keys.cond()
+      )
+    )
 
     if has and cond then
       ---@type LazyKeysOpts
