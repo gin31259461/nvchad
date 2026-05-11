@@ -16,16 +16,14 @@ https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/visual-studio-publ
     <PublishProtocol>FileSystem</PublishProtocol>
     <PublishDir>$(MSBuildProjectDirectory)\bin\Publish</PublishDir>
 
-    <!-- <Platform>Any CPU</Platform> -->
-    <Configuration>Release</Configuration>
-    <!-- <TargetFramework>"netx.x"</TargetFramework> -->
+    <LastUsedPlatform>Any CPU</LastUsedPlatform>
+    <LastUsedBuildConfiguration>Release</LastUsedBuildConfiguration>
+    <TargetFramework>netx.x</TargetFramework>
 
     <LaunchSiteAfterPublish>True</LaunchSiteAfterPublish>
     <DeleteExistingFiles>True</DeleteExistingFiles>
     <ExcludeApp_Data>False</ExcludeApp_Data>
-
     <SiteUrlToLaunchAfterPublish />
-    <PublishFramework />
 
     <!-- disable generate web.config when publish -->
     <IsTransformWebConfigDisabled>True</IsTransformWebConfigDisabled>
