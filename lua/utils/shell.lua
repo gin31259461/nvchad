@@ -13,7 +13,6 @@ M.setup = function()
     vim.o.shellxquote = ""
 
     -- this option only modifiable in MS-Windows, so set value here
-    -- TODO: will mismatch with opencode.nvim (cwd path)
     -- vim.o.shellslash = true
 
     -- TODO: remove this when vim.ui.open is fixed upstream.

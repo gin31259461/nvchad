@@ -54,9 +54,10 @@ return {
         "(fenced_code_block_delimiter) @punctuation.delimiter"
       )
 
-      -- FIX: Code blocks with conceallevel
-      -- ref: https://github.com/epwalsh/obsidian.nvim/issues/492
-      -- workaround: https://github.com/epwalsh/obsidian.nvim/issues/492#issuecomment-2738571132
+      -- WORKAROUND: Code blocks with conceallevel
+      -- ref:
+      -- https://github.com/epwalsh/obsidian.nvim/issues/492
+      -- https://github.com/epwalsh/obsidian.nvim/issues/492#issuecomment-2738571132
       require("vim.treesitter.query").set(
         "markdown",
         "highlights",

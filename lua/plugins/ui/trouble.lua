@@ -47,6 +47,16 @@ return {
     keys = {
       { "<leader>tt", "<cmd>TodoTelescope<cr>", desc = "Open ToDo Telescope" },
     },
-    opts = {},
+
+    ---@module "todo-comments"
+    ---@type TodoConfig
+    opts = {
+      keywords = {
+        WORKAROUND = {
+          icon = " ",
+          color = "warning",
+        },
+      },
+    },
   },
 }
