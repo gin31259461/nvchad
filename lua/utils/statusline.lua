@@ -23,9 +23,9 @@ M.merge_components = function(components, opts)
   local margin_left = string.rep(" ", margin.left)
   local margin_right = string.rep(" ", margin.right)
 
-  -- filter empty components and hl components (which are used for setting highlights but don't display text)
+  -- filter components that are empty after stripping highlight groups (%#...#)
   local filtered_components = vim.tbl_filter(function(c)
-    return c ~= ""
+    return c:gsub("%%#[^#]*#", "") ~= ""
   end, components)
   return margin_left
     .. table.concat(filtered_components, string.rep(" ", gap))
