@@ -11,14 +11,14 @@ https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/visual-studio-publ
 https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/visual-studio-publish-profiles?view=aspnetcore-10.0#selective-file-inclusion -->
 <Project>
   <PropertyGroup>
+    <Platform>AnyCPU</Platform>
+    <Configuration>Release</Configuration>
+    <TargetFramework>netx.x</TargetFramework>
+    <PublishDir>$(MSBuildProjectDirectory)\bin\Publish</PublishDir>
+
     <WebPublishMethod>FileSystem</WebPublishMethod>
     <PublishProvider>FileSystem</PublishProvider>
     <PublishProtocol>FileSystem</PublishProtocol>
-    <PublishDir>$(MSBuildProjectDirectory)\bin\Publish</PublishDir>
-
-    <LastUsedPlatform>Any CPU</LastUsedPlatform>
-    <LastUsedBuildConfiguration>Release</LastUsedBuildConfiguration>
-    <TargetFramework>netx.x</TargetFramework>
 
     <LaunchSiteAfterPublish>True</LaunchSiteAfterPublish>
     <DeleteExistingFiles>True</DeleteExistingFiles>

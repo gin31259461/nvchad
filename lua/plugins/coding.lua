@@ -99,6 +99,7 @@ return {
 
       aliases = {
         ["pubxml"] = "xml",
+        ["csproj"] = "xml",
       },
     },
 
