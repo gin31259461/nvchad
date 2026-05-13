@@ -72,9 +72,6 @@ local pkgs_with_lsp_setup = {
   jsonls = "json-lsp",
   lua_ls = "lua-language-server",
   gopls = "gopls",
-
-  -- also need install bundle from: https://github.com/PowerShell/PowerShellEditorServices
-  -- extract zip file to C:/PSES
   powershell_es = "powershell-editor-services",
 
   -- xml

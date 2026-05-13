@@ -32,12 +32,6 @@ winget install --id=Cygwin.Cygwin -e
 # add C:\cygwin64\bin to PATH
 ```
 
-**PowerShell Editor Services** (for PowerShell LSP):
-
-Download and extract the
-[PSES release](https://github.com/PowerShell/PowerShellEditorServices) to
-`C:/PSES`
-
 ## Installation
 
 ```ps1
@@ -108,23 +102,23 @@ Managed via [mason.nvim](https://github.com/williamboman/mason.nvim) +
 
 **Configured servers:**
 
-| Language                | Server                                        |
-| ----------------------- | --------------------------------------------- |
-| Python                  | `pyright`, `ruff`                             |
+| Language                | Server                                                                       |
+| ----------------------- | ---------------------------------------------------------------------------- |
+| Python                  | `pyright`, `ruff`                                                            |
 | TypeScript / JavaScript | `typescript-tools.nvim` (pmizio) — active; `vtsls` config present (disabled) |
-| C# / .NET               | `roslyn.nvim` (requires .NET SDK 10+)         |
-| Lua                     | `lua_ls`                                      |
-| Web                     | `html`, `cssls`, `tailwindcss`                |
-| Go                      | `gopls`                                       |
-| C / C++                 | `clangd`                                      |
-| Bash                    | `bashls`                                      |
-| PowerShell              | `powershell_es` (requires PSES at `C:/PSES`)  |
-| Prisma                  | `prismals`                                    |
-| Docker                  | `dockerls`, `docker_compose_language_service` |
-| JSON                    | `jsonls`                                      |
-| Markdown                | `marksman`                                    |
-| XML                     | `lemminx`                                     |
-| TOML                    | `tombi`                                       |
+| C# / .NET               | `roslyn.nvim` (requires .NET SDK 10+)                                        |
+| Lua                     | `lua_ls`                                                                     |
+| Web                     | `html`, `cssls`, `tailwindcss`                                               |
+| Go                      | `gopls`                                                                      |
+| C / C++                 | `clangd`                                                                     |
+| Bash                    | `bashls`                                                                     |
+| PowerShell              | `powershell_es`                                                              |
+| Prisma                  | `prismals`                                                                   |
+| Docker                  | `dockerls`, `docker_compose_language_service`                                |
+| JSON                    | `jsonls`                                                                     |
+| Markdown                | `marksman`                                                                   |
+| XML                     | `lemminx`                                                                    |
+| TOML                    | `tombi`                                                                      |
 
 ### Formatting & Linting
 
@@ -144,8 +138,8 @@ Managed via [mason.nvim](https://github.com/williamboman/mason.nvim) +
 ### .NET CLI
 
 [dotnet-cli.nvim](https://github.com/Orbit-Lua/dotnet-cli.nvim) +
-[comet.nvim](https://github.com/Orbit-Lua/comet.nvim) — interactive .NET
-manager (`<leader>dp`), plus headless `DotnetBuild`, `DotnetPublish`, and
+[comet.nvim](https://github.com/Orbit-Lua/comet.nvim) — interactive .NET manager
+(`<leader>dp`), plus headless `DotnetBuild`, `DotnetPublish`, and
 `DotnetGlobalJson` commands.
 
 ### Navigation
@@ -224,100 +218,100 @@ manager (`<leader>dp`), plus headless `DotnetBuild`, `DotnetPublish`, and
 
 ### Picker (Snacks)
 
-| Key            | Action                      |
-| -------------- | --------------------------- |
-| `<leader>ff`   | Find files                  |
-| `<leader>fr`   | Recent files                |
-| `<leader>fp`   | Projects                    |
-| `<leader>fg`   | Git files                   |
-| `<leader>fb`   | Buffers                     |
-| `<leader>fc`   | Config files                |
-| `<leader>sg`   | Grep                        |
-| `<leader>sw`   | Grep word / selection       |
-| `<leader>sb`   | Buffer lines                |
-| `<leader>sB`   | Grep open buffers           |
-| `<leader>sd`   | Diagnostics                 |
-| `<leader>sD`   | Buffer diagnostics          |
-| `<leader>sk`   | Keymaps                     |
-| `<leader>sR`   | Resume last picker          |
-| `<leader>s"`   | Registers                   |
-| `<leader>s/`   | Search history              |
-| `<leader>sa`   | Autocmds                    |
-| `<leader>sc`   | Command history             |
-| `<leader>sC`   | Commands                    |
-| `<leader>sH`   | Highlights                  |
-| `<leader>si`   | Icons                       |
-| `<leader>sj`   | Jumps                       |
-| `<leader>sl`   | Location list               |
-| `<leader>sm`   | Marks                       |
-| `<leader>sM`   | Man pages                   |
-| `<leader>sp`   | Search plugin specs         |
-| `<leader>sq`   | Quickfix list               |
-| `<leader>su`   | Undo history                |
+| Key          | Action                |
+| ------------ | --------------------- |
+| `<leader>ff` | Find files            |
+| `<leader>fr` | Recent files          |
+| `<leader>fp` | Projects              |
+| `<leader>fg` | Git files             |
+| `<leader>fb` | Buffers               |
+| `<leader>fc` | Config files          |
+| `<leader>sg` | Grep                  |
+| `<leader>sw` | Grep word / selection |
+| `<leader>sb` | Buffer lines          |
+| `<leader>sB` | Grep open buffers     |
+| `<leader>sd` | Diagnostics           |
+| `<leader>sD` | Buffer diagnostics    |
+| `<leader>sk` | Keymaps               |
+| `<leader>sR` | Resume last picker    |
+| `<leader>s"` | Registers             |
+| `<leader>s/` | Search history        |
+| `<leader>sa` | Autocmds              |
+| `<leader>sc` | Command history       |
+| `<leader>sC` | Commands              |
+| `<leader>sH` | Highlights            |
+| `<leader>si` | Icons                 |
+| `<leader>sj` | Jumps                 |
+| `<leader>sl` | Location list         |
+| `<leader>sm` | Marks                 |
+| `<leader>sM` | Man pages             |
+| `<leader>sp` | Search plugin specs   |
+| `<leader>sq` | Quickfix list         |
+| `<leader>su` | Undo history          |
 
 ### Git
 
-| Key            | Action             |
-| -------------- | ------------------ |
-| `<leader>gg`   | Open lazygit       |
-| `<leader>gs`   | Git status         |
-| `<leader>gl`   | Git log            |
-| `<leader>gL`   | Git log (line)     |
-| `<leader>gb`   | Git branches       |
-| `<leader>gd`   | Git diff hunks     |
-| `<leader>gS`   | Git stash          |
-| `<leader>gf`   | Git log (file)     |
+| Key          | Action         |
+| ------------ | -------------- |
+| `<leader>gg` | Open lazygit   |
+| `<leader>gs` | Git status     |
+| `<leader>gl` | Git log        |
+| `<leader>gL` | Git log (line) |
+| `<leader>gb` | Git branches   |
+| `<leader>gd` | Git diff hunks |
+| `<leader>gS` | Git stash      |
+| `<leader>gf` | Git log (file) |
 
 ### LSP
 
-| Key            | Action                               |
-| -------------- | ------------------------------------ |
-| `gd`           | Go to definition                     |
-| `gR`           | References                           |
-| `gI`           | Go to implementation                 |
-| `gy`           | Go to type definition                |
-| `gD`           | Go to declaration                    |
-| `K`            | Hover documentation                  |
-| `gK` / `<M-k>` | Signature help                      |
-| `<leader>ca`   | Code action                          |
-| `<leader>cA`   | Source action                        |
-| `<leader>cC`   | Run codelens                         |
-| `<leader>cc`   | Toggle codelens display              |
-| `<leader>cr`   | Rename symbol                        |
-| `<leader>cR`   | Rename file                          |
-| `<leader>ci`   | Toggle inlay hints                   |
-| `<leader>cs`   | Symbols (Trouble)                    |
-| `<leader>cL`   | LSP definitions/refs (Trouble)       |
-| `<leader>cl`   | LSP info                             |
-| `<leader>fd`   | Floating diagnostic                  |
-| `]]` / `[[`    | Next / prev reference                |
-| `<a-n>` / `<a-p>` | Next / prev reference (wrap)    |
+| Key               | Action                         |
+| ----------------- | ------------------------------ |
+| `gd`              | Go to definition               |
+| `gR`              | References                     |
+| `gI`              | Go to implementation           |
+| `gy`              | Go to type definition          |
+| `gD`              | Go to declaration              |
+| `K`               | Hover documentation            |
+| `gK` / `<M-k>`    | Signature help                 |
+| `<leader>ca`      | Code action                    |
+| `<leader>cA`      | Source action                  |
+| `<leader>cC`      | Run codelens                   |
+| `<leader>cc`      | Toggle codelens display        |
+| `<leader>cr`      | Rename symbol                  |
+| `<leader>cR`      | Rename file                    |
+| `<leader>ci`      | Toggle inlay hints             |
+| `<leader>cs`      | Symbols (Trouble)              |
+| `<leader>cL`      | LSP definitions/refs (Trouble) |
+| `<leader>cl`      | LSP info                       |
+| `<leader>fd`      | Floating diagnostic            |
+| `]]` / `[[`       | Next / prev reference          |
+| `<a-n>` / `<a-p>` | Next / prev reference (wrap)   |
 
 #### TypeScript extras (`vtsls`)
 
-| Key            | Action                              |
-| -------------- | ----------------------------------- |
-| `<leader>co`   | Organize imports                    |
-| `<leader>cM`   | Add missing imports                 |
-| `<leader>cu`   | Remove unused imports               |
-| `<leader>cD`   | Fix all diagnostics                 |
-| `<leader>cV`   | Select TypeScript workspace version |
+| Key          | Action                              |
+| ------------ | ----------------------------------- |
+| `<leader>co` | Organize imports                    |
+| `<leader>cM` | Add missing imports                 |
+| `<leader>cu` | Remove unused imports               |
+| `<leader>cD` | Fix all diagnostics                 |
+| `<leader>cV` | Select TypeScript workspace version |
 
 ### Debugger (DAP)
 
-| Key          | Action                      |
-| ------------ | --------------------------- |
-| `<leader>dt` | Toggle breakpoint           |
-| `<leader>dc` | Continue                    |
-| `<leader>dn` | Step over                   |
-| `<leader>di` | Step into                   |
-| `<leader>do` | Step out                    |
-| `<leader>du` | Toggle DAP UI               |
-| `<leader>dr` | Restart session             |
-| `<leader>ds` | New session                 |
-| `<leader>dR` | Toggle REPL                 |
-| `<leader>dl` | Show DAP log                |
-| `<leader>dw` | Open watch window           |
+| Key          | Action            |
+| ------------ | ----------------- |
+| `<leader>dt` | Toggle breakpoint |
+| `<leader>dc` | Continue          |
+| `<leader>dn` | Step over         |
+| `<leader>di` | Step into         |
+| `<leader>do` | Step out          |
+| `<leader>du` | Toggle DAP UI     |
+| `<leader>dr` | Restart session   |
+| `<leader>ds` | New session       |
+| `<leader>dR` | Toggle REPL       |
+| `<leader>dl` | Show DAP log      |
+| `<leader>dw` | Open watch window |
 
 ### Harpoon
 
@@ -344,16 +338,16 @@ manager (`<leader>dp`), plus headless `DotnetBuild`, `DotnetPublish`, and
 | ------------ | ------------------- |
 | `<leader>dp` | Open Dotnet Manager |
 
-The Dotnet Manager UI is provided by `dotnet-cli.nvim` + `comet.nvim`. See
-their documentation for UI keybindings.
+The Dotnet Manager UI is provided by `dotnet-cli.nvim` + `comet.nvim`. See their
+documentation for UI keybindings.
 
 ### AI (Copilot)
 
-| Key     | Mode   | Action                    |
-| ------- | ------ | ------------------------- |
-| `<M-l>` | insert | Accept AI suggestion      |
-| `<M-]>` | insert | Next Copilot suggestion   |
-| `<M-[>` | insert | Prev Copilot suggestion   |
+| Key     | Mode   | Action                  |
+| ------- | ------ | ----------------------- |
+| `<M-l>` | insert | Accept AI suggestion    |
+| `<M-]>` | insert | Next Copilot suggestion |
+| `<M-[>` | insert | Prev Copilot suggestion |
 
 ### Other
 

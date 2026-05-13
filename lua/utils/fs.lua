@@ -163,6 +163,7 @@ end
 
 M.config_path = vim.fn.stdpath("config")
 M.data_path = vim.fn.stdpath("data")
+M.mason_pkg_path = vim.fn.stdpath("data") .. "/mason/packages"
 
 M.schema_paths = {
   -- msbuild schema ref: https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-project-file-schema-reference?view=visualstudio

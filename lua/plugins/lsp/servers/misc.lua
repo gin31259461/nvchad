@@ -17,7 +17,8 @@ return {
     },
 
     powershell_es = {
-      bundle_path = "C:/PSES",
+      bundle_path = fs.mason_pkg_path
+        .. "/powershell-editor-services/PowerShellEditorServices",
       shell = "powershell",
     },
 
