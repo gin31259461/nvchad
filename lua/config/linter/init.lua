@@ -33,7 +33,7 @@ return {
 
     docker = { "hadolint" },
     markdown = { "markdownlint-cli2" },
-
+    lua = { "luacheck" },
     typescriptreact = { "eslint_d" },
     javascriptreact = { "eslint_d" },
     typescript = { "eslint_d" },

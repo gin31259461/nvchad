@@ -94,6 +94,7 @@ local pkgs_only = {
   "csharpier",
   "netcoredbg",
   "typescript-language-server",
+  "luacheck",
 }
 
 for lsp_config_name, pkg_name_in_mason in pairs(pkgs_with_lsp_setup) do
