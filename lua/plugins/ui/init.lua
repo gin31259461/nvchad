@@ -7,6 +7,7 @@ for _, mod_name in ipairs({
   "plugins.ui.noice",
   "plugins.ui.trouble",
   "plugins.ui.dotnet",
+  "plugins.ui.which-key",
 }) do
   vim.list_extend(specs, require(mod_name))
 end

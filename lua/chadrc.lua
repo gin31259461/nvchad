@@ -80,7 +80,7 @@ M.base46 = {
 
 M.nvdash = {
   load_on_startup = false,
-  header = require("config.header").phantom,
+  header = require("plugins.ui.header").phantom,
   buttons = {
     {
       txt = "  Explorer",

@@ -201,11 +201,6 @@ return {
       vim.keymap.set("n", "<C-e>", function()
         harpoon.ui:toggle_quick_menu(harpoon:list())
       end)
-
-      vim.keymap.set("n", "<C-s>", function()
-        harpoon.ui:save()
-        harpoon.ui:close_menu()
-      end)
     end,
   },
 }

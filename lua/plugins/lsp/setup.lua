@@ -1,35 +1,144 @@
-local ok, err = pcall(function()
-  dofile(vim.g.base46_cache .. "lsp")
-end)
-if not ok then
-  vim.notify("[theme] " .. tostring(err), vim.log.levels.WARN)
+local M = {}
+
+---Registers all configured LSP servers with vim.lsp.
+---@param opts Lsp.Config.Spec
+M.register_servers = function(opts)
+  local ok, err = pcall(function()
+    dofile(vim.g.base46_cache .. "lsp")
+  end)
+  if not ok then
+    vim.notify("[theme] " .. tostring(err), vim.log.levels.WARN)
+  end
+
+  local configs = require("config")
+  local default_lsp_config = {
+    on_init = opts.on_init,
+    capabilities = opts.capabilities,
+  }
+
+  for _, server in ipairs(configs.packages.lsp_servers) do
+    local server_opts = vim.tbl_deep_extend(
+      "force",
+      default_lsp_config,
+      opts.servers[server] or {}
+    )
+
+    if type(opts.disable_default_settings[server]) == "table" then
+      for _, v in ipairs(opts.disable_default_settings[server]) do
+        server_opts[v] = nil
+      end
+    end
+
+    if opts.setup[server] then
+      opts.setup[server]()
+    end
+
+    vim.lsp.config(server, server_opts)
+    vim.lsp.enable(server)
+  end
 end
 
-local configs = require("config")
-local lspconfig_opts = require("plugins.lsp.config")
-local servers = lspconfig_opts.servers
-local setup = lspconfig_opts.setup
+---Applies diagnostic signs, virtual-text icon resolution, and commits the final config.
+---@param opts Lsp.Config.Spec
+M.configure_diagnostics = function(opts)
+  local configs = require("config")
 
----@type vim.lsp.Config
-local default_lsp_config = {
-  on_init = lspconfig_opts.on_init,
-  capabilities = lspconfig_opts.capabilities,
-}
-
-for _, server in ipairs(configs.packages.lsp_servers) do
-  local server_opts =
-    vim.tbl_deep_extend("force", default_lsp_config, servers[server] or {})
-
-  if type(lspconfig_opts.disable_default_settings[server]) == "table" then
-    for _, v in ipairs(lspconfig_opts.disable_default_settings[server]) do
-      server_opts[v] = nil
+  if vim.fn.has("nvim-0.10.0") == 0 then
+    if type(opts.diagnostics.signs) ~= "boolean" then
+      for severity, icon in pairs(opts.diagnostics.signs.text) do
+        local name =
+          vim.diagnostic.severity[severity]:lower():gsub("^%l", string.upper)
+        name = "DiagnosticSign" .. name
+        vim.fn.sign_define(name, { text = icon, texthl = name, numhl = "" })
+      end
     end
   end
 
-  if setup[server] then
-    setup[server]()
+  if
+    type(opts.diagnostics.virtual_text) == "table"
+    and opts.diagnostics.virtual_text.prefix == "icons"
+  then
+    opts.diagnostics.virtual_text.prefix = vim.fn.has("nvim-0.10.0") == 0
+        and "●"
+      or function(diagnostic)
+        local icons = configs.icons.diagnostics
+        for d, icon in pairs(icons) do
+          if diagnostic.severity == vim.diagnostic.severity[d:upper()] then
+            return icon
+          end
+        end
+      end
   end
 
-  vim.lsp.config(server, server_opts)
-  vim.lsp.enable(server)
+  vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
 end
+
+---Installs a middleware that silently drops diagnostics matching configured ignore patterns.
+M.install_diagnostic_filter = function()
+  local default_handler = vim.lsp.handlers["textDocument/publishDiagnostics"]
+
+  vim.lsp.handlers["textDocument/publishDiagnostics"] = function(
+    err,
+    result,
+    ctx,
+    config
+  )
+    if result and result.diagnostics then
+      local suppressed_patterns = require("config").message_ignored.lsp
+      local filtered = {}
+      for _, diagnostic in ipairs(result.diagnostics) do
+        local suppress = false
+        for _, pattern in ipairs(suppressed_patterns) do
+          if diagnostic.message:find(pattern) then
+            suppress = true
+            break
+          end
+        end
+        if not suppress then
+          table.insert(filtered, diagnostic)
+        end
+      end
+      result.diagnostics = filtered
+    end
+    default_handler(err, result, ctx, config)
+  end
+end
+
+---Activates optional LSP features (inlay hints, code lens). Requires Neovim >= 0.10.
+---@param opts Lsp.Config.Spec
+M.activate_features = function(opts)
+  if vim.fn.has("nvim-0.10") == 0 then
+    return
+  end
+
+  local utils_lsp = require("utils.lsp")
+
+  if opts.inlay_hints.enabled then
+    utils_lsp.on_supports_method("textDocument/inlayHint", function(_, buffer)
+      if
+        vim.api.nvim_buf_is_valid(buffer)
+        and vim.bo[buffer].buftype == ""
+        and not vim.tbl_contains(
+          opts.inlay_hints.exclude,
+          vim.bo[buffer].filetype
+        )
+      then
+        vim.lsp.inlay_hint.enable(true, { bufnr = buffer })
+      end
+    end)
+  end
+
+  if opts.codelens.enabled and vim.lsp.codelens then
+    utils_lsp.on_supports_method("textDocument/codeLens", function(_, bufnr)
+      vim.lsp.codelens.enable(true)
+      vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+        buffer = bufnr,
+        callback = function()
+          vim.lsp.codelens.enable(true, { bufnr = bufnr })
+        end,
+      })
+    end)
+  end
+end
+
+return M

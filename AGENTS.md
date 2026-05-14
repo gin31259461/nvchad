@@ -1,432 +1,253 @@
-# NvChad Custom Configuration — Repository Guidelines
+# AGENTS.md — Neovim Config
 
-> This document is the authoritative reference for AI assistants, contributors,
-> and future sessions working on this Neovim configuration. Read it before
-> making any changes.
+Guidelines for AI agents working on this Neovim configuration.
 
-## 1. Overview
+---
 
-This is a **NvChad v2.5** custom configuration for Neovim (≥ 0.12). It provides
-a full-featured IDE experience for **C# / .NET**, **Python**, **TypeScript**,
-**Lua**, **Go**, **C/C++**, **Bash**, **PowerShell**, **SQL/Prisma**, **Docker**,
-and web technologies (HTML, CSS, JSON, TOML, XML, Markdown), with custom UI
-components, AI coding assistance (Copilot, OpenCode), debugger integration, and
-project-management tooling.
+## Project Overview
 
-| Layer       | Location                   | Purpose                                         |
-| ----------- | -------------------------- | ----------------------------------------------- |
-| Entry point | `init.lua`                 | Bootstrap lazy.nvim, load options & plugins     |
-| Options     | `lua/config/`              | Neovim settings, keymaps, packages, formatters  |
-| Plugins     | `lua/plugins/`             | lazy.nvim specs grouped by concern              |
-| LSP servers | `lua/plugins/lsp/servers/` | Per-language server configs                     |
-| Debugger    | `lua/plugins/debugger/`    | DAP adapters & UI                               |
-| Utilities   | `lua/utils/`               | Shared helpers (LSP, FS, UI, shell, statusline, cmp, hl, str, table) |
-| Commands    | `lua/cmds/`                | Domain-specific CLI wrappers (Python, system)   |
-| Types       | `lua/types/`               | `---@meta` type-annotation files                |
-| Theme       | `lua/chadrc.lua`           | NvChad theme, statusline, highlight overrides   |
+A modular Neovim config built on **NvChad v2.5** using **lazy.nvim** as the plugin manager. Written entirely in Lua. Supports Python, TypeScript/JavaScript, C#/.NET, Lua, Go, Bash, and web languages with full LSP, formatting, linting, and debugging.
 
-## 2. Code Style
+**Entry point:** `init.lua`
+**Lua source root:** `lua/`
 
-### Formatter — StyLua
+---
 
-All Lua files must conform to `.stylua.toml`:
+## Directory Map
 
-```toml
-column_width = 100
-line_endings = "Unix"
-indent_type = "Spaces"
-indent_width = 2
-quote_style = "AutoPreferDouble"
-call_parentheses = "Always"
+```
+lua/
+├── config/          # Core settings (options, keymaps, autocmds, filetypes)
+│   ├── cmp.lua      # Completion engine options (passed to utils.cmp.setup via lazy main=)
+│   ├── packages.lua # Canonical list of LSP servers, formatters, linters, parsers
+│   ├── formatter/   # Conform.nvim config
+│   └── linter/      # Nvim-lint config
+├── plugins/         # Lazy.nvim plugin specs — each file returns LazySpec[]
+│   ├── editor.lua       # Treesitter, context, matchup, autotag, ibl, markdown-preview
+│   ├── completion.lua   # nvim-cmp, LuaSnip, autopairs, lazydev, cmp sources
+│   ├── navigation.lua   # nvim-tree, telescope, harpoon2
+│   ├── git.lua          # gitsigns
+│   ├── ai.lua           # copilot.lua, opencode.nvim
+│   ├── notes.lua        # obsidian.nvim (conditional on ~/OneDrive/Knowledge_Base)
+│   ├── formatter.lua    # conform.nvim spec
+│   ├── linter.lua       # nvim-lint spec
+│   ├── lsp/             # LSP plugin specs + per-server configs
+│   │   ├── init.lua         # Mason, nvim-lspconfig, roslyn, typescript-tools plugin specs
+│   │   ├── setup.lua        # M module: register_servers, configure_diagnostics,
+│   │   │                    #   install_diagnostic_filter, activate_features
+│   │   ├── config.lua       # Aggregates server configs from servers/ submodules
+│   │   ├── keymaps.lua      # LSP keybindings (lazy-resolved, capability-gated)
+│   │   └── servers/         # One file per language group
+│   ├── debugger/        # DAP specs + adapter configs
+│   │   ├── init.lua     # nvim-dap, nvim-dap-ui plugin specs
+│   │   ├── config.lua   # Aggregates DAP adapters
+│   │   ├── python.lua   # debugpy adapter
+│   │   └── dotnet.lua   # netcoredbg adapter
+│   └── ui/              # UI plugin specs
+│       ├── init.lua     # Aggregator: requires all ui/* submodules
+│       ├── header.lua   # ASCII art dashboard headers (M.dragon, M.wolf, M.claude, …)
+│       ├── snacks.lua   # snacks.nvim (dashboard, picker, notifier, lazygit, …)
+│       ├── noice.lua    # noice.nvim (cmdline, LSP hover/signature styling)
+│       ├── trouble.lua  # trouble.nvim + todo-comments
+│       ├── dotnet.lua   # dotnet-cli.nvim (DotnetManager)
+│       ├── nvchad.lua   # NvChad UI framework spec
+│       └── which-key.lua # which-key.nvim
+├── utils/           # Reusable Lua utilities
+│   ├── init.lua     # Central aggregator; exposes utils.lsp, utils.fs, utils.os, …
+│   ├── cmp.lua      # nvim-cmp setup() + snippet/confirm helpers (used as lazy main=)
+│   ├── fs.lua       # Path utilities, root detection, file scanning
+│   ├── ft.lua       # Filetype lists (SQL, TypeScript, JavaScript)
+│   ├── hl.lua       # Highlight setup: diagnostics, theme-dependent, DAP, undercurl
+│   ├── lsp.lua      # LSP lifecycle helpers (on_attach, on_supports_method, …)
+│   ├── os.lua       # OS detection, datetime, env vars
+│   ├── shell.lua    # Shell configuration (PowerShell / bash)
+│   ├── statusline.lua # Custom statusline components (mode, git, LSP, symbols)
+│   ├── str.lua      # String utilities
+│   ├── table.lua    # Table utilities (unique_by_key)
+│   └── ui.lua       # Window sizing, file icons, harpoon display, nvterm safety
+├── cmds/            # Custom Ex commands (auto-loaded at startup via fs.scandir)
+│   ├── python.lua   # :Pyright* stub commands, venv detection
+│   └── system.lua   # :ClearShada (Windows)
+└── chadrc.lua       # NvChad overrides (theme, statusline, diagnostics)
 ```
 
-**Key rules:**
+---
 
-- **2-space indent**, spaces only.
-- **100-column line limit.**
-- Double quotes preferred (`AutoPreferDouble`).
-- Run `stylua lua/` from the repo root to format.
+## Key Conventions
 
-### Naming
+### Plugin specs (lazy.nvim)
 
-| Thing            | Convention            | Example                          |
-| ---------------- | --------------------- | -------------------------------- |
-| Modules          | `snake_case`          | `utils.fs`, `utils.lsp`          |
-| Functions        | `snake_case`          | `get_csproj_files()`             |
-| Local variables  | `snake_case`          | `local list_h`                   |
-| Type annotations | `PascalCase`          | `Lsp.Config.Spec`, `DotnetUICtx` |
-| Files            | `snake_case` or kebab | `lua_ls.lua`, `dotnet.lua`       |
-| Constants        | `UPPER_SNAKE`         | `OUT_HL_PATTERNS`                |
-
-### Module Export Pattern
-
-Every module returns a table `M`:
+Every plugin file **at the top level of `lua/plugins/`** is auto-discovered by lazy.nvim and must return a `LazySpec[]`. Subdirectories are treated as modules; lazy imports `plugins.SUBDIR` which resolves to `plugins/SUBDIR/init.lua`. Other files inside subdirectories are **not** auto-discovered — they must be explicitly required from within the `init.lua`.
 
 ```lua
-local M = {}
-
--- ... implementation ...
-
-return M
+return {
+  "author/plugin",
+  event = "BufReadPost",   -- prefer event/cmd/ft lazy loading
+  dependencies = { ... },
+  opts = { ... },          -- passed to plugin.setup()
+  config = function(_, opts)
+    require("plugin").setup(opts)
+  end,
+}
 ```
 
-### Type Annotations
+- **Always lazy-load.** Use `event`, `cmd`, or `ft` unless the plugin must load at startup.
+- `opts = {}` is preferred over `config` when no post-setup logic is needed.
+- Place plugin specs in the most semantically appropriate file under `lua/plugins/`.
 
-Use Neovim-style LuaLS annotations liberally:
+### LSP servers
 
-```lua
----@param project string
----@param config? string  "Debug" or "Release" (default "Debug")
----@return string[]
-M.get_build_cmd = function(project, config) ... end
-```
+The canonical registry lives in **`lua/config/packages.lua`**. Every server name listed there gets auto-installed by Mason. To add a new language server:
 
-For complex shared types, create `---@meta` files under `lua/types/`.
+1. Add the server name to the appropriate list in `packages.lua`.
+2. Create (or extend) a server config in `lua/plugins/lsp/servers/`.
+3. Merge the new server config via `lua/plugins/lsp/config.lua`.
 
-### Comments
-
-- Use comments only when the _why_ is non-obvious. Do not comment trivial code.
-- Section headers use box-drawing separators:
+Server config shape:
 
 ```lua
--- ── section name ──────────────────────────────────────────────────────────
-```
-
-## 3. Architecture Rules
-
-### Plugin Specs (`lua/plugins/`)
-
-- Every spec uses **lazy.nvim** format: `{ "author/repo", opts = {}, ... }`.
-- Always lazy-load via `event`, `cmd`, `ft`, or `keys` — avoid `lazy = false`
-  unless the plugin must be available at startup (e.g., NvChad UI, snacks).
-- Group specs by concern: `ai.lua`, `coding.lua`, `db.lua`, `formatter.lua`,
-  `linter.lua`, `misc.lua`, `navigation.lua`, `ui.lua`.
-- The root `plugins/init.lua` holds small standalone specs (gitsigns,
-  markdown-preview.nvim, which-key).
-- Sub-directories (`lsp/`, `debugger/`, `ui/`) hold multi-file setups.
-  `ui/` is composed of `nvchad.lua`, `snacks.lua`, `noice.lua`, `trouble.lua`,
-  and `dotnet.lua`, all gathered by `plugins/ui.lua`.
-
-### LSP Server Configuration (`lua/plugins/lsp/servers/`)
-
-Each file returns `---@type Lsp.Server.Module`:
-
-```lua
+-- lua/plugins/lsp/servers/mylang.lua
 ---@type Lsp.Server.Module
 return {
   servers = {
-    server_name = {
+    mylangserver = {
       settings = { ... },
-      keys = { ... },            -- LazyKeysSpec[]
       on_attach = function(client, bufnr) ... end,
     },
   },
   setup = {
-    server_name = function() ... end,  -- custom setup (e.g., roslyn.nvim)
+    mylangserver = function() ... end, -- optional pre-enable hook
   },
 }
 ```
 
-- **Base config** lives in `servers/base.lua` (diagnostics, capabilities,
-  `on_init`). All servers inherit it.
-- `config.lua` merges base + all server modules automatically — just add a new
-  file and register it in `config.lua`'s `server_modules` list.
-- Server names must match the key used by `lspconfig` / Mason.
-- Register the Mason package name in `lua/config/packages.lua` under
-  `pkgs_with_lsp_setup`.
+Capabilities and `on_init` are injected automatically from `lua/plugins/lsp/servers/base.lua` — do not duplicate them.
 
-### Custom Commands (`lua/cmds/`)
+#### LSP setup pipeline (`lua/plugins/lsp/setup.lua`)
 
-- One file per domain (e.g., `python.lua`, `system.lua`).
-- Expose helpers as module functions for reuse (debugger, LSP).
-- Register `vim.api.nvim_create_user_command()` at the bottom of the file.
-- All files in `lua/cmds/` are auto-loaded by `init.lua` at startup via a
-  `fs.scandir` loop — no manual registration needed.
-- **Dotnet commands** (`DotnetManager`, `DotnetBuild`, `DotnetPublish`,
-  `DotnetGlobalJson`) are provided by the external
-  `Orbit-Lua/dotnet-cli.nvim` plugin (spec: `lua/plugins/ui/dotnet.lua`).
-  Do **not** create a custom `cmds/dotnet.lua`.
+`setup.lua` is a proper M module with four functions called in order from `lsp/init.lua`'s config callback:
 
-### Utilities (`lua/utils/`)
+| Function | Responsibility |
+|---|---|
+| `M.register_servers(opts)` | Iterates `packages.lsp_servers`, applies per-server config, calls `vim.lsp.enable` |
+| `M.configure_diagnostics(opts)` | Configures signs, virtual text, and float border |
+| `M.install_diagnostic_filter()` | Installs a `publishDiagnostics` middleware to drop ignored patterns |
+| `M.activate_features(opts)` | Enables inlay hints and code lens via `on_supports_method` (Neovim ≥ 0.10) |
 
-- `utils/init.lua` is the barrel file — it re-exports all submodules and proxies
-  `lazy.core.util`.
-- Add new util files and register them in `utils/init.lua`.
-- Utilities must be stateless and side-effect-free at require time.
-  `utils.setup()` is the one-time init entry point.
+### Formatters / Linters
+
+- **Formatter config:** `lua/config/formatter/init.lua` (conform.nvim). Add a new filetype entry to the `formatters_by_ft` table.
+- **Linter config:** `lua/config/linter/init.lua` (nvim-lint). Add to the `linters_by_ft` table.
+- **Tool names** (Mason packages) must also be added to `packages.lua` so Mason auto-installs them.
 
 ### Keymaps
 
-- **General keymaps** → `lua/config/keymaps.lua` (deferred via `vim.schedule`).
-- **LSP keymaps** → `lua/plugins/lsp/keymaps.lua` (capability-aware, dynamic).
-- **Plugin keymaps** → inline in each plugin spec's `keys` field.
-- **DAP keymaps** → `lua/plugins/debugger/init.lua`.
-- Use `<leader>` prefix for user commands. Current prefix assignments:
-  - `<leader>f` — find / format
-  - `<leader>b` — buffer
-  - `<leader>c` — code (LSP actions)
-  - `<leader>d` — debug / dotnet (`dp` = DotnetManager; rest = DAP)
-  - `<leader>s` — search / picker
-  - `<leader>g` — git
-  - `<leader>t` — trouble / todos (`th` = NvChad themes)
-  - `<leader>w` — which-key
-  - `<leader>h` — terminal new horizontal term
-  - `<leader>v` — terminal new vertical term
-  - `<leader>m` — markdown
-  - `<leader>a` — harpoon add
-  - `<leader>e` — NvimTree focus
-  - `<leader>x` — close buffer
-  - `<leader>/` — toggle comment
-  - `<leader>q` — record macro
-  - `<leader>D` — Snacks dashboard
-  - `<leader>n` — notification history
-  - `<leader>cd` — cd to project root
+All general keymaps live in `lua/config/keymaps.lua`. LSP-specific keymaps are in `lua/plugins/lsp/keymaps.lua` and are set inside the `on_attach` callback.
 
-## 4. Dotnet Plugin (`lua/plugins/ui/dotnet.lua`)
-
-.NET support is provided by the external **`Orbit-Lua/dotnet-cli.nvim`** plugin
-(UI powered by `Orbit-Lua/comet.nvim`). The plugin is lazy-loaded on `.cs`
-files or when one of its commands is invoked.
-
-### Plugin Spec
+Format:
 
 ```lua
--- lua/plugins/ui/dotnet.lua
-{
-  "Orbit-Lua/dotnet-cli.nvim",
-  dependencies = { "Orbit-Lua/comet.nvim" },
-  cmd = { "DotnetManager", "DotnetBuild", "DotnetPublish", "DotnetGlobalJson" },
-  ft = "cs",
-  opts = {},
-}
+map("n", "<leader>xx", "<cmd>SomeCommand<CR>", { desc = "Short description" })
 ```
 
-### Available Commands
+- Leader is `<Space>`.
+- Always include `desc` — it powers which-key hints.
+- Group related keymaps under the same `<leader>` prefix.
+- **Do not use `<C-s>` for anything other than file save** — it is globally mapped in `keymaps.lua`.
 
-| Command             | Description                             |
-| ------------------- | --------------------------------------- |
-| `DotnetManager`     | Opens the interactive .NET manager UI   |
-| `DotnetBuild`       | Runs `dotnet build` on the project      |
-| `DotnetPublish`     | Runs `dotnet publish` on the project    |
-| `DotnetGlobalJson`  | Manages `global.json` SDK pinning       |
+### Dashboard Headers
 
-### Keymap
-
-`<leader>dp` → `<cmd>DotnetManager<CR>` (defined in `lua/config/keymaps.lua`).
-
-### Extending / Configuring
-
-Pass options to the plugin via the `opts` table in `lua/plugins/ui/dotnet.lua`.
-Refer to the [dotnet-cli.nvim documentation](https://github.com/Orbit-Lua/dotnet-cli.nvim)
-for the full options reference.
-
-Do **not** add a `lua/cmds/dotnet.lua` — all .NET command logic belongs to
-the plugin.
-
-## 5. Adding a New Language
-
-### Checklist
-
-1. **Treesitter parser** — add to `config/packages.lua` →
-   `treesitter_ensure_installed`.
-2. **LSP server** — add to `config/packages.lua` → local `pkgs_with_lsp_setup` (key =
-   lspconfig name, value = Mason package name). Companion tools go in `pkgs_only`.
-3. **Server config** — create `lua/plugins/lsp/servers/<lang>.lua` returning
-   `---@type Lsp.Server.Module`, then add it to the `server_modules` list in
-   `lua/plugins/lsp/config.lua`.
-4. **Formatter** — add to `lua/config/formatter/init.lua` (conform.nvim
-   format).
-5. **Linter** — add to `lua/config/linter/init.lua` (nvim-lint format).
-6. **Debugger** (optional) — add adapter in `lua/plugins/debugger/<lang>.lua`,
-   register in `lua/plugins/debugger/config.lua`.
-
-## 6. Dependency Flow
-
-```
-init.lua
-  │
-  ├─ config/options.lua         (vim.opt settings)
-  ├─ config/autocmds.lua        (DiagnosticChanged redraw fix)
-  ├─ config/filetypes.lua       (vim.filetype.add registrations)
-  ├─ config/packages.lua        (LSP / Mason / Treesitter package lists)
-  ├─ config/keymaps.lua         (general keymaps — deferred)
-  │
-  ├─ plugins/**                 (lazy.nvim specs)
-  │   ├─ init.lua               (gitsigns, markdown-preview, which-key)
-  │   ├─ ai.lua                 (copilot, opencode)
-  │   ├─ coding.lua             (treesitter, cmp, snippets)
-  │   ├─ db.lua                 (database/SQL tooling)
-  │   ├─ navigation.lua         (nvim-tree, telescope, harpoon)
-  │   ├─ ui.lua                 (gathers ui/ submodules)
-  │   ├─ lsp/config.lua         (merges base.lua + servers/*.lua)
-  │   ├─ lsp/setup.lua          (iterates config, calls lspconfig)
-  │   ├─ lsp/diagnostics.lua    (configure signs/virtual-text + filter middleware)
-  │   ├─ lsp/features.lua       (inlay hints + code lens activation)
-  │   └─ debugger/config.lua    (loads DAP adapters)
-  │
-  ├─ utils/**                   (shared helpers, imported anywhere)
-  │   └─ init.lua               (barrel, proxies lazy.core.util)
-  │
-  └─ cmds/**                    (auto-loaded domain commands)
-      ├─ python.lua             (Python venv helpers + PyrightReCreateStub)
-      └─ system.lua             (Windows-only ClearShada command)
-```
-
-## 7. Testing & Validation
-
-- **Syntax check:** `luac -p lua/**/*.lua` — must pass with zero errors.
-- **Format check:** `stylua --check lua/` — must pass.
-- **Runtime validation:** Open Neovim, run `:checkhealth`, verify no errors in
-  Mason, LSP, Treesitter, or DAP sections.
-- **Lazy profile:** `:Lazy profile` — startup should stay under 100 ms.
-
-## 8. Important Conventions
-
-1. **Never `require()` at module top-level if the target is a plugin** — use
-   lazy-loading or wrap in a function / `vim.schedule`.
-2. **Avoid `vim.cmd` for things the Lua API can do** — prefer `vim.api`,
-   `vim.keymap.set`, `vim.diagnostic`, etc.
-3. **Use `pcall` around optional dependencies** — the config must not crash if a
-   plugin is disabled.
-4. **Icons come from `config.icons`** — do not hardcode icon strings in plugin
-   specs; reference the central table instead (Nerd Font icons are acceptable in
-   cmds/ and utils/ UI code).
-5. **Cross-platform paths** — use `vim.fn.stdpath()`, `vim.uv.fs_stat()`, and
-   forward slashes. The config runs on Linux, macOS, and Windows (MSYS2).
-6. **Semantic tokens are disabled globally** via `on_init` in
-   `servers/base.lua`. Do not re-enable per-server without reason.
-7. **No commits should include secrets** — `.gitignore` already excludes
-   sensitive paths; keep it that way.
-
-## 9. Design Principles — SoC, Low Coupling, Dependency Injection
-
-### Separation of Concerns (SoC)
-
-Each file or module has exactly **one responsibility**. Changes to one concern
-must not ripple into unrelated modules.
-
-| Concern              | Owner                                   |
-| -------------------- | --------------------------------------- |
-| Editor options       | `config/options.lua`                    |
-| Keymap registration  | `config/keymaps.lua`, `plugins/*/keys`  |
-| LSP capabilities     | `plugins/lsp/servers/base.lua`          |
-| Server-specific opts | `plugins/lsp/servers/<lang>.lua`        |
-| Formatter config     | `config/formatter/init.lua`             |
-| Linter config        | `config/linter/init.lua`                |
-| DAP adapter/config   | `plugins/debugger/<lang>.lua`           |
-| Shared helpers       | `lua/utils/<concern>.lua`               |
-| Domain commands      | `lua/cmds/<domain>.lua`                 |
-
-**Rule:** TypeScript-specific logic (e.g. copying JS settings into vtsls) belongs
-in `servers/typescript.lua`, not in the generic `setup.lua`.
-
-### Low Coupling
-
-Modules must not directly depend on **plugin internals** or reach into other
-modules' private state.
-
-**Required practices:**
-
-1. **Never `require()` a plugin at module top-level.** Plugins are loaded
-   asynchronously by lazy.nvim. A top-level require will run at spec-collection
-   time, before the plugin is available.
-
-   ```lua
-   -- ✗ bad — runs at file load time; crashes if plugin not installed
-   local snacks = require("snacks")
-
-   -- ✓ good — deferred to call time; plugin is already loaded
-   local function foo()
-     require("snacks").do_thing()
-   end
-   ```
-
-2. **Wrap `opts` in a function when it closes over plugin modules.**
-   lazy.nvim calls `opts = function()` after the plugin loads, making it safe
-   to require plugin modules inside.
-
-   ```lua
-   -- ✗ bad — telescope.actions required at spec parse time
-   opts = { mappings = { i = { ["<C-j>"] = require("telescope.actions").move_down } } }
-
-   -- ✓ good — deferred; runs after Telescope loads
-   opts = function()
-     local actions = require("telescope.actions")
-     return { mappings = { i = { ["<C-j>"] = actions.move_down } } }
-   end
-   ```
-
-3. **Internal utils (`utils.*`, `config`) may be required at top-level** — they
-   are pure Lua files with no plugin dependencies and are always present.
-
-4. **Plugin specs belong in `plugins/`; utility helpers belong in `utils/`.**
-   A plugin spec must not contain business logic; a util must not contain plugin
-   specs.
-
-### Dependency Injection (DI)
-
-Pass dependencies as function arguments rather than hard-coding module paths
-inside functions. This keeps units independently testable and replaceable.
+ASCII art headers live in **`lua/plugins/ui/header.lua`** as a plain `M` table. The dashboard (`snacks.lua`) imports whichever header it needs:
 
 ```lua
--- ✗ bad — hard-coded dependency; cannot be tested or swapped
-M.do_work = function()
-  local tool = require("some.tool")
-  tool.run()
-end
-
--- ✓ good — caller injects the tool; function is testable in isolation
----@param tool {run: fun()}
-M.do_work = function(tool)
-  tool.run()
-end
+preset = { header = require("plugins.ui.header").claude_snack }
 ```
 
-For callbacks and autocmd handlers, prefer receiving the dependency via
-closure arguments supplied by the plugin framework (e.g. `on_attach(client,
-bufnr)`), rather than calling `vim.lsp.get_client_by_id()` internally.
+`*_snack` variants are multi-line strings for snacks.nvim; plain array variants are for NvChad-style dashboards.
 
-### pcall for Optional Dependencies
+### Utilities
 
-Any `require()` that targets a **plugin** (not an internal module) **must**
-be wrapped in `pcall`. This ensures the config degrades gracefully when a
-plugin is disabled, not installed, or crashes during load.
+Import from the central utils module:
 
 ```lua
--- ✗ bad — crashes Neovim startup if trouble.nvim is not installed
-local trouble = require("trouble")
-trouble.open({ mode = "lsp_command", params = params })
-
--- ✓ good — safe even without trouble.nvim
-local ok, trouble = pcall(require, "trouble")
-if ok then
-  trouble.open({ mode = "lsp_command", params = params })
-end
+local utils = require("utils")
+utils.lsp.on_attach(...)
+utils.fs.file_exists(path)
+utils.os.is_linux()
 ```
 
-**Decision table:**
+Do not re-implement logic that already exists in `lua/utils/`.
 
-| Module type                            | Top-level require | In-function require | pcall required |
-| -------------------------------------- | :---------------: | :-----------------: | :------------: |
-| Internal (`utils.*`, `config`, `cmds`) |        ✓          |          ✓          |      ✗         |
-| NvChad core (`base46`, `nvchad.*`)     |        ✗          |          ✓          |      ✓         |
-| External plugins (`trouble`, `cmp`, …) |        ✗          |          ✓          |      ✓         |
+### Options
 
-### Module Testability
+Global vim options are set in `lua/config/options.lua`. Add new options here — do not scatter `vim.opt` calls across plugin configs unless the option is plugin-specific and must be set at plugin init time.
 
-Design utils to be unit-testable:
+---
 
-- **Pure functions** (no `vim.*` calls) can be tested with plain Lua or
-  `nvim --headless -l spec_file.lua`.
-- **Neovim-API functions** (`vim.uv.*`, `vim.fn.*`) must use
-  `nvim --headless -l spec_file.lua`.
-- Tests live under `spec/utils/` and are run with `bash spec/run.sh`.
-- Each test file loads `spec/helpers.lua` (minimal `describe`/`it`/`expect`
-  framework) via `dofile(vim.env.NVIM_SPEC_DIR .. "/helpers.lua")`.
+## Code Style
 
-## Commit Style
+- **Formatter:** StyLua. Config: `.stylua.toml`. Run `stylua lua/` before committing.
+- **Linter:** luacheck. Config: `.luacheckrc`.
+- 2-space indentation, single quotes for strings (StyLua normalises to double).
+- No comments unless the reason is non-obvious. Never write what the code does; only write why.
+- Prefer `vim.keymap.set` (aliased as `map`) over the legacy `vim.api.nvim_set_keymap`.
 
-- Use lowercase imperative subject lines: `fix:`, `add`, `update`, `scripts:`
-- **Never include co-authored-by trailers**
-- After every task: automatically commit — do not wait to be asked
+---
 
+## Adding a New Language
+
+Checklist for full language support:
+
+1. **`packages.lua`** — add LSP server name(s), Mason tool name(s) for formatter/linter, Treesitter parser name.
+2. **`lua/plugins/lsp/servers/`** — add server config (or extend `misc.lua` for simple servers).
+3. **`lua/config/formatter/init.lua`** — add formatter entry for the filetype.
+4. **`lua/config/linter/init.lua`** — add linter entry for the filetype.
+5. **`lua/plugins/lsp/config.lua`** — merge the new server config into the exported table.
+6. If debugger support is needed, add a DAP adapter in `lua/plugins/debugger/`.
+
+---
+
+## Testing
+
+Tests live in `spec/`. The test helpers provide a minimal `describe`/`it`/`expect` API:
+
+```lua
+local h = require("spec/helpers")
+h.describe("my module", function()
+  h.it("does X", function()
+    h.expect(result).to_equal(expected)
+  end)
+end)
+```
+
+Run specs by sourcing them in Neovim or with a headless Neovim invocation. There is no external test runner — keep specs self-contained.
+
+---
+
+## NvChad / base46 Theme System
+
+- Theme config and overrides: `lua/chadrc.lua`.
+- The base46 cache is at `vim.fn.stdpath("data") .. "/nvchad/base46/"`. If theme changes do not appear, clear the cache with `:lua require("base46").load_all_highlights()`.
+- Do not override highlight groups directly in plugin configs — use `lua/chadrc.lua` or the NvChad highlight override API.
+
+---
+
+## Conditional / Environment-Aware Code
+
+- Obsidian plugin (`notes.lua`) loads **only** when `~/OneDrive/Knowledge_Base` exists. Follow this pattern for any machine-specific plugin.
+- OS detection is available via `require("utils.os")`.
+- Copilot model is set in `lua/config/options.lua` (`vim.g.copilot_model`).
+
+---
+
+## What NOT to Do
+
+- Do not call `require("plugin").setup()` more than once for the same plugin.
+- Do not add `vim.opt` calls inside `lua/plugins/` files — put them in `lua/config/options.lua`.
+- Do not hardcode tool paths; rely on Mason-managed binaries in `$PATH`.
+- Do not add a plugin without a `lazy = true` signal (`event`, `cmd`, `ft`, or explicit `lazy = true`).
+- Do not duplicate base LSP capabilities — they come from `base.lua` automatically.
+- Do not write `require("utils.lsp")` inline when `require("utils").lsp` is already available.
+- Do not place dashboard headers in `lua/config/` — they belong in `lua/plugins/ui/header.lua`.
+- Do not add `diagnostics.lua` or `features.lua` back as standalone files — that logic lives in `lua/plugins/lsp/setup.lua`.
+- Do not add a global `<C-s>` keymap in any plugin config — it is reserved for file save.

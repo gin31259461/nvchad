@@ -25,7 +25,7 @@ return {
       dashboard = {
         enabled = true,
         preset = {
-          header = require("config.header").claude_snack,
+          header = require('plugins.ui.header').claude_snack,
         },
 
         -- built-in sections: https://github.com/folke/snacks.nvim/blob/main/docs/dashboard.md#-features
