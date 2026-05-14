@@ -73,7 +73,7 @@ rm -rf ~/.config/nvim ~/.local/state/nvim ~/.local/share/nvim
 | Plugin                                                            | Role                                                                    |
 | ----------------------------------------------------------------- | ----------------------------------------------------------------------- |
 | NvChad / base46                                                   | Theme system — default: **tokyonight** (toggle: vscode_light)           |
-| [snacks.nvim](https://github.com/folke/snacks.nvim)               | Dashboard, picker, notifier, indent guides, scroll, lazygit integration |
+| [snacks.nvim](https://github.com/folke/snacks.nvim)               | Dashboard, picker, explorer, notifier, indent guides, scroll, lazygit  |
 | [noice.nvim](https://github.com/folke/noice.nvim)                 | Styled cmdline, messages, LSP hover & signature popups                  |
 | [nvim-tree](https://github.com/nvim-tree/nvim-tree.lua)           | File explorer (`<C-n>` toggle, `<leader>e` focus)                       |
 | [trouble.nvim](https://github.com/folke/trouble.nvim)             | Diagnostics, quickfix & location list panel                             |
@@ -89,6 +89,7 @@ rm -rf ~/.config/nvim ~/.local/state/nvim ~/.local/share/nvim
 | [nvim-cmp](https://github.com/hrsh7th/nvim-cmp)                                       | Completion engine (LSP, buffer, path, snippets)             |
 | [LuaSnip](https://github.com/L3MON4D3/LuaSnip) + friendly-snippets                    | Snippet engine                                              |
 | [copilot.lua](https://github.com/zbirenbaum/copilot.lua)                              | GitHub Copilot inline suggestions (model: `gpt-41-copilot`) |
+| [opencode.nvim](https://github.com/nickjvandyke/opencode.nvim)                        | Claude Code integration (ask, execute, session management)  |
 | [nvim-autopairs](https://github.com/windwp/nvim-autopairs)                            | Auto-close brackets/quotes                                  |
 | [nvim-ts-autotag](https://github.com/windwp/nvim-ts-autotag)                          | Auto-close/rename HTML tags                                 |
 | [vim-matchup](https://github.com/andymass/vim-matchup)                                | Treesitter-aware `%` matching                               |
@@ -97,35 +98,35 @@ rm -rf ~/.config/nvim ~/.local/state/nvim ~/.local/share/nvim
 
 ### LSP
 
-Managed via [mason.nvim](https://github.com/williamboman/mason.nvim) +
+Managed via [mason.nvim](https://github.com/williambaman/mason.nvim) +
 [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig).
 
 **Configured servers:**
 
-| Language                | Server                                                                       |
-| ----------------------- | ---------------------------------------------------------------------------- |
-| Python                  | `pyright`, `ruff`                                                            |
-| TypeScript / JavaScript | `typescript-tools.nvim` (pmizio) — active; `vtsls` config present (disabled) |
-| C# / .NET               | `roslyn.nvim` (requires .NET SDK 10+)                                        |
-| Lua                     | `lua_ls`                                                                     |
-| Web                     | `html`, `cssls`, `tailwindcss`                                               |
-| Go                      | `gopls`                                                                      |
-| C / C++                 | `clangd`                                                                     |
-| Bash                    | `bashls`                                                                     |
-| PowerShell              | `powershell_es`                                                              |
-| Prisma                  | `prismals`                                                                   |
-| Docker                  | `dockerls`, `docker_compose_language_service`                                |
-| JSON                    | `jsonls`                                                                     |
-| Markdown                | `marksman`                                                                   |
-| XML                     | `lemminx`                                                                    |
-| TOML                    | `tombi`                                                                      |
+| Language                | Server                                                              |
+| ----------------------- | ------------------------------------------------------------------- |
+| Python                  | `pyright`, `ruff`                                                   |
+| TypeScript / JavaScript | `typescript-tools.nvim` (pmizio) + `vtsls` (both active)           |
+| C# / .NET               | `roslyn.nvim` (requires .NET SDK 10+)                               |
+| Lua                     | `lua_ls`                                                            |
+| Web                     | `html`, `cssls`, `tailwindcss`                                      |
+| Go                      | `gopls`                                                             |
+| C / C++                 | `clangd`                                                            |
+| Bash                    | `bashls`                                                            |
+| PowerShell              | `powershell_es`                                                     |
+| Prisma                  | `prismals`                                                          |
+| Docker                  | `dockerls`, `docker_compose_language_service`                       |
+| JSON                    | `jsonls`                                                            |
+| Markdown                | `marksman`                                                          |
+| XML                     | `lemminx`                                                           |
+| TOML                    | `tombi`                                                             |
 
 ### Formatting & Linting
 
 - **Formatter:** [conform.nvim](https://github.com/stevearc/conform.nvim) —
-  prettier, stylua, deno, shfmt, csharpier, sqlfluff, markdownlint
+  prettier, stylua, deno, shfmt, csharpier, sqlfluff, markdownlint, tombi
 - **Linter:** [nvim-lint](https://github.com/mfussenegger/nvim-lint) — eslint_d,
-  hadolint, markdownlint-cli2
+  luacheck, hadolint, markdownlint-cli2
 
 ### Debugging
 
@@ -287,7 +288,7 @@ Managed via [mason.nvim](https://github.com/williamboman/mason.nvim) +
 | `]]` / `[[`       | Next / prev reference          |
 | `<a-n>` / `<a-p>` | Next / prev reference (wrap)   |
 
-#### TypeScript extras (`vtsls`)
+#### TypeScript extras
 
 | Key          | Action                              |
 | ------------ | ----------------------------------- |
@@ -341,13 +342,25 @@ Managed via [mason.nvim](https://github.com/williamboman/mason.nvim) +
 The Dotnet Manager UI is provided by `dotnet-cli.nvim` + `comet.nvim`. See their
 documentation for UI keybindings.
 
-### AI (Copilot)
+### AI
+
+#### Copilot
 
 | Key     | Mode   | Action                  |
 | ------- | ------ | ----------------------- |
 | `<M-l>` | insert | Accept AI suggestion    |
 | `<M-]>` | insert | Next Copilot suggestion |
 | `<M-[>` | insert | Prev Copilot suggestion |
+
+#### OpenCode
+
+| Key          | Mode          | Action                     |
+| ------------ | ------------- | -------------------------- |
+| `<C-a>`      | normal        | Ask OpenCode               |
+| `<C-.>`      | normal        | Toggle OpenCode panel      |
+| `go`         | normal/visual | Add range to session       |
+| `goo`        | normal        | Add current line to session |
+| `<S-C-u/d>`  | normal        | Scroll OpenCode up / down  |
 
 ### Other
 
@@ -358,3 +371,4 @@ documentation for UI keybindings.
 | `<leader>n`  | Notification history    |
 | `<leader>D`  | Open dashboard          |
 | `<leader>wK` | All which-key mappings  |
+| `<leader>wk` | Query which-key lookup  |
