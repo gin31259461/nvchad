@@ -1,4 +1,5 @@
 -- ── spec/utils/os_spec.lua ────────────────────────────────────────────────────
+---@type SpecHelpers
 local H = dofile(vim.env.NVIM_SPEC_DIR .. "/helpers.lua")
 local os_utils = require("utils.os")
 

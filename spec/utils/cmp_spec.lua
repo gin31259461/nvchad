@@ -1,4 +1,5 @@
 -- ── spec/utils/cmp_spec.lua ───────────────────────────────────────────────────
+---@type SpecHelpers
 local H = dofile(vim.env.NVIM_SPEC_DIR .. "/helpers.lua")
 local cmp_utils = require("utils.cmp")
 

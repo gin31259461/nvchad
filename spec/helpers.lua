@@ -8,6 +8,20 @@
 --   end)
 --   H.summary()
 
+---@class SpecExpect
+---@field to_equal      fun(expected: any)
+---@field to_be_truthy  fun()
+---@field to_be_falsy   fun()
+---@field to_be_nil     fun()
+---@field to_match      fun(pattern: string)
+---@field to_have_length fun(n: integer)
+---@field to_be_type    fun(t: string)
+
+---@class SpecHelpers
+---@field describe  fun(name: string, fn: fun())
+---@field it        fun(name: string, fn: fun())
+---@field expect    fun(val: any): SpecExpect
+---@field summary   fun()
 local M = {}
 
 local _pass = 0
@@ -38,7 +52,7 @@ function M.it(name, fn)
 end
 
 ---@param val any
----@return table
+---@return SpecExpect
 function M.expect(val)
   local function fail(msg)
     error(msg, 3)

@@ -1,4 +1,5 @@
 -- ── spec/utils/table_spec.lua ─────────────────────────────────────────────────
+---@type SpecHelpers
 local H = dofile(vim.env.NVIM_SPEC_DIR .. "/helpers.lua")
 local tbl = require("utils.table")
 
