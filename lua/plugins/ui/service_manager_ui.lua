@@ -2,9 +2,13 @@ local M = {}
 
 local services = require("config.services")
 local state_mod = require("utils.service_state")
+local ui_utils = require("utils.ui")
 
 -- ─── config ──────────────────────────────────────────────────────────────────
+---@alias ServiceCategory "lsp" | "dap" | "linter" | "formatter"
 
+---@class ServiceConfig
+---@field service_categories ServiceCategory[] list of categories to display, in order of tabs
 local cfg = {
   max_w = 120,
   min_w = 120,
@@ -16,7 +20,7 @@ local cfg = {
   col_status = 22, -- status column width (both views)
   pad_flat = 2, -- left indent for LSP/DAP entries
   pad_tool = 4, -- left indent for linter/formatter entries
-  cats = { "lsp", "dap", "linter", "formatter" },
+  service_categories = { "lsp", "dap", "linter", "formatter" },
   cat_label = {
     lsp = "LSP",
     dap = "DAP",
@@ -24,8 +28,6 @@ local cfg = {
     formatter = "Formatter",
   },
 }
-
-local ELLIPSIS = "…" -- U+2026, 3 bytes, display width 1
 
 local ui = {
   buf = nil,
@@ -38,45 +40,6 @@ local ui = {
 
 local ns = vim.api.nvim_create_namespace("ServiceManager")
 local tooltip_ns = vim.api.nvim_create_namespace("ServiceManagerTooltip")
-
--- ─── layout helpers ───────────────────────────────────────────────────────────
-
-local function trunc(s, max_w)
-  if vim.fn.strdisplaywidth(s) <= max_w then
-    return s
-  end
-  -- subtract actual display width of ELLIPSIS (1 normally, 2 with ambiwidth=double)
-  local ew = vim.fn.strdisplaywidth(ELLIPSIS)
-  return s:sub(1, max_w - ew) .. ELLIPSIS
-end
-
-local function rpad(s, w)
-  local dw = vim.fn.strdisplaywidth(s)
-  return dw < w and (s .. string.rep(" ", w - dw)) or s
-end
-
--- Pads a line with trailing spaces to fill the full inner window width.
--- Ensures cursorline highlight extends to the right edge of the window.
-local function fill_line(s, inner_w)
-  local dw = vim.fn.strdisplaywidth(s)
-  return dw < inner_w and (s .. string.rep(" ", inner_w - dw)) or s
-end
-
--- Replacement for deprecated nvim_buf_add_highlight.
--- end_col = -1 resolves to the byte length of the target line.
-local function buf_hl(buf, ns_id, hl_group, row, start_col, end_col)
-  if end_col == -1 then
-    local line = vim.api.nvim_buf_get_lines(buf, row, row + 1, false)[1] or ""
-    end_col = #line
-  end
-  if end_col <= start_col then
-    return
-  end
-  vim.api.nvim_buf_set_extmark(buf, ns_id, row, start_col, {
-    end_col = end_col,
-    hl_group = hl_group,
-  })
-end
 
 -- Returns (text, hl_group). Text is never empty. hl reflects the worst state:
 --   DiagnosticOk    = installed (and active for LSP)
@@ -111,11 +74,10 @@ local function entry_status(cat, name, meta)
   end
 
   if cat == "lsp" then
-    local n = #vim.lsp.get_clients({ name = name })
-    local is_enabled = vim.lsp.is_enabled(name)
-
-    if not is_enabled then
+    if not vim.lsp.is_enabled(name) then
       hl = "DiagnosticError"
+    elseif #vim.lsp.get_clients({ name = name }) > 0 then
+      hl = "DiagnosticOk"
     else
       hl = "DiagnosticWarn"
     end
@@ -206,26 +168,69 @@ local function content_lines(cat)
 end
 
 local function make_win_cfg()
-  local W = math.min(
+  local win_width = math.min(
     vim.o.columns - 2,
     math.max(cfg.min_w, math.min(cfg.max_w, vim.o.columns - 4))
   )
   -- 1 empty + 1 tabline + 1 sep + 1 col-hdr + content
-  local natural = 4 + content_lines(cfg.cats[ui.cat_idx])
-  local H =
+  local natural = 4 + content_lines(cfg.service_categories[ui.cat_idx])
+  local win_height =
     math.min(vim.o.lines - 2, math.max(cfg.min_h, math.min(cfg.max_h, natural)))
   return {
     relative = "editor",
-    width = W,
-    height = H,
-    row = math.floor((vim.o.lines - H) / 2),
-    col = math.floor((vim.o.columns - W) / 2),
+    width = win_width,
+    height = win_height,
+    row = math.floor((vim.o.lines - win_height) / 2),
+    col = math.floor((vim.o.columns - win_width) / 2),
     style = "minimal",
     border = "rounded",
     title = " Service Manager ",
     title_pos = "center",
     noautocmd = true,
   }
+end
+
+-- ─── render helpers ──────────────────────────────────────────────────────────
+
+local function build_tabline(win_width)
+  local tabline = "  "
+  local tab_ranges = {}
+  for i, c in ipairs(cfg.service_categories) do
+    local lbl = "  " .. i .. " " .. cfg.cat_label[c] .. "  "
+    local start_byte = #tabline
+    tabline = tabline .. lbl
+    tab_ranges[i] = { start_byte, #tabline }
+  end
+
+  local hint = "press g? for help"
+  local hint_pad = math.max(
+    0,
+    win_width
+      - vim.fn.strdisplaywidth(tabline)
+      - vim.fn.strdisplaywidth(hint)
+      - 2
+  )
+  local hint_byte = #tabline + hint_pad
+  tabline = tabline .. string.rep(" ", hint_pad) .. hint
+
+  return tabline, tab_ranges, hint_byte, hint
+end
+
+local function build_col_header(cat, icon_disp_w)
+  if cat == "lsp" or cat == "dap" then
+    return string.rep(" ", cfg.pad_flat + icon_disp_w + 2)
+      .. ui_utils.rpad("Service", cfg.col_name)
+      .. "  "
+      .. ui_utils.rpad("Filetypes", cfg.col_ft)
+      .. "  "
+      .. "Status"
+  end
+  return string.rep(" ", cfg.pad_tool + icon_disp_w + 2)
+    .. ui_utils.rpad("Service", cfg.col_tool)
+    .. "  "
+    .. ui_utils.rpad("Filetypes", cfg.col_ft)
+    .. "  "
+    .. "Status"
 end
 
 -- ─── render ───────────────────────────────────────────────────────────────────
@@ -236,55 +241,20 @@ local function render()
   end
   ui.help_open = false
 
-  local cat = cfg.cats[ui.cat_idx]
-  local W = vim.api.nvim_win_get_width(ui.win)
-  local sep = string.rep("─", W - 4)
-
-  -- ── tabline: uniform label format; highlight marks the active tab ──────────
-
-  local tabline = "  "
-  local tab_ranges = {}
-  for i, c in ipairs(cfg.cats) do
-    local lbl = "  " .. i .. " " .. cfg.cat_label[c] .. "  "
-    local s = #tabline
-    tabline = tabline .. lbl
-    tab_ranges[i] = { s, #tabline }
-  end
-
-  local gh_hint = "press g? for help"
-  local gh_pad = math.max(
-    0,
-    W - vim.fn.strdisplaywidth(tabline) - vim.fn.strdisplaywidth(gh_hint) - 2
-  )
-  local gh_byte = #tabline + gh_pad
-  tabline = tabline .. string.rep(" ", gh_pad) .. gh_hint
-
-  -- ── column header ─────────────────────────────────────────────────────────
+  local cat = cfg.service_categories[ui.cat_idx]
   -- measure icon display width at runtime; ● is East Asian Ambiguous (1 or 2)
   local icon_disp_w = vim.fn.strdisplaywidth("●")
+  local win_width = vim.api.nvim_win_get_width(ui.win)
+  local sep = string.rep("─", win_width - 4)
 
-  local col_hdr
-  if cat == "lsp" or cat == "dap" then
-    col_hdr = string.rep(" ", cfg.pad_flat + icon_disp_w + 2)
-      .. rpad("Service", cfg.col_name)
-      .. "  "
-      .. rpad("Filetypes", cfg.col_ft)
-      .. "  "
-      .. "Status"
-  else
-    col_hdr = string.rep(" ", cfg.pad_tool + icon_disp_w + 2)
-      .. rpad("Service", cfg.col_tool)
-      .. "  "
-      .. rpad("Filetypes", cfg.col_ft)
-      .. "  "
-      .. "Status"
-  end
+  local tabline, tab_ranges, hint_byte, hint = build_tabline(win_width)
+  local col_hdr = build_col_header(cat, icon_disp_w)
 
   local lines = {
-    fill_line("", W),
-    fill_line(tabline, W),
-    fill_line("  " .. sep, W),
-    fill_line(col_hdr, W),
+    ui_utils.fill_line("", win_width),
+    ui_utils.fill_line(tabline, win_width),
+    ui_utils.fill_line("  " .. sep, win_width),
+    ui_utils.fill_line(col_hdr, win_width),
   }
   local header_lnums = {}
   ui.line_map = {}
@@ -300,30 +270,33 @@ local function render()
       return a.name < b.name
     end)
 
-    for _, e in ipairs(flat) do
-      local enabled = state_mod.is_enabled(cat, e.name)
+    for _, svc in ipairs(flat) do
+      local enabled = state_mod.is_enabled(cat, svc.name)
       local icon = enabled and "●" or "○"
-      local dname = trunc(e.name, cfg.col_name)
-      local ft_str = table.concat(e.meta.ft or {}, " ")
-      local dft = trunc(ft_str, cfg.col_ft)
-      local st_text, st_hl = entry_status(cat, e.name, e.meta)
+      local dname = ui_utils.trunc(svc.name, cfg.col_name)
+      local ft_str = table.concat(svc.meta.ft or {}, " ")
+      local dft = ui_utils.trunc(ft_str, cfg.col_ft)
+      local st_text, st_hl = entry_status(cat, svc.name, svc.meta)
 
       local icon_gap =
         string.rep(" ", icon_disp_w - vim.fn.strdisplaywidth(icon) + 2)
       local prefix = string.rep(" ", cfg.pad_flat)
         .. icon
         .. icon_gap
-        .. rpad(dname, cfg.col_name)
+        .. ui_utils.rpad(dname, cfg.col_name)
         .. "  "
-        .. rpad(dft, cfg.col_ft)
+        .. ui_utils.rpad(dft, cfg.col_ft)
         .. "  "
       table.insert(
         lines,
-        fill_line(prefix .. trunc(st_text, cfg.col_status), W)
+        ui_utils.fill_line(
+          prefix .. ui_utils.trunc(st_text, cfg.col_status),
+          win_width
+        )
       )
       ui.line_map[#lines] = {
-        name = e.name,
-        meta = e.meta,
+        name = svc.name,
+        meta = svc.meta,
         icon_byte = cfg.pad_flat,
         status_byte = #prefix,
         status_hl = st_hl,
@@ -331,7 +304,7 @@ local function render()
     end
   else
     for _, grp in ipairs(build_ft_groups(cat)) do
-      table.insert(lines, fill_line("  " .. grp.ft, W))
+      table.insert(lines, ui_utils.fill_line("  " .. grp.ft, win_width))
       header_lnums[#lines] = true
 
       for _, name in ipairs(grp.names) do
@@ -339,9 +312,9 @@ local function render()
         if meta then
           local enabled = state_mod.is_enabled(cat, name)
           local icon = enabled and "●" or "○"
-          local dname = trunc(name, cfg.col_tool)
+          local dname = ui_utils.trunc(name, cfg.col_tool)
           local ft_str = table.concat(meta.ft or {}, " ")
-          local dft = trunc(ft_str, cfg.col_ft)
+          local dft = ui_utils.trunc(ft_str, cfg.col_ft)
           local st_text, st_hl = entry_status(cat, name, meta)
 
           local icon_gap =
@@ -349,13 +322,16 @@ local function render()
           local prefix = string.rep(" ", cfg.pad_tool)
             .. icon
             .. icon_gap
-            .. rpad(dname, cfg.col_tool)
+            .. ui_utils.rpad(dname, cfg.col_tool)
             .. "  "
-            .. rpad(dft, cfg.col_ft)
+            .. ui_utils.rpad(dft, cfg.col_ft)
             .. "  "
           table.insert(
             lines,
-            fill_line(prefix .. trunc(st_text, cfg.col_status), W)
+            ui_utils.fill_line(
+              prefix .. ui_utils.trunc(st_text, cfg.col_status),
+              win_width
+            )
           )
           ui.line_map[#lines] = {
             name = name,
@@ -382,24 +358,38 @@ local function render()
   -- tabs: active = DiagnosticVirtualTextInfo, inactive = TabLine
   for i, range in ipairs(tab_ranges) do
     local hl = (i == ui.cat_idx) and "DiagnosticVirtualTextInfo" or "TabLine"
-    buf_hl(ui.buf, ns, hl, 1, range[1], range[2])
+    ui_utils.buf_hl(ui.buf, ns, hl, 1, range[1], range[2])
   end
-  buf_hl(ui.buf, ns, "Comment", 1, gh_byte, gh_byte + #gh_hint)
+  ui_utils.buf_hl(ui.buf, ns, "Comment", 1, hint_byte, hint_byte + #hint)
 
   -- column header (0-indexed row 3)
-  buf_hl(ui.buf, ns, "Comment", 3, 0, -1)
+  ui_utils.buf_hl(ui.buf, ns, "Comment", 3, 0, -1)
 
   -- icons + status
   for lnum, entry in pairs(ui.line_map) do
     local icon_hl = state_mod.is_enabled(cat, entry.name) and "DiagnosticOk"
       or "Comment"
-    buf_hl(ui.buf, ns, icon_hl, lnum - 1, entry.icon_byte, entry.icon_byte + 3)
-    buf_hl(ui.buf, ns, entry.status_hl, lnum - 1, entry.status_byte, -1)
+    ui_utils.buf_hl(
+      ui.buf,
+      ns,
+      icon_hl,
+      lnum - 1,
+      entry.icon_byte,
+      entry.icon_byte + 3
+    )
+    ui_utils.buf_hl(
+      ui.buf,
+      ns,
+      entry.status_hl,
+      lnum - 1,
+      entry.status_byte,
+      -1
+    )
   end
 
   -- ft group headers
   for lnum in pairs(header_lnums) do
-    buf_hl(ui.buf, ns, "Title", lnum - 1, 0, -1)
+    ui_utils.buf_hl(ui.buf, ns, "Title", lnum - 1, 0, -1)
   end
 
   -- ── resize ────────────────────────────────────────────────────────────────
@@ -418,16 +408,18 @@ local function render()
 
   if ui.win and vim.api.nvim_win_is_valid(ui.win) then
     local cur = vim.api.nvim_win_get_cursor(ui.win)[1]
-    local first_e, last_e
+    local first_entry_lnum, last_entry_lnum
     for lnum in pairs(ui.line_map) do
-      first_e = first_e and math.min(first_e, lnum) or lnum
-      last_e = last_e and math.max(last_e, lnum) or lnum
+      first_entry_lnum = first_entry_lnum and math.min(first_entry_lnum, lnum)
+        or lnum
+      last_entry_lnum = last_entry_lnum and math.max(last_entry_lnum, lnum)
+        or lnum
     end
-    if first_e then
-      if cur < first_e then
-        vim.api.nvim_win_set_cursor(ui.win, { first_e, 0 })
-      elseif cur > last_e then
-        vim.api.nvim_win_set_cursor(ui.win, { last_e, 0 })
+    if first_entry_lnum then
+      if cur < first_entry_lnum then
+        vim.api.nvim_win_set_cursor(ui.win, { first_entry_lnum, 0 })
+      elseif cur > last_entry_lnum then
+        vim.api.nvim_win_set_cursor(ui.win, { last_entry_lnum, 0 })
       end
     end
   end
@@ -440,25 +432,28 @@ local function render_help()
     return
   end
 
-  local W = vim.api.nvim_win_get_width(ui.win)
-  local sep = string.rep("─", W - 4)
+  local win_width = vim.api.nvim_win_get_width(ui.win)
+  local sep = string.rep("─", win_width - 4)
 
   local lines = {}
   local section_lnums = {}
 
   local function sec(title)
-    table.insert(lines, fill_line("", W))
-    table.insert(lines, fill_line("  " .. title, W))
+    table.insert(lines, ui_utils.fill_line("", win_width))
+    table.insert(lines, ui_utils.fill_line("  " .. title, win_width))
     section_lnums[#lines] = true
   end
 
   local function row(key, desc)
-    table.insert(lines, fill_line(string.format("  %-18s %s", key, desc), W))
+    table.insert(
+      lines,
+      ui_utils.fill_line(string.format("  %-18s %s", key, desc), win_width)
+    )
   end
 
-  table.insert(lines, fill_line("", W))
-  table.insert(lines, fill_line("  ? Help", W))
-  table.insert(lines, fill_line("  " .. sep, W))
+  table.insert(lines, ui_utils.fill_line("", win_width))
+  table.insert(lines, ui_utils.fill_line("  ? Help", win_width))
+  table.insert(lines, ui_utils.fill_line("  " .. sep, win_width))
 
   sec("Navigation")
   row("1-4", "Switch tab  LSP / DAP / LINTER / FORMATTER")
@@ -482,7 +477,7 @@ local function render_help()
   vim.api.nvim_buf_clear_namespace(ui.buf, ns, 0, -1)
 
   for lnum in pairs(section_lnums) do
-    buf_hl(ui.buf, ns, "Title", lnum - 1, 0, -1)
+    ui_utils.buf_hl(ui.buf, ns, "Title", lnum - 1, 0, -1)
   end
 end
 
@@ -541,7 +536,7 @@ local function show_tooltip(entry)
   if not meta then
     return
   end
-  local cat = cfg.cats[ui.cat_idx]
+  local cat = cfg.service_categories[ui.cat_idx]
 
   -- mason install status
   local install_status = ""
@@ -582,11 +577,11 @@ local function show_tooltip(entry)
   vim.api.nvim_buf_set_lines(tbuf, 0, -1, false, info)
   -- highlight name row icon, then status row
   local name_hl = enabled and "DiagnosticOk" or "Comment"
-  buf_hl(tbuf, tooltip_ns, name_hl, 0, 1, 4) -- ● / ○ = 3 bytes starting at col 1
+  ui_utils.buf_hl(tbuf, tooltip_ns, name_hl, 0, 1, 4) -- ● / ○ = 3 bytes starting at col 1
   for i, line in ipairs(info) do
     if line:match("^   status:") then
       local prefix_b = #"   status: "
-      buf_hl(tbuf, tooltip_ns, st_hl, i - 1, prefix_b, -1)
+      ui_utils.buf_hl(tbuf, tooltip_ns, st_hl, i - 1, prefix_b, -1)
     end
   end
 
@@ -631,6 +626,9 @@ local function install_pkg(pkg_name, on_done)
     return
   end
   local ok, reg = pcall(require, "mason-registry")
+  if not ok then
+    return
+  end
 
   if reg.is_installed(pkg_name) then
     vim.notify(pkg_name .. " is already installed", vim.log.levels.INFO)
@@ -639,8 +637,8 @@ local function install_pkg(pkg_name, on_done)
     end
     return
   else
-    local ok, pkg = pcall(reg.get_package, pkg_name)
-    if ok and pkg then
+    local pkg_ok, pkg = pcall(reg.get_package, pkg_name)
+    if pkg_ok and pkg then
       vim.notify("Installing " .. pkg_name .. "…", vim.log.levels.INFO)
       pkg:install():once("closed", function()
         if pkg:is_installed() then
@@ -670,8 +668,9 @@ local function apply_runtime(cat, name, meta, enabled)
         vim.log.levels.INFO
       )
     else
+      vim.lsp.enable(name, false)
       for _, client in ipairs(vim.lsp.get_clients({ name = name })) do
-        vim.lsp.stop_client(client.id, true)
+        client:stop()
       end
       vim.notify(
         name .. " stopped (takes full effect next session)",
@@ -706,6 +705,7 @@ local function apply_runtime(cat, name, meta, enabled)
     for _, ft in ipairs(meta.ft or {}) do
       local list = conform.formatters_by_ft[ft] or {}
       conform.formatters_by_ft[ft] = list
+
       if enabled then
         if not vim.tbl_contains(list, name) then
           table.insert(list, name)
@@ -736,12 +736,12 @@ local function do_toggle()
   if not entry then
     return
   end
-  local cat = cfg.cats[ui.cat_idx]
+  local category = cfg.service_categories[ui.cat_idx]
   local meta = entry.meta
   if not meta then
     return
   end
-  local new_state = not state_mod.is_enabled(cat, entry.name)
+  local new_state = not state_mod.is_enabled(category, entry.name)
 
   if new_state and meta.mason then
     local ok, reg = pcall(require, "mason-registry")
@@ -751,8 +751,8 @@ local function do_toggle()
       end)
       if ok2 and pkg and not pkg:is_installed() then
         install_pkg(meta.mason, function()
-          state_mod.set_enabled(cat, entry.name, true)
-          apply_runtime(cat, entry.name, meta, true)
+          state_mod.set_enabled(category, entry.name, true)
+          apply_runtime(category, entry.name, meta, true)
           render()
         end)
         return
@@ -760,8 +760,8 @@ local function do_toggle()
     end
   end
 
-  state_mod.set_enabled(cat, entry.name, new_state)
-  apply_runtime(cat, entry.name, meta, new_state)
+  state_mod.set_enabled(category, entry.name, new_state)
+  apply_runtime(category, entry.name, meta, new_state)
   render()
 end
 
@@ -770,7 +770,7 @@ local function do_install()
   if not entry then
     return
   end
-  local cat = cfg.cats[ui.cat_idx]
+  local cat = cfg.service_categories[ui.cat_idx]
   local meta = entry.meta
   if not meta then
     return
@@ -792,10 +792,10 @@ local function do_reorder(dir)
   if not entry or not entry.ft then
     return
   end
-  local cat = cfg.cats[ui.cat_idx]
+  local category = cfg.service_categories[ui.cat_idx]
 
   local group
-  for _, g in ipairs(build_ft_groups(cat)) do
+  for _, g in ipairs(build_ft_groups(category)) do
     if g.ft == entry.ft then
       group = g
       break
@@ -823,12 +823,19 @@ local function do_reorder(dir)
   end
 
   names[idx], names[new_idx] = names[new_idx], names[idx]
-  state_mod.set_order(cat, entry.ft, names)
+
+  if category == "linter" or category == "formatter" then
+    state_mod.set_order(
+      category --[[@as "formatter"|"linter"]],
+      entry.ft,
+      names
+    )
+  end
 
   local enabled_names = vim.tbl_filter(function(n)
-    return state_mod.is_enabled(cat, n)
+    return state_mod.is_enabled(category, n)
   end, names)
-  if cat == "formatter" then
+  if category == "formatter" then
     local ok, conform = pcall(require, "conform")
     if ok then
       conform.formatters_by_ft[entry.ft] = enabled_names
@@ -876,10 +883,10 @@ local function set_keymaps()
   map("<Space>", do_toggle)
   map("i", do_install)
   map("<Tab>", function()
-    switch_tab((ui.cat_idx % #cfg.cats) + 1)
+    switch_tab((ui.cat_idx % #cfg.service_categories) + 1)
   end)
   map("<S-Tab>", function()
-    switch_tab(((ui.cat_idx - 2) % #cfg.cats) + 1)
+    switch_tab(((ui.cat_idx - 2) % #cfg.service_categories) + 1)
   end)
   map("[", function()
     do_reorder(-1)
@@ -894,7 +901,7 @@ local function set_keymaps()
     end
   end)
 
-  for i = 1, #cfg.cats do
+  for i = 1, #cfg.service_categories do
     map(tostring(i), function()
       switch_tab(i)
     end)

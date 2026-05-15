@@ -1,7 +1,7 @@
 local M = {}
 
 local _state = nil
-local state_path = vim.fn.stdpath("data") .. "/service_manager.json"
+local STATE_PATH = vim.fn.stdpath("data") .. "/service_manager.json"
 
 local function build_defaults()
   local svc = require("config.services")
@@ -22,7 +22,7 @@ local function build_defaults()
 end
 
 function M.load()
-  local f = io.open(state_path, "r")
+  local f = io.open(STATE_PATH, "r")
   if not f then
     return build_defaults()
   end
@@ -60,10 +60,10 @@ function M.get()
 end
 
 function M.save()
-  local f = io.open(state_path, "w")
+  local f = io.open(STATE_PATH, "w")
   if not f then
     vim.notify(
-      "ServiceManager: cannot write " .. state_path,
+      "ServiceManager: cannot write " .. STATE_PATH,
       vim.log.levels.WARN
     )
     return
@@ -85,11 +85,6 @@ function M.set_enabled(cat, name, enabled)
   local state = M.get()
   if state[cat] then
     state[cat][name] = enabled
-
-    if cat == "lsp" then
-      vim.lsp.enable(name, enabled)
-    end
-
     M.save()
   end
 end

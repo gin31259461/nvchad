@@ -132,6 +132,58 @@ M.get_file_icon = function(path, opts)
   return icon
 end
 
+---@param s string
+---@param max_w integer
+---@return string
+M.trunc = function(s, max_w)
+  local ellipsis = "…"
+  if vim.fn.strdisplaywidth(s) <= max_w then
+    return s
+  end
+  local ew = vim.fn.strdisplaywidth(ellipsis)
+  return s:sub(1, max_w - ew) .. ellipsis
+end
+
+---@param s string
+---@param w integer
+---@return string
+M.rpad = function(s, w)
+  local dw = vim.fn.strdisplaywidth(s)
+  return dw < w and (s .. string.rep(" ", w - dw)) or s
+end
+
+---Pad `s` with trailing spaces to fill `inner_w` display columns.
+---Ensures cursorline highlight extends to the right edge of the window.
+---@param s string
+---@param inner_w integer
+---@return string
+M.fill_line = function(s, inner_w)
+  local dw = vim.fn.strdisplaywidth(s)
+  return dw < inner_w and (s .. string.rep(" ", inner_w - dw)) or s
+end
+
+---Set an extmark highlight on a buffer range. Replaces deprecated nvim_buf_add_highlight.
+---Pass end_col = -1 to highlight to end of line (uses byte length of the line).
+---@param buf integer
+---@param ns_id integer
+---@param hl_group string
+---@param row integer 0-indexed row
+---@param start_col integer byte column
+---@param end_col integer byte column, or -1 for end of line
+M.buf_hl = function(buf, ns_id, hl_group, row, start_col, end_col)
+  if end_col == -1 then
+    local line = vim.api.nvim_buf_get_lines(buf, row, row + 1, false)[1] or ""
+    end_col = #line
+  end
+  if end_col <= start_col then
+    return
+  end
+  vim.api.nvim_buf_set_extmark(buf, ns_id, row, start_col, {
+    end_col = end_col,
+    hl_group = hl_group,
+  })
+end
+
 ---@return boolean true when toggling an nvterm terminal is safe
 M.check_toggle_nvterm = function()
   local current_ft = vim.bo.filetype

@@ -252,3 +252,7 @@ Run specs by sourcing them in Neovim or with a headless Neovim invocation. There
 - Do not add `diagnostics.lua` or `features.lua` back as standalone files — that logic lives in `lua/plugins/lsp/setup.lua`.
 - Do not add a global `<C-s>` keymap in any plugin config — it is reserved for file save.
 - Do not use `vim.api.nvim_buf_add_highlight` — it is deprecated. Use `vim.api.nvim_buf_set_extmark` with `hl_group` + `end_col` options instead. For `end_col = -1` (end of line), pass `#line` (byte length). See `lua/utils/ui.lua` and `lua/plugins/ui/service_manager_ui.lua` for reference.
+
+## Skills
+
+- lua programming: `/lua-expert`
