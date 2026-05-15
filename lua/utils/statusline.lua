@@ -33,7 +33,7 @@ M.merge_components = function(components, opts)
 end
 
 ---@return integer
-M.stbufnr = function()
+M.get_statusline_buf = function()
   return vim.api.nvim_win_get_buf(vim.g.statusline_winid or 0)
 end
 
@@ -136,7 +136,7 @@ M.current_lsp = function()
     local lsp_client = ""
 
     for _, client in ipairs(vim.lsp.get_clients()) do
-      if client.attached_buffers[M.stbufnr()] then
+      if client.attached_buffers[M.get_statusline_buf()] then
         if client.name == "copilot" then
           copilot = copilot .. " "
         else
@@ -167,13 +167,13 @@ end
 ---@return string
 M.git = function()
   if
-    not vim.b[M.stbufnr()].gitsigns_head
-    or vim.b[M.stbufnr()].gitsigns_git_status
+    not vim.b[M.get_statusline_buf()].gitsigns_head
+    or vim.b[M.get_statusline_buf()].gitsigns_git_status
   then
     return ""
   end
 
-  local git_status = vim.b[M.stbufnr()].gitsigns_status_dict
+  local git_status = vim.b[M.get_statusline_buf()].gitsigns_status_dict
 
   local added = (git_status.added and git_status.added ~= 0)
       and (" " .. git_status.added)

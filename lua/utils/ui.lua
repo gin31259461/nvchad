@@ -204,7 +204,7 @@ M.win_is_floating = function(winid)
 end
 
 ---@return integer, integer
-function M.get_completion_window_size()
+M.get_completion_window_size = function()
   local max_width = math.min(
     CONFIG.completion.max_w,
     math.floor(vim.o.columns * CONFIG.completion.pct_w)
@@ -217,7 +217,7 @@ function M.get_completion_window_size()
 end
 
 ---@return integer, integer
-function M.get_doc_window_size()
+M.get_doc_window_size = function()
   local max_width =
     math.min(CONFIG.doc.max_w, math.floor(vim.o.columns * CONFIG.doc.pct_w))
   local max_height =

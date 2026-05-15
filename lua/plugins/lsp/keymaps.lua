@@ -221,13 +221,13 @@ function M.on_attach(_, buffer)
   local keymaps = M.resolve(buffer)
 
   for _, keys in pairs(keymaps) do
-    local has = not keys.has or M.has(buffer, keys.has)
-    local cond = not (
+    local has_capability = not keys.has or M.has(buffer, keys.has)
+    local is_condition_met = not (
       keys.cond == false
       or ((type(keys.cond) == "function") and not keys.cond())
     )
 
-    if has and cond then
+    if has_capability and is_condition_met then
       ---@type LazyKeysOpts
       local opts = Keys.opts(keys)
       opts.cond = nil

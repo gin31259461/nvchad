@@ -37,8 +37,15 @@ M.register_servers = function(opts)
       opts.setup[server]()
     end
 
-    vim.lsp.config(server, server_opts)
-    vim.lsp.enable(server)
+    local ok, err = pcall(vim.lsp.config, server, server_opts)
+    if ok then
+      pcall(vim.lsp.enable, server)
+    else
+      vim.notify(
+        "[lsp] " .. server .. ": " .. tostring(err),
+        vim.log.levels.WARN
+      )
+    end
     ::continue::
   end
 end
@@ -48,7 +55,7 @@ end
 M.configure_diagnostics = function(opts)
   local configs = require("config")
 
-  if vim.fn.has("nvim-0.10.0") == 0 then
+  if vim.fn.has("nvim-0.10.0") < 1 then
     if type(opts.diagnostics.signs) ~= "boolean" then
       for severity, icon in pairs(opts.diagnostics.signs.text) do
         local name =
@@ -63,7 +70,7 @@ M.configure_diagnostics = function(opts)
     type(opts.diagnostics.virtual_text) == "table"
     and opts.diagnostics.virtual_text.prefix == "icons"
   then
-    opts.diagnostics.virtual_text.prefix = vim.fn.has("nvim-0.10.0") == 0
+    opts.diagnostics.virtual_text.prefix = vim.fn.has("nvim-0.10.0") < 1
         and "●"
       or function(diagnostic)
         local icons = configs.icons.diagnostics
@@ -112,7 +119,7 @@ end
 ---Activates optional LSP features (inlay hints, code lens). Requires Neovim >= 0.10.
 ---@param opts Lsp.Config.Spec
 M.activate_features = function(opts)
-  if vim.fn.has("nvim-0.10") == 0 then
+  if vim.fn.has("nvim-0.10") < 1 then
     return
   end
 
