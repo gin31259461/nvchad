@@ -114,3 +114,4 @@ map(
   "<cmd>DotnetManager<CR>",
   { desc = "open dotnet manager" }
 )
+map("n", "<leader>sm", "<cmd>ServiceManager<CR>", { desc = "service manager" })

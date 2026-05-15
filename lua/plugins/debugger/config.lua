@@ -14,13 +14,18 @@ local modules = {
   "plugins.debugger.dotnet",
 }
 
+local state_mod = require("utils.service_state")
+
 ---@type Dap.Spec
 local spec = { adapters = {}, configurations = {} }
 
 for _, mod_name in ipairs(modules) do
   local mod = require(mod_name)
-  spec.adapters =
-    vim.tbl_deep_extend("force", spec.adapters, mod.adapters or {})
+  for name, adapter in pairs(mod.adapters or {}) do
+    if state_mod.is_enabled("dap", name) then
+      spec.adapters[name] = adapter
+    end
+  end
   spec.configurations =
     vim.tbl_deep_extend("force", spec.configurations, mod.configurations or {})
 end

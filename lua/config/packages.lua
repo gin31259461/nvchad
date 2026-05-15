@@ -1,3 +1,5 @@
+local services = require("config.services")
+
 local M = {}
 
 M.treesitter_ensure_installed = {
@@ -25,85 +27,37 @@ M.treesitter_ensure_installed = {
   "regex",
 }
 
+-- Mason packages that are installed but not tracked as managed services.
+local mason_extras = {
+  "markdownlint", -- standalone markdown linter (separate from markdownlint-cli2)
+}
+
+-- Derive lsp_servers and mason_ensure_installed from the services registry so that
+-- config/services.lua is the single source of truth for all managed services.
 M.lsp_servers = {}
 M.mason_ensure_installed = {}
 
----@type table<string, string> --- lsp_config_name, package_name_in_mason
-local pkgs_with_lsp_setup = {
-  ------------------- python  -------------------
-
-  -- lsp
-  -- jedi_language_server = "jedi-language-server",
-  -- pylsp = "python-lsp-server",
-
-  -- static type checker
-  -- pyright performance issue: https://www.reddit.com/r/neovim/comments/1mgwt7p/neovim_pyright_lsp_is_super_slow_compared_to/
-  pyright = "pyright",
-
-  -- https://github.com/facebook/pyrefly
-  -- pyrefly = "pyrefly",
-
-  -- linter
-  ruff = "ruff",
-
-  ------------------- .NET -------------------
-  -- requirement:
-  -- .NET 10.0 SDK: https://dotnet.microsoft.com/zh-tw/download/dotnet/10.0
-  roslyn = "roslyn",
-
-  ------------------- Web -------------------
-  html = "html-lsp",
-  cssls = "css-lsp",
-  tailwindcss = "tailwindcss-language-server",
-  -- vtsls = "vtsls",
-  -- ts_ls = "typescript-language-server",
-
-  ------------------- Docker -------------------
-  dockerls = "dockerfile-language-server",
-  docker_compose_language_service = "docker-compose-language-service",
-
-  ------------------- other -------------------
-
-  clangd = "clangd",
-  bashls = "bash-language-server",
-  marksman = "marksman",
-  prismals = "prisma-language-server",
-  tombi = "tombi",
-  jsonls = "json-lsp",
-  lua_ls = "lua-language-server",
-  gopls = "gopls",
-  powershell_es = "powershell-editor-services",
-
-  -- xml
-  lemminx = "lemminx",
-}
-
--- formatter and linter
-local pkgs_only = {
-  "stylua",
-  "deno",
-  "shfmt",
-  "sqlfluff",
-  "hadolint",
-  "markdownlint",
-  "markdownlint-cli2",
-  "markdown-toc",
-  "prettier",
-  "eslint_d",
-  "sql-formatter",
-  "csharpier",
-  "netcoredbg",
-  "typescript-language-server",
-  "luacheck",
-}
-
-for lsp_config_name, pkg_name_in_mason in pairs(pkgs_with_lsp_setup) do
-  table.insert(M.lsp_servers, lsp_config_name)
-  table.insert(M.mason_ensure_installed, pkg_name_in_mason)
+local seen = {}
+local function add_mason(pkg)
+  if pkg and not seen[pkg] then
+    seen[pkg] = true
+    table.insert(M.mason_ensure_installed, pkg)
+  end
 end
 
-for _, v in ipairs(pkgs_only) do
-  table.insert(M.mason_ensure_installed, v)
+for name, meta in pairs(services.lsp) do
+  table.insert(M.lsp_servers, name)
+  add_mason(meta.mason)
+end
+
+for _, cat in ipairs({ "dap", "linter", "formatter" }) do
+  for _, meta in pairs(services[cat]) do
+    add_mason(meta.mason)
+  end
+end
+
+for _, pkg in ipairs(mason_extras) do
+  add_mason(pkg)
 end
 
 return M

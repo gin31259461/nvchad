@@ -11,12 +11,16 @@ M.register_servers = function(opts)
   end
 
   local configs = require("config")
+  local state_mod = require("utils.service_state")
   local default_lsp_config = {
     on_init = opts.on_init,
     capabilities = opts.capabilities,
   }
 
   for _, server in ipairs(configs.packages.lsp_servers) do
+    if not state_mod.is_enabled("lsp", server) then
+      goto continue
+    end
     local server_opts = vim.tbl_deep_extend(
       "force",
       default_lsp_config,
@@ -35,6 +39,7 @@ M.register_servers = function(opts)
 
     vim.lsp.config(server, server_opts)
     vim.lsp.enable(server)
+    ::continue::
   end
 end
 

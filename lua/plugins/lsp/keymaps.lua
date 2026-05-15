@@ -223,9 +223,8 @@ function M.on_attach(_, buffer)
   for _, keys in pairs(keymaps) do
     local has = not keys.has or M.has(buffer, keys.has)
     local cond = not (
-      keys.cond == false or (
-        (type(keys.cond) == "function") and not keys.cond()
-      )
+      keys.cond == false
+      or ((type(keys.cond) == "function") and not keys.cond())
     )
 
     if has and cond then

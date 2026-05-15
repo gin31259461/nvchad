@@ -146,13 +146,10 @@ M.current_lsp = function()
       end
     end
 
-    return M.merge_components(
-      {
-        hl.statusline.copilot .. copilot,
-        hl.statusline.active_context .. lsp_client,
-      },
-      { gap = 1, margin = { right = 1 } }
-    )
+    return M.merge_components({
+      hl.statusline.copilot .. copilot,
+      hl.statusline.active_context .. lsp_client,
+    }, { gap = 1, margin = { right = 1 } })
   end
 
   return ""
