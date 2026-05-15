@@ -15,10 +15,9 @@ return {
 
       ui = {
         icons = {
-          -- FIXME: missing icon
-          package_pending = " ",
-          package_installed = " ",
-          package_uninstalled = " ",
+          package_pending = " ",
+          package_installed = " ",
+          package_uninstalled = " ",
         },
       },
 

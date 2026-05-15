@@ -39,7 +39,6 @@ return {
     },
   },
 
-  -- only triggers on `keyword:` patterns (e.g. TODO:, FIXME:)
   {
     "folke/todo-comments.nvim",
     lazy = false,

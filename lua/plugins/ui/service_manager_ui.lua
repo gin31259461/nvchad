@@ -115,22 +115,11 @@ local function entry_status(cat, name, meta)
     local is_enabled = vim.lsp.is_enabled(name)
 
     if not is_enabled then
-      parts[#parts + 1] = "disabled"
       hl = "DiagnosticError"
-    elseif n > 0 then
-      parts[#parts + 1] = n .. (n == 1 and " client" or " clients")
     else
-      parts[#parts + 1] = "idle"
       hl = "DiagnosticWarn"
     end
   end
-
-  -- FIXME:
-  -- if meta.mason and (cat == "linter" or cat == "formatter") then
-  --   parts[#parts + 1] = "pkg:" .. meta.mason
-  -- elseif meta.mason and meta.mason ~= name then
-  --   parts[#parts + 1] = "pkg:" .. meta.mason
-  -- end
 
   if meta.mason then
     parts[#parts + 1] = "pkg:" .. meta.mason
@@ -249,7 +238,7 @@ local function render()
 
   local cat = cfg.cats[ui.cat_idx]
   local W = vim.api.nvim_win_get_width(ui.win)
-  local sep = string.rep("─", W - 2)
+  local sep = string.rep("─", W - 4)
 
   -- ── tabline: uniform label format; highlight marks the active tab ──────────
 
@@ -265,7 +254,7 @@ local function render()
   local gh_hint = "press g? for help"
   local gh_pad = math.max(
     0,
-    W - vim.fn.strdisplaywidth(tabline) - vim.fn.strdisplaywidth(gh_hint)
+    W - vim.fn.strdisplaywidth(tabline) - vim.fn.strdisplaywidth(gh_hint) - 2
   )
   local gh_byte = #tabline + gh_pad
   tabline = tabline .. string.rep(" ", gh_pad) .. gh_hint
@@ -452,7 +441,7 @@ local function render_help()
   end
 
   local W = vim.api.nvim_win_get_width(ui.win)
-  local sep = string.rep("─", W - 2)
+  local sep = string.rep("─", W - 4)
 
   local lines = {}
   local section_lnums = {}
@@ -637,42 +626,39 @@ local function show_tooltip(entry)
   })
 end
 
--- FIXME:
 local function install_pkg(pkg_name, on_done)
   if not pkg_name then
     return
   end
   local ok, reg = pcall(require, "mason-registry")
-  if not ok then
-    vim.cmd("MasonInstall " .. pkg_name)
-    if on_done then
-      vim.schedule(on_done)
-    end
-    return
-  end
-  local ok2, pkg = pcall(function()
-    return reg.get_package(pkg_name)
-  end)
-  if not ok2 or not pkg then
-    vim.notify("Mason: unknown package " .. pkg_name, vim.log.levels.ERROR)
-    return
-  end
-  if pkg:is_installed() then
+
+  if reg.is_installed(pkg_name) then
     vim.notify(pkg_name .. " is already installed", vim.log.levels.INFO)
     if on_done then
       on_done()
     end
     return
+  else
+    local ok, pkg = pcall(reg.get_package, pkg_name)
+    if ok and pkg then
+      vim.notify("Installing " .. pkg_name .. "…", vim.log.levels.INFO)
+      pkg:install():once("closed", function()
+        if pkg:is_installed() then
+          vim.schedule(function()
+            vim.notify(pkg_name .. " installed", vim.log.levels.INFO)
+            if on_done then
+              on_done()
+            end
+          end)
+        else
+          vim.schedule(function()
+            vim.notify("Failed to install " .. pkg_name, vim.log.levels.ERROR)
+          end)
+        end
+      end)
+      return
+    end
   end
-  vim.notify("Installing " .. pkg_name .. "…", vim.log.levels.INFO)
-  pkg:install():once("closed", function()
-    vim.schedule(function()
-      vim.notify(pkg_name .. " installed", vim.log.levels.INFO)
-      if on_done then
-        on_done()
-      end
-    end)
-  end)
 end
 
 local function apply_runtime(cat, name, meta, enabled)
@@ -888,7 +874,6 @@ local function set_keymaps()
   map("<Esc>", M.close)
   map("g?", toggle_help)
   map("<Space>", do_toggle)
-  map("<CR>", do_toggle)
   map("i", do_install)
   map("<Tab>", function()
     switch_tab((ui.cat_idx % #cfg.cats) + 1)

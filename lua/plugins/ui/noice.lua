@@ -52,7 +52,7 @@ return {
         view = "cmdline_popup",
       },
 
-      -- FIXME: editor view shift when save buffer
+      -- WORKAROUND: editor view shift when save buffer
       messages = {
         enabled = true,
       },

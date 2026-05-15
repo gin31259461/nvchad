@@ -4,7 +4,7 @@ if not os_utils.is_win() then
   return
 end
 
--- FIX: (temp): issue: https://github.com/neovim/neovim/issues/8587
+-- NOTE: (temp): issue: https://github.com/neovim/neovim/issues/8587
 -- this method is from: https://github.com/neovim/neovim/issues/8587#issuecomment-2176399196
 vim.api.nvim_create_user_command("ClearShada", function()
   local shada_path = vim.fn.expand(vim.fn.stdpath("data") .. "/shada")
