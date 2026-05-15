@@ -148,7 +148,7 @@ function M.show_tooltip_at_cursor()
 
   local enabled = state_mod.is_enabled(cat, entry.name)
   local icon = enabled and "●" or "○"
-  local ft_str = table.concat(entry.meta.ft or {}, "  ")
+  local ft_str = table.concat(entry.meta.ft or {}, ", ")
   local status_text, status_hl = data.entry_status(cat, entry.name, entry.meta)
 
   local info = {}

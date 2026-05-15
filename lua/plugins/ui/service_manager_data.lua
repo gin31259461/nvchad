@@ -28,10 +28,10 @@ function M.entry_status(cat, name, meta)
     parts[1] = "n/a"
     hl = "DiagnosticWarn"
   elseif installed then
-    parts[1] = ""
+    parts[1] = "installed"
     hl = "DiagnosticOk"
   else
-    parts[1] = ""
+    parts[1] = "not installed"
     hl = "DiagnosticError"
   end
 
@@ -43,10 +43,6 @@ function M.entry_status(cat, name, meta)
     else
       hl = "DiagnosticWarn"
     end
-  end
-
-  if meta.mason then
-    parts[#parts + 1] = "pkg:" .. meta.mason
   end
 
   parts = vim.tbl_filter(function(s)

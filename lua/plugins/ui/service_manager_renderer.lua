@@ -114,7 +114,7 @@ function M.render()
       local enabled = state_mod.is_enabled(cat, svc.name)
       local icon = enabled and "●" or "○"
       local display_name = ui_utils.trunc(svc.name, cfg.col_name)
-      local ft_str = table.concat(svc.meta.ft or {}, " ")
+      local ft_str = table.concat(svc.meta.ft or {}, ", ")
       local display_ft = ui_utils.trunc(ft_str, cfg.col_ft)
       local status_text, status_hl = data.entry_status(cat, svc.name, svc.meta)
 
