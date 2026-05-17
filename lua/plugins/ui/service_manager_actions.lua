@@ -137,12 +137,11 @@ function M.show_tooltip_at_cursor()
 
   local install_status = ""
   if entry.meta.mason then
-    local ok, reg = pcall(require, "mason-registry")
-    if ok then
-      local ok2, pkg = pcall(function()
-        return reg.get_package(entry.meta.mason)
-      end)
-      install_status = (ok2 and pkg and pkg:is_installed()) and " ✓" or " ✗"
+    local reg_ok, reg = pcall(require, "mason-registry")
+    if reg_ok then
+      local pkg_ok, pkg = pcall(reg.get_package, entry.meta.mason)
+      install_status = (pkg_ok and pkg and pkg:is_installed()) and " ✓"
+        or " ✗"
     end
   end
 
@@ -191,9 +190,8 @@ function M.show_tooltip_at_cursor()
   end
 
   local cursor = vim.api.nvim_win_get_cursor(_ui.win)
-  local cursor_row = cursor[1] - 1 -- 0-indexed
-  local float_h = #info + 2 -- +2 for border
-  -- show above cursor; fall back to below if not enough room
+  local cursor_row = cursor[1] - 1
+  local float_h = #info + 2
   local float_row = cursor_row - float_h
   if float_row < 0 then
     float_row = cursor_row + 1
@@ -213,7 +211,7 @@ function M.show_tooltip_at_cursor()
     noautocmd = true,
   })
 
-  local close = function()
+  local function close()
     if vim.api.nvim_win_is_valid(tooltip_win) then
       vim.api.nvim_win_close(tooltip_win, true)
     end
@@ -235,12 +233,10 @@ function M.do_toggle()
   local new_state = not state_mod.is_enabled(category, entry.name)
 
   if new_state and entry.meta.mason then
-    local ok, reg = pcall(require, "mason-registry")
-    if ok then
-      local ok2, pkg = pcall(function()
-        return reg.get_package(entry.meta.mason)
-      end)
-      if ok2 and pkg and not pkg:is_installed() then
+    local reg_ok, reg = pcall(require, "mason-registry")
+    if reg_ok then
+      local pkg_ok, pkg = pcall(reg.get_package, entry.meta.mason)
+      if pkg_ok and pkg and not pkg:is_installed() then
         install_pkg(entry.meta.mason, function()
           state_mod.set_enabled(category, entry.name, true)
           apply_runtime(category, entry.name, entry.meta, true)

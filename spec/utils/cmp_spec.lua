@@ -83,7 +83,8 @@ H.describe("utils.cmp.snippet_fix", function()
   end)
 
   H.it("returns a string for any input", function()
-    H.expect(type(cmp_utils.snippet_fix("${1:a} text ${2:b}"))).to_equal("string")
+    H.expect(type(cmp_utils.snippet_fix("${1:a} text ${2:b}")))
+      .to_equal("string")
   end)
 
   H.it("handles snippet with no placeholders", function()

@@ -41,7 +41,8 @@ H.describe("utils.fs.pretty_path", function()
   H.it("only_cwd strips the cwd prefix", function()
     -- With only_cwd=true, result should be shorter than the full path
     local full = fs.pretty_path(CONFIG .. "/init.lua", { length = 99 })
-    local cwd_rel = fs.pretty_path(CONFIG .. "/init.lua", { length = 99, only_cwd = true })
+    local cwd_rel =
+      fs.pretty_path(CONFIG .. "/init.lua", { length = 99, only_cwd = true })
     -- If CONFIG is under cwd, cwd_rel should be shorter; otherwise both equal
     H.expect(type(cwd_rel)).to_equal("string")
     H.expect(#cwd_rel <= #full).to_be_truthy()
@@ -62,12 +63,15 @@ H.describe("utils.fs.scandir", function()
     H.expect(#result > 0).to_be_truthy()
   end)
 
-  H.it('mode="file" returns only files (all entries end in .lua in utils/)', function()
-    local result = fs.scandir(CONFIG .. "/lua/utils", "file")
-    for _, name in ipairs(result) do
-      H.expect(name:match("%.lua$") ~= nil).to_be_truthy()
+  H.it(
+    'mode="file" returns only files (all entries end in .lua in utils/)',
+    function()
+      local result = fs.scandir(CONFIG .. "/lua/utils", "file")
+      for _, name in ipairs(result) do
+        H.expect(name:match("%.lua$") ~= nil).to_be_truthy()
+      end
     end
-  end)
+  )
 
   H.it('mode="directory" returns directories from lua/', function()
     local result = fs.scandir(CONFIG .. "/lua", "directory")
@@ -104,12 +108,15 @@ H.describe("utils.fs.make_relative_path", function()
     H.expect(type(result)).to_equal("string")
   end)
 
-  H.it("returns empty string when plenary is not available (graceful degradation)", function()
-    -- In headless spec mode, plenary.path is not loaded.
-    local result = fs.make_relative_path("/some/path/file.lua", "/some/path")
-    -- Either "" (no plenary) or a relative path string
-    H.expect(result == "" or result == "file.lua").to_be_truthy()
-  end)
+  H.it(
+    "returns empty string when plenary is not available (graceful degradation)",
+    function()
+      -- In headless spec mode, plenary.path is not loaded.
+      local result = fs.make_relative_path("/some/path/file.lua", "/some/path")
+      -- Either "" (no plenary) or a relative path string
+      H.expect(result == "" or result == "file.lua").to_be_truthy()
+    end
+  )
 end)
 
 -- ── constants ──────────────────────────────────────────────────────────────────
@@ -155,7 +162,8 @@ H.describe("utils.fs — exported constants", function()
   end)
 
   H.it("schema_paths.ms_build contains config_path prefix", function()
-    H.expect(fs.schema_paths.ms_build:find(fs.config_path, 1, true) ~= nil).to_be_truthy()
+    H.expect(fs.schema_paths.ms_build:find(fs.config_path, 1, true) ~= nil)
+      .to_be_truthy()
   end)
 end)
 

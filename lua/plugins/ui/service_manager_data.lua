@@ -3,36 +3,26 @@ local M = {}
 local services = require("config.services")
 local state_mod = require("utils.service_state")
 
--- Returns (status_text, hl_group). Text is never empty. hl reflects the worst state:
---   DiagnosticOk    = installed (and active for LSP)
---   DiagnosticWarn  = installed but idle (LSP), or no mason package
---   DiagnosticError = not installed
 function M.entry_status(cat, name, meta)
-  local installed = nil -- nil = no mason package
+  local installed
   if meta.mason then
-    local ok, reg = pcall(require, "mason-registry")
-    if ok then
-      local ok2, pkg = pcall(function()
-        return reg.get_package(meta.mason)
-      end)
-      if ok2 and pkg then
+    local reg_ok, reg = pcall(require, "mason-registry")
+    if reg_ok then
+      local pkg_ok, pkg = pcall(reg.get_package, meta.mason)
+      if pkg_ok and pkg then
         installed = pkg:is_installed()
       end
     end
   end
 
-  local parts = {}
-  local hl
+  local status_text, hl
 
   if installed == nil then
-    parts[1] = "n/a"
-    hl = "DiagnosticWarn"
+    status_text, hl = "n/a", "DiagnosticWarn"
   elseif installed then
-    parts[1] = "installed"
-    hl = "DiagnosticOk"
+    status_text, hl = "installed", "DiagnosticOk"
   else
-    parts[1] = "not installed"
-    hl = "DiagnosticError"
+    status_text, hl = "not installed", "DiagnosticError"
   end
 
   if cat == "lsp" then
@@ -45,11 +35,7 @@ function M.entry_status(cat, name, meta)
     end
   end
 
-  parts = vim.tbl_filter(function(s)
-    return s ~= ""
-  end, parts)
-
-  return table.concat(parts, "  "), hl
+  return status_text, hl
 end
 
 function M.build_ft_groups(cat)

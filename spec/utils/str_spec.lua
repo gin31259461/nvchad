@@ -39,7 +39,8 @@ H.describe("utils.str.rstrip_slash", function()
 
   H.it("is idempotent", function()
     local s = "foo/bar/"
-    H.expect(str.rstrip_slash(str.rstrip_slash(s))).to_equal(str.rstrip_slash(s))
+    H.expect(str.rstrip_slash(str.rstrip_slash(s)))
+      .to_equal(str.rstrip_slash(s))
   end)
 end)
 

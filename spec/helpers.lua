@@ -61,7 +61,13 @@ function M.expect(val)
   return {
     to_equal = function(expected)
       if val ~= expected then
-        fail(string.format("expected %s, got %s", vim.inspect(expected), vim.inspect(val)))
+        fail(
+          string.format(
+            "expected %s, got %s",
+            vim.inspect(expected),
+            vim.inspect(val)
+          )
+        )
       end
     end,
     to_be_truthy = function()
@@ -81,18 +87,32 @@ function M.expect(val)
     end,
     to_match = function(pattern)
       if type(val) ~= "string" or not val:match(pattern) then
-        fail(string.format("expected %s to match pattern %q", vim.inspect(val), pattern))
+        fail(
+          string.format(
+            "expected %s to match pattern %q",
+            vim.inspect(val),
+            pattern
+          )
+        )
       end
     end,
     to_have_length = function(n)
-      local len = type(val) == "table" and #val or (type(val) == "string" and #val or nil)
+      local len = type(val) == "table" and #val
+        or (type(val) == "string" and #val or nil)
       if len ~= n then
         fail(string.format("expected length %d, got %s", n, vim.inspect(val)))
       end
     end,
     to_be_type = function(t)
       if type(val) ~= t then
-        fail(string.format("expected type %q, got type %q (%s)", t, type(val), vim.inspect(val)))
+        fail(
+          string.format(
+            "expected type %q, got type %q (%s)",
+            t,
+            type(val),
+            vim.inspect(val)
+          )
+        )
       end
     end,
   }

@@ -18,7 +18,6 @@ function M.make_win_cfg()
     vim.o.columns - 2,
     math.max(cfg.min_w, math.min(cfg.max_w, vim.o.columns - 4))
   )
-  -- 1 empty + 1 tabline + 1 sep + 1 col-hdr + content
   local natural = 4 + data.content_lines(cfg.service_categories[_ui.cat_idx])
   local win_height =
     math.min(vim.o.lines - 2, math.max(cfg.min_h, math.min(cfg.max_h, natural)))
@@ -232,9 +231,7 @@ function M.render()
       row = wcfg.row,
       col = wcfg.col,
     })
-  end
 
-  if _ui.win and vim.api.nvim_win_is_valid(_ui.win) then
     local cur = vim.api.nvim_win_get_cursor(_ui.win)[1]
     local first_entry_lnum, last_entry_lnum
     for lnum in pairs(_ui.line_map) do
@@ -316,7 +313,6 @@ function M.toggle_help()
   end
 end
 
--- Re-renders whenever LSP clients attach or detach while the window is open.
 function M.start_live_update()
   if _ui.live_augroup then
     return
