@@ -244,6 +244,7 @@ Custom interactive UI (`<leader>sm` / `:ServiceManager`) to toggle LSP servers, 
 | `<leader>si` | Icons |
 | `<leader>sj` | Jumps |
 | `<leader>sl` | Location list |
+| `<leader>s'` | Marks |
 | `<leader>sM` | Man pages |
 | `<leader>sp` | Search plugin specs |
 | `<leader>sq` | Quickfix list |

@@ -90,7 +90,6 @@ map(
   { desc = "move selected block down and stay in visual mode" }
 )
 map("x", "p", "P", { desc = "dont copy replaced text" })
-map("n", "<Esc>", "<cmd>noh<CR>", { desc = "general clear highlights" })
 map("i", "jk", "<ESC>")
 map("n", "<leader>q", "q", { desc = "Record Macro" })
 map("n", "q", "<Nop>", { silent = true })

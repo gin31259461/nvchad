@@ -79,18 +79,64 @@ local specs = {
       },
     },
     keys = {
-      { "<C-a>", mode = { "n", "x" }, desc = "ask opencode…" },
-      { "<C-x>", mode = { "n", "x" }, desc = "execute opencode action…" },
-      { "<C-.>", mode = { "n", "t" }, desc = "toggle opencode" },
+      {
+        "<C-a>",
+        function()
+          require("opencode").ask("@this: ", { submit = true })
+        end,
+        mode = { "n", "x" },
+        desc = "ask opencode…",
+      },
+      {
+        "<C-x>",
+        function()
+          require("opencode").select()
+        end,
+        mode = { "n", "x" },
+        desc = "execute opencode action…",
+      },
+      {
+        "<C-.>",
+        function()
+          require("opencode").toggle()
+        end,
+        mode = { "n", "t" },
+        desc = "toggle opencode",
+      },
       {
         "go",
+        function()
+          return require("opencode").operator("@this ")
+        end,
         mode = { "n", "x" },
         desc = "add range to opencode",
         expr = true,
       },
-      { "goo", mode = "n", desc = "add line to opencode", expr = true },
-      { "<S-C-u>", mode = "n", desc = "scroll opencode up" },
-      { "<S-C-d>", mode = "n", desc = "scroll opencode down" },
+      {
+        "goo",
+        function()
+          return require("opencode").operator("@this ") .. "_"
+        end,
+        mode = "n",
+        desc = "add line to opencode",
+        expr = true,
+      },
+      {
+        "<S-C-u>",
+        function()
+          require("opencode").command("session.half.page.up")
+        end,
+        mode = "n",
+        desc = "scroll opencode up",
+      },
+      {
+        "<S-C-d>",
+        function()
+          require("opencode").command("session.half.page.down")
+        end,
+        mode = "n",
+        desc = "scroll opencode down",
+      },
     },
     config = function()
       ---@type opencode.Opts
@@ -98,44 +144,9 @@ local specs = {
         -- Your configuration, if any; goto definition on the type or field for details
       }
 
-      -- Recommended/example keymaps
-      vim.keymap.set({ "n", "x" }, "<C-a>", function()
-        require("opencode").ask("@this: ", { submit = true })
-      end, { desc = "ask opencode…" })
-      vim.keymap.set({ "n", "x" }, "<C-x>", function()
-        require("opencode").select()
-      end, { desc = "execute opencode action…" })
-      vim.keymap.set({ "n", "t" }, "<C-.>", function()
-        require("opencode").toggle()
-      end, { desc = "toggle opencode" })
-
-      vim.keymap.set({ "n", "x" }, "go", function()
-        return require("opencode").operator("@this ")
-      end, { desc = "add range to opencode", expr = true })
-      vim.keymap.set("n", "goo", function()
-        return require("opencode").operator("@this ") .. "_"
-      end, { desc = "add line to opencode", expr = true })
-
-      vim.keymap.set("n", "<S-C-u>", function()
-        require("opencode").command("session.half.page.up")
-      end, { desc = "scroll opencode up" })
-      vim.keymap.set("n", "<S-C-d>", function()
-        require("opencode").command("session.half.page.down")
-      end, { desc = "scroll opencode down" })
-
-      -- You may want these if you use the opinionated `<C-a>` and `<C-x>` keymaps above — otherwise consider `<leader>o…` (and remove terminal mode from the `toggle` keymap)
-      vim.keymap.set(
-        "n",
-        "+",
-        "<C-a>",
-        { desc = "Increment under cursor", noremap = true }
-      )
-      vim.keymap.set(
-        "n",
-        "-",
-        "<C-x>",
-        { desc = "Decrement under cursor", noremap = true }
-      )
+      -- <C-a> and <C-x> are claimed by opencode; remap increment/decrement
+      vim.keymap.set("n", "+", "<C-a>", { desc = "Increment under cursor", noremap = true })
+      vim.keymap.set("n", "-", "<C-x>", { desc = "Decrement under cursor", noremap = true })
     end,
   },
 }

@@ -309,7 +309,7 @@ return {
         desc = "Location List",
       },
       {
-        "<leader>sm",
+        "<leader>s'",
         function()
           require("snacks").picker.marks()
         end,
