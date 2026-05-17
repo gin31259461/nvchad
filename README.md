@@ -97,13 +97,13 @@ Remove-Item -Recurse -Force ~\AppData\Local\nvim-data
 
 ### LSP
 
-Managed via [mason.nvim](https://github.com/williambaman/mason.nvim) + [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig).
+Managed via [mason.nvim](https://github.com/williamboman/mason.nvim) + [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig).
 
 | Language | Server |
 | --- | --- |
 | Python | `pyright`, `ruff` |
-| TypeScript / JavaScript | `typescript-tools.nvim` (pmizio) + `vtsls` (both active) |
-| C# / .NET | `roslyn.nvim` (requires .NET SDK) |
+| TypeScript / JavaScript | `vtsls` + `typescript-tools.nvim` (both active simultaneously) |
+| C# / .NET | `roslyn.nvim` _(requires `dotnet` in PATH)_ |
 | Lua | `lua_ls` |
 | Web | `html`, `cssls`, `tailwindcss` |
 | Go | `gopls` |
@@ -124,7 +124,7 @@ Managed via [mason.nvim](https://github.com/williambaman/mason.nvim) + [nvim-lsp
 
 ### Debugging
 
-[nvim-dap](https://github.com/mfussenegger/nvim-dap) + [nvim-dap-ui](https://github.com/rcarriga/nvim-dap-ui):
+[Orbit-Lua/nvim-dap](https://github.com/Orbit-Lua/nvim-dap) (fork of mfussenegger/nvim-dap — fixes Windows breakpoints) + [nvim-dap-ui](https://github.com/rcarriga/nvim-dap-ui):
 
 - **Python** — debugpy (venv-detected)
 - **.NET** — netcoredbg
@@ -152,7 +152,7 @@ Custom interactive UI (`<leader>sm` / `:ServiceManager`) to toggle LSP servers, 
 
 | Plugin | Role |
 | --- | --- |
-| [harpoon2](https://github.com/ThePrimeagen/harpoon) | File bookmarks with quick-jump menu (`<C-e>`) |
+| [harpoon2](https://github.com/gin31259461/harpoon) | File bookmarks with quick-jump menu (`<C-e>`) |
 | [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) | Fuzzy finder (fallback / noice extension) |
 | snacks.picker | Primary picker for files, grep, git, LSP |
 
@@ -186,7 +186,7 @@ Custom interactive UI (`<leader>sm` / `:ServiceManager`) to toggle LSP servers, 
 | `J` / `K` (visual) | Move selected block down / up |
 | `<leader>/` | Toggle comment |
 | `<leader>q` | Record macro |
-| `+` / `-` | Increment / decrement number |
+| `+` / `-` | Increment / decrement number (`<C-a>`/`<C-x>` remapped — those are taken by OpenCode) |
 
 ### Buffers & Windows
 
@@ -244,7 +244,6 @@ Custom interactive UI (`<leader>sm` / `:ServiceManager`) to toggle LSP servers, 
 | `<leader>si` | Icons |
 | `<leader>sj` | Jumps |
 | `<leader>sl` | Location list |
-| `<leader>sm` | Marks |
 | `<leader>sM` | Man pages |
 | `<leader>sp` | Search plugin specs |
 | `<leader>sq` | Quickfix list |
@@ -268,8 +267,8 @@ Custom interactive UI (`<leader>sm` / `:ServiceManager`) to toggle LSP servers, 
 | Key | Action |
 | --- | --- |
 | `gd` | Go to definition |
-| `gD` | Go to declaration |
-| `gR` | References |
+| `gD` | Go to declaration / source definition (TypeScript) |
+| `gR` | References / file references (TypeScript) |
 | `gI` | Go to implementation |
 | `gy` | Go to type definition |
 | `K` | Hover documentation |
