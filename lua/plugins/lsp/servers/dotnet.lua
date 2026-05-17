@@ -7,7 +7,6 @@
 -- https://github.com/dotnet/roslyn/tree/main/src/LanguageServer/Microsoft.CodeAnalysis.LanguageServer
 --
 local fs = require("utils.fs")
-local os = require("utils.os")
 
 ---@type Lsp.Server.Module
 return {

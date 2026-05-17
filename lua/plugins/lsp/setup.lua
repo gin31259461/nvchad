@@ -37,12 +37,12 @@ M.register_servers = function(opts)
       opts.setup[server]()
     end
 
-    local ok, err = pcall(vim.lsp.config, server, server_opts)
-    if ok then
+    local server_ok, server_err = pcall(vim.lsp.config, server, server_opts)
+    if server_ok then
       pcall(vim.lsp.enable, server)
     else
       vim.notify(
-        "[lsp] " .. server .. ": " .. tostring(err),
+        "[lsp] " .. server .. ": " .. tostring(server_err),
         vim.log.levels.WARN
       )
     end
@@ -74,8 +74,11 @@ M.configure_diagnostics = function(opts)
         and "●"
       or function(diagnostic)
         local icons = configs.icons.diagnostics
-        for d, icon in pairs(icons) do
-          if diagnostic.severity == vim.diagnostic.severity[d:upper()] then
+        for severity_name, icon in pairs(icons) do
+          if
+            diagnostic.severity
+            == vim.diagnostic.severity[severity_name:upper()]
+          then
             return icon
           end
         end
@@ -99,14 +102,14 @@ M.install_diagnostic_filter = function()
       local suppressed_patterns = require("config").message_ignored.lsp
       local filtered = {}
       for _, diagnostic in ipairs(result.diagnostics) do
-        local suppress = false
+        local is_suppressed = false
         for _, pattern in ipairs(suppressed_patterns) do
           if diagnostic.message:find(pattern) then
-            suppress = true
+            is_suppressed = true
             break
           end
         end
-        if not suppress then
+        if not is_suppressed then
           table.insert(filtered, diagnostic)
         end
       end

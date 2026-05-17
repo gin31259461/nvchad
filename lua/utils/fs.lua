@@ -143,17 +143,17 @@ end
 ---@return table
 M.scandir = function(path, mode)
   local names = {}
-  local fd = vim.uv.fs_scandir(path)
-  if not fd then
+  local dir_handle = vim.uv.fs_scandir(path)
+  if not dir_handle then
     return names
   end
 
   while true do
-    local name, t = vim.uv.fs_scandir_next(fd)
+    local name, entry_type = vim.uv.fs_scandir_next(dir_handle)
     if not name then
       break
     end
-    if (mode == "all") or (t == mode) then
+    if (mode == "all") or (entry_type == mode) then
       table.insert(names, name)
     end
   end

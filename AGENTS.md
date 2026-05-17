@@ -194,6 +194,114 @@ Global vim options are set in `lua/config/options.lua`. Add new options here —
 
 ---
 
+## Naming Conventions
+
+### Approved abbreviations
+
+Only the following short forms are permitted. Spell everything else out in full.
+
+| Abbreviation | Stands for        | Context                                              |
+|--------------|-------------------|------------------------------------------------------|
+| `M`          | Module export     | The table returned at the bottom of every module     |
+| `opts`       | Options           | The `setup(opts)` parameter, option bags generally   |
+| `bufnr`      | Buffer Number     | Neovim's unique integer identifier for a buffer      |
+| `winid`      | Window ID         | Neovim's unique integer identifier for a window      |
+| `ctx`        | Context           | Async callbacks, LSP event payloads                  |
+| `buf`        | Buffer            | When `bufnr` would be verbose inside a local scope   |
+| `win`        | Window            | Same as above for window                             |
+| `ns`         | Namespace         | `vim.api.nvim_create_namespace` result               |
+| `ft`         | Filetype          | `vim.bo.filetype` values                             |
+| `cmd`        | Command           | Ex command string or function                        |
+| `cfg`        | Config            | Local config table, not to be exported               |
+| `fn`/`cb`    | Function/Callback | Only in higher-order helpers                         |
+| `ok`         | Success flag      | First return of `pcall`/`xpcall`                     |
+| `err`        | Error message     | Second return of `pcall` on failure                  |
+| `lsp`        | Language Server   | LSP client or capability table                       |
+| `cwd`        | Current directory | `vim.fn.getcwd()` result                             |
+| `args`       | Arguments         | Vararg table or command argument list                |
+| `i`, `j`, `k` | Loop indexes    | Numeric `for` loops only                             |
+| `v`, `k`     | Iteratee values   | `pairs`/`ipairs` one-liners only                     |
+
+Examples of names that are **not** permitted: `svc`, `diag`, `d`, `sep` (as a variable name), `cat`, `proc`, `act`, `def`, `newf`, `fname`, `f`, `idx`, `argv`.
+
+### Boolean variables and functions
+
+Prefix all boolean locals, fields, and predicate functions with `is_`, `has_`, `can_`, or `should_`:
+
+```lua
+-- BAD
+local active = true
+local function debugpy_exists() ... end
+
+-- GOOD
+local is_active = true
+local function is_debugpy_installed() ... end
+```
+
+`vim.fn` functions (`filereadable`, `isdirectory`, `executable`) return integers `0`/`1`, not
+booleans. Always normalise at the boundary:
+
+```lua
+local function is_debugpy_installed()
+  return vim.fn.filereadable(path) == 1  -- returns a real boolean
+end
+```
+
+### Function names
+
+Name functions as verb phrases. A function name must answer "what does this do?" without
+requiring a comment:
+
+```lua
+-- BAD: noun — unclear whether it reads or mutates
+local function server_config(name) ... end
+local function sec(title) ... end         -- abbreviation + noun
+
+-- GOOD: verb phrase
+local function get_server_config(name) ... end
+local function render_section(title) ... end
+```
+
+### Module-level mutable state
+
+When a module needs runtime mutable state, consolidate **all** mutable upvalues into a single
+`_state` table. Never scatter multiple bare private variables at module level:
+
+```lua
+-- BAD
+local _ui, _ns, _render
+
+-- GOOD
+local _state = { ui = nil, ns = nil, render = nil }
+```
+
+The `_` prefix on `_state` (and any other module-level private) signals it must not be accessed
+from outside the module.
+
+### Variable shadowing
+
+Never declare a local that hides a name already visible in an outer scope:
+
+- **Stdlib names** (`os`, `string`, `table`, `math`, `io`, etc.) must never be used as local
+  variable names or require aliases.
+- **Outer `ok`/`err`** from a `pcall`: when a second `pcall` is needed in the same function,
+  rename the inner pair with a context prefix — `server_ok`/`server_err`,
+  `parse_ok`/`parse_err`, etc.
+- **Import aliases** must not collide with other local names in the same module (e.g. aliasing
+  a require to `hl` when `hl` is also used as a local variable name for a highlight group).
+
+### Unused parameters
+
+Prefix intentionally unused callback parameters with `_` to make the omission explicit:
+
+```lua
+vim.ui.select(items, {}, function(choice, _index)
+  use(choice)   -- _index is knowingly discarded
+end)
+```
+
+---
+
 ## Adding a New Language
 
 Checklist for full language support:
@@ -251,7 +359,14 @@ Run specs by sourcing them in Neovim or with a headless Neovim invocation. There
 - Do not place dashboard headers in `lua/config/` — they belong in `lua/plugins/ui/header.lua`.
 - Do not add `diagnostics.lua` or `features.lua` back as standalone files — that logic lives in `lua/plugins/lsp/setup.lua`.
 - Do not add a global `<C-s>` keymap in any plugin config — it is reserved for file save.
-- Do not use `vim.api.nvim_buf_add_highlight` — it is deprecated. Use `vim.api.nvim_buf_set_extmark` with `hl_group` + `end_col` options instead. For `end_col = -1` (end of line), pass `#line` (byte length). See `lua/utils/ui.lua` and `lua/plugins/ui/service_manager_ui.lua` for reference.
+- Do not use `vim.api.nvim_buf_add_highlight` — it is deprecated. Use `vim.api.nvim_buf_set_extmark` with `hl_group` + `end_col` instead. For end-of-line, pass `#line` (byte length). See `lua/utils/ui.lua` and `lua/plugins/ui/service_manager_renderer.lua` for reference.
+- Do not scatter multiple bare mutable upvalues at module level — consolidate into `local _state = { ... }`.
+- Do not name boolean variables or functions without an `is_`/`has_`/`can_`/`should_` prefix.
+- Do not name functions as nouns — use verb phrases (`render_section`, not `sec`; `get_server_config`, not `server_config`).
+- Do not use unapproved abbreviations — see the approved whitelist in the Naming Conventions section above.
+- Do not shadow outer-scope locals, Lua stdlib names, or import aliases with new `local` declarations.
+- Do not reuse `ok`/`err` variable names inside a nested `pcall` — use context-prefixed names (`server_ok`, `parse_err`, etc.).
+- Do not use raw `vim.fn` integer returns (`filereadable`, `isdirectory`, `executable`) as booleans — always compare with `== 1`.
 
 ## Skills
 

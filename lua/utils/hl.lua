@@ -31,7 +31,7 @@
 ---@field pmenu_bg string
 ---@field folder_bg string
 
-local sethl = vim.api.nvim_set_hl
+local set_highlight = vim.api.nvim_set_hl
 
 vim.api.nvim_set_hl(0, "@statusline.current_file", {
   fg = "#A9B1D6",
@@ -78,7 +78,7 @@ local shared_underline_hl = { undercurl = true, underline = false }
 ---GUI front-ends and modern terminal emulators (kitty, WezTerm, iTerm, Ghostty)
 ---are known to handle curly underlines; for everything else we fall back to
 ---plain underline.
-local support_undercurl = (function()
+local is_undercurl_supported = (function()
   if vim.g.neovide or vim.fn.has("gui_running") == 1 then
     return true
   end
@@ -96,7 +96,7 @@ local support_undercurl = (function()
   return false
 end)()
 
-if not support_undercurl then
+if not is_undercurl_supported then
   shared_underline_hl.undercurl = false
   shared_underline_hl.underline = true
 end
@@ -131,7 +131,7 @@ M.setup_diagnostic = function()
     DiagnosticUnderlineHint = { sp = colors.purple },
   }
 
-  local hl = {
+  local virtual_text_highlights = {
     DiagnosticVirtualTextError = {
       bg = color_tool.mix(colors.red, colors.black, 75),
       fg = colors.red,
@@ -152,7 +152,7 @@ M.setup_diagnostic = function()
 
   all_underline_hl =
     vim.tbl_deep_extend("force", all_underline_hl, underline_hl)
-  all_hl = vim.tbl_deep_extend("force", all_hl, hl)
+  all_hl = vim.tbl_deep_extend("force", all_hl, virtual_text_highlights)
 end
 
 ---Applies dynamic theme-dependent highlights (FloatBorder, LspInlayHint, etc.).
@@ -161,17 +161,17 @@ M.setup_dynamic_theme = function()
   local colors = require("base46").get_theme_tb("base_30")
   local color_tool = require("base46.colors")
 
-  sethl(0, "FloatBorder", {
+  set_highlight(0, "FloatBorder", {
     fg = color_tool.change_hex_lightness(colors.blue, 125),
   })
 
-  sethl(0, "LspInlayHint", {
+  set_highlight(0, "LspInlayHint", {
     fg = "#808080",
     bg = colors.one_bg,
     italic = true,
   })
 
-  sethl(0, "@statusline.copilot", {
+  set_highlight(0, "@statusline.copilot", {
     fg = colors.green,
   })
 end

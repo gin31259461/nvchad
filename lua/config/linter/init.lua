@@ -31,7 +31,7 @@ return {
     -- this has already handle by lspconfig
     -- python = { "ruff" },
 
-    docker = { "hadolint" },
+    dockerfile = { "hadolint" },
     markdown = { "markdownlint-cli2" },
     lua = { "luacheck" },
     typescriptreact = { "eslint_d" },
@@ -64,14 +64,14 @@ return {
           "./node_modules/.bin/" .. eslint_d_binary_name,
           ":p"
         )
-        return vim.loop.fs_stat(local_binary) and local_binary
+        return vim.uv.fs_stat(local_binary) and local_binary
           or eslint_d_binary_name
       end,
 
       parser = function(output, bufnr)
         local result = require("lint.linters.eslint").parser(output, bufnr)
-        for _, d in ipairs(result) do
-          d.source = eslint_d_binary_name
+        for _, diagnostic in ipairs(result) do
+          diagnostic.source = eslint_d_binary_name
         end
         return result
       end,
@@ -87,7 +87,7 @@ return {
       args = (function()
         for _, file in ipairs(fs.sqlfluff_pattern) do
           local path = fs.get_root() .. "/" .. file
-          if vim.loop.fs_stat(path) == 0 then
+          if vim.uv.fs_stat(path) ~= nil then
             return { "lint", "--format=json" }
           end
         end

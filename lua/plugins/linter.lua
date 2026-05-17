@@ -30,7 +30,7 @@ return {
 
       -- Apply saved priority order then filter disabled linters
       local state_mod = require("utils.service_state")
-      local svc = require("config.services")
+      local services = require("config.services")
       for filetype, linters in pairs(opts.linters_by_ft) do
         local saved = state_mod.get_order("linter", filetype)
         if saved then
@@ -48,7 +48,8 @@ return {
           linters = reordered
         end
         opts.linters_by_ft[filetype] = vim.tbl_filter(function(name)
-          return svc.linter[name] == nil or state_mod.is_enabled("linter", name)
+          return services.linter[name] == nil
+            or state_mod.is_enabled("linter", name)
         end, linters)
       end
 
@@ -57,11 +58,11 @@ return {
       local function debounce(ms, fn)
         local timer = vim.uv.new_timer()
         return function(...)
-          local argv = { ... }
+          local captured_args = { ... }
           if timer ~= nil then
             timer:start(ms, 0, function()
               timer:stop()
-              vim.schedule_wrap(fn)(require("utils").unpack(argv))
+              vim.schedule_wrap(fn)(require("utils").unpack(captured_args))
             end)
           end
         end

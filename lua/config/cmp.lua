@@ -14,8 +14,8 @@ vim.o.pumheight = select(2, ui.get_completion_window_size())
 local cmp = require("cmp")
 local cmp_types = require("cmp.types")
 local defaults = require("cmp.config.default")()
-local auto_select = true
-local enable_ghost_text = false
+local should_auto_select = true
+local is_ghost_text_enabled = false
 
 -- https://github.com/hrsh7th/nvim-cmp/blob/b5311ab3ed9c846b585c0c15b7559be131ec4be9/doc/cmp.txt#L450
 ---@type cmp.ConfigSchema
@@ -37,9 +37,9 @@ local options = {
   },
   completion = {
     completeopt = "menu,menuone,noinsert"
-      .. (auto_select and "" or ",noselect"),
+      .. (should_auto_select and "" or ",noselect"),
   },
-  preselect = auto_select and cmp_types.cmp.PreselectMode.Item
+  preselect = should_auto_select and cmp_types.cmp.PreselectMode.Item
     or cmp_types.cmp.PreselectMode.None,
   snippet = {
     expand = function(args)
@@ -81,7 +81,7 @@ local options = {
     }),
 
     ["<CR>"] = utils_cmp.confirm({
-      select = auto_select,
+      select = should_auto_select,
     }),
 
     ["<Tab>"] = cmp.mapping(function(fallback)
@@ -140,7 +140,7 @@ local options = {
   sorting = defaults.sorting,
 
   experimental = {
-    ghost_text = enable_ghost_text and {
+    ghost_text = is_ghost_text_enabled and {
       hl_group = "CmpGhostText",
     },
   },

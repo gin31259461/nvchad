@@ -27,8 +27,8 @@ function M.map(actions, fallback)
   return function()
     for _, name in ipairs(actions) do
       if M.actions[name] then
-        local ret = M.actions[name]()
-        if ret then
+        local action_result = M.actions[name]()
+        if action_result then
           return true
         end
       end
@@ -159,7 +159,7 @@ function M.expand(snippet)
     local fixed = M.snippet_fix(snippet)
     ok = pcall(vim.snippet.expand, fixed)
 
-    local msg = ok
+    local message = ok
         and "Failed to parse snippet,\nbut was able to fix it automatically."
       or ("Failed to parse snippet.\n" .. err)
 
@@ -167,7 +167,7 @@ function M.expand(snippet)
       ([[%s
 ```%s
 %s
-```]]):format(msg, vim.bo.filetype, snippet),
+```]]):format(message, vim.bo.filetype, snippet),
       { title = "vim.snippet" }
     )
   end
@@ -187,9 +187,9 @@ function M.setup(opts)
   local parse = require("cmp.utils.snippet").parse
   ---@diagnostic disable-next-line
   require("cmp.utils.snippet").parse = function(input)
-    local ok, ret = pcall(parse, input)
+    local ok, parsed_result = pcall(parse, input)
     if ok then
-      return ret
+      return parsed_result
     end
     return M.snippet_preview(input)
   end

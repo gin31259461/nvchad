@@ -95,9 +95,9 @@ return {
           local filtered = {}
           res.diagnostics =
             utils_table.unique_by_key(res.diagnostics, "message")
-          for _, diag in ipairs(res.diagnostics) do
-            if diag.source == "tsserver" then
-              table.insert(filtered, diag)
+          for _, diagnostic in ipairs(res.diagnostics) do
+            if diagnostic.source == "tsserver" then
+              table.insert(filtered, diagnostic)
             end
           end
 

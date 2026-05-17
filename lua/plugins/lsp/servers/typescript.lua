@@ -7,7 +7,7 @@ local utils = require("utils")
 return {
   servers = {
     vtsls = {
-      filetypes = ft.js,
+      filetypes = ft.ts,
       settings = {
         vtsls = {
           enableMoveToFileCodeAction = true,
@@ -129,20 +129,20 @@ return {
               ["end"] = { line = arg2 and arg2.end_line or 0, character = arg2 and arg2.end_char or 0 },
             }
 
-          local function move(newf)
+          local function move(new_file)
             client:request("workspace/executeCommand", {
               command = command.command,
-              arguments = { action, uri, range, newf },
+              arguments = { action, uri, range, new_file },
             })
           end
 
-          local fname = vim.uri_to_fname(uri)
+          local file_name = vim.uri_to_fname(uri)
           client:request("workspace/executeCommand", {
             command = "typescript.tsserverRequest",
             arguments = {
               "getMoveToRefactoringFileSuggestions",
               {
-                file = fname,
+                file = file_name,
                 startLine = range.start.line + 1,
                 startOffset = range.start.character + 1,
                 endLine = range["end"].line + 1,
@@ -155,22 +155,22 @@ return {
             table.insert(files, 1, "Enter new path...")
             vim.ui.select(files, {
               prompt = "Select move destination:",
-              format_item = function(f)
-                return vim.fn.fnamemodify(f, ":~:.")
+              format_item = function(file)
+                return vim.fn.fnamemodify(file, ":~:.")
               end,
-            }, function(f)
-              if f and f:find("^Enter new path") then
+            }, function(file)
+              if file and file:find("^Enter new path") then
                 vim.ui.input({
                   prompt = "Enter move destination:",
-                  default = vim.fn.fnamemodify(fname, ":h") .. "/",
+                  default = vim.fn.fnamemodify(file_name, ":h") .. "/",
                   completion = "file",
-                }, function(newf)
-                  if type(newf) == "string" then
-                    move(newf)
+                }, function(new_file)
+                  if type(new_file) == "string" then
+                    move(new_file)
                   end
                 end)
-              elseif f then
-                move(f)
+              elseif file then
+                move(file)
               end
             end)
           end)

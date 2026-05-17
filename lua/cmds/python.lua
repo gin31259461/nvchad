@@ -74,7 +74,7 @@ vim.api.nvim_create_user_command("PyrightReCreateStub", function()
   vim.ui.select(
     exist_stubs,
     { prompt = "Choose exist stub" },
-    function(item, idx)
+    function(item, _index)
       if item == nil then
         return
       end

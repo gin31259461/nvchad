@@ -128,15 +128,25 @@ local function get_adapters()
 end
 ```
 
-### Avoid module-level mutable state where possible
+### Module-level mutable state
 
-If state is needed, isolate it in a single table so callers never touch raw globals:
+If a module needs runtime mutable state, consolidate **all** mutable upvalues into a single
+`_state` table. Never scatter multiple bare module-level variables.
 
 ```lua
-local state = { active = false, items = {} }   -- single source of truth
-local function is_active() return state.active end
-local function set_active(v) state.active = v end
+-- BAD: multiple bare mutable upvalues at module level
+local _ui, _ns, _render
+
+-- GOOD: single private table — one source of truth, impossible to miss
+local _state = { ui = nil, ns = nil, render = nil }
+
+function M.init(ui, ns)
+  _state.ui = ui
+  _state.ns = ns
+end
 ```
+
+The `_` prefix signals that `_state` is private to the module and must not be accessed externally.
 
 ### Observer / callback decoupling
 
@@ -250,6 +260,28 @@ local ok2, err = pcall(function()
 end)
 if not ok2 then
   vim.notify("Error: " .. err, vim.log.levels.ERROR)
+end
+```
+
+### Nested pcall — avoid shadowing `ok`/`err`
+
+When a second `pcall` is needed inside a scope that already has `ok`/`err` locals, rename the
+inner pair with a context prefix rather than reusing the same names:
+
+```lua
+-- BAD: inner `ok, err` shadows the outer pair — two variables, one name
+local ok, err = setup_outer()
+-- ... later in the same function:
+for _, server in ipairs(servers) do
+  local ok, err = pcall(vim.lsp.config, server, cfg)  -- shadows!
+  if not ok then vim.notify(err) end
+end
+
+-- GOOD: context prefix makes each pair unambiguous
+local ok, err = setup_outer()
+for _, server in ipairs(servers) do
+  local server_ok, server_err = pcall(vim.lsp.config, server, cfg)
+  if not server_ok then vim.notify(server_err) end
 end
 ```
 
@@ -483,6 +515,29 @@ vim.wo[win].cursorline = true    -- window-local
 vim.o.columns                    -- global
 ```
 
+### Boolean predicates from C integer APIs
+
+`vim.fn` functions such as `filereadable`, `isdirectory`, and `executable` return `0` or `1`,
+not Lua booleans. Always normalise before storing in a boolean variable or returning from a
+predicate:
+
+```lua
+-- BAD: stores an integer; truthiness works but the type is wrong
+local debugpy_exists = vim.fn.filereadable(path)
+
+-- BAD: caller writes `if debugpy_exists() == 0` — a double negation
+local function debugpy_exists()
+  return vim.fn.filereadable(path)
+end
+
+-- GOOD: predicate name + boolean return
+local function is_debugpy_installed()
+  return vim.fn.filereadable(path) == 1
+end
+
+if not is_debugpy_installed() then return end
+```
+
 ---
 
 ## 12. Self-Documenting Variable Naming
@@ -497,7 +552,7 @@ what a name means — rename it instead.
 | Local variables        | `snake_case`     | Matches the Lua standard library and Neovim's C core API tradition     | `buf_count`, `active_win`        |
 | Module tables / Classes| `PascalCase`     | Signals an object prototype that can be instantiated (OOP convention)  | `ServiceState`, `LspSetup`       |
 | Constants (immutable)  | `UPPER_SNAKE`    | Inherited from C macros; visually warns that the value must not change | `MAX_WIDTH`, `DEFAULT_TIMEOUT`   |
-| Private (by convention)| `_snake_case`    | Lua lacks `private`; leading underscore signals "do not call externally"| `_cache`, `_handlers`           |
+| Private (by convention)| `_snake_case`    | Lua lacks `private`; leading underscore signals "do not call externally"| `_cache`, `_state`              |
 | Loop indexes           | `i`, `j`, `k`   | Acceptable only for numeric loops                                      |                                  |
 | Generic iteratees      | `v`, `k`         | Acceptable only inside `pairs`/`ipairs` one-liners                    |                                  |
 
@@ -543,25 +598,93 @@ local function has_active_clients(buf) return #vim.lsp.get_clients({ bufnr = buf
 Only abbreviate when the short form has strong community consensus in the Neovim ecosystem.
 Approved whitelist:
 
-| Abbreviation | Stands for     | Context                                              |
-|--------------|----------------|------------------------------------------------------|
-| `M`          | Module export  | The table returned at the bottom of every module     |
-| `opts`       | Options        | The `setup(opts)` parameter, option bags generally   |
-| `bufnr`      | Buffer Number  | Neovim's unique integer identifier for a buffer      |
-| `winid`      | Window ID      | Neovim's unique integer identifier for a window      |
-| `ctx`        | Context        | Async callbacks, LSP event payloads                  |
-| `buf`        | Buffer         | When `bufnr` would be verbose inside a local scope   |
-| `win`        | Window         | Same as above for window                             |
-| `ns`         | Namespace      | `vim.api.nvim_create_namespace` result               |
-| `ft`         | Filetype       | `vim.bo.filetype` values                             |
-| `cmd`        | Command        | Ex command string or function                        |
-| `cfg`        | Config         | Local config table, not to be exported               |
-| `fn`/`cb`    | Function/Callback | Only in higher-order helpers                      |
+| Abbreviation | Stands for        | Context                                              |
+|--------------|-------------------|------------------------------------------------------|
+| `M`          | Module export     | The table returned at the bottom of every module     |
+| `opts`       | Options           | The `setup(opts)` parameter, option bags generally   |
+| `bufnr`      | Buffer Number     | Neovim's unique integer identifier for a buffer      |
+| `winid`      | Window ID         | Neovim's unique integer identifier for a window      |
+| `ctx`        | Context           | Async callbacks, LSP event payloads                  |
+| `buf`        | Buffer            | When `bufnr` would be verbose inside a local scope   |
+| `win`        | Window            | Same as above for window                             |
+| `ns`         | Namespace         | `vim.api.nvim_create_namespace` result               |
+| `ft`         | Filetype          | `vim.bo.filetype` values                             |
+| `cmd`        | Command           | Ex command string or function                        |
+| `cfg`        | Config            | Local config table, not to be exported               |
+| `fn`/`cb`    | Function/Callback | Only in higher-order helpers                         |
+| `ok`         | Success flag      | First return of `pcall`/`xpcall`                     |
+| `err`        | Error message     | Second return of `pcall` on failure                  |
+| `lsp`        | Language Server   | LSP client or capability table                       |
+| `cwd`        | Current directory | `vim.fn.getcwd()` result                             |
+| `args`       | Arguments         | Vararg table or command argument list                |
 
 ```lua
 -- Avoid everything else — spell it out
--- BAD:  svc_mgr_ui_buf, act_svcs, def_tmout, cat, proc
--- GOOD: service_manager_buf, active_services, default_timeout, category, process
+-- BAD:  svc_mgr_ui_buf, act_svcs, def_tmout, cat, proc, diag, d, svc
+-- GOOD: service_manager_buf, active_services, default_timeout, category, process, diagnostic
+```
+
+### Variable shadowing
+
+Never declare a local that hides a name already visible in an outer scope. Shadowing forces
+readers to mentally track which binding applies at each point.
+
+**Shadowing stdlib names** — the most dangerous form:
+
+```lua
+-- BAD: `os` now refers to this require; Lua's stdlib `os` is gone for this scope
+local os = require("utils.os")
+
+-- GOOD: use a name that doesn't collide
+local os_utils = require("utils.os")
+-- or simply inline: require("utils.os").is_linux()
+```
+
+**Shadowing outer locals:**
+
+```lua
+-- BAD: inner `ok`/`err` hides the outer pair
+local ok, err = outer_setup()
+for _, server in ipairs(servers) do
+  local ok, err = pcall(vim.lsp.config, server, cfg)  -- shadows!
+end
+
+-- GOOD: add a context prefix to the inner pair
+local ok, err = outer_setup()
+for _, server in ipairs(servers) do
+  local server_ok, server_err = pcall(vim.lsp.config, server, cfg)
+end
+```
+
+**Import aliases** must not collide with names used elsewhere in the same module:
+
+```lua
+-- BAD: `hl` is both a require alias and used as a local variable name later
+local hl = require("utils.hl")
+-- ... later:
+local hl = (i == idx) and "DiagnosticInfo" or "TabLine"  -- shadows the require!
+
+-- GOOD: use the full module meaning in the alias
+local highlights = require("utils.hl")
+-- ... later:
+local tab_highlight = (i == idx) and "DiagnosticInfo" or "TabLine"
+```
+
+### Unused parameters
+
+When a callback parameter is intentionally ignored, prefix its name with `_` to signal that
+the omission is deliberate, not accidental:
+
+```lua
+-- BAD: reader wonders if `idx` was forgotten
+vim.ui.select(items, {}, function(choice, idx)
+  use(choice)
+end)
+
+-- GOOD: `_index` signals conscious discard; the underscore-only `_` is also acceptable
+vim.ui.select(items, {}, function(choice, _index)
+  use(choice)
+end)
 ```
 
 ### Distinguishing similar variables
@@ -590,8 +713,8 @@ open_win(buf, 80, 20, "editor", false)
 
 -- GOOD: named opts — self-documenting at the call site
 local function open_win(opts)
-  local buf       = opts.buf
-  local width     = opts.width or 80
+  local buf        = opts.buf
+  local width      = opts.width or 80
   local is_focused = opts.focused ~= false
 end
 open_win({ buf = buf, width = 80, height = 20, focused = false })
@@ -599,43 +722,55 @@ open_win({ buf = buf, width = 80, height = 20, focused = false })
 
 ---
 
+## Review Checklist
+
 - [ ] Classes use `.new()` constructor and `:method()` colon syntax consistently
 - [ ] No top-level `require` for optional/heavy/circular deps — use late require or pcall
-- [ ] Module state isolated in a single table; no bare module-level variables mutated externally
+- [ ] Multiple module-level mutable upvalues consolidated into a single `_state` table
 - [ ] Side effects (rendering, notifications, augroups) separated from pure computation
 - [ ] All plugin API calls wrapped in `pcall`
 - [ ] Callbacks that touch the UI use `vim.schedule`
 - [ ] `nvim_buf_set_extmark` used instead of deprecated `nvim_buf_add_highlight`
 - [ ] No `<C-s>` keymaps — reserved for file save
+- [ ] `vim.fn` integer APIs (`filereadable`, `isdirectory`, `executable`) wrapped in `== 1` before use as booleans
+- [ ] No shadowed variables: outer-scope locals, stdlib names (`os`, `string`, etc.), import aliases
+- [ ] Unused callback parameters prefixed with `_`
+- [ ] Nested `pcall` results use context-prefixed names, not bare `ok`/`err`
+- [ ] Variable/function names are self-documenting: verb-phrase functions, `is_`/`has_` booleans, no unapproved abbreviations
 - [ ] StyLua formatting applied: `stylua lua/`
-- [ ] Variable/function names are self-documenting: verb-phrase functions, `is_`/`has_` booleans, no unexplained abbreviations, no shadowing
 
 ---
 
 ## 13. Canonical Module Template
 
-This template demonstrates all conventions together: private constants, `setup(opts)` entry point,
-`LspAttach` autocmd, idiomatic abbreviations (`bufnr`, `ctx`, `opts`), and full capability names.
+This template demonstrates all conventions together: private `_state`, `setup(opts)` entry point,
+`LspAttach` autocmd, idiomatic abbreviations (`bufnr`, `ctx`, `opts`), shadowing-free locals,
+and full capability names.
 
 ```lua
 local M = {}
 
--- Private constant: _snake_case signals "internal, do not access externally"
+-- _state: single private table for all module-level mutable data.
+-- Never scatter multiple bare `local _x` upvalues at module level.
+local _state = { is_active = false }
+
+-- _default_opts: private constant — underscore signals internal-only.
 local _default_opts = { enable_inlay_hints = true }
 
 -- 'setup' is the community-standard initialisation function.
 -- 'opts' is the idiomatic parameter name for option bags.
 function M.setup(opts)
   local config = vim.tbl_deep_extend("force", _default_opts, opts or {})
+  _state.is_active = true
 
   vim.api.nvim_create_autocmd("LspAttach", {
-    -- 'ctx' (Context) receives the autocmd event payload
+    -- 'ctx' (Context) receives the autocmd event payload.
     callback = function(ctx)
-      -- 'bufnr' (Buffer Number) is the conventional abbreviation for the buffer integer id
+      -- 'bufnr' (Buffer Number) is the conventional abbreviation for the buffer integer id.
       local bufnr = ctx.buf
       local client = vim.lsp.get_client_by_id(ctx.data.client_id)
 
-      -- Keep capability names complete — 'inlayHintProvider' must not be shortened
+      -- Keep capability names complete — 'inlayHintProvider' must not be shortened.
       if config.enable_inlay_hints
         and client
         and client.server_capabilities.inlayHintProvider

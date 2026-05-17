@@ -23,10 +23,10 @@ return {
     },
     ["markdownlint-cli2"] = {
       condition = function(_, ctx)
-        local diag = vim.tbl_filter(function(d)
-          return d.source == "markdownlint"
+        local diagnostics = vim.tbl_filter(function(diagnostic)
+          return diagnostic.source == "markdownlint"
         end, vim.diagnostic.get(ctx.buf))
-        return #diag > 0
+        return #diagnostics > 0
       end,
     },
     ["sqlfluff"] = {
@@ -34,7 +34,7 @@ return {
       args = function()
         for _, file in ipairs(fs.sqlfluff_pattern) do
           local path = fs.get_root() .. "/" .. file
-          if vim.loop.fs_stat(path) == 0 then
+          if vim.uv.fs_stat(path) ~= nil then
             return { "format", "-" }
           end
         end

@@ -1,7 +1,7 @@
 local py_cmd = require("cmds.python")
 local os_utils = require("utils.os")
 
-local debugpy_exists = function()
+local is_debugpy_installed = function()
   local venv_path = py_cmd.get_venv_path()
 
   if os_utils.is_win() then
@@ -10,7 +10,7 @@ local debugpy_exists = function()
     venv_path = venv_path .. "/bin/debugpy"
   end
 
-  return vim.fn.filereadable(venv_path)
+  return vim.fn.filereadable(venv_path) == 1
 end
 
 ---@type Dap.Module
@@ -22,7 +22,7 @@ return {
           return
         end
 
-        if debugpy_exists() == 0 then
+        if not is_debugpy_installed() then
           vim.notify(
             "debugpy not found in venv, please install debugpy in venv",
             vim.log.levels.WARN

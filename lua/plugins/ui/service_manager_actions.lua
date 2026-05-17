@@ -5,19 +5,19 @@ local data = require("plugins.ui.service_manager_data")
 local state_mod = require("utils.service_state")
 local ui_utils = require("utils.ui")
 
-local _ui, _tooltip_ns, _render
+local _state = { ui = nil, tooltip_ns = nil, render = nil }
 
 function M.init(ui, tooltip_ns, render_fn)
-  _ui = ui
-  _tooltip_ns = tooltip_ns
-  _render = render_fn
+  _state.ui = ui
+  _state.tooltip_ns = tooltip_ns
+  _state.render = render_fn
 end
 
 local function current_entry()
-  if not _ui.win then
+  if not _state.ui.win then
     return nil
   end
-  return _ui.line_map[vim.api.nvim_win_get_cursor(_ui.win)[1]]
+  return _state.ui.line_map[vim.api.nvim_win_get_cursor(_state.ui.win)[1]]
 end
 
 local function install_pkg(pkg_name, on_done)
@@ -57,9 +57,9 @@ local function install_pkg(pkg_name, on_done)
   end
 end
 
-local function apply_runtime(cat, name, meta, enabled)
+local function apply_runtime(cat, name, meta, is_enabled)
   if cat == "lsp" then
-    if enabled then
+    if is_enabled then
       vim.lsp.enable(name)
       vim.notify(
         name .. " enabled — reopen the file to attach",
@@ -83,7 +83,7 @@ local function apply_runtime(cat, name, meta, enabled)
     for _, ft in ipairs(meta.ft or {}) do
       local list = lint.linters_by_ft[ft] or {}
       lint.linters_by_ft[ft] = list
-      if enabled then
+      if is_enabled then
         if not vim.tbl_contains(list, name) then
           table.insert(list, name)
         end
@@ -103,7 +103,7 @@ local function apply_runtime(cat, name, meta, enabled)
     for _, ft in ipairs(meta.ft or {}) do
       local list = conform.formatters_by_ft[ft] or {}
       conform.formatters_by_ft[ft] = list
-      if enabled then
+      if is_enabled then
         if not vim.tbl_contains(list, name) then
           table.insert(list, name)
         end
@@ -120,7 +120,7 @@ local function apply_runtime(cat, name, meta, enabled)
     if not ok then
       return
     end
-    if enabled then
+    if is_enabled then
       dap.adapters[name] = require("plugins.debugger.config").adapters[name]
     else
       dap.adapters[name] = nil
@@ -133,7 +133,7 @@ function M.show_tooltip_at_cursor()
   if not entry or not entry.meta then
     return
   end
-  local cat = cfg.service_categories[_ui.cat_idx]
+  local cat = cfg.service_categories[_state.ui.cat_idx]
 
   local install_status = ""
   if entry.meta.mason then
@@ -145,8 +145,8 @@ function M.show_tooltip_at_cursor()
     end
   end
 
-  local enabled = state_mod.is_enabled(cat, entry.name)
-  local icon = enabled and "●" or "○"
+  local is_entry_enabled = state_mod.is_enabled(cat, entry.name)
+  local icon = is_entry_enabled and "●" or "○"
   local ft_str = table.concat(entry.meta.ft or {}, ", ")
   local status_text, status_hl = data.entry_status(cat, entry.name, entry.meta)
 
@@ -173,14 +173,14 @@ function M.show_tooltip_at_cursor()
 
   local tooltip_buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_lines(tooltip_buf, 0, -1, false, info)
-  local name_hl = enabled and "DiagnosticOk" or "Comment"
-  ui_utils.buf_hl(tooltip_buf, _tooltip_ns, name_hl, 0, 1, 4) -- ● / ○ = 3 bytes at col 1
+  local name_hl = is_entry_enabled and "DiagnosticOk" or "Comment"
+  ui_utils.buf_hl(tooltip_buf, _state.tooltip_ns, name_hl, 0, 1, 4) -- ● / ○ = 3 bytes at col 1
   for i, line in ipairs(info) do
     if line:match("^   status:") then
       local prefix_len = #"   status: "
       ui_utils.buf_hl(
         tooltip_buf,
-        _tooltip_ns,
+        _state.tooltip_ns,
         status_hl,
         i - 1,
         prefix_len,
@@ -189,7 +189,7 @@ function M.show_tooltip_at_cursor()
     end
   end
 
-  local cursor = vim.api.nvim_win_get_cursor(_ui.win)
+  local cursor = vim.api.nvim_win_get_cursor(_state.ui.win)
   local cursor_row = cursor[1] - 1
   local float_h = #info + 2
   local float_row = cursor_row - float_h
@@ -199,7 +199,7 @@ function M.show_tooltip_at_cursor()
 
   local tooltip_win = vim.api.nvim_open_win(tooltip_buf, false, {
     relative = "win",
-    win = _ui.win,
+    win = _state.ui.win,
     row = float_row,
     col = entry.icon_byte,
     width = max_w,
@@ -218,7 +218,7 @@ function M.show_tooltip_at_cursor()
   end
   vim.defer_fn(close, 4000)
   vim.api.nvim_create_autocmd({ "CursorMoved", "WinClosed" }, {
-    buffer = _ui.buf,
+    buffer = _state.ui.buf,
     once = true,
     callback = close,
   })
@@ -229,7 +229,7 @@ function M.do_toggle()
   if not entry or not entry.meta then
     return
   end
-  local category = cfg.service_categories[_ui.cat_idx]
+  local category = cfg.service_categories[_state.ui.cat_idx]
   local new_state = not state_mod.is_enabled(category, entry.name)
 
   if new_state and entry.meta.mason then
@@ -240,7 +240,7 @@ function M.do_toggle()
         install_pkg(entry.meta.mason, function()
           state_mod.set_enabled(category, entry.name, true)
           apply_runtime(category, entry.name, entry.meta, true)
-          _render()
+          _state.render()
         end)
         return
       end
@@ -249,7 +249,7 @@ function M.do_toggle()
 
   state_mod.set_enabled(category, entry.name, new_state)
   apply_runtime(category, entry.name, entry.meta, new_state)
-  _render()
+  _state.render()
 end
 
 function M.do_install()
@@ -266,7 +266,7 @@ function M.do_install()
     )
     return
   end
-  install_pkg(entry.meta.mason, _render)
+  install_pkg(entry.meta.mason, _state.render)
 end
 
 function M.do_reorder(dir)
@@ -274,7 +274,7 @@ function M.do_reorder(dir)
   if not entry or not entry.ft then
     return
   end
-  local category = cfg.service_categories[_ui.cat_idx]
+  local category = cfg.service_categories[_state.ui.cat_idx]
 
   local group
   for _, g in ipairs(data.build_ft_groups(category)) do
@@ -329,25 +329,25 @@ function M.do_reorder(dir)
     end
   end
 
-  _render()
+  _state.render()
 
-  for lnum, e in pairs(_ui.line_map) do
+  for lnum, e in pairs(_state.ui.line_map) do
     if e.name == entry.name and e.ft == entry.ft then
-      vim.api.nvim_win_set_cursor(_ui.win, { lnum, 0 })
+      vim.api.nvim_win_set_cursor(_state.ui.win, { lnum, 0 })
       break
     end
   end
 end
 
 function M.switch_tab(idx)
-  _ui.cat_idx = idx
-  _render()
+  _state.ui.cat_idx = idx
+  _state.render()
   local first
-  for lnum in pairs(_ui.line_map) do
+  for lnum in pairs(_state.ui.line_map) do
     first = first and math.min(first, lnum) or lnum
   end
-  if first and _ui.win and vim.api.nvim_win_is_valid(_ui.win) then
-    vim.api.nvim_win_set_cursor(_ui.win, { first, 0 })
+  if first and _state.ui.win and vim.api.nvim_win_is_valid(_state.ui.win) then
+    vim.api.nvim_win_set_cursor(_state.ui.win, { first, 0 })
   end
 end
 

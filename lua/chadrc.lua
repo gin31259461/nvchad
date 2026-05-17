@@ -1,7 +1,7 @@
 ---@module "ui"
 
 local statusline = require("utils.statusline")
-local hl = require("utils.hl")
+local highlights = require("utils.hl")
 local config = require("config")
 
 -- https://github.com/NvChad/ui/blob/v2.5/lua/nvconfig.lua
@@ -170,7 +170,7 @@ M.ui = {
     modules = {
       mode_override = statusline.mode,
       current_lsp = statusline.current_lsp,
-      git_hl = hl.statusline.git,
+      git_hl = highlights.statusline.git,
       git_override = statusline.git,
       path = statusline.path,
       lsp_symbols = statusline.lsp_symbols,

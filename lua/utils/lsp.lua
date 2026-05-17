@@ -15,20 +15,21 @@ local M = {}
 
 ---@param opts? lsp.Client.filter
 function M.get_clients(opts)
-  local ret = {} ---@type vim.lsp.Client[]
+  local clients = {} ---@type vim.lsp.Client[]
   if vim.lsp.get_clients then
-    ret = vim.lsp.get_clients(opts)
+    clients = vim.lsp.get_clients(opts)
   else
     ---@diagnostic disable-next-line: deprecated
-    ret = vim.lsp.get_active_clients(opts)
+    clients = vim.lsp.get_active_clients(opts)
     if opts and opts.method then
       ---@param client vim.lsp.Client
-      ret = vim.tbl_filter(function(client)
+      clients = vim.tbl_filter(function(client)
         return client:supports_method(opts.method, opts.bufnr)
-      end, ret)
+      end, clients)
     end
   end
-  return opts and opts.filter and vim.tbl_filter(opts.filter, ret) or ret
+  return opts and opts.filter and vim.tbl_filter(opts.filter, clients)
+    or clients
 end
 
 ---@param on_attach fun(client:vim.lsp.Client, buffer)
@@ -80,12 +81,12 @@ function M.execute(opts)
       })
     end
   else
-    return vim.lsp.buf_request(
-      0,
-      "workspace/executeCommand",
-      params,
-      opts.handler
-    )
+    local clients =
+      vim.lsp.get_clients({ bufnr = 0, method = "workspace/executeCommand" })
+    local client = clients[1]
+    if client then
+      return client:request("workspace/executeCommand", params, opts.handler, 0)
+    end
   end
 end
 
@@ -112,7 +113,7 @@ function M.setup()
   local register_capability = vim.lsp.handlers["client/registerCapability"]
   vim.lsp.handlers["client/registerCapability"] = function(err, res, ctx)
     ---@diagnostic disable-next-line: no-unknown
-    local ret = register_capability(err, res, ctx)
+    local result = register_capability(err, res, ctx)
     local client = vim.lsp.get_client_by_id(ctx.client_id)
     if client then
       for buffer in pairs(client.attached_buffers) do
@@ -122,7 +123,7 @@ function M.setup()
         })
       end
     end
-    return ret
+    return result
   end
   M.on_attach(M._check_methods)
   M.on_dynamic_capability(M._check_methods)

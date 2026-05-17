@@ -15,27 +15,27 @@ function M.entry_status(cat, name, meta)
     end
   end
 
-  local status_text, hl
+  local status_text, highlight_group
 
   if installed == nil then
-    status_text, hl = "n/a", "DiagnosticWarn"
+    status_text, highlight_group = "n/a", "DiagnosticWarn"
   elseif installed then
-    status_text, hl = "installed", "DiagnosticOk"
+    status_text, highlight_group = "installed", "DiagnosticOk"
   else
-    status_text, hl = "not installed", "DiagnosticError"
+    status_text, highlight_group = "not installed", "DiagnosticError"
   end
 
   if cat == "lsp" then
     if not vim.lsp.is_enabled(name) then
-      hl = "DiagnosticError"
+      highlight_group = "DiagnosticError"
     elseif #vim.lsp.get_clients({ name = name }) > 0 then
-      hl = "DiagnosticOk"
+      highlight_group = "DiagnosticOk"
     else
-      hl = "DiagnosticWarn"
+      highlight_group = "DiagnosticWarn"
     end
   end
 
-  return status_text, hl
+  return status_text, highlight_group
 end
 
 function M.build_ft_groups(cat)

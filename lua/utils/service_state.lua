@@ -4,21 +4,21 @@ local _state = nil
 local STATE_PATH = vim.fn.stdpath("data") .. "/service_manager.json"
 
 local function build_defaults()
-  local svc = require("config.services")
-  local d = { formatter_order = {}, linter_order = {} }
+  local services = require("config.services")
+  local defaults = { formatter_order = {}, linter_order = {} }
   for _, cat in ipairs({ "lsp", "dap", "linter", "formatter" }) do
-    d[cat] = {}
-    for name in pairs(svc[cat] or {}) do
-      d[cat][name] = true
+    defaults[cat] = {}
+    for name in pairs(services[cat] or {}) do
+      defaults[cat][name] = true
     end
   end
-  for ft, order in pairs(svc.formatter_defaults or {}) do
-    d.formatter_order[ft] = vim.deepcopy(order)
+  for ft, order in pairs(services.formatter_defaults or {}) do
+    defaults.formatter_order[ft] = vim.deepcopy(order)
   end
-  for ft, order in pairs(svc.linter_defaults or {}) do
-    d.linter_order[ft] = vim.deepcopy(order)
+  for ft, order in pairs(services.linter_defaults or {}) do
+    defaults.linter_order[ft] = vim.deepcopy(order)
   end
-  return d
+  return defaults
 end
 
 function M.load()

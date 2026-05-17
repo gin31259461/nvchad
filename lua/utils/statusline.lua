@@ -1,7 +1,7 @@
 local M = {}
 
 local fs = require("utils.fs")
-local hl = require("utils.hl")
+local highlights = require("utils.hl")
 local ui = require("utils.ui")
 local config = require("config")
 
@@ -50,7 +50,7 @@ M.is_ignore_ft = function()
   return false
 end
 
-local sep = "  "
+local symbol_separator = "  "
 
 ---@param symbols string
 ---@param length number
@@ -63,7 +63,7 @@ M.pretty_symbol_path = function(symbols, length)
   end
 
   if #parts <= length then
-    return table.concat(parts, sep)
+    return table.concat(parts, symbol_separator)
   end
 
   local short_parts = { parts[1], "…" }
@@ -72,7 +72,7 @@ M.pretty_symbol_path = function(symbols, length)
     vim.list_slice(parts, #parts - length + 2, #parts)
   )
 
-  return table.concat(short_parts, sep)
+  return table.concat(short_parts, symbol_separator)
 end
 
 ---@return string
@@ -84,7 +84,7 @@ M.path = function()
   local relative_path = fs.pretty_path(nil, { only_cwd = true })
   local dir = vim.fs.dirname(relative_path)
   local filename = vim.fn.fnamemodify(relative_path, ":t")
-  local icon = hl.statusline.current_file .. "󰈚"
+  local icon = highlights.statusline.current_file .. "󰈚"
 
   if filename ~= "" then
     icon = ui.get_file_icon(filename, { has_hl = true })
@@ -94,13 +94,13 @@ M.path = function()
 
   -- set hl and indent
   icon = icon .. " "
-  filename = hl.statusline.current_file .. filename
+  filename = highlights.statusline.current_file .. filename
 
   if dir == "." then
     return icon .. filename
   end
 
-  return icon .. hl.statusline.text .. dir .. "/" .. filename
+  return icon .. highlights.statusline.text .. dir .. "/" .. filename
 end
 
 ---@return string
@@ -120,8 +120,8 @@ M.lsp_symbols = function()
     local symbols = M.state.lsp_symbols()
 
     if symbols ~= "" then
-      return hl.statusline.current_file
-        .. sep
+      return highlights.statusline.current_file
+        .. symbol_separator
         .. M.pretty_symbol_path(symbols, 3)
     end
   end
@@ -147,8 +147,8 @@ M.current_lsp = function()
     end
 
     return M.merge_components({
-      hl.statusline.copilot .. copilot,
-      hl.statusline.active_context .. lsp_client,
+      highlights.statusline.copilot .. copilot,
+      highlights.statusline.active_context .. lsp_client,
     }, { gap = 1, margin = { right = 1 } })
   end
 

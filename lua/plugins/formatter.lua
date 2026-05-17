@@ -8,7 +8,7 @@ return {
     opts = function()
       local opts = require("config.formatter")
       local state_mod = require("utils.service_state")
-      local svc = require("config.services")
+      local services = require("config.services")
 
       -- Inject sqlfluff for SQL filetypes before filtering
       if state_mod.is_enabled("formatter", "sqlfluff") then
@@ -38,7 +38,7 @@ return {
         end
         opts.formatters_by_ft[filetype] = vim.tbl_filter(function(name)
           -- Unknown formatter names (not in registry) pass through unchanged
-          return svc.formatter[name] == nil
+          return services.formatter[name] == nil
             or state_mod.is_enabled("formatter", name)
         end, fmts)
       end

@@ -1,7 +1,7 @@
 local M = {}
 
 local fs = require("utils.fs")
-local hl = require("utils.hl")
+local highlights = require("utils.hl")
 
 local CONFIG = {
   completion = { max_w = 60, max_h = 15, pct_w = 0.4, pct_h = 0.3 },
@@ -85,8 +85,8 @@ M.harpoon.highlight_current_file = function()
             2,
             {
               end_col = #line,
-              hl_group = hl.util.get_hl_name_without_syntax(
-                hl.statusline.active_context
+              hl_group = highlights.util.get_hl_name_without_syntax(
+                highlights.statusline.active_context
               ),
             }
           )
