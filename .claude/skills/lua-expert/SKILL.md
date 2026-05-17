@@ -7,8 +7,23 @@ allowed-tools: [Read, Edit, Write, Bash, Glob, Grep]
 
 # Lua Expert
 
+You are an expert developer highly proficient in the Neovim and Lua ecosystem. Your task is to
+assist developers in writing, refactoring, and reviewing Neovim plugins or configuration files,
+ensuring the code strictly adheres to community idioms and best practices.
+
 Apply idiomatic Lua with a focus on OOP, low coupling, and separation of concerns.
 Read referenced files before acting. When given a file, read it in full first.
+
+---
+
+## Core Principles
+
+1. **Reject invalid abbreviations.** Avoid inventing abbreviations (e.g., abbreviating `category`
+   to `cat`) to prevent semantic ambiguity. Clarity always supersedes brevity.
+2. **Keep technical terms in their original English.** When a technical term first appears in a
+   response, explain its meaning and the rationale behind its naming.
+3. **Prioritise complete, intention-revealing names over short ones** — the goal is that code reads
+   like prose without needing explanatory comments.
 
 ---
 
@@ -477,14 +492,14 @@ what a name means — rename it instead.
 
 ### Case conventions
 
-| Kind                  | Convention      | Example                          |
-|-----------------------|-----------------|----------------------------------|
-| Local variables       | `snake_case`    | `buf_count`, `active_win`        |
-| Module tables         | `PascalCase`    | `ServiceState`, `LspSetup`       |
-| Constants (immutable) | `UPPER_SNAKE`   | `MAX_WIDTH`, `DEFAULT_TIMEOUT`   |
-| Private (by convention)| `_snake_case`  | `_cache`, `_handlers`            |
-| Loop indexes          | `i`, `j`, `k`  | Acceptable only for numeric loops|
-| Generic iteratees     | `v`, `k`        | Acceptable only inside `pairs`/`ipairs` one-liners |
+| Kind                   | Convention       | Rationale                                                              | Example                          |
+|------------------------|------------------|------------------------------------------------------------------------|----------------------------------|
+| Local variables        | `snake_case`     | Matches the Lua standard library and Neovim's C core API tradition     | `buf_count`, `active_win`        |
+| Module tables / Classes| `PascalCase`     | Signals an object prototype that can be instantiated (OOP convention)  | `ServiceState`, `LspSetup`       |
+| Constants (immutable)  | `UPPER_SNAKE`    | Inherited from C macros; visually warns that the value must not change | `MAX_WIDTH`, `DEFAULT_TIMEOUT`   |
+| Private (by convention)| `_snake_case`    | Lua lacks `private`; leading underscore signals "do not call externally"| `_cache`, `_handlers`           |
+| Loop indexes           | `i`, `j`, `k`   | Acceptable only for numeric loops                                      |                                  |
+| Generic iteratees      | `v`, `k`         | Acceptable only inside `pairs`/`ipairs` one-liners                    |                                  |
 
 ### Booleans
 
@@ -525,15 +540,28 @@ local function has_active_clients(buf) return #vim.lsp.get_clients({ bufnr = buf
 
 ### Avoid abbreviations
 
-Only abbreviate when the short form is universally understood in the domain:
+Only abbreviate when the short form has strong community consensus in the Neovim ecosystem.
+Approved whitelist:
+
+| Abbreviation | Stands for     | Context                                              |
+|--------------|----------------|------------------------------------------------------|
+| `M`          | Module export  | The table returned at the bottom of every module     |
+| `opts`       | Options        | The `setup(opts)` parameter, option bags generally   |
+| `bufnr`      | Buffer Number  | Neovim's unique integer identifier for a buffer      |
+| `winid`      | Window ID      | Neovim's unique integer identifier for a window      |
+| `ctx`        | Context        | Async callbacks, LSP event payloads                  |
+| `buf`        | Buffer         | When `bufnr` would be verbose inside a local scope   |
+| `win`        | Window         | Same as above for window                             |
+| `ns`         | Namespace      | `vim.api.nvim_create_namespace` result               |
+| `ft`         | Filetype       | `vim.bo.filetype` values                             |
+| `cmd`        | Command        | Ex command string or function                        |
+| `cfg`        | Config         | Local config table, not to be exported               |
+| `fn`/`cb`    | Function/Callback | Only in higher-order helpers                      |
 
 ```lua
--- Acceptable short forms (Neovim/Lua idioms)
-buf, win, ns, ft, lsp, dap, cmd, cfg, opts, fn, cb
-
 -- Avoid everything else — spell it out
--- BAD:  svc_mgr_ui_buf, act_svcs, def_tmout
--- GOOD: service_manager_buf, active_services, default_timeout
+-- BAD:  svc_mgr_ui_buf, act_svcs, def_tmout, cat, proc
+-- GOOD: service_manager_buf, active_services, default_timeout, category, process
 ```
 
 ### Distinguishing similar variables
@@ -581,3 +609,42 @@ open_win({ buf = buf, width = 80, height = 20, focused = false })
 - [ ] No `<C-s>` keymaps — reserved for file save
 - [ ] StyLua formatting applied: `stylua lua/`
 - [ ] Variable/function names are self-documenting: verb-phrase functions, `is_`/`has_` booleans, no unexplained abbreviations, no shadowing
+
+---
+
+## 13. Canonical Module Template
+
+This template demonstrates all conventions together: private constants, `setup(opts)` entry point,
+`LspAttach` autocmd, idiomatic abbreviations (`bufnr`, `ctx`, `opts`), and full capability names.
+
+```lua
+local M = {}
+
+-- Private constant: _snake_case signals "internal, do not access externally"
+local _default_opts = { enable_inlay_hints = true }
+
+-- 'setup' is the community-standard initialisation function.
+-- 'opts' is the idiomatic parameter name for option bags.
+function M.setup(opts)
+  local config = vim.tbl_deep_extend("force", _default_opts, opts or {})
+
+  vim.api.nvim_create_autocmd("LspAttach", {
+    -- 'ctx' (Context) receives the autocmd event payload
+    callback = function(ctx)
+      -- 'bufnr' (Buffer Number) is the conventional abbreviation for the buffer integer id
+      local bufnr = ctx.buf
+      local client = vim.lsp.get_client_by_id(ctx.data.client_id)
+
+      -- Keep capability names complete — 'inlayHintProvider' must not be shortened
+      if config.enable_inlay_hints
+        and client
+        and client.server_capabilities.inlayHintProvider
+      then
+        vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+      end
+    end,
+  })
+end
+
+return M
+```
