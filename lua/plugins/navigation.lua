@@ -130,7 +130,7 @@ return {
   },
 
   {
-    "gin31259461/harpoon",
+    "Orbit-Lua/harpoon",
     -- "ThePrimeagen/harpoon",
     event = "VeryLazy",
     branch = "harpoon2",
