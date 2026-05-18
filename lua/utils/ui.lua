@@ -116,7 +116,7 @@ M.get_file_icon = function(path, opts)
 
   local filename = vim.fn.fnamemodify(path, ":t")
   local icon = "󰈚 "
-  local devicon = ""
+  local devicon
   local devicon_hl_name = ""
 
   if filename ~= "" then

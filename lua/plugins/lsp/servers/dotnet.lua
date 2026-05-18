@@ -1,7 +1,9 @@
 -- https://www.lazyvim.org/extras/lang/omnisharp
 -- https://github.com/Hoffs/omnisharp-extended-lsp.nvim
--- wiki:            https://github.com/seblyng/roslyn.nvim/wiki
--- diagnostic hack: https://github.com/seblyng/roslyn.nvim/blob/7d8819239c5e2c4a0d8150da1c00fa583f761704/lsp/roslyn.lua#L33
+-- wiki:
+-- -> https://github.com/seblyng/roslyn.nvim/wiki
+-- diagnostic hack:
+-- -> https://github.com/seblyng/roslyn.nvim/blob/7d8819239c5e2c4a0d8150da1c00fa583f761704/lsp/roslyn.lua#L33
 
 -- NOTE: official roslyn language server
 -- https://github.com/dotnet/roslyn/tree/main/src/LanguageServer/Microsoft.CodeAnalysis.LanguageServer
@@ -22,7 +24,7 @@ return {
       --   "--stdio",
       -- },
 
-      on_attach = function(client, bufnr)
+      on_attach = function(client, _)
         if client:supports_method("textDocument/semanticTokens") then
           client.server_capabilities.semanticTokensProvider = nil
         end

@@ -2,7 +2,7 @@ local LazyUtil = require("lazy.core.util")
 local M = {}
 
 setmetatable(M, {
-  __index = function(t, k)
+  __index = function(_, k)
     if LazyUtil[k] then
       return LazyUtil[k]
     end

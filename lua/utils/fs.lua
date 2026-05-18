@@ -82,11 +82,11 @@ local function find_root_marker(startpath, markers)
   local Path = vim.fn.expand(startpath)
   for _, marker in ipairs(markers) do
     local found = vim.fn.finddir(marker, Path .. ";")
-    if found ~= "" then
+    if type(found) == "string" and found ~= "" then
       return vim.fn.fnamemodify(found, ":p:h:h")
     end
     local found_file = vim.fn.findfile(marker, Path .. ";")
-    if found_file ~= "" then
+    if type(found_file) == "string" and found_file ~= "" then
       return vim.fn.fnamemodify(found_file, ":p:h")
     end
   end
@@ -120,7 +120,7 @@ function M.get_root()
   end
 
   -- fallback: cwd
-  return vim.uv.cwd()
+  return vim.uv.cwd()[1]
 end
 
 ---@param buf_name string
@@ -166,7 +166,8 @@ M.data_path = vim.fn.stdpath("data")
 M.mason_pkg_path = vim.fn.stdpath("data") .. "/mason/packages"
 
 M.schema_paths = {
-  -- msbuild schema ref: https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-project-file-schema-reference?view=visualstudio
+  -- msbuild schema ref:
+  -- https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-project-file-schema-reference?view=visualstudio
   ms_build = M.config_path .. "/lua/config/lsp/schema/Microsoft.Build.xsd",
 }
 

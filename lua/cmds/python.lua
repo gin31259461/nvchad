@@ -22,7 +22,7 @@ M.get_virtual_python_path = function()
     return ""
   end
 
-  local executable_python_path = ""
+  local executable_python_path
 
   if os_utils.is_win() then
     executable_python_path = venv_path .. "/Scripts/pythonw.exe"

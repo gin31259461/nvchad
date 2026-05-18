@@ -26,15 +26,15 @@ local M = {}
 
 local _pass = 0
 local _fail = 0
-local _current = "(root)"
+-- local _current = "(root)"
 
 ---@param name string
 ---@param fn fun()
 function M.describe(name, fn)
-  _current = name
+  -- _current = name
   print("\n" .. name)
   fn()
-  _current = "(root)"
+  -- _current = "(root)"
 end
 
 ---@param name string

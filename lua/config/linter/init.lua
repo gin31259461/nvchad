@@ -1,5 +1,3 @@
--- config for nvim-lint
-
 local fs = require("utils.fs")
 
 ---@class LinterExtend
@@ -13,8 +11,6 @@ local fs = require("utils.fs")
 ---@field linters_by_ft table
 ---@field linters Linter
 
-local eslint_d_binary_name = "eslint_d"
-local markdownlint_efm = "%f:%l:%c %m,%f:%l %m"
 ---@type Linter.Opts
 return {
   -- events = { "BufWritePost", "BufReadPost", "InsertLeave" },
@@ -40,50 +36,28 @@ return {
     javascript = { "eslint_d" },
   },
 
+  -- refer to: https://github.com/mfussenegger/nvim-lint#custom-linters
   linters = {
-    eslint_d = require("lint.util").wrap({
-
-      name = "eslint_d",
+    -- FIXME:
+    -- Mason-installed luacheck (1.1.0) crashes on Lua 5.5 because Lua 5.5 makes
+    -- for-loop variables <const>. Point directly at the luarocks-installed 1.2.0
+    -- binary (lua5.4) which is already on PATH but shadowed by Mason's bin dir.
+    luacheck = {
+      cmd = (os.getenv("HOME") or "") .. "/.luarocks/bin/luacheck",
       stdin = true,
-      stream = "stdout",
-      ignore_exitcode = true,
-
       args = {
-        "--format",
-        "json",
-        "--stdin",
-        "--stdin-filename",
-        function()
-          return vim.api.nvim_buf_get_name(0)
-        end,
+        "--globals",
+        "vim",
+        "--formatter",
+        "plain",
+        "--codes",
+        "--ranges",
+        "-",
       },
-
-      ---@diagnostic disable-next-line
-      cmd = function()
-        local local_binary = vim.fn.fnamemodify(
-          "./node_modules/.bin/" .. eslint_d_binary_name,
-          ":p"
-        )
-        return vim.uv.fs_stat(local_binary) and local_binary
-          or eslint_d_binary_name
-      end,
-
-      parser = function(output, bufnr)
-        local result = require("lint.linters.eslint").parser(output, bufnr)
-        for _, diagnostic in ipairs(result) do
-          diagnostic.source = eslint_d_binary_name
-        end
-        return result
-      end,
-    }, function(diagnostic)
-      if diagnostic.message:find("Error: Could not find config file") then
-        return nil
-      end
-      return diagnostic
-    end),
+    },
 
     sqlfluff = {
-      command = "sqlfluff",
+      cmd = "sqlfluff",
       args = (function()
         for _, file in ipairs(fs.sqlfluff_pattern) do
           local path = fs.get_root() .. "/" .. file
@@ -100,17 +74,22 @@ return {
 
     ["markdownlint-cli2"] = {
       cmd = "markdownlint-cli2",
-      args = (function()
-        local config_path = fs.config_path
-          .. "/lua/config/linter/template/.markdownlint.yaml"
-        return { "--config", config_path }
-      end)(),
+      stdin = true,
+      args = {
+        "--config",
+        fs.config_path .. "/lua/config/linter/template/.markdownlint.yaml",
+        "-",
+      },
       ignore_exitcode = true,
       stream = "stderr",
-      parser = require("lint.parser").from_errorformat(markdownlint_efm, {
-        source = "markdownlint",
-        severity = vim.diagnostic.severity.WARN,
-      }),
+      parser = require("lint.parser").from_errorformat(
+        -- efm
+        "stdin:%l:%c %m,stdin:%l %m",
+        {
+          source = "markdownlint",
+          severity = vim.diagnostic.severity.WARN,
+        }
+      ),
     },
   },
 }

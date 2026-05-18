@@ -4,9 +4,10 @@ local M = {}
 M.setup = function()
   if os_utils.is_win() then
     vim.o.shell = vim.fn.has("win64") and "powershell.exe" or "pwsh.exe"
-    -- refer to https://www.reddit.com/r/neovim/comments/1crdv93/neovim_on_windows_using_windows_terminal_and/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
-    vim.o.shellcmdflag =
-      "-NoLogo -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
+
+    -- refer to https://www.reddit.com/r/neovim/comments/1crdv93/neovim_on_windows_using_windows_terminal_and
+    vim.o.shellcmdflag = "-NoLogo -ExecutionPolicy RemoteSigned "
+      .. "-Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
     vim.o.shellredir = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
     vim.o.shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
     vim.o.shellquote = ""
@@ -17,6 +18,8 @@ M.setup = function()
 
     -- TODO: remove this when vim.ui.open is fixed upstream.
     -- https://github.com/neovim/neovim/issues/39524
+    --
+    ---@diagnostic disable-next-line: duplicate-set-field
     vim.ui.open = function(uri)
       return vim.system(
         { "rundll32", "url.dll,FileProtocolHandler", uri },

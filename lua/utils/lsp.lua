@@ -11,11 +11,12 @@
 
 local M = {}
 
----@alias lsp.Client.filter {id?: number, bufnr?: number, name?: string, method?: string, filter?:fun(client: lsp.Client.filter):boolean}
+---@alias LspClientFilterFun fun(client: lsp.Client.filter):boolean
+---@alias lsp.Client.filter {id?: number, bufnr?: number, name?: string, method?: string, filter?:LspClientFilterFun}
 
 ---@param opts? lsp.Client.filter
 function M.get_clients(opts)
-  local clients = {} ---@type vim.lsp.Client[]
+  local clients ---@type vim.lsp.Client[]
   if vim.lsp.get_clients then
     clients = vim.lsp.get_clients(opts)
   else

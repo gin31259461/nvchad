@@ -70,7 +70,7 @@ return {
       local api = require("nvim-tree.api")
       local Event = api.events.Event
 
-      api.events.subscribe(Event.FileCreated, function(data)
+      api.events.subscribe(Event.FileCreated, function(_)
         vim.api.nvim_exec_autocmds("User", { pattern = "CreateFile" })
       end)
     end,

@@ -115,7 +115,11 @@ return {
           includeCompletionsForModuleExports = true,
           quotePreference = "auto",
 
+          -- luacheck: push ignore
+          --
           -- https://github.com/microsoft/TypeScript/blob/3b45f4db12bbae97d10f62ec0e2d94858252c5ab/src/server/protocol.ts#L3501
+          --
+          -- luacheck: pop
           includeInlayParameterNameHintsWhenArgumentMatchesName = true,
           includeInlayFunctionParameterTypeHints = true,
           includeInlayVariableTypeHintsWhenTypeMatchesName = true,

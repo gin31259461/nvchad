@@ -1,5 +1,6 @@
 -- NOTE: It also requires the correct .NET runtime based on the .NET version used in your project.
--- this dap config refer to: https://codeberg.org/mfussenegter/nvim-dap/wiki/Debug-Adapter-installation#user-content-dotnet
+-- this dap config refer to:
+-- https://codeberg.org/mfussenegter/nvim-dap/wiki/Debug-Adapter-installation#user-content-dotnet
 
 local os_utils = require("utils.os")
 
@@ -50,7 +51,8 @@ return {
 
       vim.fn.jobstart(build_cmd, {
         -- refer to nvim doc: https://neovim.io/doc/user/job_control.html#on_exit
-        on_exit = function(job_id, exit_code, event_type)
+        -- job_id, exit_code, event_type
+        on_exit = function(_, exit_code, _)
           if exit_code == 0 then
             vim.notify(
               "Build project successfully",

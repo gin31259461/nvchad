@@ -145,8 +145,18 @@ local specs = {
       }
 
       -- <C-a> and <C-x> are claimed by opencode; remap increment/decrement
-      vim.keymap.set("n", "+", "<C-a>", { desc = "Increment under cursor", noremap = true })
-      vim.keymap.set("n", "-", "<C-x>", { desc = "Decrement under cursor", noremap = true })
+      vim.keymap.set(
+        "n",
+        "+",
+        "<C-a>",
+        { desc = "Increment under cursor", noremap = true }
+      )
+      vim.keymap.set(
+        "n",
+        "-",
+        "<C-x>",
+        { desc = "Decrement under cursor", noremap = true }
+      )
     end,
   },
 }

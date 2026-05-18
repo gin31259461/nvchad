@@ -103,7 +103,9 @@ local options = {
 
   formatting = {
     fields = { "kind", "abbr", "menu" },
-    format = function(entry, item)
+
+    -- entry, item
+    format = function(_, item)
       local icons = config.icons.kinds
       local max_width = select(1, ui.get_completion_window_size())
       if icons[item.kind] then

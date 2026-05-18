@@ -17,6 +17,7 @@ return {
         then
           ---@diagnostic disable-next-line
           lint.linters[linter_name] =
+            ---@diagnostic disable-next-line
             vim.tbl_deep_extend("force", lint.linters[linter_name], linter)
           if type(linter.prepend_args) == "table" then
             lint.linters[linter_name].args = lint.linters[linter_name].args
