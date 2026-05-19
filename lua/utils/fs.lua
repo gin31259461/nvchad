@@ -120,7 +120,7 @@ function M.get_root()
   end
 
   -- fallback: cwd
-  return vim.uv.cwd()[1]
+  return vim.uv.cwd() or vim.fn.getcwd()
 end
 
 ---@param buf_name string

@@ -9,6 +9,7 @@ return {
     end,
     config = function(_, opts)
       local lint = require("lint")
+      local logger = require("utils.logger")
 
       for linter_name, linter in pairs(opts.linters) do
         if
@@ -87,6 +88,11 @@ return {
         -- Add global linters.
         vim.list_extend(linter_names, lint.linters_by_ft["*"] or {})
 
+        -- Clear previous run errors for all candidate linters before this run.
+        for _, linter_name in ipairs(linter_names) do
+          logger.clear_source("linter", linter_name)
+        end
+
         -- Filter out linters that don't exist or don't match the condition.
         local ctx = { filename = vim.api.nvim_buf_get_name(0) }
         ctx.dirname = vim.fn.fnamemodify(ctx.filename, ":h")
@@ -95,6 +101,13 @@ return {
           local linter = lint.linters[linter_name]
           if not linter then
             vim.notify("Linter not found: " .. linter_name, vim.log.levels.WARN)
+            logger.write(
+              "linter",
+              "ERROR",
+              linter_name,
+              "linter definition not found",
+              { kind = "definition_not_found" }
+            )
           end
           return linter
             and not (
@@ -103,6 +116,30 @@ return {
               and not linter.condition(ctx)
             )
         end, linter_names)
+
+        -- Pre-flight executable check for each resolved linter.
+        for _, linter_name in ipairs(linter_names) do
+          local linter = lint.linters[linter_name]
+          if type(linter) == "table" and linter.cmd then
+            local cmd = type(linter.cmd) == "function" and linter.cmd()
+              or linter.cmd
+            if vim.fn.executable(cmd) ~= 1 then
+              logger.write(
+                "linter",
+                "ERROR",
+                linter_name,
+                "binary not found: " .. cmd,
+                { kind = "binary_not_found" }
+              )
+            end
+          end
+        end
+
+        -- Notify listeners so the Service Manager can refresh run-error state.
+        vim.api.nvim_exec_autocmds(
+          "User",
+          { pattern = "NvimLintRunPost", modeline = false }
+        )
 
         -- Run linters.
         if #linter_names > 0 then

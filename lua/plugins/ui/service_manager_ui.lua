@@ -7,7 +7,7 @@ local actions = require("plugins.ui.service_manager_actions")
 local ui = {
   buf = nil,
   win = nil,
-  cat_idx = 1,
+  category_idx = 1,
   help_open = false,
   line_map = {},
   live_augroup = nil,
@@ -31,10 +31,10 @@ local function set_keymaps()
   map("<CR>", actions.do_toggle)
   map("i", actions.do_install)
   map("<Tab>", function()
-    actions.switch_tab((ui.cat_idx % #cfg.service_categories) + 1)
+    actions.switch_tab((ui.category_idx % #cfg.service_categories) + 1)
   end)
   map("<S-Tab>", function()
-    actions.switch_tab(((ui.cat_idx - 2) % #cfg.service_categories) + 1)
+    actions.switch_tab(((ui.category_idx - 2) % #cfg.service_categories) + 1)
   end)
   map("[", function()
     actions.do_reorder(-1)

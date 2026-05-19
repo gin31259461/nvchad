@@ -57,8 +57,8 @@ local function install_pkg(pkg_name, on_done)
   end
 end
 
-local function apply_runtime(cat, name, meta, is_enabled)
-  if cat == "lsp" then
+local function apply_runtime(category, name, meta, is_enabled)
+  if category == "lsp" then
     if is_enabled then
       vim.lsp.enable(name)
       vim.notify(
@@ -75,9 +75,9 @@ local function apply_runtime(cat, name, meta, is_enabled)
         vim.log.levels.INFO
       )
     end
-  elseif cat == "linter" then
-    local ok, lint = pcall(require, "lint")
-    if not ok then
+  elseif category == "linter" then
+    local lint_ok, lint = pcall(require, "lint")
+    if not lint_ok then
       return
     end
     for _, ft in ipairs(meta.ft or {}) do
@@ -95,9 +95,9 @@ local function apply_runtime(cat, name, meta, is_enabled)
         end
       end
     end
-  elseif cat == "formatter" then
-    local ok, conform = pcall(require, "conform")
-    if not ok then
+  elseif category == "formatter" then
+    local conform_ok, conform = pcall(require, "conform")
+    if not conform_ok then
       return
     end
     for _, ft in ipairs(meta.ft or {}) do
@@ -115,9 +115,9 @@ local function apply_runtime(cat, name, meta, is_enabled)
         end
       end
     end
-  elseif cat == "dap" then
-    local ok, dap = pcall(require, "dap")
-    if not ok then
+  elseif category == "dap" then
+    local dap_ok, dap = pcall(require, "dap")
+    if not dap_ok then
       return
     end
     if is_enabled then
@@ -128,12 +128,15 @@ local function apply_runtime(cat, name, meta, is_enabled)
   end
 end
 
+local MAX_TOOLTIP_MESSAGES = 8
+local TOOLTIP_MSG_MAX_W = 70
+
 function M.show_tooltip_at_cursor()
   local entry = current_entry()
   if not entry or not entry.meta then
     return
   end
-  local cat = cfg.service_categories[_state.ui.cat_idx]
+  local category = cfg.service_categories[_state.ui.category_idx]
 
   local install_status = ""
   if entry.meta.mason then
@@ -145,37 +148,88 @@ function M.show_tooltip_at_cursor()
     end
   end
 
-  local is_entry_enabled = state_mod.is_enabled(cat, entry.name)
+  local is_entry_enabled = state_mod.is_enabled(category, entry.name)
   local icon = is_entry_enabled and "●" or "○"
   local ft_str = table.concat(entry.meta.ft or {}, ", ")
-  local status_text, status_hl = data.entry_status(cat, entry.name, entry.meta)
+  local status_text, status_hl =
+    data.entry_status(category, entry.name, entry.meta)
 
-  local info = {}
-  table.insert(info, " " .. icon .. "  " .. entry.name .. " ")
+  local tooltip_lines = {}
+  table.insert(tooltip_lines, " " .. icon .. "  " .. entry.name .. " ")
   if ft_str ~= "" then
-    table.insert(info, "   ft:     " .. ft_str .. " ")
+    table.insert(tooltip_lines, "   ft:     " .. ft_str .. " ")
   end
   if entry.meta.mason then
     table.insert(
-      info,
+      tooltip_lines,
       "   mason:  " .. entry.meta.mason .. install_status .. " "
     )
   end
-  table.insert(info, "   status: " .. status_text .. " ")
+  table.insert(tooltip_lines, "   status: " .. status_text .. " ")
   if entry.meta.note and entry.meta.note ~= "" then
-    table.insert(info, "   note:   " .. entry.meta.note .. " ")
+    table.insert(tooltip_lines, "   note:   " .. entry.meta.note .. " ")
+  end
+
+  -- For linters, append run-level errors then live diagnostic messages.
+  if category == "linter" and is_entry_enabled then
+    local logger = require("utils.logger")
+    local run_errors = logger.get_entries("linter", entry.name)
+    if #run_errors > 0 then
+      table.insert(
+        tooltip_lines,
+        "   ──────────────────────────── "
+      )
+      for _, run_error in ipairs(run_errors) do
+        local level_char = run_error.level == "ERROR" and "E" or "W"
+        local text = string.format("   %s  %s ", level_char, run_error.message)
+        if vim.fn.strdisplaywidth(text) > TOOLTIP_MSG_MAX_W then
+          text = text:sub(1, TOOLTIP_MSG_MAX_W - 1) .. "… "
+        end
+        table.insert(tooltip_lines, text)
+      end
+    end
+
+    local diagnostic_summary = data.get_linter_diagnostics(entry.name)
+    if #diagnostic_summary.messages > 0 then
+      table.insert(
+        tooltip_lines,
+        "   ──────────────────────────── "
+      )
+      local overflow = #diagnostic_summary.messages - MAX_TOOLTIP_MESSAGES
+      for j, msg in ipairs(diagnostic_summary.messages) do
+        if j > MAX_TOOLTIP_MESSAGES then
+          table.insert(tooltip_lines, "   +" .. overflow .. " more ")
+          break
+        end
+        local sev_char = msg.severity == vim.diagnostic.severity.ERROR and "E"
+          or "W"
+        local text = string.format(
+          "   %s  %s:%d  %s ",
+          sev_char,
+          msg.file,
+          msg.lnum,
+          msg.message
+        )
+        if vim.fn.strdisplaywidth(text) > TOOLTIP_MSG_MAX_W then
+          text = text:sub(1, TOOLTIP_MSG_MAX_W - 1) .. "… "
+        end
+        table.insert(tooltip_lines, text)
+      end
+    end
   end
 
   local max_w = 0
-  for _, line in ipairs(info) do
+  for _, line in ipairs(tooltip_lines) do
     max_w = math.max(max_w, vim.fn.strdisplaywidth(line))
   end
 
   local tooltip_buf = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_buf_set_lines(tooltip_buf, 0, -1, false, info)
+  vim.api.nvim_buf_set_lines(tooltip_buf, 0, -1, false, tooltip_lines)
+
   local name_hl = is_entry_enabled and "DiagnosticOk" or "Comment"
   ui_utils.buf_hl(tooltip_buf, _state.tooltip_ns, name_hl, 0, 1, 4) -- ● / ○ = 3 bytes at col 1
-  for i, line in ipairs(info) do
+
+  for i, line in ipairs(tooltip_lines) do
     if line:match("^   status:") then
       local prefix_len = #"   status: "
       ui_utils.buf_hl(
@@ -186,12 +240,32 @@ function M.show_tooltip_at_cursor()
         prefix_len,
         -1
       )
+    elseif line:match("^   E  ") then
+      -- Highlight the severity char for error diagnostic lines.
+      ui_utils.buf_hl(
+        tooltip_buf,
+        _state.tooltip_ns,
+        "DiagnosticError",
+        i - 1,
+        3,
+        4
+      )
+    elseif line:match("^   W  ") then
+      -- Highlight the severity char for warning diagnostic lines.
+      ui_utils.buf_hl(
+        tooltip_buf,
+        _state.tooltip_ns,
+        "DiagnosticWarn",
+        i - 1,
+        3,
+        4
+      )
     end
   end
 
   local cursor = vim.api.nvim_win_get_cursor(_state.ui.win)
   local cursor_row = cursor[1] - 1
-  local float_h = #info + 2
+  local float_h = #tooltip_lines + 2
   local float_row = cursor_row - float_h
   if float_row < 0 then
     float_row = cursor_row + 1
@@ -203,7 +277,7 @@ function M.show_tooltip_at_cursor()
     row = float_row,
     col = entry.icon_byte,
     width = max_w,
-    height = #info,
+    height = #tooltip_lines,
     style = "minimal",
     border = "single",
     focusable = false,
@@ -229,7 +303,7 @@ function M.do_toggle()
   if not entry or not entry.meta then
     return
   end
-  local category = cfg.service_categories[_state.ui.cat_idx]
+  local category = cfg.service_categories[_state.ui.category_idx]
   local new_state = not state_mod.is_enabled(category, entry.name)
 
   if new_state and entry.meta.mason then
@@ -274,12 +348,12 @@ function M.do_reorder(dir)
   if not entry or not entry.ft then
     return
   end
-  local category = cfg.service_categories[_state.ui.cat_idx]
+  local category = cfg.service_categories[_state.ui.category_idx]
 
   local group
-  for _, g in ipairs(data.build_ft_groups(category)) do
-    if g.ft == entry.ft then
-      group = g
+  for _, filetype_group in ipairs(data.build_ft_groups(category)) do
+    if filetype_group.ft == entry.ft then
+      group = filetype_group
       break
     end
   end
@@ -288,23 +362,23 @@ function M.do_reorder(dir)
   end
 
   local names = vim.deepcopy(group.names)
-  local idx
+  local current_idx
   for i, n in ipairs(names) do
     if n == entry.name then
-      idx = i
+      current_idx = i
       break
     end
   end
-  if not idx then
+  if not current_idx then
     return
   end
 
-  local new_idx = idx + dir
+  local new_idx = current_idx + dir
   if new_idx < 1 or new_idx > #names then
     return
   end
 
-  names[idx], names[new_idx] = names[new_idx], names[idx]
+  names[current_idx], names[new_idx] = names[new_idx], names[current_idx]
 
   if category == "linter" or category == "formatter" then
     state_mod.set_order(
@@ -318,13 +392,13 @@ function M.do_reorder(dir)
     return state_mod.is_enabled(category, n)
   end, names)
   if category == "formatter" then
-    local ok, conform = pcall(require, "conform")
-    if ok then
+    local conform_ok, conform = pcall(require, "conform")
+    if conform_ok then
       conform.formatters_by_ft[entry.ft] = enabled_names
     end
   else
-    local ok, lint = pcall(require, "lint")
-    if ok then
+    local lint_ok, lint = pcall(require, "lint")
+    if lint_ok then
       lint.linters_by_ft[entry.ft] = enabled_names
     end
   end
@@ -340,7 +414,7 @@ function M.do_reorder(dir)
 end
 
 function M.switch_tab(idx)
-  _state.ui.cat_idx = idx
+  _state.ui.category_idx = idx
   _state.render()
   local first
   for lnum in pairs(_state.ui.line_map) do

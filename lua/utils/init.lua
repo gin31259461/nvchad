@@ -24,6 +24,7 @@ M.hl = require("utils.hl")
 M.ui = require("utils.ui")
 M.str = require("utils.str")
 M.table = require("utils.table")
+M.logger = require("utils.logger")
 
 M.CREATE_UNDO = vim.api.nvim_replace_termcodes("<c-G>u", true, true, true)
 function M.create_undo()
