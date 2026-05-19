@@ -157,7 +157,7 @@ function M.render()
           local is_enabled = state_mod.is_enabled(category, name)
           local icon = is_enabled and "●" or "○"
           local display_name = ui_utils.trunc(name, cfg.col_tool)
-          local ft_str = table.concat(meta.ft or {}, " ")
+          local ft_str = table.concat(meta.ft or {}, ", ")
           local display_ft = ui_utils.trunc(ft_str, cfg.col_ft)
           local status_text, status_hl = data.entry_status(category, name, meta)
 
