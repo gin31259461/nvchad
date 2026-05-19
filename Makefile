@@ -1,10 +1,16 @@
+ifeq ($(OS),Windows_NT)
+    LUACHECK := luacheck.bat
+else
+    LUACHECK := luacheck
+endif
+
 fmt:
 	echo "===> Formatting"
 	stylua lua/ --config-path=.stylua.toml
 
 lint:
 	echo "===> Linting"
-	luacheck lua/ --globals vim
+	$(LUACHECK) lua --globals vim
 
 test:
 	echo "===> Testing"

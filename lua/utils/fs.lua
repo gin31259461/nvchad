@@ -127,12 +127,15 @@ end
 ---@param root string
 ---@return string
 M.make_relative_path = function(buf_name, root)
-  local Path_ready, Path = pcall(require, "plenary.path")
-
-  if Path_ready then
-    return Path:new(buf_name):make_relative(root)
+  local normalized_buf = vim.fs.normalize(buf_name)
+  local normalized_root = vim.fs.normalize(root)
+  -- Ensure root ends with separator so the prefix check is exact.
+  if normalized_root:sub(-1) ~= "/" then
+    normalized_root = normalized_root .. "/"
   end
-
+  if normalized_buf:sub(1, #normalized_root) == normalized_root then
+    return normalized_buf:sub(#normalized_root + 1)
+  end
   return ""
 end
 

@@ -18,21 +18,25 @@ end
 ---@param fmt? string `os.date` format string (default: `"%Y-%m-%d"`)
 ---@return string
 M.get_current_date = function(fmt)
-  return os.date(fmt or "%Y-%m-%d") --[[@as string]]
+  local format = (fmt or "%Y-%m-%d"):gsub("%%s", tostring(os.time()))
+  return os.date(format) --[[@as string]]
 end
 
 ---Returns the current time as a formatted string.
 ---@param fmt? string `os.date` format string (default: `"%H:%M:%S"`)
 ---@return string
 M.get_current_time = function(fmt)
-  return os.date(fmt or "%H:%M:%S") --[[@as string]]
+  local format = (fmt or "%H:%M:%S"):gsub("%%s", tostring(os.time()))
+  return os.date(format) --[[@as string]]
 end
 
 ---Returns the current date and time as a formatted string.
 ---@param fmt? string `os.date` format string (default: `"%Y-%m-%d %H:%M:%S"`)
 ---@return string
 M.get_datetime = function(fmt)
-  return os.date(fmt or "%Y-%m-%d %H:%M:%S") --[[@as string]]
+  -- %s is a POSIX extension unsupported by os.date on Windows; substitute directly.
+  local format = (fmt or "%Y-%m-%d %H:%M:%S"):gsub("%%s", tostring(os.time()))
+  return os.date(format) --[[@as string]]
 end
 
 -- ── Environment ───────────────────────────────────────────────────────────────
