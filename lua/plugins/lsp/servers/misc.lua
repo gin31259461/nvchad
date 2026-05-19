@@ -17,9 +17,8 @@ return {
     },
 
     powershell_es = {
-      bundle_path = fs.mason_pkg_path
-        .. "/powershell-editor-services/PowerShellEditorServices",
-      shell = "powershell",
+      bundle_path = fs.mason_pkg_path .. "/powershell-editor-services",
+      shell = "pwsh",
     },
 
     -- copilot.lua only works with its own copilot lsp server
