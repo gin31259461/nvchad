@@ -59,15 +59,13 @@ return {
     },
     ["deno_fmt"] = {
       args = function()
-        local current_filetype = vim.bo.filetype
+        local file_extension = vim.fn.expand("%:e")
 
-        if current_filetype == "json" then
-          return { "fmt", "-", "--ext=json" }
-        elseif current_filetype == "markdown" then
-          return { "fmt", "-", "--ext=md" }
-        else
-          return { "fmt", "-" }
+        if file_extension ~= "" then
+          return { "fmt", "-", "--ext=" .. file_extension }
         end
+
+        return { "fmt", "-" }
       end,
     },
     ["prisma_fmt"] = {
@@ -94,14 +92,12 @@ return {
     -- web dev
     css = { "deno_fmt" },
     html = { "deno_fmt" },
-    -- typescriptreact = { "deno_fmt", "eslint_d" },
-    -- javascriptreact = { "deno_fmt", "eslint_d" },
-    -- typescript = { "deno_fmt", "eslint_d" },
-    -- javascript = { "deno_fmt", "eslint_d" },
-    typescriptreact = { "eslint_d" },
-    javascriptreact = { "eslint_d" },
-    typescript = { "eslint_d" },
-    javascript = { "eslint_d" },
+
+    -- eslint_d is used for fix, not complete formatting, so deno_fmt is needed
+    typescriptreact = { "deno_fmt", "eslint_d" },
+    javascriptreact = { "deno_fmt", "eslint_d" },
+    javascript = { "deno_fmt", "eslint_d" },
+    typescript = { "deno_fmt", "eslint_d" },
 
     json = { "deno_fmt" },
     toml = { "tombi" },
