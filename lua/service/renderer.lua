@@ -1,7 +1,7 @@
 local M = {}
 
-local cfg = require("plugins.ui.service_manager_config")
-local data = require("plugins.ui.service_manager_data")
+local cfg = require("service.config")
+local data = require("service.data")
 local services = require("config.services")
 local state_mod = require("utils.service_state")
 local ui_utils = require("utils.ui")

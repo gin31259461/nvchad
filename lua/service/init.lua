@@ -1,8 +1,8 @@
 local M = {}
 
-local cfg = require("plugins.ui.service_manager_config")
-local renderer = require("plugins.ui.service_manager_renderer")
-local actions = require("plugins.ui.service_manager_actions")
+local cfg = require("service.config")
+local renderer = require("service.renderer")
+local actions = require("service.actions")
 
 local ui = {
   buf = nil,
