@@ -86,7 +86,8 @@ function M.render()
   local category = cfg.service_categories[_state.ui.category_idx]
   -- measure icon display width at runtime; ● is East Asian Ambiguous (1 or 2)
   local icon_disp_w = vim.fn.strdisplaywidth("●")
-  local win_width = vim.api.nvim_win_get_width(_state.ui.win)
+  local wcfg = M.make_win_cfg()
+  local win_width = wcfg.width
   local sep = string.rep("─", win_width - 4)
 
   local tabline, tab_ranges, hint_byte, hint = build_tabline(win_width)
@@ -246,9 +247,9 @@ function M.render()
   end
 
   if _state.ui.win and vim.api.nvim_win_is_valid(_state.ui.win) then
-    local wcfg = M.make_win_cfg()
     vim.api.nvim_win_set_config(_state.ui.win, {
       relative = "editor",
+      width = wcfg.width,
       height = wcfg.height,
       row = wcfg.row,
       col = wcfg.col,
@@ -372,6 +373,11 @@ function M.start_live_update()
     vim.api.nvim_create_augroup("ServiceManagerLive", { clear = true })
 
   vim.api.nvim_create_autocmd({ "LspAttach", "LspDetach" }, {
+    group = _state.ui.live_augroup,
+    callback = schedule_render,
+  })
+
+  vim.api.nvim_create_autocmd("VimResized", {
     group = _state.ui.live_augroup,
     callback = schedule_render,
   })
