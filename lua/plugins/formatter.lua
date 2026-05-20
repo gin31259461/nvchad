@@ -7,7 +7,7 @@ return {
     event = { "BufWritePost", "BufReadPost", "InsertLeave" },
     opts = function()
       local opts = require("config.formatter")
-      local state_mod = require("utils.service_state")
+      local state_mod = require("service.state")
       local services = require("config.services")
 
       -- Inject sqlfluff for SQL filetypes before filtering

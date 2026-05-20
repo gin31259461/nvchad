@@ -3,16 +3,25 @@ local M = {}
 local cfg = require("service.config")
 local data = require("service.data")
 local services = require("config.services")
-local state_mod = require("utils.service_state")
+local state_mod = require("service.state")
 local ui_utils = require("utils.ui")
 
+---@class Service.Renderer.State
+---@field ui Service.UI?
+---@field ns integer?
+---@field debounce_timer uv_timer_t?
+
+---@type Service.Renderer.State
 local _state = { ui = nil, ns = nil, debounce_timer = nil }
 
+---@param ui Service.UI
+---@param ns integer
 function M.init(ui, ns)
   _state.ui = ui
   _state.ns = ns
 end
 
+---@return vim.api.keyset.win_config
 function M.make_win_cfg()
   local win_width = math.min(
     vim.o.columns - 2,
@@ -36,6 +45,8 @@ function M.make_win_cfg()
   }
 end
 
+---@param win_width integer
+---@return string tabline, integer[][] tab_ranges, integer hint_byte, string hint
 local function build_tabline(win_width)
   local tabline = "  "
   local tab_ranges = {}
@@ -60,6 +71,9 @@ local function build_tabline(win_width)
   return tabline, tab_ranges, hint_byte, hint
 end
 
+---@param category ServiceCategory
+---@param icon_disp_w integer
+---@return string
 local function build_col_header(category, icon_disp_w)
   if category == "lsp" or category == "dap" then
     return string.rep(" ", cfg.pad_flat + icon_disp_w + 2)
@@ -77,6 +91,7 @@ local function build_col_header(category, icon_disp_w)
     .. "Status"
 end
 
+---@return nil
 function M.render()
   if not (_state.ui.buf and vim.api.nvim_buf_is_valid(_state.ui.buf)) then
     return
@@ -273,6 +288,7 @@ function M.render()
   end
 end
 
+---@return nil
 function M.render_help()
   if not (_state.ui.buf and vim.api.nvim_buf_is_valid(_state.ui.buf)) then
     return
@@ -327,6 +343,7 @@ function M.render_help()
   end
 end
 
+---@return nil
 function M.toggle_help()
   _state.ui.help_open = not _state.ui.help_open
   if _state.ui.help_open then
@@ -336,6 +353,7 @@ function M.toggle_help()
   end
 end
 
+---@return nil
 local function schedule_render()
   vim.schedule(function()
     if
@@ -350,6 +368,7 @@ end
 
 local DIAGNOSTIC_DEBOUNCE_MS = 500
 
+---@return nil
 local function schedule_render_debounced()
   if _state.debounce_timer then
     _state.debounce_timer:stop()
@@ -365,6 +384,7 @@ local function schedule_render_debounced()
   end)
 end
 
+---@return nil
 function M.start_live_update()
   if _state.ui.live_augroup then
     return
@@ -407,6 +427,7 @@ function M.start_live_update()
   })
 end
 
+---@return nil
 function M.stop_live_update()
   if _state.debounce_timer then
     _state.debounce_timer:stop()

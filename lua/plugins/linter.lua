@@ -31,7 +31,7 @@ return {
       end
 
       -- Apply saved priority order then filter disabled linters
-      local state_mod = require("utils.service_state")
+      local state_mod = require("service.state")
       local services = require("config.services")
       for filetype, linters in pairs(opts.linters_by_ft) do
         local saved = state_mod.get_order("linter", filetype)

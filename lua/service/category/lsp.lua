@@ -1,9 +1,16 @@
 local M = {}
 
+---@param name string
+---@param _meta Service.Meta
+---@param is_enabled boolean
+---@return nil
 function M.apply_runtime(name, _meta, is_enabled)
   if is_enabled then
     vim.lsp.enable(name)
-    vim.notify(name .. " enabled — reopen the file to attach", vim.log.levels.INFO)
+    vim.notify(
+      name .. " enabled — reopen the file to attach",
+      vim.log.levels.INFO
+    )
   else
     vim.lsp.enable(name, false)
     for _, client in ipairs(vim.lsp.get_clients({ name = name })) do
@@ -16,7 +23,10 @@ function M.apply_runtime(name, _meta, is_enabled)
   end
 end
 
--- Runtime state overrides the default installation status.
+---@param name string
+---@param _meta Service.Meta
+---@param _installed boolean?
+---@return string, string
 function M.entry_status(name, _meta, _installed)
   if not vim.lsp.is_enabled(name) then
     return "disabled", "DiagnosticError"

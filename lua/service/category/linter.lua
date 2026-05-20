@@ -1,13 +1,25 @@
 local M = {}
 
-local state_mod = require("utils.service_state")
+local state_mod = require("service.state")
 local logger = require("utils.logger")
+
+---@class Service.LinterDiagnosticMessage
+---@field file string
+---@field lnum integer
+---@field col integer
+---@field severity integer
+---@field message string
+
+---@class Service.LinterDiagnosticSummary
+---@field error_count integer
+---@field warn_count integer
+---@field messages Service.LinterDiagnosticMessage[]
 
 ---Counts E/W diagnostics and collects messages for `linter_name` across all
 ---loaded buffers. Queries by nvim-lint's namespace (keyed by linter name) to
 ---avoid source-name mismatches (e.g. markdownlint-cli2 uses source "markdownlint").
 ---@param linter_name string
----@return { error_count: integer, warn_count: integer, messages: table[] }
+---@return Service.LinterDiagnosticSummary
 function M.get_linter_diagnostics(linter_name)
   local ns_id = vim.api.nvim_get_namespaces()[linter_name]
   if not ns_id then
@@ -56,6 +68,10 @@ function M.get_linter_diagnostics(linter_name)
   }
 end
 
+---@param name string
+---@param meta Service.Meta
+---@param is_enabled boolean
+---@return nil
 function M.apply_runtime(name, meta, is_enabled)
   local lint_ok, lint = pcall(require, "lint")
   if not lint_ok then
@@ -78,6 +94,9 @@ function M.apply_runtime(name, meta, is_enabled)
   end
 end
 
+---@param ft string
+---@param enabled_names string[]
+---@return nil
 function M.apply_order(ft, enabled_names)
   local lint_ok, lint = pcall(require, "lint")
   if not lint_ok then
@@ -86,6 +105,10 @@ function M.apply_order(ft, enabled_names)
   lint.linters_by_ft[ft] = enabled_names
 end
 
+---@param name string
+---@param _meta Service.Meta
+---@param _installed boolean?
+---@return string, string
 function M.entry_status(name, _meta, _installed)
   if not state_mod.is_enabled("linter", name) then
     return "disabled", "Comment"

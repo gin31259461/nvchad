@@ -11,7 +11,7 @@ M.register_servers = function(opts)
   end
 
   local configs = require("config")
-  local state_mod = require("utils.service_state")
+  local state_mod = require("service.state")
   local default_lsp_config = {
     on_init = opts.on_init,
     capabilities = opts.capabilities,

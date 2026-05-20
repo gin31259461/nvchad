@@ -2,7 +2,7 @@ local M = {}
 
 local cfg = require("service.config")
 local data = require("service.data")
-local state_mod = require("utils.service_state")
+local state_mod = require("service.state")
 local ui_utils = require("utils.ui")
 local logger = require("utils.logger")
 
@@ -13,14 +13,24 @@ local category_handlers = {
   formatter = require("service.category.formatter"),
 }
 
+---@class Service.Actions.State
+---@field ui Service.UI?
+---@field tooltip_ns integer?
+---@field render (fun())?
+
+---@type Service.Actions.State
 local _state = { ui = nil, tooltip_ns = nil, render = nil }
 
+---@param ui Service.UI
+---@param tooltip_ns integer
+---@param render_fn fun()
 function M.init(ui, tooltip_ns, render_fn)
   _state.ui = ui
   _state.tooltip_ns = tooltip_ns
   _state.render = render_fn
 end
 
+---@return Service.Entry?
 local function current_entry()
   if not _state.ui.win then
     return nil
@@ -28,6 +38,8 @@ local function current_entry()
   return _state.ui.line_map[vim.api.nvim_win_get_cursor(_state.ui.win)[1]]
 end
 
+---@param pkg_name string?
+---@param on_done (fun())?
 local function install_pkg(pkg_name, on_done)
   if not pkg_name then
     return
@@ -68,6 +80,7 @@ end
 local MAX_TOOLTIP_MESSAGES = 8
 local TOOLTIP_MSG_MAX_W = 70
 
+---@return nil
 function M.show_tooltip_at_cursor()
   local entry = current_entry()
   if not entry or not entry.meta then
@@ -80,7 +93,8 @@ function M.show_tooltip_at_cursor()
     local reg_ok, reg = pcall(require, "mason-registry")
     if reg_ok then
       local pkg_ok, pkg = pcall(reg.get_package, entry.meta.mason)
-      install_status = (pkg_ok and pkg and pkg:is_installed()) and " ✓" or " ✗"
+      install_status = (pkg_ok and pkg and pkg:is_installed()) and " ✓"
+        or " ✗"
     end
   end
 
@@ -110,7 +124,10 @@ function M.show_tooltip_at_cursor()
   if category == "linter" and is_entry_enabled then
     local run_errors = logger.get_entries("linter", entry.name)
     if #run_errors > 0 then
-      table.insert(tooltip_lines, "   ──────────────────────────── ")
+      table.insert(
+        tooltip_lines,
+        "   ──────────────────────────── "
+      )
       for _, run_error in ipairs(run_errors) do
         local level_char = run_error.level == "ERROR" and "E" or "W"
         local text = string.format("   %s  %s ", level_char, run_error.message)
@@ -124,7 +141,10 @@ function M.show_tooltip_at_cursor()
     local diagnostic_summary =
       category_handlers.linter.get_linter_diagnostics(entry.name)
     if #diagnostic_summary.messages > 0 then
-      table.insert(tooltip_lines, "   ──────────────────────────── ")
+      table.insert(
+        tooltip_lines,
+        "   ──────────────────────────── "
+      )
       local overflow = #diagnostic_summary.messages - MAX_TOOLTIP_MESSAGES
       for j, msg in ipairs(diagnostic_summary.messages) do
         if j > MAX_TOOLTIP_MESSAGES then
@@ -226,6 +246,7 @@ function M.show_tooltip_at_cursor()
   })
 end
 
+---@return nil
 function M.do_toggle()
   local entry = current_entry()
   if not entry or not entry.meta then
@@ -241,7 +262,11 @@ function M.do_toggle()
       if pkg_ok and pkg and not pkg:is_installed() then
         install_pkg(entry.meta.mason, function()
           state_mod.set_enabled(category, entry.name, true)
-          category_handlers[category].apply_runtime(entry.name, entry.meta, true)
+          category_handlers[category].apply_runtime(
+            entry.name,
+            entry.meta,
+            true
+          )
           _state.render()
         end)
         return
@@ -250,10 +275,15 @@ function M.do_toggle()
   end
 
   state_mod.set_enabled(category, entry.name, is_now_enabled)
-  category_handlers[category].apply_runtime(entry.name, entry.meta, is_now_enabled)
+  category_handlers[category].apply_runtime(
+    entry.name,
+    entry.meta,
+    is_now_enabled
+  )
   _state.render()
 end
 
+---@return nil
 function M.do_install()
   local entry = current_entry()
   if not entry or not entry.meta then
@@ -271,6 +301,8 @@ function M.do_install()
   install_pkg(entry.meta.mason, _state.render)
 end
 
+---@param dir integer -1 for up, 1 for down
+---@return nil
 function M.do_reorder(dir)
   local entry = current_entry()
   if not entry or not entry.ft then
@@ -334,6 +366,8 @@ function M.do_reorder(dir)
   end
 end
 
+---@param idx integer
+---@return nil
 function M.switch_tab(idx)
   _state.ui.category_idx = idx
   _state.render()

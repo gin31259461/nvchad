@@ -4,6 +4,7 @@ local cfg = require("service.config")
 local renderer = require("service.renderer")
 local actions = require("service.actions")
 
+---@type Service.UI
 local ui = {
   buf = nil,
   win = nil,
@@ -18,6 +19,7 @@ local tooltip_ns = vim.api.nvim_create_namespace("ServiceManagerTooltip")
 renderer.init(ui, ns)
 actions.init(ui, tooltip_ns, renderer.render)
 
+---@return nil
 local function set_keymaps()
   local keymap_opts = { buffer = ui.buf, nowait = true, silent = true }
   local function map(k, fn)
@@ -51,6 +53,7 @@ local function set_keymaps()
   end
 end
 
+---@return nil
 function M.open()
   if ui.win and vim.api.nvim_win_is_valid(ui.win) then
     vim.api.nvim_set_current_win(ui.win)
@@ -91,6 +94,7 @@ function M.open()
   end
 end
 
+---@return nil
 function M.close()
   if ui.win and vim.api.nvim_win_is_valid(ui.win) then
     vim.api.nvim_win_close(ui.win, true)

@@ -1,7 +1,7 @@
 local M = {}
 
 local _state = nil
-local STATE_PATH = vim.fn.stdpath("data") .. "/service_manager.json"
+local STATE_PATH = vim.fn.stdpath("data") .. "/service.json"
 
 local function build_defaults()
   local services = require("config.services")
@@ -22,14 +22,14 @@ local function build_defaults()
 end
 
 function M.load()
-  local f = io.open(STATE_PATH, "r")
-  if not f then
+  local file = io.open(STATE_PATH, "r")
+  if not file then
     return build_defaults()
   end
-  local raw = f:read("*a")
-  f:close()
-  local ok, decoded = pcall(vim.json.decode, raw)
-  if not ok or type(decoded) ~= "table" then
+  local raw = file:read("*a")
+  file:close()
+  local parse_ok, decoded = pcall(vim.json.decode, raw)
+  if not parse_ok or type(decoded) ~= "table" then
     return build_defaults()
   end
 
@@ -60,16 +60,16 @@ function M.get()
 end
 
 function M.save()
-  local f = io.open(STATE_PATH, "w")
-  if not f then
+  local file = io.open(STATE_PATH, "w")
+  if not file then
     vim.notify(
       "ServiceManager: cannot write " .. STATE_PATH,
       vim.log.levels.WARN
     )
     return
   end
-  f:write(vim.json.encode(M.get()))
-  f:close()
+  file:write(vim.json.encode(M.get()))
+  file:close()
 end
 
 function M.is_enabled(cat, name)

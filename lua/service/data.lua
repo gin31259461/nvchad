@@ -1,7 +1,7 @@
 local M = {}
 
 local services = require("config.services")
-local state_mod = require("utils.service_state")
+local state_mod = require("service.state")
 
 local category_handlers = {
   lsp = require("service.category.lsp"),
@@ -10,6 +10,10 @@ local category_handlers = {
   formatter = require("service.category.formatter"),
 }
 
+---@param category ServiceCategory
+---@param name string
+---@param meta Service.Meta
+---@return string status_text, string highlight_group
 function M.entry_status(category, name, meta)
   local installed
   if meta.mason then
@@ -34,7 +38,8 @@ function M.entry_status(category, name, meta)
   if installed ~= false then
     local handler = category_handlers[category]
     if handler then
-      local refined_text, refined_hl = handler.entry_status(name, meta, installed)
+      local refined_text, refined_hl =
+        handler.entry_status(name, meta, installed)
       if refined_text then
         status_text, highlight_group = refined_text, refined_hl
       end
@@ -44,6 +49,8 @@ function M.entry_status(category, name, meta)
   return status_text, highlight_group
 end
 
+---@param category ServiceCategory
+---@return Service.FtGroup[]
 function M.build_ft_groups(category)
   local category_services = services[category]
   local saved_orders = state_mod.get()[category .. "_order"]
@@ -102,6 +109,8 @@ function M.build_ft_groups(category)
   return groups
 end
 
+---@param category ServiceCategory
+---@return integer
 function M.content_lines(category)
   if category == "lsp" or category == "dap" then
     return vim.tbl_count(services[category])

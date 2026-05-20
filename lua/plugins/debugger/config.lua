@@ -14,7 +14,7 @@ local modules = {
   "plugins.debugger.dotnet",
 }
 
-local state_mod = require("utils.service_state")
+local state_mod = require("service.state")
 
 ---@type Dap.Spec
 local spec = { adapters = {}, configurations = {} }
