@@ -1,4 +1,5 @@
 local fs = require("utils.fs")
+local os_util = require("utils.os")
 
 ---@class LinterExtend
 ---@field condition? boolean
@@ -43,7 +44,8 @@ return {
     -- for-loop variables <const>. Point directly at the luarocks-installed 1.2.0
     -- binary (lua5.4) which is already on PATH but shadowed by Mason's bin dir.
     luacheck = {
-      cmd = (os.getenv("HOME") or "") .. "/.luarocks/bin/luacheck",
+      -- cmd = (os.getenv("HOME") or "") .. "/.luarocks/bin/luacheck",
+      cmd = os_util.is_linux() and "luacheck" or "luacheck.bat",
       stdin = true,
       args = {
         "--globals",
