@@ -291,15 +291,10 @@ function M.show_tooltip_at_cursor()
     callback = close,
   })
 
-  local open_cursor = vim.api.nvim_win_get_cursor(_state.ui.win)
   cursor_autocmd_id = vim.api.nvim_create_autocmd("CursorMoved", {
     buffer = vim.api.nvim_win_get_buf(_state.ui.win),
-    callback = function()
-      local new_cursor = vim.api.nvim_win_get_cursor(_state.ui.win)
-      if new_cursor[1] ~= open_cursor[1] or new_cursor[2] ~= open_cursor[2] then
-        close()
-      end
-    end,
+    once = true,
+    callback = close,
   })
 end
 

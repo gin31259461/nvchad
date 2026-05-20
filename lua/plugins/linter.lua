@@ -71,6 +71,10 @@ return {
       end
 
       local function do_lint()
+        if vim.bo.buftype ~= "" then
+          return
+        end
+
         -- Use nvim-lint's logic first:
         -- * checks if linters exist for the full filetype first
         -- * otherwise will split filetype by "." and add all those linters
@@ -135,14 +139,14 @@ return {
           end
         end
 
-        -- Notify listeners so the Service Manager can refresh run-error state.
-        vim.api.nvim_exec_autocmds(
-          "User",
-          { pattern = "NvimLintRunPost", modeline = false }
-        )
-
-        -- Run linters.
+        -- Run linters and notify listeners so the Service Manager can refresh
+        -- run-error state. NvimLintRunPost only fires when a run actually
+        -- happens to avoid spurious re-renders on buffers with no linters.
         if #linter_names > 0 then
+          vim.api.nvim_exec_autocmds(
+            "User",
+            { pattern = "NvimLintRunPost", modeline = false }
+          )
           lint.try_lint(linter_names)
         end
       end
