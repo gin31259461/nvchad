@@ -143,7 +143,7 @@ return {
         --
         create_list_item = function(config, value)
           value = value
-            or fs.make_relative_path(
+            or fs.plenary_make_relative_path(
               vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()),
               config.get_root_dir()
             )

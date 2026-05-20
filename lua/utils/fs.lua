@@ -139,6 +139,18 @@ M.make_relative_path = function(buf_name, root)
   return ""
 end
 
+---@param buf_name string
+---@param root string
+---@return string
+M.plenary_make_relative_path = function(buf_name, root)
+  local ok, Path = pcall(require, "plenary.path")
+  if ok then
+    return Path:new(buf_name):make_relative(root)
+  end
+
+  return ""
+end
+
 ---@alias ScandirMode "file" | "directory" | "all"
 
 ---@param path string
