@@ -44,6 +44,10 @@
 ---@field entry_status fun(opts: Service.EntryStatusOpts): string?, string?
 ---@field apply_order (fun(opts: Service.ApplyOrderOpts))?
 
+---@class Service.Config.Tooltip
+---@field max_w integer   max display-column width for each tooltip message line
+---@field max_messages integer   max number of diagnostic messages shown before "+ N more"
+
 ---@class Service.Config
 ---@field max_w integer
 ---@field min_w integer
@@ -57,6 +61,7 @@
 ---@field pad_tool integer
 ---@field service_categories ServiceCategory[]
 ---@field cat_label table<ServiceCategory, string>
+---@field tooltip Service.Config.Tooltip
 
 ---@type Service.Config
 local cfg = {
@@ -76,6 +81,10 @@ local cfg = {
     dap = "DAP",
     linter = "Linter",
     formatter = "Formatter",
+  },
+  tooltip = {
+    max_w = 70,
+    max_messages = 8,
   },
 }
 

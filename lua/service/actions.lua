@@ -17,9 +17,10 @@ local category_handlers = {
 ---@field ui Service.UI?
 ---@field tooltip_ns integer?
 ---@field render (fun())?
+---@field tooltip_win integer?
 
 ---@type Service.Actions.State
-local _state = { ui = nil, tooltip_ns = nil, render = nil }
+local _state = { ui = nil, tooltip_ns = nil, render = nil, tooltip_win = nil }
 
 ---@param opts { ui: Service.UI, tooltip_ns: integer, render: fun() }
 function M.init(opts)
@@ -75,11 +76,16 @@ local function install_pkg(pkg_name, on_done)
   end
 end
 
-local MAX_TOOLTIP_MESSAGES = 8
-local TOOLTIP_MSG_MAX_W = 70
-
 ---@return nil
 function M.show_tooltip_at_cursor()
+  if _state.tooltip_win and vim.api.nvim_win_is_valid(_state.tooltip_win) then
+    if vim.api.nvim_get_current_win() == _state.tooltip_win then
+      return
+    end
+    vim.api.nvim_set_current_win(_state.tooltip_win)
+    return
+  end
+
   local entry = current_entry()
   if not entry or not entry.meta then
     return
@@ -118,7 +124,6 @@ function M.show_tooltip_at_cursor()
     table.insert(tooltip_lines, "   note:   " .. entry.meta.note .. " ")
   end
 
-  -- For linters, append run-level errors then live diagnostic messages.
   if category == "linter" and is_entry_enabled then
     local run_errors = logger.get_entries("linter", entry.name)
     if #run_errors > 0 then
@@ -129,8 +134,8 @@ function M.show_tooltip_at_cursor()
       for _, run_error in ipairs(run_errors) do
         local level_char = run_error.level == "ERROR" and "E" or "W"
         local text = string.format("   %s  %s ", level_char, run_error.message)
-        if vim.fn.strdisplaywidth(text) > TOOLTIP_MSG_MAX_W then
-          text = text:sub(1, TOOLTIP_MSG_MAX_W - 1) .. "… "
+        if vim.fn.strdisplaywidth(text) > cfg.tooltip.max_w then
+          text = text:sub(1, cfg.tooltip.max_w - 1) .. "… "
         end
         table.insert(tooltip_lines, text)
       end
@@ -143,9 +148,9 @@ function M.show_tooltip_at_cursor()
         tooltip_lines,
         "   ──────────────────────────── "
       )
-      local overflow = #diagnostic_summary.messages - MAX_TOOLTIP_MESSAGES
+      local overflow = #diagnostic_summary.messages - cfg.tooltip.max_messages
       for j, msg in ipairs(diagnostic_summary.messages) do
-        if j > MAX_TOOLTIP_MESSAGES then
+        if j > cfg.tooltip.max_messages then
           table.insert(tooltip_lines, "   +" .. overflow .. " more ")
           break
         end
@@ -158,8 +163,8 @@ function M.show_tooltip_at_cursor()
           msg.lnum,
           msg.message
         )
-        if vim.fn.strdisplaywidth(text) > TOOLTIP_MSG_MAX_W then
-          text = text:sub(1, TOOLTIP_MSG_MAX_W - 1) .. "… "
+        if vim.fn.strdisplaywidth(text) > cfg.tooltip.max_w then
+          text = text:sub(1, cfg.tooltip.max_w - 1) .. "… "
         end
         table.insert(tooltip_lines, text)
       end
@@ -175,7 +180,7 @@ function M.show_tooltip_at_cursor()
   vim.api.nvim_buf_set_lines(tooltip_buf, 0, -1, false, tooltip_lines)
 
   local name_hl = is_entry_enabled and "DiagnosticOk" or "Comment"
-  ui_utils.buf_hl(tooltip_buf, _state.tooltip_ns, name_hl, 0, 1, 4) -- ● / ○ = 3 bytes at col 1
+  ui_utils.buf_hl(tooltip_buf, _state.tooltip_ns, name_hl, 0, 1, 4)
 
   for i, line in ipairs(tooltip_lines) do
     if line:match("^   status:") then
@@ -210,37 +215,91 @@ function M.show_tooltip_at_cursor()
   end
 
   local cursor = vim.api.nvim_win_get_cursor(_state.ui.win)
-  local cursor_row = cursor[1] - 1
-  local float_h = #tooltip_lines + 2
-  local float_row = cursor_row - float_h
-  if float_row < 0 then
-    float_row = cursor_row + 1
+  local screen_pos = vim.fn.screenpos(_state.ui.win, cursor[1], cursor[2] + 1)
+  local screen_col = screen_pos.col
+
+  local float_w = max_w + 2
+
+  -- Mirror vim.lsp.util.make_floating_popup_options: compare lines above vs
+  -- below and use SW anchor to avoid manual height arithmetic.
+  local lines_above = cursor[1] - 1
+  local lines_below = vim.o.lines - cursor[1] - vim.o.cmdheight
+  local anchor, float_row
+  if lines_above > lines_below then
+    anchor = "SW"
+    float_row = 0
+  else
+    anchor = "NW"
+    float_row = 1
   end
 
-  local tooltip_win = vim.api.nvim_open_win(tooltip_buf, false, {
-    relative = "win",
-    win = _state.ui.win,
+  -- Prefer right; fall back to left when right lacks space but left has it.
+  local right_space = vim.o.columns - screen_col
+  local left_space = screen_col - 1
+  local is_right = right_space >= float_w or left_space < float_w
+  local float_col = is_right and 0 or -float_w
+
+  -- Declared before close() so the function captures them as upvalues.
+  local cursor_autocmd_id
+  local win_closed_autocmd_id
+  local tooltip_win
+
+  local function close()
+    if tooltip_win and vim.api.nvim_win_is_valid(tooltip_win) then
+      vim.api.nvim_win_close(tooltip_win, true)
+    end
+    if _state.tooltip_win == tooltip_win then
+      _state.tooltip_win = nil
+    end
+    pcall(vim.api.nvim_del_autocmd, cursor_autocmd_id)
+    pcall(vim.api.nvim_del_autocmd, win_closed_autocmd_id)
+  end
+
+  tooltip_win = vim.api.nvim_open_win(tooltip_buf, false, {
+    relative = "cursor",
+    anchor = anchor,
     row = float_row,
-    col = entry.icon_byte,
+    col = float_col,
     width = max_w,
     height = #tooltip_lines,
     style = "minimal",
     border = "single",
-    focusable = false,
+    focusable = true,
     zindex = 100,
     noautocmd = true,
   })
+  _state.tooltip_win = tooltip_win
 
-  local function close()
-    if vim.api.nvim_win_is_valid(tooltip_win) then
-      vim.api.nvim_win_close(tooltip_win, true)
-    end
+  for _, key in ipairs({ "q", "<Esc>" }) do
+    vim.keymap.set("n", key, function()
+      close()
+      if _state.ui.win and vim.api.nvim_win_is_valid(_state.ui.win) then
+        vim.api.nvim_set_current_win(_state.ui.win)
+      end
+    end, { buffer = tooltip_buf, nowait = true, silent = true })
   end
-  vim.defer_fn(close, 4000)
-  vim.api.nvim_create_autocmd({ "CursorMoved", "WinClosed" }, {
-    buffer = _state.ui.buf,
+  vim.keymap.set(
+    "n",
+    "K",
+    "<nop>",
+    { buffer = tooltip_buf, nowait = true, silent = true }
+  )
+
+  win_closed_autocmd_id = vim.api.nvim_create_autocmd("WinClosed", {
+    pattern = tostring(_state.ui.win),
     once = true,
     callback = close,
+  })
+
+  local open_cursor = vim.api.nvim_win_get_cursor(_state.ui.win)
+  cursor_autocmd_id = vim.api.nvim_create_autocmd("CursorMoved", {
+    buffer = vim.api.nvim_win_get_buf(_state.ui.win),
+    callback = function()
+      local new_cursor = vim.api.nvim_win_get_cursor(_state.ui.win)
+      if new_cursor[1] ~= open_cursor[1] or new_cursor[2] ~= open_cursor[2] then
+        close()
+      end
+    end,
   })
 end
 
