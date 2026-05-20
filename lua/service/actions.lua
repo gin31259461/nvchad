@@ -237,7 +237,7 @@ function M.show_tooltip_at_cursor()
   local right_space = vim.o.columns - screen_col
   local left_space = screen_col - 1
   local is_right = right_space >= float_w or left_space < float_w
-  local float_col = is_right and 0 or -float_w
+  local float_col = (is_right and 1 or -float_w)
 
   -- Declared before close() so the function captures them as upvalues.
   local cursor_autocmd_id
