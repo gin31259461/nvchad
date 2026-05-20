@@ -21,13 +21,11 @@ local category_handlers = {
 ---@type Service.Actions.State
 local _state = { ui = nil, tooltip_ns = nil, render = nil }
 
----@param ui Service.UI
----@param tooltip_ns integer
----@param render_fn fun()
-function M.init(ui, tooltip_ns, render_fn)
-  _state.ui = ui
-  _state.tooltip_ns = tooltip_ns
-  _state.render = render_fn
+---@param opts { ui: Service.UI, tooltip_ns: integer, render: fun() }
+function M.init(opts)
+  _state.ui = opts.ui
+  _state.tooltip_ns = opts.tooltip_ns
+  _state.render = opts.render
 end
 
 ---@return Service.Entry?
@@ -262,11 +260,11 @@ function M.do_toggle()
       if pkg_ok and pkg and not pkg:is_installed() then
         install_pkg(entry.meta.mason, function()
           state_mod.set_enabled(category, entry.name, true)
-          category_handlers[category].apply_runtime(
-            entry.name,
-            entry.meta,
-            true
-          )
+          category_handlers[category].apply_runtime({
+            name = entry.name,
+            meta = entry.meta,
+            is_enabled = true,
+          })
           _state.render()
         end)
         return
@@ -275,11 +273,11 @@ function M.do_toggle()
   end
 
   state_mod.set_enabled(category, entry.name, is_now_enabled)
-  category_handlers[category].apply_runtime(
-    entry.name,
-    entry.meta,
-    is_now_enabled
-  )
+  category_handlers[category].apply_runtime({
+    name = entry.name,
+    meta = entry.meta,
+    is_enabled = is_now_enabled,
+  })
   _state.render()
 end
 
@@ -353,7 +351,7 @@ function M.do_reorder(dir)
   end, names)
   local handler = category_handlers[category]
   if handler and handler.apply_order then
-    handler.apply_order(entry.ft, enabled_names)
+    handler.apply_order({ ft = entry.ft, enabled_names = enabled_names })
   end
 
   _state.render()

@@ -16,8 +16,8 @@ local ui = {
 local ns = vim.api.nvim_create_namespace("ServiceManager")
 local tooltip_ns = vim.api.nvim_create_namespace("ServiceManagerTooltip")
 
-renderer.init(ui, ns)
-actions.init(ui, tooltip_ns, renderer.render)
+renderer.init({ ui = ui, ns = ns })
+actions.init({ ui = ui, tooltip_ns = tooltip_ns, render = renderer.render })
 
 ---@return nil
 local function set_keymaps()

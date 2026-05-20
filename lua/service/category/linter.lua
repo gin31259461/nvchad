@@ -68,11 +68,10 @@ function M.get_linter_diagnostics(linter_name)
   }
 end
 
----@param name string
----@param meta Service.Meta
----@param is_enabled boolean
+---@param opts Service.ApplyRuntimeOpts
 ---@return nil
-function M.apply_runtime(name, meta, is_enabled)
+function M.apply_runtime(opts)
+  local name, meta, is_enabled = opts.name, opts.meta, opts.is_enabled
   local lint_ok, lint = pcall(require, "lint")
   if not lint_ok then
     return
@@ -94,10 +93,10 @@ function M.apply_runtime(name, meta, is_enabled)
   end
 end
 
----@param ft string
----@param enabled_names string[]
+---@param opts Service.ApplyOrderOpts
 ---@return nil
-function M.apply_order(ft, enabled_names)
+function M.apply_order(opts)
+  local ft, enabled_names = opts.ft, opts.enabled_names
   local lint_ok, lint = pcall(require, "lint")
   if not lint_ok then
     return
@@ -105,11 +104,10 @@ function M.apply_order(ft, enabled_names)
   lint.linters_by_ft[ft] = enabled_names
 end
 
----@param name string
----@param _meta Service.Meta
----@param _installed boolean?
+---@param opts Service.EntryStatusOpts
 ---@return string, string
-function M.entry_status(name, _meta, _installed)
+function M.entry_status(opts)
+  local name = opts.name
   if not state_mod.is_enabled("linter", name) then
     return "disabled", "Comment"
   end

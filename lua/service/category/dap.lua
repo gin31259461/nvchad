@@ -1,10 +1,9 @@
 local M = {}
 
----@param name string
----@param _meta Service.Meta
----@param is_enabled boolean
+---@param opts Service.ApplyRuntimeOpts
 ---@return nil
-function M.apply_runtime(name, _meta, is_enabled)
+function M.apply_runtime(opts)
+  local name, is_enabled = opts.name, opts.is_enabled
   local dap_ok, dap = pcall(require, "dap")
   if not dap_ok then
     return
@@ -16,11 +15,9 @@ function M.apply_runtime(name, _meta, is_enabled)
   end
 end
 
----@param _name string
----@param _meta Service.Meta
----@param _installed boolean?
+---@param _opts Service.EntryStatusOpts
 ---@return string?, string?
-function M.entry_status(_name, _meta, _installed)
+function M.entry_status(_opts)
   return nil, nil
 end
 

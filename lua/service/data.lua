@@ -39,7 +39,7 @@ function M.entry_status(category, name, meta)
     local handler = category_handlers[category]
     if handler then
       local refined_text, refined_hl =
-        handler.entry_status(name, meta, installed)
+        handler.entry_status({ name = name, meta = meta, installed = installed })
       if refined_text then
         status_text, highlight_group = refined_text, refined_hl
       end

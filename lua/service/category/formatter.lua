@@ -1,10 +1,9 @@
 local M = {}
 
----@param name string
----@param meta Service.Meta
----@param is_enabled boolean
+---@param opts Service.ApplyRuntimeOpts
 ---@return nil
-function M.apply_runtime(name, meta, is_enabled)
+function M.apply_runtime(opts)
+  local name, meta, is_enabled = opts.name, opts.meta, opts.is_enabled
   local conform_ok, conform = pcall(require, "conform")
   if not conform_ok then
     return
@@ -26,10 +25,10 @@ function M.apply_runtime(name, meta, is_enabled)
   end
 end
 
----@param ft string
----@param enabled_names string[]
+---@param opts Service.ApplyOrderOpts
 ---@return nil
-function M.apply_order(ft, enabled_names)
+function M.apply_order(opts)
+  local ft, enabled_names = opts.ft, opts.enabled_names
   local conform_ok, conform = pcall(require, "conform")
   if not conform_ok then
     return
@@ -37,11 +36,9 @@ function M.apply_order(ft, enabled_names)
   conform.formatters_by_ft[ft] = enabled_names
 end
 
----@param _name string
----@param _meta Service.Meta
----@param _installed boolean?
+---@param _opts Service.EntryStatusOpts
 ---@return string?, string?
-function M.entry_status(_name, _meta, _installed)
+function M.entry_status(_opts)
   return nil, nil
 end
 

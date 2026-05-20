@@ -25,10 +25,24 @@
 ---@field ft string
 ---@field names string[]
 
+---@class Service.ApplyRuntimeOpts
+---@field name string
+---@field meta Service.Meta
+---@field is_enabled boolean
+
+---@class Service.EntryStatusOpts
+---@field name string
+---@field meta Service.Meta
+---@field installed boolean?
+
+---@class Service.ApplyOrderOpts
+---@field ft string
+---@field enabled_names string[]
+
 ---@class Service.CategoryHandler
----@field apply_runtime fun(name: string, meta: Service.Meta, is_enabled: boolean)
----@field entry_status fun(name: string, meta: Service.Meta, installed: boolean?): string?, string?
----@field apply_order (fun(ft: string, enabled_names: string[]))?
+---@field apply_runtime fun(opts: Service.ApplyRuntimeOpts)
+---@field entry_status fun(opts: Service.EntryStatusOpts): string?, string?
+---@field apply_order (fun(opts: Service.ApplyOrderOpts))?
 
 ---@class Service.Config
 ---@field max_w integer

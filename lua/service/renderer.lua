@@ -14,11 +14,10 @@ local ui_utils = require("utils.ui")
 ---@type Service.Renderer.State
 local _state = { ui = nil, ns = nil, debounce_timer = nil }
 
----@param ui Service.UI
----@param ns integer
-function M.init(ui, ns)
-  _state.ui = ui
-  _state.ns = ns
+---@param opts { ui: Service.UI, ns: integer }
+function M.init(opts)
+  _state.ui = opts.ui
+  _state.ns = opts.ns
 end
 
 ---@return vim.api.keyset.win_config

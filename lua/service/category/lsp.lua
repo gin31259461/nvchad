@@ -1,10 +1,9 @@
 local M = {}
 
----@param name string
----@param _meta Service.Meta
----@param is_enabled boolean
+---@param opts Service.ApplyRuntimeOpts
 ---@return nil
-function M.apply_runtime(name, _meta, is_enabled)
+function M.apply_runtime(opts)
+  local name, is_enabled = opts.name, opts.is_enabled
   if is_enabled then
     vim.lsp.enable(name)
     vim.notify(
@@ -23,11 +22,10 @@ function M.apply_runtime(name, _meta, is_enabled)
   end
 end
 
----@param name string
----@param _meta Service.Meta
----@param _installed boolean?
+---@param opts Service.EntryStatusOpts
 ---@return string, string
-function M.entry_status(name, _meta, _installed)
+function M.entry_status(opts)
+  local name = opts.name
   if not vim.lsp.is_enabled(name) then
     return "disabled", "DiagnosticError"
   elseif #vim.lsp.get_clients({ name = name }) > 0 then
