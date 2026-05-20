@@ -2,6 +2,7 @@
 return {
   {
     "hrsh7th/nvim-cmp",
+    lazy = false,
     event = "InsertEnter",
     dependencies = {
       {

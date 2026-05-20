@@ -14,19 +14,13 @@ local os_util = require("utils.os")
 
 ---@type Linter.Opts
 return {
-  -- events = { "BufWritePost", "BufReadPost", "InsertLeave" },
   events = { "BufWritePost", "BufReadPost", "InsertLeave", "TextChanged" },
 
   -- available linters: https://github.com/mfussenegger/nvim-lint?tab=readme-ov-file#available-linters
   linters_by_ft = {
-    -- Use the "*" filetype to run linters on all filetypes.
     -- ['*'] = { 'global linter' },
-    -- Use the "_" filetype to run linters on filetypes that don't have other linters configured.
     -- ['_'] = { 'fallback linter' },
     -- ["*"] = { "typos" },
-
-    -- this has already handle by lspconfig
-    -- python = { "ruff" },
 
     dockerfile = { "hadolint" },
     markdown = { "markdownlint-cli2" },
@@ -44,8 +38,9 @@ return {
     -- for-loop variables <const>. Point directly at the luarocks-installed 1.2.0
     -- binary (lua5.4) which is already on PATH but shadowed by Mason's bin dir.
     luacheck = {
-      -- cmd = (os.getenv("HOME") or "") .. "/.luarocks/bin/luacheck",
-      cmd = os_util.is_linux() and "luacheck" or "luacheck.bat",
+      cmd = os_util.is_linux()
+          and (os.getenv("HOME") or "") .. "/.luarocks/bin/luacheck"
+        or "luacheck.bat",
       stdin = true,
       args = {
         "--globals",
