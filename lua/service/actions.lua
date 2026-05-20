@@ -4,6 +4,14 @@ local cfg = require("service.config")
 local data = require("service.data")
 local state_mod = require("utils.service_state")
 local ui_utils = require("utils.ui")
+local logger = require("utils.logger")
+
+local category_handlers = {
+  lsp = require("service.category.lsp"),
+  dap = require("service.category.dap"),
+  linter = require("service.category.linter"),
+  formatter = require("service.category.formatter"),
+}
 
 local _state = { ui = nil, tooltip_ns = nil, render = nil }
 
@@ -24,8 +32,8 @@ local function install_pkg(pkg_name, on_done)
   if not pkg_name then
     return
   end
-  local ok, reg = pcall(require, "mason-registry")
-  if not ok then
+  local reg_ok, reg = pcall(require, "mason-registry")
+  if not reg_ok then
     return
   end
 
@@ -57,77 +65,6 @@ local function install_pkg(pkg_name, on_done)
   end
 end
 
-local function apply_runtime(category, name, meta, is_enabled)
-  if category == "lsp" then
-    if is_enabled then
-      vim.lsp.enable(name)
-      vim.notify(
-        name .. " enabled — reopen the file to attach",
-        vim.log.levels.INFO
-      )
-    else
-      vim.lsp.enable(name, false)
-      for _, client in ipairs(vim.lsp.get_clients({ name = name })) do
-        client:stop()
-      end
-      vim.notify(
-        name .. " stopped (takes full effect next session)",
-        vim.log.levels.INFO
-      )
-    end
-  elseif category == "linter" then
-    local lint_ok, lint = pcall(require, "lint")
-    if not lint_ok then
-      return
-    end
-    for _, ft in ipairs(meta.ft or {}) do
-      local list = lint.linters_by_ft[ft] or {}
-      lint.linters_by_ft[ft] = list
-      if is_enabled then
-        if not vim.tbl_contains(list, name) then
-          table.insert(list, name)
-        end
-      else
-        for i = #list, 1, -1 do
-          if list[i] == name then
-            table.remove(list, i)
-          end
-        end
-      end
-    end
-  elseif category == "formatter" then
-    local conform_ok, conform = pcall(require, "conform")
-    if not conform_ok then
-      return
-    end
-    for _, ft in ipairs(meta.ft or {}) do
-      local list = conform.formatters_by_ft[ft] or {}
-      conform.formatters_by_ft[ft] = list
-      if is_enabled then
-        if not vim.tbl_contains(list, name) then
-          table.insert(list, name)
-        end
-      else
-        for i = #list, 1, -1 do
-          if list[i] == name then
-            table.remove(list, i)
-          end
-        end
-      end
-    end
-  elseif category == "dap" then
-    local dap_ok, dap = pcall(require, "dap")
-    if not dap_ok then
-      return
-    end
-    if is_enabled then
-      dap.adapters[name] = require("plugins.debugger.config").adapters[name]
-    else
-      dap.adapters[name] = nil
-    end
-  end
-end
-
 local MAX_TOOLTIP_MESSAGES = 8
 local TOOLTIP_MSG_MAX_W = 70
 
@@ -143,8 +80,7 @@ function M.show_tooltip_at_cursor()
     local reg_ok, reg = pcall(require, "mason-registry")
     if reg_ok then
       local pkg_ok, pkg = pcall(reg.get_package, entry.meta.mason)
-      install_status = (pkg_ok and pkg and pkg:is_installed()) and " ✓"
-        or " ✗"
+      install_status = (pkg_ok and pkg and pkg:is_installed()) and " ✓" or " ✗"
     end
   end
 
@@ -172,13 +108,9 @@ function M.show_tooltip_at_cursor()
 
   -- For linters, append run-level errors then live diagnostic messages.
   if category == "linter" and is_entry_enabled then
-    local logger = require("utils.logger")
     local run_errors = logger.get_entries("linter", entry.name)
     if #run_errors > 0 then
-      table.insert(
-        tooltip_lines,
-        "   ──────────────────────────── "
-      )
+      table.insert(tooltip_lines, "   ──────────────────────────── ")
       for _, run_error in ipairs(run_errors) do
         local level_char = run_error.level == "ERROR" and "E" or "W"
         local text = string.format("   %s  %s ", level_char, run_error.message)
@@ -189,12 +121,10 @@ function M.show_tooltip_at_cursor()
       end
     end
 
-    local diagnostic_summary = data.get_linter_diagnostics(entry.name)
+    local diagnostic_summary =
+      category_handlers.linter.get_linter_diagnostics(entry.name)
     if #diagnostic_summary.messages > 0 then
-      table.insert(
-        tooltip_lines,
-        "   ──────────────────────────── "
-      )
+      table.insert(tooltip_lines, "   ──────────────────────────── ")
       local overflow = #diagnostic_summary.messages - MAX_TOOLTIP_MESSAGES
       for j, msg in ipairs(diagnostic_summary.messages) do
         if j > MAX_TOOLTIP_MESSAGES then
@@ -241,7 +171,6 @@ function M.show_tooltip_at_cursor()
         -1
       )
     elseif line:match("^   E  ") then
-      -- Highlight the severity char for error diagnostic lines.
       ui_utils.buf_hl(
         tooltip_buf,
         _state.tooltip_ns,
@@ -251,7 +180,6 @@ function M.show_tooltip_at_cursor()
         4
       )
     elseif line:match("^   W  ") then
-      -- Highlight the severity char for warning diagnostic lines.
       ui_utils.buf_hl(
         tooltip_buf,
         _state.tooltip_ns,
@@ -304,16 +232,16 @@ function M.do_toggle()
     return
   end
   local category = cfg.service_categories[_state.ui.category_idx]
-  local new_state = not state_mod.is_enabled(category, entry.name)
+  local is_now_enabled = not state_mod.is_enabled(category, entry.name)
 
-  if new_state and entry.meta.mason then
+  if is_now_enabled and entry.meta.mason then
     local reg_ok, reg = pcall(require, "mason-registry")
     if reg_ok then
       local pkg_ok, pkg = pcall(reg.get_package, entry.meta.mason)
       if pkg_ok and pkg and not pkg:is_installed() then
         install_pkg(entry.meta.mason, function()
           state_mod.set_enabled(category, entry.name, true)
-          apply_runtime(category, entry.name, entry.meta, true)
+          category_handlers[category].apply_runtime(entry.name, entry.meta, true)
           _state.render()
         end)
         return
@@ -321,8 +249,8 @@ function M.do_toggle()
     end
   end
 
-  state_mod.set_enabled(category, entry.name, new_state)
-  apply_runtime(category, entry.name, entry.meta, new_state)
+  state_mod.set_enabled(category, entry.name, is_now_enabled)
+  category_handlers[category].apply_runtime(entry.name, entry.meta, is_now_enabled)
   _state.render()
 end
 
@@ -391,16 +319,9 @@ function M.do_reorder(dir)
   local enabled_names = vim.tbl_filter(function(n)
     return state_mod.is_enabled(category, n)
   end, names)
-  if category == "formatter" then
-    local conform_ok, conform = pcall(require, "conform")
-    if conform_ok then
-      conform.formatters_by_ft[entry.ft] = enabled_names
-    end
-  else
-    local lint_ok, lint = pcall(require, "lint")
-    if lint_ok then
-      lint.linters_by_ft[entry.ft] = enabled_names
-    end
+  local handler = category_handlers[category]
+  if handler and handler.apply_order then
+    handler.apply_order(entry.ft, enabled_names)
   end
 
   _state.render()

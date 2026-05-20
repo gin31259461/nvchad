@@ -3,58 +3,12 @@ local M = {}
 local services = require("config.services")
 local state_mod = require("utils.service_state")
 
----Counts E/W diagnostics and collects messages for `linter_name` across all
----loaded buffers. Queries by nvim-lint's namespace (keyed by linter name) to
----avoid source-name mismatches (e.g. markdownlint-cli2 uses source "markdownlint").
----@param linter_name string
----@return { error_count: integer, warn_count: integer, messages: table[] }
-function M.get_linter_diagnostics(linter_name)
-  local ns_id = vim.api.nvim_get_namespaces()[linter_name]
-  if not ns_id then
-    return { error_count = 0, warn_count = 0, messages = {} }
-  end
-
-  local error_count = 0
-  local warn_count = 0
-  local messages = {}
-
-  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.api.nvim_buf_is_loaded(bufnr) then
-      for _, diagnostic in
-        ipairs(vim.diagnostic.get(bufnr, { namespace = ns_id }))
-      do
-        if diagnostic.severity == vim.diagnostic.severity.ERROR then
-          error_count = error_count + 1
-        elseif diagnostic.severity == vim.diagnostic.severity.WARN then
-          warn_count = warn_count + 1
-        end
-        table.insert(messages, {
-          file = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":t"),
-          lnum = diagnostic.lnum + 1,
-          col = diagnostic.col + 1,
-          severity = diagnostic.severity,
-          message = diagnostic.message,
-        })
-      end
-    end
-  end
-
-  table.sort(messages, function(a, b)
-    if a.severity ~= b.severity then
-      return a.severity < b.severity
-    end
-    if a.file ~= b.file then
-      return a.file < b.file
-    end
-    return a.lnum < b.lnum
-  end)
-
-  return {
-    error_count = error_count,
-    warn_count = warn_count,
-    messages = messages,
-  }
-end
+local category_handlers = {
+  lsp = require("service.category.lsp"),
+  dap = require("service.category.dap"),
+  linter = require("service.category.linter"),
+  formatter = require("service.category.formatter"),
+}
 
 function M.entry_status(category, name, meta)
   local installed
@@ -69,7 +23,6 @@ function M.entry_status(category, name, meta)
   end
 
   local status_text, highlight_group
-
   if installed == nil then
     status_text, highlight_group = "n/a", "DiagnosticWarn"
   elseif installed then
@@ -78,56 +31,12 @@ function M.entry_status(category, name, meta)
     status_text, highlight_group = "not installed", "DiagnosticError"
   end
 
-  if category == "lsp" and installed ~= false then
-    -- Show runtime state rather than just installation status.
-    if not vim.lsp.is_enabled(name) then
-      status_text = "disabled"
-      highlight_group = "DiagnosticError"
-    elseif #vim.lsp.get_clients({ name = name }) > 0 then
-      status_text = "running"
-      highlight_group = "DiagnosticOk"
-    else
-      status_text = "idle"
-      highlight_group = "DiagnosticWarn"
-    end
-  elseif category == "linter" and installed ~= false then
-    -- Show disabled state, run-level errors, or live diagnostic counts.
-    if not state_mod.is_enabled(category, name) then
-      status_text = "disabled"
-      highlight_group = "Comment"
-    else
-      local logger = require("utils.logger")
-      local run_errors = logger.get_entries("linter", name)
-      if #run_errors > 0 then
-        local latest_error = run_errors[#run_errors]
-        if
-          latest_error.tags and latest_error.tags.kind == "binary_not_found"
-        then
-          status_text = "no binary"
-        elseif
-          latest_error.tags
-          and latest_error.tags.kind == "definition_not_found"
-        then
-          status_text = "missing"
-        else
-          status_text = "error"
-        end
-        highlight_group = "DiagnosticError"
-      else
-        local diagnostic_summary = M.get_linter_diagnostics(name)
-        if diagnostic_summary.error_count > 0 then
-          status_text = diagnostic_summary.error_count
-            .. "E "
-            .. diagnostic_summary.warn_count
-            .. "W"
-          highlight_group = "DiagnosticError"
-        elseif diagnostic_summary.warn_count > 0 then
-          status_text = diagnostic_summary.warn_count .. "W"
-          highlight_group = "DiagnosticWarn"
-        else
-          status_text = "ok"
-          highlight_group = "DiagnosticOk"
-        end
+  if installed ~= false then
+    local handler = category_handlers[category]
+    if handler then
+      local refined_text, refined_hl = handler.entry_status(name, meta, installed)
+      if refined_text then
+        status_text, highlight_group = refined_text, refined_hl
       end
     end
   end
