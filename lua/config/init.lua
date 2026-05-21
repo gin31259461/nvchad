@@ -6,16 +6,16 @@ M.icons = {
   misc = {
     dots = "󰇘",
   },
-  ft = {
-    octo = "",
-  },
+
+  -- spec: { icon, hl_group, line_hl_group, num_hl_group }
   dap = {
-    Stopped = { "󰁕 ", "DiagnosticWarn", "DapStoppedLine" },
-    Breakpoint = " ",
-    BreakpointCondition = " ",
+    Stopped = { "󰁕 ", "DiagnosticWarn", "DiagnosticVirtualTextWarn" },
+    Breakpoint = { "●", "DapBreakpointColor" },
+    BreakpointCondition = { " " },
     BreakpointRejected = { " ", "DiagnosticError" },
-    LogPoint = ".>",
+    LogPoint = { ".>" },
   },
+
   diagnostics = {
     error = " ",
     warning = " ",
@@ -92,8 +92,8 @@ M.icons = {
 
 M.message_ignored = {
   lsp = {
-    "is not accessed",
-    "Unused local",
+    -- "is not accessed",
+    -- "Unused local",
   },
 
   notify = {

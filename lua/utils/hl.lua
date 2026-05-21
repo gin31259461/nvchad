@@ -177,24 +177,33 @@ M.setup_dynamic_theme = function()
 end
 
 ---Defines DAP (debugger) sign highlights.
+---Refer to: https://github.com/mfussenegger/nvim-dap/issues/1341#issuecomment-2381393267
 M.setup_dap = function()
   local colors = require("base46").get_theme_tb("base_30")
+  local dap_icons = require("config").icons.dap
 
   vim.api.nvim_set_hl(0, "DapBreakpointColor", {
     fg = colors.red,
   })
 
-  local dap_signs = {
-    DapBreakpoint = {
-      text = "●",
-      texthl = "DapBreakpointColor",
-      linehl = "",
-      numhl = "",
-    },
-  }
+  local dap_signs = {}
+
+  for k, v in pairs(dap_icons) do
+    if type(v) == "table" then
+      local hl_name = "Dap" .. k
+      vim.api.nvim_set_hl(0, hl_name, {
+        fg = colors.green,
+      })
+      dap_signs[hl_name] = {
+        text = v[1] or "",
+        texthl = v[2] or "",
+        linehl = v[3] or "",
+        numhl = v[4] or "",
+      }
+    end
+  end
 
   for name, sign in pairs(dap_signs) do
-    -- refer to: https://github.com/mfussenegger/nvim-dap/issues/1341#issuecomment-2381393267
     vim.fn.sign_define(name, sign)
   end
 end
