@@ -5,8 +5,7 @@ return {
     -- WORKAROUND: use my forked version to fix breakpoints not working on windows
     -- refer to: https://github.com/mfussenegger/nvim-dap/issues/1551
     "Orbit-Lua/nvim-dap",
-    event = { "VeryLazy" },
-    opts = function()
+    config = function()
       local config = require("plugins.debugger.config")
       local dap = require("dap")
 
@@ -18,7 +17,6 @@ return {
         dap.configurations[ft] = configurations
       end
     end,
-    config = function() end,
     keys = {
       {
         "<leader>dt",
@@ -72,7 +70,22 @@ return {
   -- https://github.com/rcarriga/nvim-dap-ui
   {
     "rcarriga/nvim-dap-ui",
-    event = "VeryLazy",
+    keys = {
+      {
+        "<leader>du",
+        function()
+          require("dapui").toggle()
+        end,
+        desc = "DAP Toggle UI",
+      },
+      {
+        "<leader>dr",
+        function()
+          require("dap").restart()
+        end,
+        desc = "DAP Restart",
+      },
+    },
     dependencies = { "Orbit-Lua/nvim-dap", "nvim-neotest/nvim-nio" },
     config = function(_, opts)
       local dap = require("dap")
@@ -87,13 +100,6 @@ return {
       dap.listeners.before.event_exited["dapui_config"] = function()
         dapui.close()
       end
-
-      vim.keymap.set("n", "<leader>du", function()
-        dapui.toggle()
-      end, { desc = "DAP Toggle UI" })
-      vim.keymap.set("n", "<leader>dr", function()
-        dap.restart()
-      end, { desc = "DAP Restart" })
     end,
   },
 }

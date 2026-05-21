@@ -10,6 +10,7 @@ return {
     config = function(_, opts)
       local lint = require("lint")
       local logger = require("utils.logger")
+      local os_util = require("utils.os")
 
       for linter_name, linter in pairs(opts.linters) do
         if
@@ -27,6 +28,19 @@ return {
           end
         else
           lint.linters[linter_name] = linter
+        end
+      end
+
+      -- On Windows, linters emit CRLF. Strip \r before parsers run to
+      -- prevent ^M appearing in diagnostic messages.
+      if os_util.is_win() then
+        for _, linter in pairs(lint.linters) do
+          if type(linter) == "table" and type(linter.parser) == "function" then
+            local orig = linter.parser
+            linter.parser = function(output, bufnr, linter_cwd)
+              return orig(output:gsub("\r\n", "\n"), bufnr, linter_cwd)
+            end
+          end
         end
       end
 

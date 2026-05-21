@@ -14,7 +14,6 @@ return {
   -- doc: https://github.com/nvim-tree/nvim-tree.lua
   {
     "nvim-tree/nvim-tree.lua",
-    cond = true,
     dependencies = { "nvim-tree/nvim-web-devicons" },
     ---@type NvimTreeOpts
     opts = {
@@ -132,7 +131,12 @@ return {
   {
     "Orbit-Lua/harpoon",
     -- "ThePrimeagen/harpoon",
-    event = "VeryLazy",
+    keys = {
+      { "<leader>a", desc = "Harpoon add file into list" },
+      { "<M-S-p>", desc = "Harpoon toggle previous file in list" },
+      { "<M-S-n>", desc = "Harpoon toggle next file in list" },
+      { "<C-e>", desc = "Harpoon toggle quick menu" },
+    },
     branch = "harpoon2",
     dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim" },
     ---@type HarpoonPartialConfig

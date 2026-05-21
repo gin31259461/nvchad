@@ -8,7 +8,6 @@ local utils_table = require("utils.table")
 return {
   {
     "williamboman/mason.nvim",
-    event = "VeryLazy",
     cmd = { "Mason", "MasonInstall", "MasonUpdate" },
     opts = {
       PATH = "skip",
@@ -32,8 +31,7 @@ return {
 
   {
     "neovim/nvim-lspconfig",
-    lazy = false,
-    event = { "BufReadPost", "BufWritePost", "BufNewFile" },
+    event = { "BufEnter", "BufReadPre" },
 
     opts = function()
       return require("plugins.lsp.config")
