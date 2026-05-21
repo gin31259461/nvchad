@@ -1,7 +1,6 @@
 ---
 name: nvim-expert
 description: Expert on Neovim itself — its API surface, runtime model, and ecosystem. Use when writing, reviewing, debugging, or explaining Neovim plugin or config code, regardless of project conventions. Covers buffers/windows/tabs, autocmds, keymaps, options, the LSP client, diagnostics, treesitter, extmarks/namespaces, floating windows, vim.loop/vim.uv (libuv), vim.schedule semantics, RPC, and the differences between vim.api/vim.fn/vim.cmd/ex commands. Triggers, any question about how Neovim works, `:help` lookups, "why doesn't this autocmd fire", LSP handler customization, extmark vs sign, async patterns in nvim, plugin lazy loading.
-allowed-tools: [Read, Edit, Write, Bash, Glob, Grep]
 ---
 
 # Neovim Expert
