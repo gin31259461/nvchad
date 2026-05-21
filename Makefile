@@ -17,4 +17,4 @@ test:
 	nvim --headless --noplugin -u scripts/tests/minimal.vim \
         -c "PlenaryBustedDirectory lua/test/spec/ {minimal_init = 'scripts/tests/minimal.vim'}"
 
-push: fmt lint test
+pr-ready: fmt lint test
