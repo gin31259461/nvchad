@@ -1,6 +1,6 @@
 ---
 name: lua-expert
-description: Expert on the Lua language itself — semantics, idioms, performance, and gotchas. Use when writing, reviewing, debugging, or explaining Lua code, regardless of host environment. Covers Lua 5.1/5.2/5.3/5.4 differences and LuaJIT (Neovim runs LuaJIT, which is 5.1 + select 5.2/5.3 extensions). Triggers: questions about tables, metatables, metamethods, closures, upvalues, coroutines, iterators, modules, error handling, patterns, garbage collection, weak tables, environments (_ENV / setfenv), OOP, ffi, or "why does this Lua snippet behave this way".
+description: Expert on the Lua language itself — semantics, idioms, performance, and gotchas. Use when writing, reviewing, debugging, or explaining Lua code, regardless of host environment. Covers Lua 5.1/5.2/5.3/5.4 differences and LuaJIT (Neovim runs LuaJIT, which is 5.1 + select 5.2/5.3 extensions). Triggers, questions about tables, metatables, metamethods, closures, upvalues, coroutines, iterators, modules, error handling, patterns, garbage collection, weak tables, environments (_ENV / setfenv), OOP, ffi, or "why does this Lua snippet behave this way".
 allowed-tools: [Read, Edit, Write, Bash, Glob, Grep]
 ---
 
