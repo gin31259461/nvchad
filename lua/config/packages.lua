@@ -35,7 +35,9 @@ local mason_extras = {
 -- Derive lsp_servers and mason_ensure_installed from the services registry so that
 -- config/services.lua is the single source of truth for all managed services.
 M.lsp_servers = {}
-M.mason_ensure_installed = {}
+M.mason_ensure_installed = {
+  "typescript-language-server", -- for tsserver executable
+}
 
 local seen = {}
 local function add_mason(pkg)

@@ -3,6 +3,8 @@ dofile(vim.g.base46_cache .. "mason")
 local utils_lsp = require("utils.lsp")
 local ft = require("utils.ft")
 local utils_table = require("utils.table")
+local fs = require("utils.fs")
+local icons = require("config").icons
 
 ---@type LazySpec[]
 return {
@@ -14,9 +16,9 @@ return {
 
       ui = {
         icons = {
-          package_pending = " ",
-          package_installed = " ",
-          package_uninstalled = " ",
+          package_pending = icons.mason.package_pending,
+          package_installed = icons.mason.package_installed,
+          package_uninstalled = icons.mason.package_uninstalled,
         },
       },
 
@@ -107,6 +109,8 @@ return {
       settings = {
         separate_diagnostic_server = true,
         code_lens = "off",
+        tsserver_path = fs.mason_pkg_path
+          .. "/typescript-language-server/node_modules/typescript/lib/tsserver.js",
 
         -- https://github.com/microsoft/TypeScript/blob/v5.0.4/src/server/protocol.ts#L3439
         tsserver_file_preferences = {
