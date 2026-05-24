@@ -178,18 +178,20 @@ end
 
 ---Applies Noice highlight overrides using the current theme palette.
 M.setup_noice = function()
+  ---@type Base30Palette
   local colors = require("base46").get_theme_tb("base_30")
 
-  -- set_highlight(0, "NoiceCmdlinePopup", { bg = colors.darker_black })
+  set_highlight(0, "NoiceCmdlinePopup", { bg = colors.black })
   set_highlight(0, "NoiceCmdlinePopupBorder", { fg = colors.blue })
   set_highlight(0, "NoiceCmdlinePopupBorderSearch", { fg = colors.yellow })
   set_highlight(0, "NoiceCmdlinePopupTitle", { fg = colors.blue })
-  -- set_highlight(0, "NoiceMini", { bg = colors.darker_black })
+  set_highlight(0, "NoiceMini", { bg = colors.black })
   set_highlight(0, "NoicePopupBorder", { fg = colors.blue })
 end
 
 ---Applies Snacks highlight overrides using the current theme palette.
 M.setup_snacks = function()
+  ---@type Base30Palette
   local colors = require("base46").get_theme_tb("base_30")
 
   set_highlight(0, "SnacksPickerMatch", { fg = colors.yellow, bold = true })

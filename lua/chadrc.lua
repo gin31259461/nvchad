@@ -69,11 +69,9 @@ M.base46 = {
   },
 
   hl_add = {
-    SnacksPickerDir = { fg = "#928374" },
-    SnacksPickerPathHidden = { fg = "#928374" },
-    -- SnacksPickerDir = { fg = "light_grey" },
-    -- SnacksPickerPathHidden = { fg = "light_grey" },
     CmpGhostText = { link = "Comment", default = true },
+    -- SnacksPickerDir = { fg = "#928374" },
+    -- SnacksPickerPathHidden = { fg = "#928374" },
   },
 }
 
