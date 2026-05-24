@@ -14,6 +14,7 @@ M.icons = {
   },
 
   -- spec: { icon, hl_group, line_hl_group, num_hl_group }
+  -- https://github.com/mfussenegger/nvim-dap/blob/531771530d4f82ad2d21e436e3cc052d68d7aebb/doc/dap.txt#L450
   dap = {
     Stopped = { "󰁕 ", "DiagnosticWarn", "DiagnosticVirtualTextWarn" },
     Breakpoint = { "●", "DapBreakpointColor" },
