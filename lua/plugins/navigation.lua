@@ -113,8 +113,7 @@ return {
           },
         },
 
-        -- extensions_list = { "themes", "terms", "noice" }
-        extensions = { "noice" },
+        extensions = { "themes", "terms", "noice" }
       }
     end,
     config = function(_, opts)
