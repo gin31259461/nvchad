@@ -176,6 +176,40 @@ M.setup_dynamic_theme = function()
   })
 end
 
+---Applies Noice highlight overrides using the current theme palette.
+M.setup_noice = function()
+  local colors = require("base46").get_theme_tb("base_30")
+
+  -- set_highlight(0, "NoiceCmdlinePopup", { bg = colors.darker_black })
+  set_highlight(0, "NoiceCmdlinePopupBorder", { fg = colors.blue })
+  set_highlight(0, "NoiceCmdlinePopupBorderSearch", { fg = colors.yellow })
+  set_highlight(0, "NoiceCmdlinePopupTitle", { fg = colors.blue })
+  -- set_highlight(0, "NoiceMini", { bg = colors.darker_black })
+  set_highlight(0, "NoicePopupBorder", { fg = colors.blue })
+end
+
+---Applies Snacks highlight overrides using the current theme palette.
+M.setup_snacks = function()
+  local colors = require("base46").get_theme_tb("base_30")
+
+  set_highlight(0, "SnacksPickerMatch", { fg = colors.yellow, bold = true })
+  set_highlight(0, "SnacksPickerDir", { fg = colors.grey_fg })
+
+  local notifier_colors = {
+    Error = colors.red,
+    Warn = colors.yellow,
+    Info = colors.green,
+    Debug = colors.grey_fg,
+    Trace = colors.grey_fg,
+  }
+
+  for level, color in pairs(notifier_colors) do
+    set_highlight(0, "SnacksNotifierBorder" .. level, { fg = color })
+    set_highlight(0, "SnacksNotifierTitle" .. level, { fg = color })
+    set_highlight(0, "SnacksNotifierIcon" .. level, { fg = color })
+  end
+end
+
 ---Defines DAP (debugger) sign highlights.
 ---Refer to: https://github.com/mfussenegger/nvim-dap/issues/1341#issuecomment-2381393267
 M.setup_dap = function()
@@ -213,6 +247,8 @@ M.setup = function()
   M.setup_diagnostic()
   M.setup_dynamic_theme()
   M.setup_dap()
+  M.setup_noice()
+  M.setup_snacks()
 
   for k, v in pairs(all_underline_hl) do
     vim.api.nvim_set_hl(0, k, vim.tbl_extend("keep", v, shared_underline_hl))
