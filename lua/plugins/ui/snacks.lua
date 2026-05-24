@@ -274,11 +274,18 @@ return {
         desc = "Buffer Diagnostics",
       },
       {
-        "<leader>sH",
+        "<leader>sh",
         function()
           require("snacks").picker.highlights()
         end,
         desc = "Highlights",
+      },
+      {
+        "<leader>sH",
+        function()
+          require("snacks").picker.highlights({ pattern = "hl_group:^Snacks" })
+        end,
+        desc = "Snack Highlights",
       },
       {
         "<leader>si",
