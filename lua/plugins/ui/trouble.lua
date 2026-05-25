@@ -28,12 +28,12 @@ return {
     cmd = "Trouble",
     keys = {
       {
-        "<leader>xd",
+        "<leader>td",
         "<cmd>Trouble diagnostic_preview_float toggle win.position=bottom<cr>",
         desc = "Diagnostics (Trouble)",
       },
       {
-        "<leader>xD",
+        "<leader>tD",
         "<cmd>Trouble diagnostic_preview_float toggle filter.buf=0 win.position=bottom<cr>",
         desc = "Buffer Diagnostics (Trouble)",
       },
@@ -62,12 +62,12 @@ return {
         desc = "LSP Definitions / references / ... (Trouble)",
       },
       {
-        "<leader>xL",
+        "<leader>tL",
         "<cmd>Trouble loclist toggle win.position=bottom<cr>",
         desc = "Location List (Trouble)",
       },
       {
-        "<leader>xQ",
+        "<leader>tQ",
         "<cmd>Trouble qflist toggle win.position=bottom<cr>",
         desc = "Quickfix List (Trouble)",
       },
