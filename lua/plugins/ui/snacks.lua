@@ -84,6 +84,7 @@ return {
         layouts = {
           default = {
             layout = {
+              backdrop = false,
               box = "vertical",
               width = 0.87,
               height = 0.80,
@@ -106,6 +107,7 @@ return {
           },
           select = {
             layout = {
+              backdrop = false,
               box = "vertical",
               border = "none",
               width = 0.6,

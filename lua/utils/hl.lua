@@ -31,33 +31,6 @@
 ---@field pmenu_bg string
 ---@field folder_bg string
 
-local set_highlight = vim.api.nvim_set_hl
-
-vim.api.nvim_set_hl(0, "@statusline.current_file", {
-  fg = "#A9B1D6",
-})
-
-vim.api.nvim_set_hl(0, "@statusline.symbols", {
-  fg = "#ABB2BF",
-  bold = false,
-})
-
-vim.api.nvim_set_hl(0, "@statusline.text", {
-  fg = "#676875",
-})
-
-vim.api.nvim_set_hl(0, "@statusline.git", {
-  fg = "#646D96",
-  bold = true,
-})
-
-vim.api.nvim_set_hl(0, "TreesitterContext", {
-  bg = "#1F2336",
-})
-
-vim.api.nvim_set_hl(0, "active_context", {
-  fg = "#7AA2F7",
-})
 
 ---@type {[string]: vim.api.keyset.highlight}
 local all_underline_hl = {
@@ -155,104 +128,11 @@ M.setup_diagnostic = function()
   all_hl = vim.tbl_deep_extend("force", all_hl, virtual_text_highlights)
 end
 
----Applies dynamic theme-dependent highlights (FloatBorder, LspInlayHint, etc.).
-M.setup_dynamic_theme = function()
-  ---@type Base30Palette
-  local colors = require("base46").get_theme_tb("base_30")
-  local color_tool = require("base46.colors")
-
-  set_highlight(0, "FloatBorder", {
-    fg = colors.blue,
-  })
-
-  set_highlight(0, "FloatTitle", {
-    fg = colors.black,
-    bg = colors.blue,
-  })
-
-  set_highlight(0, "LspInlayHint", {
-    fg = "#808080",
-    bg = colors.one_bg,
-    italic = true,
-  })
-
-  set_highlight(0, "@statusline.copilot", {
-    fg = colors.green,
-  })
-end
-
----Applies Noice highlight overrides using the current theme palette.
-M.setup_noice = function()
-  ---@type Base30Palette
-  local colors = require("base46").get_theme_tb("base_30")
-
-  set_highlight(0, "NoiceCmdlinePopup", { bg = colors.black })
-  set_highlight(0, "NoiceCmdlinePopupBorder", { fg = colors.blue })
-  set_highlight(0, "NoiceCmdlinePopupBorderSearch", { fg = colors.yellow })
-  set_highlight(0, "NoiceCmdlinePopupTitle", { fg = colors.blue })
-  set_highlight(0, "NoiceMini", { bg = colors.black })
-  set_highlight(0, "NoicePopupBorder", { fg = colors.blue })
-end
-
----Applies Snacks highlight overrides using the current theme palette.
-M.setup_snacks = function()
-  ---@type Base30Palette
-  local colors = require("base46").get_theme_tb("base_30")
-
-  set_highlight(0, "SnacksInputBorder", { fg = colors.red })
-  set_highlight(0, "SnacksInputTitle", { fg = colors.black, bg = colors.red })
-  set_highlight(0, "SnacksInputPrompt", { fg = colors.blue })
-
-  set_highlight(0, "SnacksPickerMatch", { link = "TelescopeMatching" })
-  set_highlight(0, "SnacksPickerDir", { fg = colors.grey_fg })
-
-  -- SnacksPickerDir = { fg = "#928374" },
-  -- SnacksPickerPathHidden = { fg = "#928374" },
-
-  set_highlight(0, "SnacksPickerPrompt", { link = "TelescopePromptPrefix" })
-  set_highlight(0, "SnacksPickerInput", { link = "TelescopePromptNormal" })
-  set_highlight(
-    0,
-    "SnacksPickerInputBorder",
-    { link = "TelescopePromptNormal" }
-  )
-  set_highlight(0, "SnacksPickerInputTitle", { link = "TelescopePromptTitle" })
-
-  set_highlight(
-    0,
-    "SnacksPickerPreviewTitle",
-    { link = "TelescopePreviewTitle" }
-  )
-  set_highlight(0, "SnacksPickerPreview", { link = "TelescopeNormal" })
-  set_highlight(0, "SnacksPickerPreviewBorder", { link = "TelescopeNormal" })
-  set_highlight(0, "SnacksPickerList", { link = "TelescopeNormal" })
-  set_highlight(0, "SnacksPickerListBorder", { link = "TelescopeNormal" })
-
-  local notifier_colors = {
-    Error = colors.red,
-    Warn = colors.yellow,
-    Info = colors.green,
-    Debug = colors.grey_fg,
-    Trace = colors.grey_fg,
-  }
-
-  for level, color in pairs(notifier_colors) do
-    set_highlight(0, "SnacksNotifierBorder" .. level, { fg = color })
-    set_highlight(0, "SnacksNotifierTitle" .. level, { fg = color })
-    set_highlight(0, "SnacksNotifierIcon" .. level, { fg = color })
-  end
-end
-
 ---Defines DAP (debugger) sign highlights.
 ---Refer to: https://github.com/mfussenegger/nvim-dap/issues/1341#issuecomment-2381393267
 M.setup_dap = function()
   local colors = require("base46").get_theme_tb("base_30")
   local dap_icons = require("config").icons.dap
-
-  vim.api.nvim_set_hl(0, "DapBreakpointColor", {
-    fg = colors.red,
-  })
-
   local dap_signs = {}
 
   for k, v in pairs(dap_icons) do
@@ -278,10 +158,7 @@ end
 ---Runs all highlight setup routines (diagnostic, theme, DAP, underline overrides).
 M.setup = function()
   M.setup_diagnostic()
-  M.setup_dynamic_theme()
   M.setup_dap()
-  M.setup_noice()
-  M.setup_snacks()
 
   for k, v in pairs(all_underline_hl) do
     vim.api.nvim_set_hl(0, k, vim.tbl_extend("keep", v, shared_underline_hl))

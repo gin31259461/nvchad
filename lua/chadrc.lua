@@ -51,14 +51,19 @@ M.base46 = {
     St_VisualModeSep = {
       bg = "NONE",
     },
-    NormalFloat = {
-      bg = "black",
-    },
     TelescopeMatching = {
       fg = "yellow",
       bg = "NONE",
     },
 
+    TreesitterContext = { bg = "#1F2336" },
+
+    NormalFloat = {
+      bg = "black",
+    },
+    FloatBorder = { fg = "blue" },
+    FloatTitle = { fg = "black", bg = "blue" },
+    LspInlayHint = { fg = "#808080", bg = "one_bg", italic = true },
 
     -- CmpPmenu = {
     --   bg = "darker_black",
@@ -76,6 +81,60 @@ M.base46 = {
 
   hl_add = {
     CmpGhostText = { link = "Comment", default = true },
+    active_context = { fg = "#7AA2F7" },
+
+    -- Statusline
+    ["@statusline.current_file"] = { fg = "#A9B1D6" },
+    ["@statusline.symbols"] = { fg = "#ABB2BF", bold = false },
+    ["@statusline.text"] = { fg = "#676875" },
+    ["@statusline.git"] = { fg = "#646D96", bold = true },
+    ["@statusline.copilot"] = { fg = "green" },
+
+    -- Noice
+    NoiceCmdlinePopup = { bg = "black" },
+    NoiceCmdlinePopupBorder = { fg = "blue" },
+    NoiceCmdlinePopupBorderSearch = { fg = "yellow" },
+    NoiceCmdlinePopupTitle = { fg = "blue" },
+    NoiceMini = { bg = "black" },
+    NoicePopupBorder = { fg = "blue" },
+
+    -- Snacks input
+    SnacksInputBorder = { fg = "red" },
+    SnacksInputTitle = { fg = "black", bg = "red" },
+    SnacksInputPrompt = { fg = "blue" },
+
+    -- Snacks picker
+    SnacksPickerMatch = { link = "TelescopeMatching" },
+    SnacksPickerDir = { fg = "grey_fg" },
+    SnacksPickerPrompt = { link = "TelescopePromptPrefix" },
+    SnacksPickerInput = { link = "TelescopePromptNormal" },
+    SnacksPickerInputBorder = { link = "TelescopePromptNormal" },
+    SnacksPickerInputTitle = { link = "TelescopePromptTitle" },
+    SnacksPickerPreviewTitle = { link = "TelescopePreviewTitle" },
+    SnacksPickerPreview = { link = "TelescopeNormal" },
+    SnacksPickerPreviewBorder = { link = "TelescopeNormal" },
+    SnacksPickerList = { link = "TelescopeNormal" },
+    SnacksPickerListBorder = { link = "TelescopeNormal" },
+
+    -- Snacks notifier
+    SnacksNotifierBorderError = { fg = "red" },
+    SnacksNotifierTitleError = { fg = "red" },
+    SnacksNotifierIconError = { fg = "red" },
+    SnacksNotifierBorderWarn = { fg = "yellow" },
+    SnacksNotifierTitleWarn = { fg = "yellow" },
+    SnacksNotifierIconWarn = { fg = "yellow" },
+    SnacksNotifierBorderInfo = { fg = "green" },
+    SnacksNotifierTitleInfo = { fg = "green" },
+    SnacksNotifierIconInfo = { fg = "green" },
+    SnacksNotifierBorderDebug = { fg = "grey_fg" },
+    SnacksNotifierTitleDebug = { fg = "grey_fg" },
+    SnacksNotifierIconDebug = { fg = "grey_fg" },
+    SnacksNotifierBorderTrace = { fg = "grey_fg" },
+    SnacksNotifierTitleTrace = { fg = "grey_fg" },
+    SnacksNotifierIconTrace = { fg = "grey_fg" },
+
+    -- DAP
+    DapBreakpointColor = { fg = "red" },
   },
 }
 
