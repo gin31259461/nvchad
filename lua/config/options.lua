@@ -12,3 +12,5 @@ vim.g.ai_cmp = false
 
 -- https://docs.github.com/en/copilot/concepts/completions/code-suggestions
 vim.g.copilot_model = "gpt-41-copilot"
+
+vim.o.winborder = "single"

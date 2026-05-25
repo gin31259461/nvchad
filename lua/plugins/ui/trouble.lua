@@ -15,7 +15,7 @@ return {
           preview = {
             type = "float",
             relative = "editor",
-            border = "rounded",
+            border = "single",
             title = " Preview ",
             title_pos = "center",
             position = { 0, -2 },

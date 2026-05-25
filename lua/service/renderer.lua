@@ -37,7 +37,7 @@ function M.make_win_cfg()
     row = math.floor((vim.o.lines - win_height) / 2),
     col = math.floor((vim.o.columns - win_width) / 2),
     style = "minimal",
-    border = "rounded",
+    border = "single",
     title = " Service Manager ",
     title_pos = "center",
     noautocmd = true,

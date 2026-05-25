@@ -79,6 +79,13 @@ return {
           },
         },
       },
+
+      ---@type table<string, snacks.win.Config>
+      styles = {
+        -- notification = {
+        --   border = "single",
+        -- },
+      },
     },
 
     keys = {

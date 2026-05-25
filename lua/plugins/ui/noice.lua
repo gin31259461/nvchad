@@ -144,6 +144,9 @@ return {
         },
         ---@type NoiceViewOptions
         cmdline_popup = {
+          border = {
+            style = "single",
+          },
           position = {
             col = 0.5,
             row = 0.3,
@@ -152,6 +155,9 @@ return {
         -- rows must differ by at least 2.5
         ---@type NoiceViewOptions
         cmdline_popupmenu = {
+          border = {
+            style = "single",
+          },
           position = {
             col = 0.5,
             row = 0.56,
