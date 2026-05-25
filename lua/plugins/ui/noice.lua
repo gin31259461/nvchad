@@ -52,7 +52,7 @@ return {
         view = "cmdline_popup",
       },
 
-      -- WORKAROUND: editor view shift when save buffer
+      -- NOTE: this will catch vim.ui.select event, use snacks ui select override solve this problem
       messages = {
         enabled = true,
       },
@@ -76,7 +76,6 @@ return {
           ---@type NoiceViewOptions
           opts = {
             border = "single",
-            -- HACK: mirror the doc window dimensions set in utils.ui
             size = {
               max_width = select(1, ui.get_doc_window_size()),
               max_height = select(2, ui.get_doc_window_size()),
@@ -96,7 +95,6 @@ return {
           opts = {
             focusable = false,
             border = "single",
-            -- HACK
             size = {
               max_width = select(1, ui.get_doc_window_size()),
               max_height = select(2, ui.get_doc_window_size()),
@@ -108,7 +106,7 @@ return {
           enabled = true,
         },
 
-        -- FIX: turn of this because it blocks many important messages from language servers ["window/showMessage"]
+        -- NOTE: turn off this because it blocks many important messages from language servers ["window/showMessage"]
         message = {
           enabled = false,
         },

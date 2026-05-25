@@ -103,6 +103,21 @@ return {
               { win = "list", border = "solid", flex = 1 },
             },
           },
+          select = {
+            layout = {
+              box = "vertical",
+              border = "none",
+              width = 0.6,
+              height = 0.4,
+              {
+                win = "input",
+                height = 0.1,
+                border = "solid",
+                title = "Select {title}",
+              },
+              { win = "list", border = "solid", flex = 1 },
+            },
+          },
         },
       },
 
