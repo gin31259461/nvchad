@@ -162,7 +162,11 @@ M.setup_dynamic_theme = function()
   local color_tool = require("base46.colors")
 
   set_highlight(0, "FloatBorder", {
-    fg = color_tool.change_hex_lightness(colors.blue, 125),
+    fg = color_tool.change_hex_lightness(colors.blue, 0.8),
+  })
+
+  set_highlight(0, "FloatTitle", {
+    fg = color_tool.change_hex_lightness(colors.blue, 0.8),
   })
 
   set_highlight(0, "LspInlayHint", {
