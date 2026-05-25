@@ -13,7 +13,6 @@ return {
       bigfile = { enabled = true },
       explorer = { enabled = true },
       indent = { enabled = true },
-      input = { enabled = true },
       quickfile = { enabled = true },
       scope = { enabled = true },
       scroll = { enabled = true },
@@ -65,6 +64,8 @@ return {
         end,
       },
 
+      -- more config options refer to:
+      -- https://github.com/folke/snacks.nvim/blob/main/docs/picker.md
       picker = {
         enabled = true,
         win = {
@@ -118,12 +119,41 @@ return {
               { win = "list", border = "solid", flex = 1 },
             },
           },
+          vscode = {
+            hidden = { "preview" },
+            layout = {
+              backdrop = false,
+              row = 1,
+              width = 0.4,
+              min_width = 80,
+              height = 0.4,
+              border = "none",
+              box = "vertical",
+              {
+                win = "input",
+                height = 1,
+                border = "solid",
+                title = "{title} {live} {flags}",
+                title_pos = "center",
+              },
+              { win = "list", border = "hpad" },
+              { win = "preview", title = "{preview}", border = true },
+            },
+          },
         },
+      },
+
+      input = {
+        enabled = true,
+        icon = " ",
       },
 
       ---@type table<string, snacks.win.Config>
       styles = {
         notification = {
+          border = "single",
+        },
+        input = {
           border = "single",
         },
       },

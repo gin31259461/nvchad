@@ -58,6 +58,8 @@ M.base46 = {
       fg = "yellow",
       bg = "NONE",
     },
+
+
     -- CmpPmenu = {
     --   bg = "darker_black",
     -- },
