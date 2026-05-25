@@ -166,7 +166,8 @@ M.setup_dynamic_theme = function()
   })
 
   set_highlight(0, "FloatTitle", {
-    fg = color_tool.change_hex_lightness(colors.blue, 0.8),
+    fg = colors.black,
+    bg = color_tool.change_hex_lightness(colors.blue, 0.8),
   })
 
   set_highlight(0, "LspInlayHint", {
@@ -198,8 +199,27 @@ M.setup_snacks = function()
   ---@type Base30Palette
   local colors = require("base46").get_theme_tb("base_30")
 
-  set_highlight(0, "SnacksPickerMatch", { fg = colors.yellow, bold = true })
+  set_highlight(0, "SnacksPickerMatch", { link = "TelescopeMatching" })
   set_highlight(0, "SnacksPickerDir", { fg = colors.grey_fg })
+
+  set_highlight(0, "SnacksPickerPrompt", { link = "TelescopePromptPrefix" })
+  set_highlight(0, "SnacksPickerInput", { link = "TelescopePromptNormal" })
+  set_highlight(
+    0,
+    "SnacksPickerInputBorder",
+    { link = "TelescopePromptNormal" }
+  )
+  set_highlight(0, "SnacksPickerInputTitle", { link = "TelescopePromptTitle" })
+
+  set_highlight(
+    0,
+    "SnacksPickerPreviewTitle",
+    { link = "TelescopePreviewTitle" }
+  )
+  set_highlight(0, "SnacksPickerPreview", { link = "TelescopeNormal" })
+  set_highlight(0, "SnacksPickerPreviewBorder", { link = "TelescopeNormal" })
+  set_highlight(0, "SnacksPickerList", { link = "TelescopeNormal" })
+  set_highlight(0, "SnacksPickerListBorder", { link = "TelescopeNormal" })
 
   local notifier_colors = {
     Error = colors.red,

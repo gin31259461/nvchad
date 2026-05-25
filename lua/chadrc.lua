@@ -55,16 +55,16 @@ M.base46 = {
       bg = "black",
     },
     -- CmpPmenu = {
-    --   bg = "one_bg",
+    --   bg = "darker_black",
     -- },
     -- CmpBorder = {
-    --   bg = "black",
+    --   bg = "darker_black",
     -- },
     -- CmpDoc = {
-    --   bg = "one_bg",
+    --   bg = "darker_black",
     -- },
     -- CmpDocBorder = {
-    --   bg = "black",
+    --   bg = "darker_black",
     -- },
   },
 

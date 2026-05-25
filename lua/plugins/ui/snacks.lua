@@ -78,13 +78,39 @@ return {
             },
           },
         },
+
+        ---@type table<string, snacks.picker.layout.Config>
+        layouts = {
+          default = {
+            layout = {
+              box = "vertical",
+              width = 0.87,
+              height = 0.80,
+              border = "none",
+              {
+                height = 0.6,
+                win = "preview",
+                title = "Preview {preview}",
+                border = "solid",
+                flex = 1,
+              },
+              {
+                win = "input",
+                height = 0.1,
+                border = "solid",
+                title = "Find {title}",
+              },
+              { win = "list", border = "solid", flex = 1 },
+            },
+          },
+        },
       },
 
       ---@type table<string, snacks.win.Config>
       styles = {
-        -- notification = {
-        --   border = "single",
-        -- },
+        notification = {
+          border = "single",
+        },
       },
     },
 

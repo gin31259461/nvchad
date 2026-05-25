@@ -13,6 +13,9 @@ return {
       return {
         ---@type false | "classic" | "modern" | "helix"
         preset = "helix",
+        win = {
+          border = "single",
+        },
       }
     end,
   },

@@ -84,7 +84,7 @@ return {
       local actions = require("telescope.actions")
       return {
         defaults = {
-          prompt_prefix = "   ",
+          prompt_prefix = " ",
           selection_caret = " ",
           entry_prefix = " ",
           sorting_strategy = "ascending",
@@ -92,10 +92,11 @@ return {
           path_display = {
             shorten = { len = 8, exclude = { 1, -1 } },
           },
+          layout_strategy = "vertical",
           layout_config = {
-            horizontal = {
+            vertical = {
               prompt_position = "top",
-              preview_width = 0.55,
+              preview_height = 0.5,
             },
             width = 0.87,
             height = 0.80,

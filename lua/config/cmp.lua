@@ -22,14 +22,12 @@ local is_ghost_text_enabled = false
 local options = {
   window = {
     completion = {
-      -- border = defaults.window.completion.border,
-
+      border = "single",
       scrollbar = true,
       col_offset = -1,
     },
     documentation = {
-      -- border = defaults.window.documentation.border,
-
+      border = "single",
       scrollbar = true,
       max_width = select(1, ui.get_doc_window_size()),
       max_height = select(2, ui.get_doc_window_size()),
