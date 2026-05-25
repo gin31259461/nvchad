@@ -54,6 +54,10 @@ M.base46 = {
     NormalFloat = {
       bg = "black",
     },
+    TelescopeMatching = {
+      fg = "yellow",
+      bg = "NONE",
+    },
     -- CmpPmenu = {
     --   bg = "darker_black",
     -- },
@@ -70,8 +74,6 @@ M.base46 = {
 
   hl_add = {
     CmpGhostText = { link = "Comment", default = true },
-    -- SnacksPickerDir = { fg = "#928374" },
-    -- SnacksPickerPathHidden = { fg = "#928374" },
   },
 }
 

@@ -162,12 +162,12 @@ M.setup_dynamic_theme = function()
   local color_tool = require("base46.colors")
 
   set_highlight(0, "FloatBorder", {
-    fg = color_tool.change_hex_lightness(colors.blue, 0.8),
+    fg = colors.blue,
   })
 
   set_highlight(0, "FloatTitle", {
     fg = colors.black,
-    bg = color_tool.change_hex_lightness(colors.blue, 0.8),
+    bg = colors.blue,
   })
 
   set_highlight(0, "LspInlayHint", {
@@ -199,8 +199,15 @@ M.setup_snacks = function()
   ---@type Base30Palette
   local colors = require("base46").get_theme_tb("base_30")
 
+  set_highlight(0, "SnacksInputBorder", { fg = colors.red })
+  set_highlight(0, "SnacksInputTitle", { fg = colors.black, bg = colors.red })
+  set_highlight(0, "SnacksInputPrompt", { fg = colors.blue })
+
   set_highlight(0, "SnacksPickerMatch", { link = "TelescopeMatching" })
   set_highlight(0, "SnacksPickerDir", { fg = colors.grey_fg })
+
+  -- SnacksPickerDir = { fg = "#928374" },
+  -- SnacksPickerPathHidden = { fg = "#928374" },
 
   set_highlight(0, "SnacksPickerPrompt", { link = "TelescopePromptPrefix" })
   set_highlight(0, "SnacksPickerInput", { link = "TelescopePromptNormal" })
