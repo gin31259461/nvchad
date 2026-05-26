@@ -31,7 +31,6 @@
 ---@field pmenu_bg string
 ---@field folder_bg string
 
-
 ---@type {[string]: vim.api.keyset.highlight}
 local all_underline_hl = {
   Underlined = {

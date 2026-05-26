@@ -5,19 +5,17 @@ M.sql_ft = { "sql", "mysql", "plsql" }
 
 ---@type string[]
 M.ts = {
+  "jsx",
   "typescript",
   "typescriptreact",
-  "typescript.tsx",
   "javascript",
   "javascriptreact",
-  "javascript.jsx",
 }
 
 ---@type string[]
 M.js = {
   "javascript",
   "javascriptreact",
-  "javascript.jsx",
 }
 
 return M

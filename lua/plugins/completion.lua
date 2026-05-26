@@ -5,12 +5,18 @@ return {
     event = { "InsertEnter", "LspAttach" },
     dependencies = {
       {
+        -- doc:
+        -- https://github.com/L3MON4D3/LuaSnip/blob/master/DOC.md
         "L3MON4D3/LuaSnip",
         dependencies = "rafamadriz/friendly-snippets",
         build = { "make install_jsregexp" },
         opts = { history = true, updateevents = "TextChanged,TextChangedI" },
         config = function(_, opts)
           require("luasnip").config.set_config(opts)
+
+          local ls = require("luasnip")
+          ls.filetype_extend("jsx", { "javascript", "javascriptreact" })
+
           require("nvchad.configs.luasnip")
         end,
       },

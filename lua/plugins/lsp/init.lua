@@ -82,6 +82,8 @@ return {
     dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
     -- https://github.com/pmizio/typescript-tools.nvim?tab=readme-ov-file#%EF%B8%8F-configuration
     opts = {
+      filetypes = ft.ts,
+
       ---@param client vim.lsp.Client
       on_attach = function(client, _)
         client.server_capabilities.semanticTokensProvider = nil

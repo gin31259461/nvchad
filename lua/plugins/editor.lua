@@ -79,8 +79,13 @@ return {
         enable_close_on_slash = false,
       },
       aliases = {
-        ["pubxml"] = "xml",
-        ["csproj"] = "xml",
+        pubxml = "xml",
+        csproj = "xml",
+
+        -- ref:
+        -- luacheck: ignore
+        -- https://github.com/windwp/nvim-ts-autotag/blob/88c1453db4ba7dd24131086fe51fdf74e587d275/lua/nvim-ts-autotag/config/plugin.lua#L162
+        jsx = "typescriptreact",
       },
     },
     config = function(_, opts)
