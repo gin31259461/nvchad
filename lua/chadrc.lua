@@ -13,14 +13,6 @@ M.base46 = {
   theme_toggle = { "tokyonight", "vscode_light" },
 
   hl_override = {
-    Comment = { italic = true },
-    ["@comment"] = { italic = true },
-    ["@comment.todo"] = {
-      bg = "green",
-    },
-
-    -- NvimTreeOpenedFolderName = { fg = "green", bold = true },
-
     St_EmptySpace = {
       bg = "NONE",
     },
@@ -51,12 +43,19 @@ M.base46 = {
     St_VisualModeSep = {
       bg = "NONE",
     },
+
+    Comment = { italic = true },
+    ["@comment"] = { italic = true },
+    ["@comment.todo"] = {
+      bg = "green",
+    },
+
     TelescopeMatching = {
       fg = "yellow",
       bg = "NONE",
     },
-
-    TreesitterContext = { bg = "#1F2336" },
+    TreesitterContext = { link = "CursorLine" },
+    NvimTreeOpenedFolderName = { fg = "green", bold = true },
 
     NormalFloat = {
       bg = "black",
@@ -65,18 +64,18 @@ M.base46 = {
     FloatTitle = { fg = "black", bg = "blue" },
     LspInlayHint = { fg = "#808080", bg = "one_bg", italic = true },
 
-    -- CmpPmenu = {
-    --   bg = "darker_black",
-    -- },
-    -- CmpBorder = {
-    --   bg = "darker_black",
-    -- },
-    -- CmpDoc = {
-    --   bg = "darker_black",
-    -- },
-    -- CmpDocBorder = {
-    --   bg = "darker_black",
-    -- },
+    CmpPmenu = {
+      bg = "black",
+    },
+    CmpBorder = {
+      bg = "NONE",
+    },
+    CmpDoc = {
+      bg = "black",
+    },
+    CmpDocBorder = {
+      bg = "NONE",
+    },
   },
 
   hl_add = {
@@ -91,17 +90,18 @@ M.base46 = {
     ["@statusline.copilot"] = { fg = "green" },
 
     -- Noice
+    NoiceCmdlineIcon = { fg = "purple" },
+    NoiceCmdlinePopupBorder = { fg = "green" },
     NoiceCmdlinePopup = { bg = "black" },
-    NoiceCmdlinePopupBorder = { fg = "blue" },
+    NoiceMini = { bg = "black" },
     NoiceCmdlinePopupBorderSearch = { fg = "yellow" },
     NoiceCmdlinePopupTitle = { fg = "blue" },
-    NoiceMini = { bg = "black" },
     NoicePopupBorder = { fg = "blue" },
 
     -- Snacks input
-    SnacksInputBorder = { fg = "red" },
-    SnacksInputTitle = { fg = "black", bg = "red" },
-    SnacksInputPrompt = { fg = "blue" },
+    SnacksInputPrompt = { fg = "purple" },
+    SnacksInputBorder = { fg = "green" },
+    SnacksInputTitle = { fg = "green" },
 
     -- Snacks picker
     SnacksPickerMatch = { link = "TelescopeMatching" },
@@ -115,23 +115,6 @@ M.base46 = {
     SnacksPickerPreviewBorder = { link = "TelescopeNormal" },
     SnacksPickerList = { link = "TelescopeNormal" },
     SnacksPickerListBorder = { link = "TelescopeNormal" },
-
-    -- Snacks notifier
-    SnacksNotifierBorderError = { fg = "red" },
-    SnacksNotifierTitleError = { fg = "red" },
-    SnacksNotifierIconError = { fg = "red" },
-    SnacksNotifierBorderWarn = { fg = "yellow" },
-    SnacksNotifierTitleWarn = { fg = "yellow" },
-    SnacksNotifierIconWarn = { fg = "yellow" },
-    SnacksNotifierBorderInfo = { fg = "green" },
-    SnacksNotifierTitleInfo = { fg = "green" },
-    SnacksNotifierIconInfo = { fg = "green" },
-    SnacksNotifierBorderDebug = { fg = "grey_fg" },
-    SnacksNotifierTitleDebug = { fg = "grey_fg" },
-    SnacksNotifierIconDebug = { fg = "grey_fg" },
-    SnacksNotifierBorderTrace = { fg = "grey_fg" },
-    SnacksNotifierTitleTrace = { fg = "grey_fg" },
-    SnacksNotifierIconTrace = { fg = "grey_fg" },
 
     -- DAP
     DapBreakpointColor = { fg = "red" },
