@@ -108,13 +108,13 @@ M.base46 = {
     SnacksPickerDir = { fg = "grey_fg" },
     SnacksPickerPrompt = { link = "TelescopePromptPrefix" },
     SnacksPickerInput = { link = "TelescopePromptNormal" },
-    SnacksPickerInputBorder = { link = "TelescopePromptNormal" },
+    SnacksPickerInputBorder = { fg = "red", bg = "black2" },
     SnacksPickerInputTitle = { link = "TelescopePromptTitle" },
     SnacksPickerPreviewTitle = { link = "TelescopePreviewTitle" },
     SnacksPickerPreview = { link = "TelescopeNormal" },
-    SnacksPickerPreviewBorder = { link = "TelescopeNormal" },
+    SnacksPickerPreviewBorder = { fg = "green", bg = "darker_black" },
     SnacksPickerList = { link = "TelescopeNormal" },
-    SnacksPickerListBorder = { link = "TelescopeNormal" },
+    SnacksPickerListBorder = { fg = "blue", bg = "darker_black" },
 
     -- DAP
     DapBreakpointColor = { fg = "red" },

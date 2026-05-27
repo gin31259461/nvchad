@@ -23,6 +23,14 @@ return {
       -- ref: https://obsidian.md/help/properties
       frontmatter = {
         func = function(note)
+          if
+            note.id == "AGENTS"
+            or note.id == "CLAUDE"
+            or note.id == "SKILL"
+          then
+            return {}
+          end
+
           local out = {
             id = note.id,
             aliases = note.aliases,
