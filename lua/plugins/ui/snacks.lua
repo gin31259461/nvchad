@@ -10,8 +10,9 @@ return {
 
     ---@type snacks.Config
     opts = {
+      explorer = { enabled = false },
+
       bigfile = { enabled = true },
-      explorer = { enabled = true },
       indent = { enabled = true },
       quickfile = { enabled = true },
       scope = { enabled = true },
@@ -68,6 +69,16 @@ return {
       -- https://github.com/folke/snacks.nvim/blob/main/docs/picker.md
       picker = {
         enabled = true,
+
+        sources = {
+          files = {
+            hidden = true,
+          },
+          grep = {
+            hidden = true,
+          },
+        },
+
         win = {
           list = {
             wo = { wrap = false },

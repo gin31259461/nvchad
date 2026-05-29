@@ -31,7 +31,7 @@ return {
         signcolumn = "no",
       },
       renderer = {
-        root_folder_label = false,
+        root_folder_label = ":~:s?$?/..?",
         highlight_git = "all",
         highlight_diagnostics = "all",
         indent_markers = { enable = true },
@@ -45,15 +45,16 @@ return {
               unmerged = icons.git.unmerged,
             },
           },
+          diagnostics_placement = "right_align",
         },
       },
       diagnostics = {
-        enable = false,
+        enable = true,
         icons = icons.diagnostics,
       },
       git = {
         enable = true,
-        timeout = 5000,
+        timeout = 20000,
       },
     },
     keys = {
@@ -62,6 +63,16 @@ return {
         "<leader>e",
         "<cmd>NvimTreeFocus<CR>",
         desc = "NvimTree Focus Window",
+      },
+      {
+        "<C-Right>",
+        "<cmd>NvimTreeResize +5<CR>",
+        desc = "NvimTree Resize +5",
+      },
+      {
+        "<C-Left>",
+        "<cmd>NvimTreeResize -5<CR>",
+        desc = "NvimTree Resize -5",
       },
     },
     config = function(_, opts)
