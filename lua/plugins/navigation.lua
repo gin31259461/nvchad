@@ -145,10 +145,7 @@ return {
     "Orbit-Lua/harpoon",
     -- "ThePrimeagen/harpoon",
     keys = {
-      { "<leader>a", desc = "Harpoon add file into list" },
-      { "<M-S-p>", desc = "Harpoon toggle previous file in list" },
-      { "<M-S-n>", desc = "Harpoon toggle next file in list" },
-      { "<C-e>", desc = "Harpoon toggle quick menu" },
+      { "<C-e>", desc = "toggle harpoon quick menu" },
     },
     branch = "harpoon2",
     dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim" },
@@ -199,18 +196,18 @@ return {
       -- this will set cursor to current file
       harpoon:extend(ui.harpoon.highlight_current_file())
 
-      vim.keymap.set("n", "<leader>a", function()
+      vim.keymap.set("n", "<leader>ba", function()
         harpoon:list():add()
-      end, { desc = "Buffer add into harpoon list" })
+      end, { desc = "buffer add into harpoon list" })
 
       -- Toggle previous & next buffers stored within Harpoon list
       vim.keymap.set("n", "<M-S-p>", function()
         harpoon:list():prev()
-      end, { desc = "Toggle previous of harpoon list" })
+      end, { desc = "toggle previous of harpoon list" })
 
       vim.keymap.set("n", "<M-S-n>", function()
         harpoon:list():next()
-      end, { desc = "Toggle next of harpoon list" })
+      end, { desc = "toggle next of harpoon list" })
 
       -- https://github.com/ThePrimeagen/harpoon/issues/491
       -- currently, telescope is broken on windows so using simple menu

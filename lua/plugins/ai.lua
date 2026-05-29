@@ -80,7 +80,7 @@ local specs = {
     },
     keys = {
       {
-        "<C-a>",
+        "<leader>aa",
         function()
           require("opencode").ask("@this: ", { submit = true })
         end,
@@ -88,7 +88,7 @@ local specs = {
         desc = "ask opencode…",
       },
       {
-        "<C-x>",
+        "<leader>ax",
         function()
           require("opencode").select()
         end,
@@ -96,7 +96,7 @@ local specs = {
         desc = "execute opencode action…",
       },
       {
-        "<C-.>",
+        "<leader>at",
         function()
           require("opencode").toggle()
         end,
@@ -104,7 +104,7 @@ local specs = {
         desc = "toggle opencode",
       },
       {
-        "go",
+        "<leader>ar",
         function()
           return require("opencode").operator("@this ")
         end,
@@ -113,7 +113,7 @@ local specs = {
         expr = true,
       },
       {
-        "goo",
+        "<leader>al",
         function()
           return require("opencode").operator("@this ") .. "_"
         end,
@@ -143,20 +143,6 @@ local specs = {
       vim.g.opencode_opts = {
         -- Your configuration, if any; goto definition on the type or field for details
       }
-
-      -- <C-a> and <C-x> are claimed by opencode; remap increment/decrement
-      vim.keymap.set(
-        "n",
-        "+",
-        "<C-a>",
-        { desc = "Increment under cursor", noremap = true }
-      )
-      vim.keymap.set(
-        "n",
-        "-",
-        "<C-x>",
-        { desc = "Decrement under cursor", noremap = true }
-      )
     end,
   },
 }
