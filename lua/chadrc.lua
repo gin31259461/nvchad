@@ -13,6 +13,7 @@ M.base46 = {
   theme_toggle = { "tokyonight", "vscode_light" },
 
   hl_override = {
+    -- NvChad
     St_EmptySpace = {
       bg = "NONE",
     },
@@ -44,25 +45,28 @@ M.base46 = {
       bg = "NONE",
     },
 
+    -- Editor
     Comment = { italic = true },
+    TreesitterContext = { link = "CursorLine" },
     ["@comment"] = { italic = true },
     ["@comment.todo"] = {
       bg = "green",
     },
+    LspInlayHint = { fg = "#808080", bg = "one_bg", italic = true },
 
+    -- Misc
+    NvimTreeOpenedFolderName = { fg = "green", bold = true },
     TelescopeMatching = {
       fg = "yellow",
       bg = "NONE",
     },
-    TreesitterContext = { link = "CursorLine" },
-    NvimTreeOpenedFolderName = { fg = "green", bold = true },
 
+    -- Window
     NormalFloat = {
       bg = "black",
     },
     FloatBorder = { fg = "blue" },
     FloatTitle = { fg = "black", bg = "blue" },
-    LspInlayHint = { fg = "#808080", bg = "one_bg", italic = true },
 
     CmpPmenu = {
       bg = "black",
@@ -80,7 +84,7 @@ M.base46 = {
 
   hl_add = {
     CmpGhostText = { link = "Comment", default = true },
-    active_context = { fg = "#7AA2F7" },
+    active_context = { fg = "blue" },
 
     -- Statusline
     ["@statusline.current_file"] = { fg = "#A9B1D6" },
@@ -105,7 +109,8 @@ M.base46 = {
 
     -- Snacks picker
     SnacksPickerMatch = { link = "TelescopeMatching" },
-    SnacksPickerDir = { fg = "grey_fg" },
+    SnacksPickerDir = { fg = "#928374" },
+    SnacksPickerPathHidden = { fg = "#928374" },
 
     SnacksPickerInput = { link = "TelescopePromptNormal" },
     SnacksPickerList = { link = "TelescopeNormal" },
