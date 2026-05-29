@@ -92,15 +92,7 @@ return {
           path_display = {
             shorten = { len = 8, exclude = { 1, -1 } },
           },
-          layout_strategy = "vertical",
-          layout_config = {
-            vertical = {
-              prompt_position = "top",
-              preview_height = 0.5,
-            },
-            width = 0.87,
-            height = 0.80,
-          },
+
           mappings = {
             n = {
               ["q"] = actions.close,
@@ -111,6 +103,16 @@ return {
               ["<C-j>"] = actions.move_selection_next,
               ["<C-k>"] = actions.move_selection_previous,
             },
+          },
+
+          layout_strategy = "vertical",
+          layout_config = {
+            vertical = {
+              prompt_position = "top",
+              preview_height = 0.5,
+            },
+            width = 0.87,
+            height = 0.80,
           },
         },
 
