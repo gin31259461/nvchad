@@ -146,6 +146,9 @@ return {
     -- "ThePrimeagen/harpoon",
     keys = {
       { "<C-e>", desc = "toggle harpoon quick menu" },
+      { "<M-S-p>", desc = "toggle previous of harpoon list" },
+      { "<M-S-n>", desc = "toggle next of harpoon list" },
+      { "<leader>ba", desc = "buffer add into harpoon list" },
     },
     branch = "harpoon2",
     dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim" },

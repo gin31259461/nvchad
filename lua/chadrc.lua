@@ -120,6 +120,7 @@ M.base46 = {
     SnacksPickerInputTitle = { link = "TelescopePromptTitle" },
     SnacksPickerPreviewTitle = { link = "TelescopePreviewTitle" },
 
+    SnacksPickerBorder = { fg = "blue", bg = "black2" },
     SnacksPickerInputBorder = { fg = "blue", bg = "black2" },
     SnacksPickerPreviewBorder = { fg = "blue", bg = "darker_black" },
     SnacksPickerListBorder = { fg = "blue", bg = "darker_black" },
