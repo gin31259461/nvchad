@@ -1,4 +1,4 @@
-# AGENTS
+# Neovim Configuration (NvChad Based)
 
 Neovim configuration built on [NvChad v2.5](https://github.com/NvChad/NvChad) +
 lazy.nvim. Everything is Lua.

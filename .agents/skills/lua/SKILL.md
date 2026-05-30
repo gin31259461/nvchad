@@ -53,6 +53,7 @@ return M
 ```
 
 Rules:
+
 - `local M = {}` at top, `return M` at bottom. No other return shapes.
 - Private functions are file-locals above `M`. Do **not** prefix with `_` — locality is the access modifier.
 - No side effects at `require` time. Initialization belongs in `M.setup()` or a lazy plugin `config`/`opts` block.
@@ -82,6 +83,7 @@ return Foo
 ```
 
 Rules:
+
 - Constructor is `.new` (dot), methods use `:` (colon). Do not mix.
 - Set `__index = Class` once; do not re-set per instance.
 - Annotate the class with `---@class` so callers get completion.
@@ -141,6 +143,7 @@ function M.read_file(path, opts) ... end
 `require("utils")` is the entry point. Sub-modules (`utils.fs`, `utils.lsp`, etc.) are accessed through the facade — it proxies `lazy.core.util` and exposes curated helpers.
 
 When adding utilities:
+
 - **Extend an existing sub-module** if the concern already has a home (`utils.str`, `utils.table`, `utils.ui`, ...).
 - **Do not** create a new top-level `utils/<thing>.lua` for a single function. Find the closest existing module and add to it.
 - **Do not** reach into `lazy.core.util` from outside `utils/init.lua`. The facade is the contract.

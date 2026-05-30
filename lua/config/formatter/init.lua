@@ -105,8 +105,8 @@ return {
     cs = { "csharpier" },
 
     -- markdown
-    ["markdown"] = { "deno_fmt", "markdownlint-cli2", "markdown-toc" },
-    ["markdown.mdx"] = { "deno_fmt", "markdownlint-cli2", "markdown-toc" },
+    ["markdown"] = { "markdownlint-cli2", "markdown-toc" },
+    ["markdown.mdx"] = { "markdownlint-cli2", "markdown-toc" },
   },
 
   format_on_save = false,

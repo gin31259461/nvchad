@@ -84,6 +84,7 @@ require("telescope").load_extension("ui-select")
 ```
 
 Rules:
+
 - `defaults` applies to every picker. `pickers.<name>` overrides per-builtin. `extensions.<name>` is opaque to telescope and forwarded to the extension's `setup`.
 - `load_extension` must come **after** `setup` and is the only way to activate sorter/previewer overrides from `fzf-native` and friends.
 - `vimgrep_arguments` must include `--no-heading --with-filename --line-number --column` for ripgrep output parsing. Color codes break the parser — keep `--color=never`.
@@ -151,6 +152,7 @@ end
 ```
 
 Rules:
+
 - `pickers.new(opts, spec):find()` — `opts` is the user-passed (and theme-merged) table; `spec` describes the picker.
 - Pull sorter and previewer from `conf.*` so user overrides (e.g. `fzf-native`) apply. Hard-coding `sorters.get_fzy_sorter()` defeats their setup.
 - `attach_mappings` **must** return `true` (keep defaults) or `false` (drop defaults). The bare `function ... end` shape with no `return` returns `nil` and is treated as `false` — usually a bug.
@@ -286,6 +288,7 @@ return require("telescope").register_extension({
 ```
 
 Common extensions used in this repo / ecosystem:
+
 - **telescope-fzf-native.nvim** — C sorter; orders of magnitude faster than the default fzy sorter. Requires `override_generic_sorter` / `override_file_sorter` in its extension config to take effect.
 - **telescope-ui-select.nvim** — routes `vim.ui.select` through telescope. Configure with a theme: `extensions["ui-select"] = { themes.get_dropdown({}) }`.
 - **telescope-file-browser.nvim** — file manager picker.
@@ -320,6 +323,7 @@ Hard-coded sorters/previewers ignore the user's setup and any active extensions.
 ### Step 5: Validate
 
 In a running Neovim:
+
 1. Open the picker, confirm results appear.
 2. Type a query, confirm sorting works.
 3. Press `<CR>` — confirm the action fires.

@@ -67,6 +67,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 ```
 
 Rules:
+
 - **Always** pass a `group`. Anonymous autocmds duplicate on `:source`/`:Lazy reload`.
 - Use `callback` (Lua function), not `command` (Vimscript string).
 - Set `desc` — it shows in `:autocmd` and helps debugging.
@@ -91,6 +92,7 @@ end, { expr = true })
 ```
 
 Rules:
+
 - Prefer Lua callbacks over `<cmd>...<cr>` strings when logic is non-trivial.
 - Always set `desc` — which-key and `:Telescope keymaps` rely on it.
 - `silent = true` for keymaps that would otherwise echo a command.
@@ -145,6 +147,7 @@ local win = vim.api.nvim_open_win(buf, true, {
 ```
 
 Handle rules:
+
 - Always check `vim.api.nvim_buf_is_valid(buf)` before operating on a stored handle — buffers can be wiped between events.
 - `0` means "current buffer/window/tab" in most API calls.
 - `nvim_buf_set_lines` indices are 0-based, end-exclusive (Python-style). `nvim_win_set_cursor` is `{row, col}` with **1-based row, 0-based col** — the only place this asymmetry shows up. `:help api-indexing`.
@@ -378,6 +381,6 @@ Run `:help <topic>` for any of these — they are the source of truth:
 - **`:help news`** — version-to-version changes; check before assuming an API exists
 - **`:help vim_diff`** — Neovim vs. Vim differences
 
-Online mirror: https://neovim.io/doc/user/ — but local `:help` is faster and version-matched.
+Online mirror: <https://neovim.io/doc/user/> — but local `:help` is faster and version-matched.
 
 Project-specific guidance lives in `AGENTS.md`; this skill is general Neovim. For language-level Lua patterns (modules, OOP, perf), use the `lua` skill instead.
