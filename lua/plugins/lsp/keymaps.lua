@@ -1,5 +1,6 @@
 local ui = require("utils.ui")
 local utils_lsp = require("utils.lsp")
+local borders = require("config.borders")
 
 local M = {}
 
@@ -39,7 +40,7 @@ function M.get()
         return vim.lsp.buf.hover({
           focus = true,
           silent = true,
-          border = "single",
+          border = borders.default,
           max_width = select(1, ui.get_doc_window_size()),
           max_height = select(2, ui.get_doc_window_size()),
         })
@@ -54,7 +55,7 @@ function M.get()
           silent = true,
           max_width = select(1, ui.get_doc_window_size()),
           max_height = select(2, ui.get_doc_window_size()),
-          border = "single",
+          border = borders.default,
         })
       end,
       desc = "Signature Help",
@@ -68,7 +69,7 @@ function M.get()
           silent = true,
           max_width = select(1, ui.get_doc_window_size()),
           max_height = select(2, ui.get_doc_window_size()),
-          border = "single",
+          border = borders.default,
         })
       end,
       mode = "i",

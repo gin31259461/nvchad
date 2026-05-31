@@ -1,4 +1,5 @@
 local ui = require("utils.ui")
+local borders = require("config.borders")
 
 -- config: https://github.com/folke/noice.nvim?tab=readme-ov-file#%EF%B8%8F-configuration
 ---@type LazySpec[]
@@ -75,7 +76,7 @@ return {
           silent = true,
           ---@type NoiceViewOptions
           opts = {
-            border = "single",
+            border = borders.noice.lsp,
             size = {
               max_width = select(1, ui.get_doc_window_size()),
               max_height = select(2, ui.get_doc_window_size()),
@@ -94,7 +95,7 @@ return {
           ---@type NoiceViewOptions
           opts = {
             focusable = false,
-            border = "single",
+            border = borders.noice.lsp,
             size = {
               max_width = select(1, ui.get_doc_window_size()),
               max_height = select(2, ui.get_doc_window_size()),
@@ -142,9 +143,7 @@ return {
         },
         ---@type NoiceViewOptions
         cmdline_popup = {
-          border = {
-            style = "single",
-          },
+          border = borders.noice.cmdline,
           position = {
             col = 0.5,
             row = 0.3,
@@ -153,9 +152,7 @@ return {
         -- rows must differ by at least 2.5
         ---@type NoiceViewOptions
         cmdline_popupmenu = {
-          border = {
-            style = "single",
-          },
+          border = borders.noice.cmdline,
           position = {
             col = 0.5,
             row = 0.56,

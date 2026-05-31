@@ -3,6 +3,7 @@ local M = {}
 local cfg = require("service.config")
 local data = require("service.data")
 local state_mod = require("service.state")
+local borders = require("config.borders")
 local ui_utils = require("utils.ui")
 local logger = require("utils.logger")
 
@@ -263,7 +264,7 @@ function M.show_tooltip_at_cursor()
     width = max_w,
     height = #tooltip_lines,
     style = "minimal",
-    border = "single",
+    border = borders.default,
     focusable = true,
     zindex = 100,
     noautocmd = true,

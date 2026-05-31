@@ -3,6 +3,7 @@
 local statusline = require("utils.statusline")
 local highlights = require("utils.hl")
 local config = require("config")
+local borders = require("config.borders")
 
 -- https://github.com/NvChad/ui/blob/v2.5/lua/nvconfig.lua
 ---@type ChadrcConfig
@@ -188,7 +189,7 @@ M.term = {
     col = 0.1,
     width = 0.8,
     height = 0.8,
-    border = "single",
+    border = borders.default,
   },
 }
 

@@ -21,6 +21,7 @@
 ---@field setup? {[string]: fun()}
 
 local configs = require("config")
+local borders = require("config.borders")
 
 ---@param opts? lsp.ClientCapabilities
 local make_client_capabilities = function(opts)
@@ -68,16 +69,7 @@ return {
 
     float = {
       ---@diagnostic disable-next-line
-      border = {
-        { "┌", "CmpBorder" },
-        { "─", "CmpBorder" },
-        { "┐", "CmpBorder" },
-        { "│", "CmpBorder" },
-        { "┘", "CmpBorder" },
-        { "─", "CmpBorder" },
-        { "└", "CmpBorder" },
-        { "│", "CmpBorder" },
-      },
+      border = borders.lsp_diagnostic,
     },
   },
 

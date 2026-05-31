@@ -1,4 +1,5 @@
 ---@type LazySpec[]
+local borders = require("config.borders")
 return {
   {
     -- ref: https://github.com/folke/trouble.nvim/blob/main/docs/examples.md
@@ -15,7 +16,7 @@ return {
           preview = {
             type = "float",
             relative = "editor",
-            border = "single",
+            border = borders.default,
             title = " Preview ",
             title_pos = "center",
             position = { 0, -2 },

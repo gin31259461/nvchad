@@ -3,6 +3,7 @@ local M = {}
 local cfg = require("service.config")
 local data = require("service.data")
 local services = require("config.services")
+local borders = require("config.borders")
 local state_mod = require("service.state")
 local ui_utils = require("utils.ui")
 
@@ -37,7 +38,7 @@ function M.make_win_cfg()
     row = math.floor((vim.o.lines - win_height) / 2),
     col = math.floor((vim.o.columns - win_width) / 2),
     style = "minimal",
-    border = "single",
+    border = borders.default,
     title = " Service Manager ",
     title_pos = "center",
     noautocmd = true,

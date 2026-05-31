@@ -1,4 +1,5 @@
 local configs = require("config")
+local borders = require("config.borders")
 
 -- https://github.com/folke/snacks.nvim?tab=readme-ov-file#-features
 ---@type LazySpec[]
@@ -99,37 +100,45 @@ return {
               box = "vertical",
               width = 0.87,
               height = 0.80,
-              border = "none",
+              border = borders.snacks.picker.default.box,
               {
                 height = 0.6,
                 win = "preview",
                 title = "Preview {preview}",
-                border = "solid",
+                border = borders.snacks.picker.default.preview,
                 flex = 1,
               },
               {
                 win = "input",
                 height = 0.1,
-                border = "solid",
+                border = borders.snacks.picker.default.input,
                 title = "Find {title} {live} {flags}",
               },
-              { win = "list", border = "solid", flex = 1 },
+              {
+                win = "list",
+                border = borders.snacks.picker.default.list,
+                flex = 1,
+              },
             },
           },
           select = {
             layout = {
               backdrop = false,
               box = "vertical",
-              border = "none",
+              border = borders.snacks.picker.select.box,
               width = 0.6,
               height = 0.4,
               {
                 win = "input",
                 height = 0.1,
-                border = "solid",
+                border = borders.snacks.picker.select.input,
                 title = "Select {title}",
               },
-              { win = "list", border = "solid", flex = 1 },
+              {
+                win = "list",
+                border = borders.snacks.picker.select.list,
+                flex = 1,
+              },
             },
           },
           vscode = {
@@ -140,17 +149,21 @@ return {
               width = 0.4,
               min_width = 80,
               height = 0.4,
-              border = "none",
+              border = borders.snacks.picker.vscode.box,
               box = "vertical",
               {
                 win = "input",
                 height = 1,
-                border = "solid",
+                border = borders.snacks.picker.vscode.input,
                 title = "{title} {live} {flags}",
                 title_pos = "center",
               },
-              { win = "list", border = "hpad" },
-              { win = "preview", title = "{preview}", border = true },
+              { win = "list", border = borders.snacks.picker.vscode.list },
+              {
+                win = "preview",
+                title = "{preview}",
+                border = borders.snacks.picker.vscode.preview,
+              },
             },
           },
           vertical = {
@@ -161,16 +174,20 @@ return {
               height = 0.8,
               min_height = 30,
               box = "vertical",
-              border = "solid",
+              border = borders.snacks.picker.vertical.box,
               title = "{title} {live} {flags}",
               title_pos = "center",
-              { win = "input", height = 1, border = "bottom" },
-              { win = "list", border = "solid" },
+              {
+                win = "input",
+                height = 1,
+                border = borders.snacks.picker.vertical.input,
+              },
+              { win = "list", border = borders.snacks.picker.vertical.list },
               {
                 win = "preview",
                 title = "{preview}",
                 height = 0.4,
-                border = "top",
+                border = borders.snacks.picker.vertical.preview,
               },
             },
           },
@@ -185,10 +202,10 @@ return {
       ---@type table<string, snacks.win.Config>
       styles = {
         notification = {
-          border = "single",
+          border = borders.snacks.style,
         },
         input = {
-          border = "single",
+          border = borders.snacks.style,
         },
       },
     },

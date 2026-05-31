@@ -1,4 +1,5 @@
 ---@type LazySpec[]
+local borders = require("config.borders")
 return {
   {
     "folke/which-key.nvim",
@@ -14,7 +15,7 @@ return {
         ---@type false | "classic" | "modern" | "helix"
         preset = "helix",
         win = {
-          border = "single",
+          border = borders.default,
         },
       }
     end,
