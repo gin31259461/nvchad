@@ -8,6 +8,8 @@ local CONFIG = {
   doc = { max_w = 80, max_h = 20, pct_w = 0.5, pct_h = 0.4 },
 }
 
+local harpoon_ns = vim.api.nvim_create_namespace("harpoon")
+
 M.harpoon = {}
 
 ---@return integer width of the neo-tree window, or 0 if not open
@@ -80,7 +82,7 @@ M.harpoon.highlight_current_file = function()
 
           vim.api.nvim_buf_set_extmark(
             cx.bufnr,
-            vim.api.nvim_create_namespace("harpoon"),
+            harpoon_ns,
             line_number - 1,
             2,
             {

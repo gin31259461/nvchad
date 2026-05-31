@@ -102,7 +102,7 @@ function M.get()
     {
       "<leader>cc",
       function()
-        vim.lsp.codelens.enable(vim.lsp.codelens.is_enabled())
+        vim.lsp.codelens.enable(not vim.lsp.codelens.is_enabled())
       end,
       desc = "Toggle Display Codelens",
       mode = { "n" },
@@ -239,7 +239,7 @@ function M.on_attach(_, buffer)
         desc = opts.desc,
         noremap = opts.noremap,
         remap = opts.remap,
-        expr = opts.remap,
+        expr = opts.expr,
         nowait = opts.nowait,
         buffer = opts.buffer,
         silent = opts.silent,

@@ -37,6 +37,10 @@ end
 ---@param name? string
 function M.on_attach(on_attach, name)
   return vim.api.nvim_create_autocmd("LspAttach", {
+    group = vim.api.nvim_create_augroup(
+      "UserLspAttach_" .. (name or "all"),
+      { clear = false }
+    ),
     callback = function(args)
       local buffer = args.buf ---@type number
       local client = vim.lsp.get_client_by_id(args.data.client_id)
@@ -96,7 +100,10 @@ end
 function M.on_dynamic_capability(fn, opts)
   return vim.api.nvim_create_autocmd("User", {
     pattern = "LspDynamicCapability",
-    group = opts and opts.group or nil,
+    group = opts and opts.group or vim.api.nvim_create_augroup(
+      "UserLspDynamicCapability",
+      { clear = false }
+    ),
     callback = function(args)
       local client = vim.lsp.get_client_by_id(args.data.client_id)
       local buffer = args.data.buffer ---@type number

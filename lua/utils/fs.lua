@@ -221,7 +221,10 @@ M.delete_files = function(path, opts)
   end
 
   if error_count == 0 then
-    vim.print(opts.success_message or "Successfully deleted all files")
+    vim.notify(
+      opts.success_message or "Successfully deleted all files",
+      vim.log.levels.INFO
+    )
   end
 end
 

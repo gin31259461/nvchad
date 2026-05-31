@@ -133,11 +133,11 @@ return {
     config = function(_, opts)
       local telescope = require("telescope")
 
+      telescope.setup(opts)
+
       for _, v in ipairs(opts.extensions) do
         telescope.load_extension(v)
       end
-
-      telescope.setup(opts)
     end,
   },
 

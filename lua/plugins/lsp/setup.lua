@@ -147,6 +147,10 @@ M.activate_features = function(opts)
     utils_lsp.on_supports_method("textDocument/codeLens", function(_, bufnr)
       vim.lsp.codelens.enable(true)
       vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+        group = vim.api.nvim_create_augroup(
+          "UserCodeLens_" .. bufnr,
+          { clear = true }
+        ),
         buffer = bufnr,
         callback = function()
           vim.lsp.codelens.enable(true, { bufnr = bufnr })
