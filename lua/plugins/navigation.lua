@@ -31,7 +31,9 @@ return {
         signcolumn = "no",
       },
       renderer = {
-        root_folder_label = ":~:s?$?/..?",
+        root_folder_label = function()
+          return fs.pretty_path(fs.get_root(), { transform_home = true })
+        end,
         highlight_git = "all",
         highlight_diagnostics = "all",
         indent_markers = { enable = true },

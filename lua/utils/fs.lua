@@ -1,7 +1,7 @@
 local M = {}
 
 ---@param path? string
----@param opts? {length?: integer, only_cwd?: boolean}
+---@param opts? {length?: integer, only_cwd?: boolean, transform_home?: boolean}
 ---@return string
 M.pretty_path = function(path, opts)
   opts = opts or {}
@@ -26,11 +26,18 @@ M.pretty_path = function(path, opts)
     end
   end
 
+  if opts.transform_home then
+    local home = vim.uv.os_homedir()
+    if home and full_path:find(home, 1, true) == 1 then
+      full_path = "~" .. full_path:sub(#home + 1)
+    end
+  end
+
   -- local sep = package.config:sub(1, 1)
   local sep = "/"
   local parts = vim.split(full_path, "[\\/]", { plain = false })
 
-  if #parts <= length then
+  if #parts <= length or length == -1 then
     return table.concat(parts, sep)
   end
 
