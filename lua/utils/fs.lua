@@ -26,6 +26,11 @@ function FsPath:pretty_path(opts)
   return M.pretty_path(self.path, opts)
 end
 
+---@return FsPath
+function FsPath:get_cwd() -- luacheck: ignore
+  return FsPath.new(M.get_cwd())
+end
+
 ---Resolve the project root starting from the wrapped path.
 ---@return FsPath
 function FsPath:get_root()
@@ -77,8 +82,7 @@ M.pretty_path = function(path, opts)
   full_path = vim.fs.normalize(full_path)
 
   if opts.only_cwd then
-    local cwd = vim.fn.getcwd()
-    cwd = vim.fs.normalize(cwd)
+    local cwd = M.get_cwd()
 
     -- remove cwd prefix
     if full_path:find(cwd, 1, true) == 1 then
@@ -159,6 +163,11 @@ local function find_root_marker(startpath, markers)
   end
 end
 
+---@return string
+M.get_cwd = function()
+  return vim.fs.normalize(vim.fn.getcwd())
+end
+
 ---Return the project root, optionally starting from *path*.
 ---When *path* is omitted the current buffer is used and LSP root-dir is
 ---consulted first (LSP is buffer-scoped, so it is skipped for explicit paths).
@@ -193,7 +202,7 @@ function M.get_root(path)
   end
 
   -- fallback: cwd
-  return vim.uv.cwd() or vim.fn.getcwd()
+  return M.get_cwd()
 end
 
 ---@param buf_name string

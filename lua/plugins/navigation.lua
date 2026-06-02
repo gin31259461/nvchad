@@ -32,7 +32,7 @@ return {
       },
       renderer = {
         root_folder_label = function()
-          return fs.new():get_root():pretty_path({ transform_home = true })
+          return fs.new():get_cwd():pretty_path({ transform_home = true })
         end,
         highlight_git = "all",
         highlight_diagnostics = "all",
