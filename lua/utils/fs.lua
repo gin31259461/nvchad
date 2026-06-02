@@ -1,5 +1,65 @@
 local M = {}
 
+-- ---------------------------------------------------------------------------
+-- FsPath – chainable path object
+-- ---------------------------------------------------------------------------
+
+---@class FsPath
+---@field path string
+local FsPath = {}
+FsPath.__index = FsPath
+
+---@param path string
+---@return FsPath
+function FsPath.new(path)
+  return setmetatable({ path = path }, FsPath)
+end
+
+function FsPath:__tostring()
+  return self.path
+end
+
+---Return a pretty, shortened version of the wrapped path.
+---@param opts? {length?: integer, only_cwd?: boolean, transform_home?: boolean}
+---@return string
+function FsPath:pretty_path(opts)
+  return M.pretty_path(self.path, opts)
+end
+
+---Resolve the project root starting from the wrapped path.
+---@return FsPath
+function FsPath:get_root()
+  return FsPath.new(M.get_root(self.path))
+end
+
+---Make the wrapped path relative to *root*.
+---@param root string|FsPath
+---@return string
+function FsPath:make_relative(root)
+  local root_str = type(root) == "table" and root.path or root
+  return M.make_relative_path(self.path, root_str --[[@as string]])
+end
+
+---List directory entries.
+---@param mode ScandirMode
+---@return string[]
+function FsPath:scandir(mode)
+  return M.scandir(self.path, mode)
+end
+
+M.FsPath = FsPath
+
+---Create a new FsPath for *path*, defaulting to the current buffer path.
+---@param path? string
+---@return FsPath
+M.new = function(path)
+  return FsPath.new(path or vim.fn.expand("%:p"))
+end
+
+-- ---------------------------------------------------------------------------
+-- Utility functions (static, backward-compatible)
+-- ---------------------------------------------------------------------------
+
 ---@param path? string
 ---@param opts? {length?: integer, only_cwd?: boolean, transform_home?: boolean}
 ---@return string
@@ -99,16 +159,22 @@ local function find_root_marker(startpath, markers)
   end
 end
 
+---Return the project root, optionally starting from *path*.
+---When *path* is omitted the current buffer is used and LSP root-dir is
+---consulted first (LSP is buffer-scoped, so it is skipped for explicit paths).
+---@param path? string
 ---@return string
-function M.get_root()
-  local bufname = vim.api.nvim_buf_get_name(0)
+function M.get_root(path)
+  local bufname = path or vim.api.nvim_buf_get_name(0)
 
-  -- lsp root
-  local clients = vim.lsp.get_clients({ bufnr = 0 })
-  if #clients > 0 then
-    for _, client in ipairs(clients) do
-      if client.config and client.config.root_dir then
-        return client.config.root_dir
+  -- lsp root (only meaningful for the current buffer context)
+  if not path then
+    local clients = vim.lsp.get_clients({ bufnr = 0 })
+    if #clients > 0 then
+      for _, client in ipairs(clients) do
+        if client.config and client.config.root_dir then
+          return client.config.root_dir
+        end
       end
     end
   end
