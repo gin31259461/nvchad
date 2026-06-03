@@ -25,10 +25,13 @@ return {
     dockerfile = { "hadolint" },
     markdown = { "markdownlint-cli2" },
     lua = { "luacheck" },
-    typescriptreact = { "eslint_d" },
-    javascriptreact = { "eslint_d" },
+
     typescript = { "eslint_d" },
     javascript = { "eslint_d" },
+
+    typescriptreact = { "eslint_d" },
+    javascriptreact = { "eslint_d" },
+    jsx = { "eslint_d" },
   },
 
   -- refer to: https://github.com/mfussenegger/nvim-lint#custom-linters

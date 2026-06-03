@@ -45,7 +45,9 @@ return {
       end,
       stdin = true,
       -- cwd = util.root_file(NvChad.fs.sqlfluff_pattern),
-      cwd = fs.get_root,
+      cwd = function(_, ctx)
+        return fs.get_root(ctx.dirname)
+      end,
       require_cwd = true,
     },
     ["sql_formatter"] = {
@@ -94,10 +96,12 @@ return {
     html = { "deno_fmt" },
 
     -- eslint_d is used for fix, not complete formatting, so deno_fmt is needed
+    typescript = { "deno_fmt", "eslint_d" },
+    javascript = { "deno_fmt", "eslint_d" },
+
     typescriptreact = { "deno_fmt", "eslint_d" },
     javascriptreact = { "deno_fmt", "eslint_d" },
-    javascript = { "deno_fmt", "eslint_d" },
-    typescript = { "deno_fmt", "eslint_d" },
+    jsx = { "deno_fmt", "eslint_d" },
 
     json = { "deno_fmt" },
     toml = { "tombi" },
