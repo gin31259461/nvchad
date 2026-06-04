@@ -18,13 +18,13 @@ M.lsp_diagnostic = {
 
 -- Noice uses nui.nvim { style = "..." } format for popup views.
 M.noice = {
-  lsp = "single",
-  cmdline = { style = "single" },
+  lsp = "rounded",
+  cmdline = { style = "rounded" },
 }
 
 -- Snacks style overrides and picker layout borders.
 M.snacks = {
-  style = "single",
+  style = "rounded",
   picker = {
     default = {
       box = "none",
