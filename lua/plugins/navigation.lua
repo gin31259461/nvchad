@@ -118,11 +118,11 @@ return {
             },
           },
 
-          layout_strategy = "vertical",
+          layout_strategy = "horizontal",
           layout_config = {
-            vertical = {
-              prompt_position = "top",
-              preview_height = 0.5,
+            horizontal = {
+              prompt_position = "bottom",
+              preview_width = 0.5,
             },
             width = 0.87,
             height = 0.80,

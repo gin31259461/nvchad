@@ -55,30 +55,46 @@ M.base46 = {
     },
     LspInlayHint = { fg = "#808080", bg = "one_bg", italic = true },
 
-    -- Misc
-    NvimTreeOpenedFolderName = { fg = "green", bold = true },
+    -- Telescope
     TelescopeMatching = {
       fg = "yellow",
       bg = "NONE",
     },
+
+    TelescopeNormal = { link = "SnacksPickerList" },
+    TelescopePromptNormal = { link = "SnacksPickerInput" },
+    TelescopeSelection = { link = "SnacksPickerListCursorline" },
+
+    TelescopePromptTitle = { link = "SnacksPickerInputTitle" },
+    TelescopePromptPrefix = { link = "SnacksPickerPrompt" },
+    TelescopePreviewTitle = { link = "SnacksPickerPreviewTitle" },
+
+    TelescopeBorder = { link = "SnacksPickerBorder" },
+    TelescopePromptBorder = { link = "SnacksPickerInputBorder" },
+    TelescopeResultsTitle = { link = "SnacksPickerPreviewTitle" },
+
+    -- Misc
+    NvimTreeOpenedFolderName = { fg = "green", bold = true },
 
     -- Window
     NormalFloat = {
       bg = "black",
     },
     FloatBorder = { fg = "blue" },
-    FloatTitle = { fg = "black", bg = "blue" },
+    FloatTitle = { fg = "blue", bg = "black" },
 
     CmpPmenu = {
       bg = "black",
     },
     CmpBorder = {
+      fg = "grey",
       bg = "NONE",
     },
     CmpDoc = {
       bg = "black",
     },
     CmpDocBorder = {
+      fg = "grey",
       bg = "NONE",
     },
   },
@@ -104,27 +120,28 @@ M.base46 = {
     NoicePopupBorder = { fg = "blue" },
 
     -- Snacks input
-    SnacksInputPrompt = { fg = "purple" },
-    SnacksInputBorder = { fg = "green" },
-    SnacksInputTitle = { fg = "green" },
+    -- SnacksInputPrompt = { fg = "purple" },
+    -- SnacksInputBorder = { fg = "green" },
+    -- SnacksInputTitle = { fg = "green" },
 
     -- Snacks picker
     SnacksPickerMatch = { link = "TelescopeMatching" },
     SnacksPickerDir = { fg = "#928374" },
     SnacksPickerPathHidden = { fg = "#928374" },
 
-    SnacksPickerInput = { link = "TelescopePromptNormal" },
-    SnacksPickerList = { link = "TelescopeNormal" },
-    SnacksPickerPreview = { link = "TelescopeNormal" },
-
-    SnacksPickerPrompt = { link = "TelescopePromptPrefix" },
-    SnacksPickerInputTitle = { link = "TelescopePromptTitle" },
-    SnacksPickerPreviewTitle = { link = "TelescopePreviewTitle" },
-
-    SnacksPickerBorder = { fg = "blue", bg = "black2" },
-    SnacksPickerInputBorder = { fg = "blue", bg = "black2" },
-    SnacksPickerPreviewBorder = { fg = "blue", bg = "darker_black" },
-    SnacksPickerListBorder = { fg = "blue", bg = "darker_black" },
+    --
+    -- SnacksPickerInput = { link = "TelescopePromptNormal" },
+    -- SnacksPickerList = { link = "TelescopeNormal" },
+    -- SnacksPickerPreview = { link = "TelescopeNormal" },
+    --
+    -- SnacksPickerPrompt = { link = "TelescopePromptPrefix" },
+    -- SnacksPickerInputTitle = { link = "TelescopePromptTitle" },
+    -- SnacksPickerPreviewTitle = { link = "TelescopePreviewTitle" },
+    --
+    -- SnacksPickerBorder = { fg = "blue", bg = "black2" },
+    -- SnacksPickerInputBorder = { fg = "blue", bg = "black2" },
+    -- SnacksPickerPreviewBorder = { fg = "blue", bg = "darker_black" },
+    -- SnacksPickerListBorder = { fg = "blue", bg = "darker_black" },
 
     -- DAP
     DapBreakpointColor = { fg = "red" },
@@ -133,7 +150,6 @@ M.base46 = {
 
 M.nvdash = {
   load_on_startup = false,
-  header = require("plugins.ui.header").phantom,
   buttons = {
     {
       txt = "  Explorer",

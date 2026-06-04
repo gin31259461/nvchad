@@ -97,27 +97,30 @@ return {
           default = {
             layout = {
               backdrop = false,
-              box = "vertical",
+              box = "horizontal",
               width = 0.87,
               height = 0.80,
               border = borders.snacks.picker.default.box,
               {
-                height = 0.6,
+                box = "vertical",
+                {
+                  win = "list",
+                  border = borders.snacks.picker.default.list,
+                  flex = 1,
+                },
+                {
+                  win = "input",
+                  height = 1,
+                  border = borders.snacks.picker.default.input,
+                  title = "Find {title} {live} {flags}",
+                },
+              },
+              {
                 win = "preview",
                 title = "Preview {preview}",
                 border = borders.snacks.picker.default.preview,
                 flex = 1,
-              },
-              {
-                win = "input",
-                height = 0.1,
-                border = borders.snacks.picker.default.input,
-                title = "Find {title} {live} {flags}",
-              },
-              {
-                win = "list",
-                border = borders.snacks.picker.default.list,
-                flex = 1,
+                min_width = 30,
               },
             },
           },

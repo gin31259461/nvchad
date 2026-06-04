@@ -2,7 +2,7 @@
 local M = {}
 
 -- Default border for standard float windows (cmp, lsp, trouble, which-key, service, term).
-M.default = "single"
+M.default = "rounded"
 
 -- Box-drawing border with CmpBorder highlight (LSP diagnostic float).
 M.lsp_diagnostic = {
@@ -28,25 +28,25 @@ M.snacks = {
   picker = {
     default = {
       box = "none",
-      preview = "solid",
-      input = "solid",
-      list = "solid",
+      preview = "rounded",
+      input = "rounded",
+      list = "rounded",
     },
     select = {
       box = "none",
-      input = "solid",
-      list = "solid",
+      input = "rounded",
+      list = "rounded",
     },
     vscode = {
       box = "none",
-      input = "solid",
+      input = "rounded",
       list = "hpad",
       preview = true,
     },
     vertical = {
-      box = "solid",
+      box = "rounded",
       input = "bottom",
-      list = "solid",
+      list = "none",
       preview = "top",
     },
   },
