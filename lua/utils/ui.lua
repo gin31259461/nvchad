@@ -88,7 +88,7 @@ M.harpoon.highlight_current_file = function()
             {
               end_col = #line,
               hl_group = highlights.util.get_hl_name_without_syntax(
-                highlights.statusline.active_context
+                highlights.hl_groups.active_context
               ),
             }
           )

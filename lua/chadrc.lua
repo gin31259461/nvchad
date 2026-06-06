@@ -1,7 +1,6 @@
 ---@module "ui"
 
 local statusline = require("utils.statusline")
-local highlights = require("utils.hl")
 local config = require("config")
 local borders = require("config.borders")
 
@@ -17,38 +16,6 @@ M.base46 = {
   -- Only affects EXISTING highlight groups, can NOT add new groups.
   -- Uses per-key merge, not full override.
   hl_override = {
-    -- NvChad
-    St_EmptySpace = {
-      bg = "NONE",
-    },
-    St_CommandModeSep = {
-      bg = "NONE",
-    },
-    St_ConfirmModeSep = {
-      bg = "NONE",
-    },
-    St_InsertModeSep = {
-      bg = "NONE",
-    },
-    St_NTerminalModeSep = {
-      bg = "NONE",
-    },
-    St_NormalModeSep = {
-      bg = "NONE",
-    },
-    St_SelectModeSep = {
-      bg = "NONE",
-    },
-    St_ReplaceModeSep = {
-      bg = "NONE",
-    },
-    St_TerminalModeSep = {
-      bg = "NONE",
-    },
-    St_VisualModeSep = {
-      bg = "NONE",
-    },
-
     -- Editor
     Comment = { italic = true },
     ["@comment"] = { italic = true },
@@ -107,15 +74,8 @@ M.base46 = {
   -- CAN add new highlight groups (not limited to existing ones).
   -- Uses per-key merge, not full override.
   hl_add = {
-    CmpGhostText = { link = "Comment", default = true },
     active_context = { fg = "blue" },
-
-    -- Statusline
-    ["@statusline.current_file"] = { fg = "#A9B1D6" },
-    ["@statusline.symbols"] = { fg = "#ABB2BF", bold = false },
-    ["@statusline.text"] = { fg = "#676875" },
-    ["@statusline.git"] = { fg = "#646D96", bold = true },
-    ["@statusline.copilot"] = { fg = "green" },
+    CmpGhostText = { link = "Comment", default = true },
 
     -- Noice
     NoiceCmdlineIcon = { fg = "purple" },
@@ -157,52 +117,6 @@ M.base46 = {
 
 M.nvdash = {
   load_on_startup = false,
-  buttons = {
-    {
-      txt = "  Explorer",
-      keys = "e",
-      cmd = ":Neotree action=focus position=float source=filesystem",
-    },
-    { txt = "  Find File", keys = "f", cmd = ":lua Snacks.picker.files()" },
-    {
-      txt = "  Recent Files",
-      keys = "o",
-      cmd = ":lua Snacks.picker.recent()",
-    },
-    {
-      txt = "  Projects",
-      keys = "p",
-      cmd = ":lua Snacks.picker.projects()",
-    },
-    {
-      txt = "  Config",
-      keys = "c",
-      cmd = ":lua Snacks.picker.files { cwd = vim.fn.stdpath 'config' }",
-    },
-    {
-      txt = "󱥚  Themes",
-      keys = "th",
-      cmd = ":lua require('nvchad.themes').open()",
-    },
-    -- { txt = "  Mappings", keys = "ch", cmd = "NvCheatsheet" },
-    { txt = "─", hl = "NvDashFooter", no_gap = true, rep = true },
-    {
-      txt = function()
-        local stats = require("lazy").stats()
-        local ms = math.floor(stats.startuptime) .. " ms"
-        return "  Loaded "
-          .. stats.loaded
-          .. "/"
-          .. stats.count
-          .. " plugins in "
-          .. ms
-      end,
-      hl = "NvDashFooter",
-      no_gap = true,
-    },
-
-    { txt = "─", hl = "NvDashFooter", no_gap = true, rep = true },
-  },
 }
 
 M.term = {
@@ -224,39 +138,34 @@ M.lsp = {
 M.ui = {
 
   statusline = {
-    theme = "default",
+    theme = "lucid",
     separator_style = "round",
 
     -- refer to: https://github.com/NvChad/ui/blob/e0f06a9aa43112e94beca8283516e6804112fb8e/lua/nvchad/stl/utils.lua#L12
     order = {
-      "mode_override",
-      "git_hl",
-      "git_override",
-      "break_point",
-      "path",
-      "lsp_symbols",
+      "mode",
+      "git",
+      "truncation_point",
+      "file_path",
+      "symbols",
       "%=",
       -- "lsp_msg",
       "%=",
       "diagnostics",
-      "current_lsp",
+      "copilot",
+      "lsp",
       "cwd",
       "cursor",
     },
     modules = {
-      mode_override = statusline.mode,
-      current_lsp = statusline.current_lsp,
-      git_hl = highlights.statusline.git,
-      git_override = statusline.git,
-      path = statusline.path,
-      lsp_symbols = statusline.lsp_symbols,
-      break_point = statusline.break_point,
+      file_path = statusline.file_path,
+      symbols = statusline.symbols,
     },
   },
 
   tabufline = {
     lazyload = false,
-    -- order = { "tree_offset", "buffers", "tabs", "btns" },
+    ---@type  ('"treeOffset"' | '"buffers"' | '"tabs"' | '"btns"')[]
     order = { "treeOffset", "buffers" },
   },
 

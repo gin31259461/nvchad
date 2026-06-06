@@ -55,7 +55,7 @@ return {
 
         opts = {
           library = {
-            { path = "nvchad-ui/nvchad_types", mods = { "ui" } },
+            { path = "nv-ui/nvchad_types", mods = { "ui" } },
             { path = "snacks.nvim", words = { "snacks", "snacks.nvim" } },
             { path = "noice.nvim", words = { "noice", "noice.nvim" } },
             { path = "comet.nvim", words = { "Comet", "comet.nvim" } },

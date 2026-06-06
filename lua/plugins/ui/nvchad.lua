@@ -1,16 +1,22 @@
 ---@type LazySpec[]
 return {
   {
-    "nvchad/ui",
-    cond = false, -- replaced by Orbit-Lua/nvchad-ui fork
-    lazy = false,
-    config = function()
-      require("nvchad")
+    "nvchad/base46",
+    cond = false,
+  },
+  {
+    "Orbit-Lua/nv-base46",
+    build = function()
+      require("base46").load_all_highlights()
     end,
   },
 
   {
-    "Orbit-Lua/nvchad-ui",
+    "nvchad/ui",
+    cond = false,
+  },
+  {
+    "Orbit-Lua/nv-ui",
     lazy = false,
     config = function()
       require("nvchad")
