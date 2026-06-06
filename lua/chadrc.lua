@@ -13,6 +13,9 @@ M.base46 = {
   theme = "tokyonight",
   theme_toggle = { "tokyonight", "vscode_light" },
 
+  -- NOTE: merged into ALL integrations (treesitter, lsp, cmp, etc.)
+  -- Only affects EXISTING highlight groups, can NOT add new groups.
+  -- Uses per-key merge, not full override.
   hl_override = {
     -- NvChad
     St_EmptySpace = {
@@ -48,11 +51,12 @@ M.base46 = {
 
     -- Editor
     Comment = { italic = true },
-    TreesitterContext = { link = "CursorLine" },
     ["@comment"] = { italic = true },
     ["@comment.todo"] = {
       bg = "green",
     },
+
+    TreesitterContext = { link = "CursorLine" },
     LspInlayHint = { fg = "#808080", bg = "one_bg", italic = true },
 
     -- Telescope
@@ -99,6 +103,9 @@ M.base46 = {
     },
   },
 
+  -- NOTE: merged into the "defaults" integration ONLY.
+  -- CAN add new highlight groups (not limited to existing ones).
+  -- Uses per-key merge, not full override.
   hl_add = {
     CmpGhostText = { link = "Comment", default = true },
     active_context = { fg = "blue" },
