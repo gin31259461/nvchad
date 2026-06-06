@@ -1,5 +1,6 @@
----@type LazySpec[]
 local borders = require("config.borders")
+
+---@type LazySpec[]
 return {
   {
     "folke/which-key.nvim",

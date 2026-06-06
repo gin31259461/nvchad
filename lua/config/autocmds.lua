@@ -1,17 +1,17 @@
+local autocmd = vim.api.nvim_create_autocmd
+local augroup = vim.api.nvim_create_augroup
+
 -- FIX: statusline diagnostics missing on idle buffer open
-vim.api.nvim_create_autocmd("DiagnosticChanged", {
-  group = vim.api.nvim_create_augroup(
-    "UserDiagnosticChanged",
-    { clear = true }
-  ),
+autocmd("DiagnosticChanged", {
+  group = augroup("UserDiagnosticChanged", { clear = true }),
   callback = function()
     vim.cmd("redrawstatus")
   end,
   desc = "Redraw statusline when diagnostics change",
 })
 
-vim.api.nvim_create_autocmd("VimEnter", {
-  group = vim.api.nvim_create_augroup("AutoSetDir", { clear = true }),
+autocmd("VimEnter", {
+  group = augroup("AutoSetDir", { clear = true }),
   callback = function(data)
     if vim.fn.isdirectory(data.file) ~= 1 then
       return

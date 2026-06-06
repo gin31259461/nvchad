@@ -100,7 +100,7 @@ local specs = {
         function()
           require("opencode").toggle()
         end,
-        mode = { "n", "t" },
+        mode = "n",
         desc = "toggle opencode",
       },
       {
