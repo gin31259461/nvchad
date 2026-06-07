@@ -1,6 +1,5 @@
 ---@module "ui"
 
-local statusline = require("utils.statusline")
 local config = require("config")
 local borders = require("config.borders")
 
@@ -136,31 +135,9 @@ M.lsp = {
 }
 
 M.ui = {
-
   statusline = {
     theme = "lucid",
     separator_style = "round",
-
-    -- refer to: https://github.com/NvChad/ui/blob/e0f06a9aa43112e94beca8283516e6804112fb8e/lua/nvchad/stl/utils.lua#L12
-    order = {
-      "mode",
-      "git",
-      "truncation_point",
-      "file_path",
-      "symbols",
-      "%=",
-      -- "lsp_msg",
-      "%=",
-      "diagnostics",
-      "copilot",
-      "lsp",
-      "cwd",
-      "cursor",
-    },
-    modules = {
-      file_path = statusline.file_path,
-      symbols = statusline.symbols,
-    },
   },
 
   tabufline = {

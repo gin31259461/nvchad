@@ -148,26 +148,4 @@ describe("config", function()
       assert.is_true(type(config.message_ignored.notify) == "table")
     end)
   end)
-
-  describe("statusline_ignored", function()
-    it("is a non-empty table", function()
-      assert.is_true(type(config.statusline_ignored) == "table")
-      assert.is_true(#config.statusline_ignored > 0)
-    end)
-
-    it("contains nvdash", function()
-      assert.is_true(vim.tbl_contains(config.statusline_ignored, "nvdash"))
-    end)
-
-    it("contains NvimTree pattern", function()
-      local found = false
-      for _, pat in ipairs(config.statusline_ignored) do
-        if pat:find("NvimTree") then
-          found = true
-          break
-        end
-      end
-      assert.is_true(found)
-    end)
-  end)
 end)

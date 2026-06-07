@@ -107,7 +107,7 @@ M.get_text_offset = function(win_id)
 end
 
 ---@param path string
----@param opts? {has_hl?: boolean}
+---@param opts? {colored?: boolean}
 M.get_file_icon = function(path, opts)
   opts = opts or {}
 
@@ -127,7 +127,7 @@ M.get_file_icon = function(path, opts)
     icon = (devicon or "")
   end
 
-  if opts.has_hl then
+  if opts.colored then
     icon = string.format("%%#%s#", devicon_hl_name) .. icon .. "%*"
   end
 

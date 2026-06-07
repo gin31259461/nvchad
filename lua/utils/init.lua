@@ -17,7 +17,6 @@ M.shell = require("utils.shell")
 M.os = require("utils.os")
 M.config = require("config")
 M.fs = require("utils.fs")
-M.statusline = require("utils.statusline")
 M.cmp = require("utils.cmp")
 M.hl = require("utils.hl")
 M.ui = require("utils.ui")
@@ -45,7 +44,6 @@ end
 
 -- call this setup when all plugins loaded
 M.setup = function()
-  M.statusline.setup()
   M.shell.setup()
   M.hl.setup()
 end
