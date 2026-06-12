@@ -56,7 +56,7 @@ return {
       },
       git = {
         enable = true,
-        timeout = 20000,
+        timeout = 200,
       },
     },
     keys = {
