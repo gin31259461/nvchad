@@ -88,7 +88,6 @@ Remove-Item -Recurse -Force ~\AppData\Local\nvim-data
 | [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) | Completion engine (LSP, buffer, path, snippets) |
 | [LuaSnip](https://github.com/L3MON4D3/LuaSnip) + friendly-snippets | Snippet engine |
 | [copilot.lua](https://github.com/zbirenbaum/copilot.lua) | GitHub Copilot inline suggestions (model: `gpt-41-copilot`) |
-| [opencode.nvim](https://github.com/nickjvandyke/opencode.nvim) | OpenCode AI integration (ask, execute, session management) |
 | [nvim-autopairs](https://github.com/windwp/nvim-autopairs) | Auto-close brackets/quotes |
 | [nvim-ts-autotag](https://github.com/windwp/nvim-ts-autotag) | Auto-close/rename HTML tags |
 | [vim-matchup](https://github.com/andymass/vim-matchup) | Treesitter-aware `%` matching |
@@ -186,7 +185,6 @@ Custom interactive UI (`<leader>sm` / `:ServiceManager`) to toggle LSP servers, 
 | `J` / `K` (visual) | Move selected block down / up |
 | `<leader>/` | Toggle comment |
 | `<leader>q` | Record macro |
-| `+` / `-` | Increment / decrement number (`<C-a>`/`<C-x>` remapped — those are taken by OpenCode) |
 
 ### Buffers & Windows
 
@@ -353,17 +351,6 @@ Custom interactive UI (`<leader>sm` / `:ServiceManager`) to toggle LSP servers, 
 | `<M-l>` | insert | Accept suggestion |
 | `<M-]>` | insert | Next suggestion |
 | `<M-[>` | insert | Prev suggestion |
-
-#### OpenCode
-
-| Key | Mode | Action |
-| --- | --- | --- |
-| `<C-a>` | normal/visual | Ask OpenCode |
-| `<C-x>` | normal/visual | Execute OpenCode action |
-| `<C-.>` | normal/terminal | Toggle OpenCode panel |
-| `go` | normal/visual | Add range to session |
-| `goo` | normal | Add current line to session |
-| `<S-C-u>` / `<S-C-d>` | normal | Scroll OpenCode up / down |
 
 ### Other
 
