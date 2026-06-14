@@ -104,6 +104,7 @@ return {
     jsx = { "deno_fmt", "eslint_d" },
 
     json = { "deno_fmt" },
+    jsonc = { "deno_fmt" },
     toml = { "tombi" },
     prisma = { "prisma_fmt" },
     cs = { "csharpier" },
