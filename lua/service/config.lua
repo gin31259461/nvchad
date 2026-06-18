@@ -1,4 +1,5 @@
 ---@alias ServiceCategory "lsp" | "dap" | "linter" | "formatter"
+---@alias Service.MissingPackagePolicy "auto" | "manual"
 
 ---@class Service.Meta
 ---@field ft string[]?
@@ -8,7 +9,9 @@
 ---@class Service.Entry
 ---@field name string
 ---@field meta Service.Meta
+---@field kind "service"|"detail"?
 ---@field ft string?
+---@field order_names string[]?
 ---@field icon_byte integer
 ---@field status_byte integer
 ---@field status_hl string
@@ -20,6 +23,7 @@
 ---@field help_open boolean
 ---@field line_map table<integer, Service.Entry>
 ---@field live_augroup integer?
+---@field expanded table<string, boolean>?
 
 ---@class Service.FtGroup
 ---@field ft string
@@ -48,6 +52,12 @@
 ---@field max_w integer   max display-column width for each tooltip message line
 ---@field max_messages integer   max number of diagnostic messages shown before "+ N more"
 
+---@class Service.Config.Icons
+---@field enabled string
+---@field disabled string
+---@field expanded string
+---@field collapsed string
+
 ---@class Service.Config
 ---@field max_w integer
 ---@field min_w integer
@@ -62,6 +72,8 @@
 ---@field service_categories ServiceCategory[]
 ---@field cat_label table<ServiceCategory, string>
 ---@field tooltip Service.Config.Tooltip
+---@field icons Service.Config.Icons
+---@field missing_package_policy Service.MissingPackagePolicy
 
 ---@type Service.Config
 local cfg = {
@@ -72,6 +84,7 @@ local cfg = {
   col_name = 32,
   col_ft = 32,
   col_status = 64,
+  col_package = 24,
   col_tool = 26,
   pad_flat = 2,
   pad_tool = 4,
@@ -86,6 +99,13 @@ local cfg = {
     max_w = 70,
     max_messages = 8,
   },
+  icons = {
+    enabled = "",
+    disabled = "",
+    expanded = "▾",
+    collapsed = "▸",
+  },
+  missing_package_policy = "auto",
 }
 
 return cfg

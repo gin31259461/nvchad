@@ -45,28 +45,10 @@ return {
       end
 
       -- Apply saved priority order then filter disabled linters
-      local state_mod = require("service.state")
-      local services = require("config.services")
+      local order = require("service.order")
       for filetype, linters in pairs(opts.linters_by_ft) do
-        local saved = state_mod.get_order("linter", filetype)
-        if saved then
-          local reordered = {}
-          for _, name in ipairs(saved) do
-            if vim.tbl_contains(linters, name) then
-              table.insert(reordered, name)
-            end
-          end
-          for _, name in ipairs(linters) do
-            if not vim.tbl_contains(reordered, name) then
-              table.insert(reordered, name)
-            end
-          end
-          linters = reordered
-        end
-        opts.linters_by_ft[filetype] = vim.tbl_filter(function(name)
-          return services.linter[name] == nil
-            or state_mod.is_enabled("linter", name)
-        end, linters)
+        opts.linters_by_ft[filetype] =
+          order.enabled_names_for_ft("linter", filetype, linters)
       end
 
       lint.linters_by_ft = opts.linters_by_ft

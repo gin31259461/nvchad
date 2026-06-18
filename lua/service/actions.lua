@@ -14,6 +14,22 @@ local category_handlers = {
   formatter = require("service.category.formatter"),
 }
 
+---@param pkg_name string
+---@return table? pkg, string? err
+local function get_mason_package(pkg_name)
+  local reg_ok, reg = pcall(require, "mason-registry")
+  if not reg_ok then
+    return nil, "mason registry is unavailable"
+  end
+
+  local pkg_ok, pkg = pcall(reg.get_package, pkg_name)
+  if not pkg_ok or not pkg then
+    return nil, "mason package not found: " .. pkg_name
+  end
+
+  return pkg, nil
+end
+
 ---@class Service.Actions.State
 ---@field ui Service.UI?
 ---@field tooltip_ns integer?
@@ -32,49 +48,52 @@ end
 
 ---@return Service.Entry?
 local function current_entry()
-  if not _state.ui.win then
+  if not _state.ui.win or _state.ui.help_open then
     return nil
   end
   return _state.ui.line_map[vim.api.nvim_win_get_cursor(_state.ui.win)[1]]
+end
+
+local function expand_key(category, name)
+  return category .. ":" .. name
 end
 
 ---@param pkg_name string?
 ---@param on_done (fun())?
 local function install_pkg(pkg_name, on_done)
   if not pkg_name then
-    return
+    return false
   end
-  local reg_ok, reg = pcall(require, "mason-registry")
-  if not reg_ok then
-    return
+  local pkg, err = get_mason_package(pkg_name)
+  if not pkg then
+    vim.notify("ServiceManager: " .. err, vim.log.levels.WARN)
+    return false
   end
 
-  if reg.is_installed(pkg_name) then
+  if pkg:is_installed() then
     vim.notify(pkg_name .. " is already installed", vim.log.levels.INFO)
     if on_done then
       on_done()
     end
-    return
+    return true
   end
 
-  local pkg_ok, pkg = pcall(reg.get_package, pkg_name)
-  if pkg_ok and pkg then
-    vim.notify("Installing " .. pkg_name .. "…", vim.log.levels.INFO)
-    pkg:install():once("closed", function()
-      if pkg:is_installed() then
-        vim.schedule(function()
-          vim.notify(pkg_name .. " installed", vim.log.levels.INFO)
-          if on_done then
-            on_done()
-          end
-        end)
-      else
-        vim.schedule(function()
-          vim.notify("Failed to install " .. pkg_name, vim.log.levels.ERROR)
-        end)
-      end
-    end)
-  end
+  vim.notify("Installing " .. pkg_name .. "…", vim.log.levels.INFO)
+  pkg:install():once("closed", function()
+    if pkg:is_installed() then
+      vim.schedule(function()
+        vim.notify(pkg_name .. " installed", vim.log.levels.INFO)
+        if on_done then
+          on_done()
+        end
+      end)
+    else
+      vim.schedule(function()
+        vim.notify("Failed to install " .. pkg_name, vim.log.levels.ERROR)
+      end)
+    end
+  end)
+  return true
 end
 
 ---@return nil
@@ -309,10 +328,17 @@ function M.do_toggle()
   local is_now_enabled = not state_mod.is_enabled(category, entry.name)
 
   if is_now_enabled and entry.meta.mason then
-    local reg_ok, reg = pcall(require, "mason-registry")
-    if reg_ok then
-      local pkg_ok, pkg = pcall(reg.get_package, entry.meta.mason)
-      if pkg_ok and pkg and not pkg:is_installed() then
+    local pkg, err = get_mason_package(entry.meta.mason)
+    if pkg and not pkg:is_installed() then
+      if cfg.missing_package_policy == "manual" then
+        vim.notify(
+          entry.meta.mason .. " is not installed; press i to install",
+          vim.log.levels.WARN
+        )
+        return
+      end
+
+      if cfg.missing_package_policy == "auto" then
         install_pkg(entry.meta.mason, function()
           state_mod.set_enabled(category, entry.name, true)
           category_handlers[category].apply_runtime({
@@ -324,6 +350,8 @@ function M.do_toggle()
         end)
         return
       end
+    elseif not pkg then
+      vim.notify("ServiceManager: " .. err, vim.log.levels.WARN)
     end
   end
 
@@ -358,23 +386,12 @@ end
 ---@return nil
 function M.do_reorder(dir)
   local entry = current_entry()
-  if not entry or not entry.ft then
+  if not entry or not entry.ft or not entry.order_names then
     return
   end
   local category = cfg.service_categories[_state.ui.category_idx]
 
-  local group
-  for _, filetype_group in ipairs(data.build_ft_groups(category)) do
-    if filetype_group.ft == entry.ft then
-      group = filetype_group
-      break
-    end
-  end
-  if not group then
-    return
-  end
-
-  local names = vim.deepcopy(group.names)
+  local names = vim.deepcopy(entry.order_names)
   local current_idx
   for i, n in ipairs(names) do
     if n == entry.name then
@@ -417,6 +434,21 @@ function M.do_reorder(dir)
       break
     end
   end
+end
+
+---@return nil
+function M.toggle_expand()
+  if _state.ui.help_open then
+    return
+  end
+  local entry = current_entry()
+  if not entry or not entry.name then
+    return
+  end
+  local category = cfg.service_categories[_state.ui.category_idx]
+  local key = expand_key(category, entry.name)
+  _state.ui.expanded[key] = not _state.ui.expanded[key]
+  _state.render()
 end
 
 ---@param idx integer

@@ -2,6 +2,7 @@ local M = {}
 
 local state_mod = require("service.state")
 local logger = require("utils.logger")
+local order = require("service.order")
 
 ---@class Service.LinterDiagnosticMessage
 ---@field file string
@@ -78,7 +79,6 @@ function M.apply_runtime(opts)
   end
   for _, ft in ipairs(meta.ft or {}) do
     local list = lint.linters_by_ft[ft] or {}
-    lint.linters_by_ft[ft] = list
     if is_enabled then
       if not vim.tbl_contains(list, name) then
         table.insert(list, name)
@@ -90,6 +90,7 @@ function M.apply_runtime(opts)
         end
       end
     end
+    lint.linters_by_ft[ft] = order.enabled_names_for_ft("linter", ft, list)
   end
 end
 

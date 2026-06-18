@@ -1,5 +1,7 @@
 local M = {}
 
+local order = require("service.order")
+
 ---@param opts Service.ApplyRuntimeOpts
 ---@return nil
 function M.apply_runtime(opts)
@@ -10,7 +12,6 @@ function M.apply_runtime(opts)
   end
   for _, ft in ipairs(meta.ft or {}) do
     local list = conform.formatters_by_ft[ft] or {}
-    conform.formatters_by_ft[ft] = list
     if is_enabled then
       if not vim.tbl_contains(list, name) then
         table.insert(list, name)
@@ -22,6 +23,8 @@ function M.apply_runtime(opts)
         end
       end
     end
+    conform.formatters_by_ft[ft] =
+      order.enabled_names_for_ft("formatter", ft, list)
   end
 end
 

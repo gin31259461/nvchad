@@ -6,6 +6,7 @@ local services = require("config.services")
 local borders = require("config.borders")
 local state_mod = require("service.state")
 local ui_utils = require("utils.ui")
+local order = require("service.order")
 
 ---@class Service.Renderer.State
 ---@field ui Service.UI?
@@ -21,6 +22,20 @@ function M.init(opts)
   _state.ns = opts.ns
 end
 
+local function service_key(category, name)
+  return category .. ":" .. name
+end
+
+local function content_lines(category)
+  local count = vim.tbl_count(services[category])
+  for name, meta in pairs(services[category]) do
+    if _state.ui.expanded[service_key(category, name)] then
+      count = count + #(meta.ft or {})
+    end
+  end
+  return count
+end
+
 ---@return vim.api.keyset.win_config
 function M.make_win_cfg()
   local win_width = math.min(
@@ -28,7 +43,7 @@ function M.make_win_cfg()
     math.max(cfg.min_w, math.min(cfg.max_w, vim.o.columns - 4))
   )
   local natural = 4
-    + data.content_lines(cfg.service_categories[_state.ui.category_idx])
+    + content_lines(cfg.service_categories[_state.ui.category_idx])
   local win_height =
     math.min(vim.o.lines - 2, math.max(cfg.min_h, math.min(cfg.max_h, natural)))
   return {
@@ -75,20 +90,72 @@ end
 ---@param icon_disp_w integer
 ---@return string
 local function build_col_header(category, icon_disp_w)
-  if category == "lsp" or category == "dap" then
-    return string.rep(" ", cfg.pad_flat + icon_disp_w + 2)
-      .. ui_utils.rpad("Service", cfg.col_name)
-      .. "  "
-      .. ui_utils.rpad("Filetypes", cfg.col_ft)
-      .. "  "
-      .. "Status"
-  end
-  return string.rep(" ", cfg.pad_tool + icon_disp_w + 2)
-    .. ui_utils.rpad("Service", cfg.col_tool)
+  local name_w = (category == "lsp" or category == "dap") and cfg.col_name
+    or cfg.col_tool
+  return string.rep(" ", cfg.pad_flat + 2 + icon_disp_w + 2)
+    .. ui_utils.rpad("Service", name_w)
     .. "  "
-    .. ui_utils.rpad("Filetypes", cfg.col_ft)
+    .. ui_utils.rpad("Package", cfg.col_package)
     .. "  "
     .. "Status"
+end
+
+local function package_label(meta)
+  return meta.mason or "external"
+end
+
+local function service_entries(category)
+  local flat = {}
+  for name, meta in pairs(services[category]) do
+    table.insert(flat, { name = name, meta = meta })
+  end
+  table.sort(flat, function(a, b)
+    return a.name < b.name
+  end)
+  return flat
+end
+
+local function ft_order_rows(category, name, meta)
+  local rows = {}
+  if category ~= "formatter" and category ~= "linter" then
+    for _, ft in ipairs(meta.ft or {}) do
+      table.insert(rows, { ft = ft })
+    end
+    return rows
+  end
+
+  for _, ft in ipairs(meta.ft or {}) do
+    local names = order.names_for_ft(category, ft)
+    local idx
+    for i, candidate in ipairs(names) do
+      if candidate == name then
+        idx = i
+        break
+      end
+    end
+    table.insert(rows, { ft = ft, idx = idx, total = #names, names = names })
+  end
+  table.sort(rows, function(a, b)
+    return a.ft < b.ft
+  end)
+  return rows
+end
+
+---@param lines string[]
+---@param win_width integer
+---@param prefix string
+---@param status_text string
+---@return integer status_byte
+local function append_status_line(lines, win_width, prefix, status_text)
+  local status_w = math.max(1, win_width - vim.fn.strdisplaywidth(prefix))
+  table.insert(
+    lines,
+    ui_utils.fill_line(
+      prefix .. ui_utils.trunc(status_text, status_w),
+      win_width
+    )
+  )
+  return #prefix
 end
 
 ---@return nil
@@ -99,8 +166,7 @@ function M.render()
   _state.ui.help_open = false
 
   local category = cfg.service_categories[_state.ui.category_idx]
-  -- measure icon display width at runtime; ● is East Asian Ambiguous (1 or 2)
-  local icon_disp_w = vim.fn.strdisplaywidth("●")
+  local icon_disp_w = vim.fn.strdisplaywidth(cfg.icons.enabled)
   local wcfg = M.make_win_cfg()
   local win_width = wcfg.width
   local sep = string.rep("─", win_width - 4)
@@ -117,91 +183,65 @@ function M.render()
   local header_lnums = {}
   _state.ui.line_map = {}
 
-  if category == "lsp" or category == "dap" then
-    local flat = {}
-    for name, meta in pairs(services[category]) do
-      table.insert(flat, { name = name, meta = meta })
-    end
-    table.sort(flat, function(a, b)
-      return a.name < b.name
-    end)
+  for _, service_entry in ipairs(service_entries(category)) do
+    local name = service_entry.name
+    local meta = service_entry.meta
+    local is_enabled = state_mod.is_enabled(category, name)
+    local icon = is_enabled and cfg.icons.enabled or cfg.icons.disabled
+    local is_expanded = _state.ui.expanded[service_key(category, name)] == true
+    local expand_icon = is_expanded and cfg.icons.expanded
+      or cfg.icons.collapsed
+    local name_w = (category == "lsp" or category == "dap") and cfg.col_name
+      or cfg.col_tool
+    local display_name = ui_utils.trunc(name, name_w)
+    local status_text, status_hl = data.entry_status(category, name, meta)
 
-    for _, service_entry in ipairs(flat) do
-      local is_enabled = state_mod.is_enabled(category, service_entry.name)
-      local icon = is_enabled and "●" or "○"
-      local display_name = ui_utils.trunc(service_entry.name, cfg.col_name)
-      local ft_str = table.concat(service_entry.meta.ft or {}, ", ")
-      local display_ft = ui_utils.trunc(ft_str, cfg.col_ft)
-      local status_text, status_hl =
-        data.entry_status(category, service_entry.name, service_entry.meta)
-
-      local icon_gap =
-        string.rep(" ", icon_disp_w - vim.fn.strdisplaywidth(icon) + 2)
-      local prefix = string.rep(" ", cfg.pad_flat)
-        .. icon
-        .. icon_gap
-        .. ui_utils.rpad(display_name, cfg.col_name)
-        .. "  "
-        .. ui_utils.rpad(display_ft, cfg.col_ft)
-        .. "  "
-      table.insert(
-        lines,
-        ui_utils.fill_line(
-          prefix .. ui_utils.trunc(status_text, cfg.col_status),
-          win_width
-        )
+    local icon_gap =
+      string.rep(" ", icon_disp_w - vim.fn.strdisplaywidth(icon) + 2)
+    local prefix = string.rep(" ", cfg.pad_flat)
+      .. expand_icon
+      .. " "
+      .. icon
+      .. icon_gap
+      .. ui_utils.rpad(display_name, name_w)
+      .. "  "
+      .. ui_utils.rpad(
+        ui_utils.trunc(package_label(meta), cfg.col_package),
+        cfg.col_package
       )
-      _state.ui.line_map[#lines] = {
-        name = service_entry.name,
-        meta = service_entry.meta,
-        icon_byte = cfg.pad_flat,
-        status_byte = #prefix,
-        status_hl = status_hl,
-      }
-    end
-  else
-    for _, filetype_group in ipairs(data.build_ft_groups(category)) do
-      table.insert(
-        lines,
-        ui_utils.fill_line("  " .. filetype_group.ft, win_width)
-      )
-      header_lnums[#lines] = true
+      .. "  "
+    local status_byte =
+      append_status_line(lines, win_width, prefix, status_text)
+    _state.ui.line_map[#lines] = {
+      name = name,
+      kind = "service",
+      meta = meta,
+      icon_byte = cfg.pad_flat + 2,
+      status_byte = status_byte,
+      status_hl = status_hl,
+    }
 
-      for _, name in ipairs(filetype_group.names) do
-        local meta = services[category][name]
-        if meta then
-          local is_enabled = state_mod.is_enabled(category, name)
-          local icon = is_enabled and "●" or "○"
-          local display_name = ui_utils.trunc(name, cfg.col_tool)
-          local ft_str = table.concat(meta.ft or {}, ", ")
-          local display_ft = ui_utils.trunc(ft_str, cfg.col_ft)
-          local status_text, status_hl = data.entry_status(category, name, meta)
-
-          local icon_gap =
-            string.rep(" ", icon_disp_w - vim.fn.strdisplaywidth(icon) + 2)
-          local prefix = string.rep(" ", cfg.pad_tool)
-            .. icon
-            .. icon_gap
-            .. ui_utils.rpad(display_name, cfg.col_tool)
-            .. "  "
-            .. ui_utils.rpad(display_ft, cfg.col_ft)
-            .. "  "
-          table.insert(
-            lines,
-            ui_utils.fill_line(
-              prefix .. ui_utils.trunc(status_text, cfg.col_status),
-              win_width
-            )
-          )
-          _state.ui.line_map[#lines] = {
-            name = name,
-            ft = filetype_group.ft,
-            meta = meta,
-            icon_byte = cfg.pad_tool,
-            status_byte = #prefix,
-            status_hl = status_hl,
-          }
+    if is_expanded then
+      for _, row in ipairs(ft_order_rows(category, name, meta)) do
+        local detail
+        if row.idx then
+          detail =
+            string.format("ft %-18s order %d/%d", row.ft, row.idx, row.total)
+        else
+          detail = "ft " .. row.ft
         end
+        local detail_prefix = string.rep(" ", cfg.pad_flat + 4) .. detail
+        table.insert(lines, ui_utils.fill_line(detail_prefix, win_width))
+        _state.ui.line_map[#lines] = {
+          name = name,
+          kind = "detail",
+          ft = row.ft,
+          order_names = row.names,
+          meta = meta,
+          icon_byte = cfg.pad_flat + 4,
+          status_byte = #detail_prefix,
+          status_hl = "Comment",
+        }
       end
     end
   end
@@ -236,8 +276,8 @@ function M.render()
   ui_utils.buf_hl(_state.ui.buf, _state.ns, "Comment", 3, 0, -1)
 
   for lnum, entry in pairs(_state.ui.line_map) do
-    local icon_hl = state_mod.is_enabled(category, entry.name)
-        and "DiagnosticOk"
+    local icon_hl = entry.kind == "detail" and "Comment"
+      or state_mod.is_enabled(category, entry.name) and "DiagnosticOk"
       or "Comment"
     ui_utils.buf_hl(
       _state.ui.buf,
@@ -293,6 +333,7 @@ function M.render_help()
   if not (_state.ui.buf and vim.api.nvim_buf_is_valid(_state.ui.buf)) then
     return
   end
+  _state.ui.line_map = {}
 
   local win_width = vim.api.nvim_win_get_width(_state.ui.win)
   local sep = string.rep("─", win_width - 4)
@@ -324,8 +365,9 @@ function M.render_help()
 
   render_section("Actions")
   row("<Space> / <CR>", "Toggle enable / disable")
+  row("o / za", "Expand / collapse service details")
   row("i", "Install mason package")
-  row("[ / ]", "Reorder up / down (LINTER / FORMATTER only)")
+  row("[ / ]", "Reorder expanded ft detail (LINTER / FORMATTER only)")
   row("K", "Show full details (all tabs)")
 
   render_section("General")

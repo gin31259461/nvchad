@@ -21,6 +21,18 @@ local function build_defaults()
   return defaults
 end
 
+local function is_string_list(value)
+  if type(value) ~= "table" then
+    return false
+  end
+  for _, item in ipairs(value) do
+    if type(item) ~= "string" then
+      return false
+    end
+  end
+  return #value == vim.tbl_count(value)
+end
+
 function M.load()
   local file = io.open(STATE_PATH, "r")
   if not file then
@@ -38,11 +50,13 @@ function M.load()
     if type(val) == "table" then
       if cat == "formatter_order" or cat == "linter_order" then
         for ft, order in pairs(val) do
-          state[cat][ft] = order
+          if type(ft) == "string" and is_string_list(order) then
+            state[cat][ft] = order
+          end
         end
       elseif state[cat] then
         for name, enabled in pairs(val) do
-          if state[cat][name] ~= nil then
+          if state[cat][name] ~= nil and type(enabled) == "boolean" then
             state[cat][name] = enabled
           end
         end

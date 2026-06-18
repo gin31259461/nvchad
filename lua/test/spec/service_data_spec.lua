@@ -194,5 +194,14 @@ describe("service.data", function()
       -- Either "n/a" (mason unavailable) or a category-specific status.
       assert.is_true(type(status) == "string")
     end)
+
+    it("reports non-mason services as external", function()
+      local status, _ = data.entry_status(
+        "formatter",
+        "prisma_fmt",
+        services.formatter.prisma_fmt
+      )
+      assert.equals("external", status)
+    end)
   end)
 end)

@@ -12,6 +12,7 @@ local ui = {
   help_open = false,
   line_map = {},
   live_augroup = nil,
+  expanded = {},
 }
 local ns = vim.api.nvim_create_namespace("ServiceManager")
 local tooltip_ns = vim.api.nvim_create_namespace("ServiceManagerTooltip")
@@ -30,7 +31,6 @@ local function set_keymaps()
   map("<Esc>", M.close)
   map("g?", renderer.toggle_help)
   map("<Space>", actions.do_toggle)
-  map("<CR>", actions.do_toggle)
   map("i", actions.do_install)
   map("<Tab>", function()
     actions.switch_tab((ui.category_idx % #cfg.service_categories) + 1)
@@ -45,6 +45,9 @@ local function set_keymaps()
     actions.do_reorder(1)
   end)
   map("K", actions.show_tooltip_at_cursor)
+  map("o", actions.toggle_expand)
+  map("<CR>", actions.toggle_expand)
+  map("za", actions.toggle_expand)
 
   for i = 1, #cfg.service_categories do
     map(tostring(i), function()
