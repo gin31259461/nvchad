@@ -24,12 +24,12 @@ require("lazy").setup({
   { import = "plugins" },
 }, require("config.lazy"))
 
-require("config.options")
 require("nvchad.options")
+require("config.options")
 
+require("nvchad.autocmds")
 require("config.autocmds")
 require("config.filetypes")
-require("nvchad.autocmds")
 
 local fs = require("utils.fs")
 for _, cmd_file in ipairs(fs.scandir(fs.config_path .. "/lua/cmds", "file")) do
