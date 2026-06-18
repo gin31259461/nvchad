@@ -58,6 +58,14 @@ local function expand_key(category, name)
   return category .. ":" .. name
 end
 
+local function ft_key(category, ft)
+  return category .. ":ft:" .. ft
+end
+
+local function is_ordered_category(category)
+  return category == "formatter" or category == "linter"
+end
+
 ---@param pkg_name string?
 ---@param on_done (fun())?
 local function install_pkg(pkg_name, on_done)
@@ -442,12 +450,22 @@ function M.toggle_expand()
     return
   end
   local entry = current_entry()
-  if not entry or not entry.name then
+  if not entry then
     return
   end
   local category = cfg.service_categories[_state.ui.category_idx]
-  local key = expand_key(category, entry.name)
-  _state.ui.expanded[key] = not _state.ui.expanded[key]
+
+  local key
+  if is_ordered_category(category) and entry.ft then
+    key = ft_key(category, entry.ft)
+    _state.ui.expanded[key] = _state.ui.expanded[key] == false
+  elseif entry.name then
+    key = expand_key(category, entry.name)
+    _state.ui.expanded[key] = not _state.ui.expanded[key]
+  else
+    return
+  end
+
   _state.render()
 end
 

@@ -9,7 +9,7 @@
 ---@class Service.Entry
 ---@field name string
 ---@field meta Service.Meta
----@field kind "service"|"detail"?
+---@field kind "service"|"detail"|"ft_group"?
 ---@field ft string?
 ---@field order_names string[]?
 ---@field icon_byte integer

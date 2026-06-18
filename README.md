@@ -86,9 +86,9 @@ Open it with `<leader>sm` or `:ServiceManager`.
 
 Use it to enable or disable LSP servers, formatters, linters, and DAP adapters;
 install Mason packages; and reorder formatter or linter priority per filetype.
-Inside the UI, `<Space>` or `<CR>` toggles an item, `i` installs it, `[` and
-`]` reorder priorities, `<Tab>` switches category tabs, `g?` toggles help, and
-`q` closes the window.
+Inside the UI, `<Space>` toggles an item, `<CR>` expands details, `i` installs
+it, `[` and `]` reorder priorities, `<Tab>` switches category tabs, `g?`
+toggles help, and `q` closes the window.
 
 ## Main Keymaps
 

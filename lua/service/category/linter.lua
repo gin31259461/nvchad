@@ -117,25 +117,25 @@ function M.entry_status(opts)
     local latest_error = run_errors[#run_errors]
     local status_text
     if latest_error.tags and latest_error.tags.kind == "binary_not_found" then
-      status_text = "no binary"
+      status_text = "global no binary"
     elseif
       latest_error.tags
       and latest_error.tags.kind == "definition_not_found"
     then
-      status_text = "missing"
+      status_text = "global missing"
     else
-      status_text = "error"
+      status_text = "global error"
     end
     return status_text, "DiagnosticError"
   end
   local summary = M.get_linter_diagnostics(name)
   if summary.error_count > 0 then
-    return summary.error_count .. "E " .. summary.warn_count .. "W",
+    return "global " .. summary.error_count .. "E " .. summary.warn_count .. "W",
       "DiagnosticError"
   elseif summary.warn_count > 0 then
-    return summary.warn_count .. "W", "DiagnosticWarn"
+    return "global " .. summary.warn_count .. "W", "DiagnosticWarn"
   else
-    return "ok", "DiagnosticOk"
+    return "global ok", "DiagnosticOk"
   end
 end
 

@@ -18,9 +18,6 @@ M.register_servers = function(opts)
   }
 
   for _, server in ipairs(configs.packages.lsp_servers) do
-    if not state_mod.is_enabled("lsp", server) then
-      goto continue
-    end
     local server_opts = vim.tbl_deep_extend(
       "force",
       default_lsp_config,
@@ -38,15 +35,14 @@ M.register_servers = function(opts)
     end
 
     local server_ok, server_err = pcall(vim.lsp.config, server, server_opts)
-    if server_ok then
+    if server_ok and state_mod.is_enabled("lsp", server) then
       pcall(vim.lsp.enable, server)
-    else
+    elseif not server_ok then
       vim.notify(
         "[lsp] " .. server .. ": " .. tostring(server_err),
         vim.log.levels.WARN
       )
     end
-    ::continue::
   end
 end
 
