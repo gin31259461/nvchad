@@ -24,28 +24,4 @@ require("lazy").setup({
   { import = "plugins" },
 }, require("config.lazy"))
 
-require("utils.ui").close_lazy_view()
-require("utils.ui").load_options()
-
-require("nvchad.autocmds")
-require("config.autocmds")
-require("config.filetypes")
-
-local fs = require("utils.fs")
-for _, cmd_file in ipairs(fs.scandir(fs.config_path .. "/lua/cmds", "file")) do
-  require("cmds." .. vim.fn.fnamemodify(cmd_file, ":r"))
-end
-
-local ok, err = pcall(function()
-  dofile(vim.g.base46_cache .. "defaults")
-  dofile(vim.g.base46_cache .. "statusline")
-end)
-if not ok then
-  vim.notify("[theme] " .. tostring(err), vim.log.levels.WARN)
-end
-
 require("utils").setup()
-
-vim.schedule(function()
-  require("config.keymaps")
-end)
