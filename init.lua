@@ -24,8 +24,8 @@ require("lazy").setup({
   { import = "plugins" },
 }, require("config.lazy"))
 
-require("nvchad.options")
-require("config.options")
+require("utils.ui").close_lazy_view()
+require("utils.ui").load_options()
 
 require("nvchad.autocmds")
 require("config.autocmds")

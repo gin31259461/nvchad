@@ -227,4 +227,42 @@ M.get_doc_window_size = function()
   return max_width, max_height
 end
 
+M.get_editor_win = function()
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    if vim.api.nvim_win_get_config(win).relative == "" then
+      return win
+    end
+  end
+end
+
+M.loader = function()
+  local nv_options_ok, _ = pcall(require, "nvchad.options")
+  local config_options_ok, _ = pcall(require, "config.options")
+
+  if not nv_options_ok or not config_options_ok then
+    vim.notify(
+      "Failed to load options. Please check your configuration.",
+      vim.log.levels.ERROR
+    )
+  end
+end
+
+M.load_options = function()
+  local win = M.get_editor_win()
+
+  if win and win ~= vim.api.nvim_get_current_win() then
+    vim.api.nvim_win_call(win, M.loader)
+  else
+    M.loader()
+  end
+end
+
+M.close_lazy_view = function()
+  local ok, lazy_view = pcall(require, "lazy.view")
+
+  if ok and lazy_view.visible() and lazy_view.view then
+    lazy_view.view:close()
+  end
+end
+
 return M

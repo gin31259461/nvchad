@@ -6,7 +6,7 @@ vim.o.fileformats = "unix,dos"
 
 vim.o.autoread = true
 
-vim.g.snacks_animate = false
+vim.g.snacks_animate = true
 vim.g.ai_cmp = false
 
 -- https://docs.github.com/en/copilot/concepts/completions/code-suggestions

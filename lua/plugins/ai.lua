@@ -14,6 +14,11 @@ local specs = {
         init = function()
           vim.g.copilot_nes_debounce = 500
         end,
+        opts = {
+          nes = {
+            move_count_threshold = 10,
+          },
+        },
       },
     },
 
@@ -37,6 +42,8 @@ local specs = {
         help = true,
       },
       copilot_model = vim.g.copilot_model,
+
+      -- https://github.com/zbirenbaum/copilot.lua#nes-next-edit-suggestion
       nes = {
         enabled = true,
         auto_trigger = true,
