@@ -1,23 +1,45 @@
 # Neovim Configuration
 
-Personal Neovim setup based on [NvChad v2.5](https://github.com/NvChad/NvChad).
-It focuses on LSP-driven editing, fast project navigation, formatting, linting,
-debugging, and a custom Service Manager for enabling or reordering tools without
-editing Lua files.
+Personal Neovim configuration built on [NvChad v2.5](https://github.com/NvChad/NvChad).
+It is tuned for LSP-first editing, fast project navigation, formatter and linter
+management, Python/.NET debugging, and AI-assisted workflows.
+
+## Highlights
+
+- NvChad UI with Base46 themes, Snacks dashboard/picker/notifier, Noice,
+  Trouble, nvim-tree, which-key, and custom borders
+- LSP setup for Python, TypeScript/JavaScript, C#/.NET, Lua, HTML, CSS,
+  Tailwind, Go, C/C++, Bash, PowerShell, Prisma, Docker, JSON, Markdown, XML,
+  and TOML
+- Formatter and linter orchestration through Conform, nvim-lint, Mason, and a
+  custom Service Manager
+- Debug adapters for Python through `debugpy` and C#/.NET through `netcoredbg`
+- Treesitter, completion, snippets, autopairs, autotag, matchup, markdown
+  preview, Git signs, lazygit, Harpoon, Copilot, and opencode integration
+- Obsidian support that loads only when `~/OneDrive/Knowledge_Base` exists
 
 ## Requirements
 
 | Tool | Used for |
 | --- | --- |
-| [Neovim 0.12+](https://github.com/neovim/neovim/releases/tag/stable) | Editor runtime |
-| [Nerd Font](https://www.nerdfonts.com/) non-Mono variant | UI glyph rendering |
-| [ripgrep](https://github.com/BurntSushi/ripgrep) | Picker grep |
-| [tree-sitter-cli](https://github.com/tree-sitter/tree-sitter) | Parser builds |
+| [Neovim 0.11+](https://github.com/neovim/neovim/releases/tag/stable) | Editor runtime with `vim.lsp.config` and `vim.lsp.enable` |
+| [Git](https://git-scm.com/) | Cloning this config and bootstrapping lazy.nvim |
+| [Nerd Font](https://www.nerdfonts.com/) non-Mono variant | Icons and UI glyphs |
+| [ripgrep](https://github.com/BurntSushi/ripgrep) | Project grep in pickers |
+| [tree-sitter-cli](https://github.com/tree-sitter/tree-sitter) | Treesitter parser builds |
 | [pnpm](https://pnpm.io/) | `markdown-preview.nvim` build dependency |
-| GCC or MinGW on Windows | Native plugin compilation |
-| [lazygit](https://github.com/jesseduffield/lazygit) | Optional Git TUI |
+| GCC, or MinGW on Windows | Native plugin compilation |
+
+Optional tools:
+
+- `lazygit` for `<leader>gg`
+- `dotnet` for Roslyn, .NET project helpers, and .NET debugging
+- `debugpy` installed in the active Python virtual environment for Python DAP
+- `opencode` for the opencode terminal and picker integration
 
 ## Installation
+
+Back up any existing Neovim configuration before cloning this repository.
 
 ### Linux and macOS
 
@@ -26,11 +48,7 @@ git clone https://github.com/gin31259461/nvchad.git ~/.config/nvim
 nvim
 ```
 
-After plugins finish installing, run `:MasonInstallAll`, then restart Neovim.
-
 ### Windows
-
-Install Neovim and optional tools:
 
 ```powershell
 winget install --id=Neovim.Neovim -e
@@ -40,66 +58,95 @@ git clone https://github.com/gin31259461/nvchad.git $env:LOCALAPPDATA\nvim
 nvim
 ```
 
-For native plugin compilation, install MinGW through MSYS2:
+For native plugin compilation, install MSYS2 and MinGW:
 
 ```powershell
 winget install --id=MSYS2.MSYS2 -e
 ```
 
-Then, in the MSYS2 MinGW64 shell:
+Then install the toolchain from an MSYS2 MinGW64 shell:
 
 ```bash
 pacman -Sy mingw-w64-x86_64-gcc mingw-w64-x86_64-toolchain
 ```
 
-Add `C:\msys64\mingw64\bin` to `PATH`. Cygwin is optional if you want common
-Unix tools such as `gzip`.
+Add `C:\msys64\mingw64\bin` to `PATH`.
 
-## What Is Included
+## First Run
 
-- UI: NvChad UI/base46, Snacks dashboard and picker, Noice messages, Trouble
-  diagnostics, todo comments, nvim-tree, which-key.
-- Editing: Treesitter, `nvim-cmp`, LuaSnip, autopairs, autotag, matchup, Lua
-  development helpers, and GitHub Copilot.
-- Navigation: Snacks picker for files, grep, Git, LSP, diagnostics, buffers,
-  registers, history, and project search; Harpoon for bookmarked files.
-- Git: gitsigns plus lazygit integration through Snacks.
-- Notes: Obsidian support loads only when `~/OneDrive/Knowledge_Base` exists.
-- AI: Copilot suggestions and opencode integration.
+`init.lua` bootstraps `lazy.nvim` automatically. When Neovim opens for the first
+time, wait for plugins to install, then run:
 
-## Language Tools
+```vim
+:MasonInstallAll
+```
 
-LSP, formatters, linters, and DAP adapters are registered in
-`lua/config/services.lua` and installed through Mason where supported.
-
-- LSP: Python, TypeScript/JavaScript, C#/.NET, Lua, HTML, CSS, Tailwind, Go,
-  C/C++, Bash, PowerShell, Prisma, Docker, JSON, Markdown, XML, TOML.
-- Formatting: `stylua`, `ruff`, `deno_fmt`, `eslint_d`, `csharpier`, `shfmt`,
-  `markdownlint-cli2`, `markdown-toc`, `sql-formatter`, `sqlfluff`,
-  `prisma_fmt`, `tombi`.
-- Linting: `eslint_d`, `luacheck`, `hadolint`, `markdownlint-cli2`, `sqlfluff`.
-- Debugging: Python through `debugpy`; .NET through `netcoredbg`.
+Restart Neovim after Mason finishes installing language servers, formatters,
+linters, and debug adapters.
 
 ## Service Manager
 
-Open it with `<leader>sm` or `:ServiceManager`.
+Open the Service Manager with `<leader>sm` or `:ServiceManager`.
 
-Use it to enable or disable LSP servers, formatters, linters, and DAP adapters;
-install Mason packages; and reorder formatter or linter priority per filetype.
-Inside the UI, `<Space>` toggles an item, `<CR>` expands details, `i` installs
-it, `[` and `]` reorder priorities, `<Tab>` switches category tabs, `g?`
+The Service Manager reads from `lua/config/services.lua` and lets you:
+
+- Enable or disable LSP servers, formatters, linters, and DAP adapters
+- Install Mason-backed tools
+- Reorder formatter and linter priority per filetype
+- Inspect service details and runtime errors
+
+Inside the UI, `<Space>` toggles a service, `<CR>` expands details, `i` installs
+a tool, `[` and `]` reorder priorities, `<Tab>` switches category tabs, `g?`
 toggles help, and `q` closes the window.
 
-## Main Keymaps
+## Language Tools
 
-Leader is `<Space>`. Use `<leader>wK` or `<leader>sk` to inspect the full keymap
-list from inside Neovim.
+Managed tools are registered in `lua/config/services.lua`. Mason package lists
+are derived from that registry in `lua/config/packages.lua`.
+
+LSP:
+
+```text
+pyright, ruff, roslyn, html, cssls, tailwindcss, dockerls,
+docker_compose_language_service, clangd, bashls, marksman, prismals,
+tombi, jsonls, lua_ls, gopls, powershell_es, lemminx
+```
+
+Formatters:
+
+```text
+stylua, ruff_fix, ruff_organize_imports, ruff_format, shfmt, deno_fmt,
+eslint_d, csharpier, markdownlint-cli2, markdown-toc, sql-formatter,
+sqlfluff, prisma_fmt, tombi
+```
+
+Linters:
+
+```text
+eslint_d, hadolint, markdownlint-cli2, luacheck, sqlfluff
+```
+
+DAP:
+
+```text
+python, coreclr
+```
+
+Python debugging expects an active virtual environment with `debugpy` installed.
+.NET debugging uses `netcoredbg`; on Windows the adapter is resolved from the
+Mason package directory.
+
+## Keymaps
+
+Leader is `<Space>`. Use `<leader>wK` or `<leader>sk` inside Neovim to inspect
+the full keymap list.
 
 | Key | Action |
 | --- | --- |
 | `<C-s>` | Save |
-| `<leader>fm` | Format current file |
+| `<leader>fm` | Format current file or selection |
 | `<leader>ff` | Find files |
+| `<leader>fg` | Find Git files |
 | `<leader>sg` | Grep project |
 | `<leader>sw` | Grep word or visual selection |
 | `<leader>fb` | List buffers |
@@ -112,27 +159,55 @@ list from inside Neovim.
 | `<C-n>` | Toggle nvim-tree |
 | `<leader>e` | Focus nvim-tree |
 | `<C-e>` | Open Harpoon menu |
-| `<leader>a` | Add file to Harpoon |
+| `<leader>ba` | Add current file to Harpoon |
+| `<M-S-p>` / `<M-S-n>` | Previous or next Harpoon item |
 | `<leader>h` / `<leader>v` | Open horizontal or vertical terminal |
 | `<M-h>` / `<M-v>` / `<M-i>` | Toggle terminal |
+| `<M-o>` | Toggle opencode terminal |
 
 Common LSP mappings include `gd` for definition, `gR` for references, `gI` for
 implementation, `gy` for type definition, `K` for hover, `gK` for signature
 help, `<leader>ca` for code actions, `<leader>cr` for rename, and `<leader>ci`
 for inlay hints.
 
-Debugger mappings use the `<leader>d` prefix: `<leader>dt` toggles a breakpoint,
-`<leader>dc` continues, `<leader>dn` steps over, `<leader>di` steps into,
-`<leader>do` steps out, and `<leader>du` toggles the DAP UI.
+DAP mappings use the `<leader>d` prefix. Common commands include `<leader>dt`
+for toggle breakpoint, `<leader>dc` for continue, `<leader>dn` for step over,
+`<leader>di` for step into, `<leader>do` for step out, `<leader>du` for the DAP
+UI, and `<leader>dR` for the REPL.
+
+## Project Structure
+
+```text
+init.lua                 lazy.nvim bootstrap and top-level startup
+lua/chadrc.lua           NvChad theme, UI, Mason, and terminal settings
+lua/config/              editor options, keymaps, services, packages, LSP,
+                         formatter, linter, and filetype configuration
+lua/plugins/             lazy.nvim plugin specs grouped by feature area
+lua/service/             Service Manager state, actions, renderer, and ordering
+lua/cmds/                custom user commands
+lua/utils/               shared Lua helpers
+lua/test/spec/           Plenary test suite
+scripts/tests/           test bootstrap files
+```
 
 ## Development
 
 ```bash
-make fmt    # format Lua
-make lint   # run luacheck
+make fmt    # format Lua with stylua
+make lint   # lint Lua with luacheck
 make test   # run headless Plenary tests
 make ready  # fmt + lint + test
 ```
+
+## Troubleshooting
+
+- Run `:Lazy sync` if plugin specs or lockfile state drift
+- Run `:MasonInstallAll` after changing `lua/config/services.lua`
+- Run `:checkhealth` for provider, compiler, and dependency diagnostics
+- On Windows, use `:ClearShada` to remove temporary ShaDa files while keeping
+  `main.shada`
+- If Python debugging fails, activate the project virtual environment and
+  install `debugpy`
 
 ## Uninstall
 
