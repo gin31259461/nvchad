@@ -6,6 +6,17 @@ local specs = {
 
   {
     "zbirenbaum/copilot.lua",
+    dependencies = {
+      {
+        -- https://github.com/copilotlsp-nvim/copilot-lsp/blob/main/README.md
+        -- for nes (next edit suggestions) support
+        "copilotlsp-nvim/copilot-lsp",
+        init = function()
+          vim.g.copilot_nes_debounce = 500
+        end,
+      },
+    },
+
     cmd = "Copilot",
     build = ":Copilot auth",
     event = { "BufReadPost", "BufNewFile" },
@@ -26,6 +37,15 @@ local specs = {
         help = true,
       },
       copilot_model = vim.g.copilot_model,
+      nes = {
+        enabled = true,
+        auto_trigger = true,
+        keymap = {
+          accept_and_goto = "<leader>p",
+          accept = false,
+          dismiss = "<esc>",
+        },
+      },
     },
   },
 
