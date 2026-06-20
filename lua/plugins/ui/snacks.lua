@@ -80,32 +80,6 @@ return {
           },
         },
 
-        actions = {
-          ---@param picker snacks.Picker
-          opencode_send = function(picker)
-            local ok, opencode = pcall(require, "opencode")
-
-            if not ok then
-              return
-            end
-
-            local items = vim.tbl_map(
-              function(item) ---@param item snacks.picker.Item
-                return item.file
-                    and opencode.format({
-                      path = item.file,
-                      from = item.pos,
-                      to = item.end_pos,
-                    })
-                  or item.text
-              end,
-              picker:selected({ fallback = true })
-            )
-
-            opencode.prompt(table.concat(items, ", ") .. " ")
-          end,
-        },
-
         win = {
           list = {
             wo = { wrap = false },
@@ -114,7 +88,6 @@ return {
             keys = {
               ["<C-u>"] = { "preview_scroll_up", mode = { "i", "n" } },
               ["<C-d>"] = { "preview_scroll_down", mode = { "i", "n" } },
-              ["<a-a>"] = { "opencode_send", mode = { "n", "i" } },
             },
           },
         },

@@ -15,7 +15,7 @@ management, Python/.NET debugging, and AI-assisted workflows.
   custom Service Manager
 - Debug adapters for Python through `debugpy` and C#/.NET through `netcoredbg`
 - Treesitter, completion, snippets, autopairs, autotag, matchup, markdown
-  preview, Git signs, lazygit, Harpoon, Copilot, and opencode integration
+  preview, Git signs, lazygit, Harpoon, Copilot
 - Obsidian support that loads only when `~/OneDrive/Knowledge_Base` exists
 
 ## Requirements
@@ -35,7 +35,6 @@ Optional tools:
 - `lazygit` for `<leader>gg`
 - `dotnet` for Roslyn, .NET project helpers, and .NET debugging
 - `debugpy` installed in the active Python virtual environment for Python DAP
-- `opencode` for the opencode terminal and picker integration
 
 ## Installation
 
@@ -163,7 +162,6 @@ the full keymap list.
 | `<M-S-p>` / `<M-S-n>` | Previous or next Harpoon item |
 | `<leader>h` / `<leader>v` | Open horizontal or vertical terminal |
 | `<M-h>` / `<M-v>` / `<M-i>` | Toggle terminal |
-| `<M-o>` | Toggle opencode terminal |
 
 Common LSP mappings include `gd` for definition, `gR` for references, `gI` for
 implementation, `gy` for type definition, `K` for hover, `gK` for signature

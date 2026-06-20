@@ -4,7 +4,6 @@ vim.o.relativenumber = true
 vim.o.shm = vim.o.shm .. "I"
 vim.o.fileformats = "unix,dos"
 
--- opencode.nvim reloads files via the filesystem; autoread makes those changes visible immediately
 vim.o.autoread = true
 
 vim.g.snacks_animate = false
