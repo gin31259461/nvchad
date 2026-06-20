@@ -1,6 +1,6 @@
 # Neovim Configuration
 
-Personal Neovim configuration built on [NvChad v2.5](https://github.com/NvChad/NvChad).
+Neovim configuration built on [NvChad v2.5](https://github.com/NvChad/NvChad).
 It is tuned for LSP-first editing, fast project navigation, formatter and linter
 management, Python/.NET debugging, and AI-assisted workflows.
 
