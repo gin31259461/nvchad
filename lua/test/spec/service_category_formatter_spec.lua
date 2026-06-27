@@ -42,4 +42,39 @@ describe("service.category.formatter", function()
 
     assert.same({ "ruff_fix", "ruff_format" }, conform.formatters_by_ft.python)
   end)
+
+  it("reports partial runtime wiring across declared filetypes", function()
+    local status, hl = formatter.entry_status({
+      name = "deno_fmt",
+      meta = services.formatter.deno_fmt,
+      installed = true,
+    })
+
+    assert.equals("not wired", status)
+    assert.equals("DiagnosticWarn", hl)
+
+    conform.formatters_by_ft.html = { "deno_fmt" }
+
+    status, hl = formatter.entry_status({
+      name = "deno_fmt",
+      meta = services.formatter.deno_fmt,
+      installed = true,
+    })
+
+    assert.equals("partly wired 1/5", status)
+    assert.equals("DiagnosticWarn", hl)
+  end)
+
+  it("reports fully wired formatters", function()
+    conform.formatters_by_ft.lua = { "stylua" }
+
+    local status, hl = formatter.entry_status({
+      name = "stylua",
+      meta = services.formatter.stylua,
+      installed = true,
+    })
+
+    assert.equals("wired", status)
+    assert.equals("DiagnosticOk", hl)
+  end)
 end)

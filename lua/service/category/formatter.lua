@@ -2,6 +2,10 @@ local M = {}
 
 local order = require("service.order")
 
+local function is_configured_for_ft(conform, ft, name)
+  return vim.tbl_contains(conform.formatters_by_ft[ft] or {}, name)
+end
+
 ---@param opts Service.ApplyRuntimeOpts
 ---@return nil
 function M.apply_runtime(opts)
@@ -39,10 +43,33 @@ function M.apply_order(opts)
   conform.formatters_by_ft[ft] = enabled_names
 end
 
----@param _opts Service.EntryStatusOpts
+---@param opts Service.EntryStatusOpts
 ---@return string?, string?
-function M.entry_status(_opts)
-  return nil, nil
+function M.entry_status(opts)
+  local conform_ok, conform = pcall(require, "conform")
+  if not conform_ok then
+    return nil, nil
+  end
+
+  local total = #(opts.meta.ft or {})
+  if total == 0 then
+    return "no ft", "DiagnosticWarn"
+  end
+
+  local configured = 0
+  for _, ft in ipairs(opts.meta.ft or {}) do
+    if is_configured_for_ft(conform, ft, opts.name) then
+      configured = configured + 1
+    end
+  end
+
+  if configured == total then
+    return "wired", "DiagnosticOk"
+  elseif configured > 0 then
+    return string.format("partly wired %d/%d", configured, total),
+      "DiagnosticWarn"
+  end
+  return "not wired", "DiagnosticWarn"
 end
 
 return M

@@ -28,8 +28,11 @@ function M.entry_status(opts)
   local name = opts.name
   if not vim.lsp.is_enabled(name) then
     return "disabled", "DiagnosticError"
-  elseif #vim.lsp.get_clients({ name = name }) > 0 then
-    return "running", "DiagnosticOk"
+  end
+
+  local clients = vim.lsp.get_clients({ name = name })
+  if #clients > 0 then
+    return "running " .. #clients, "DiagnosticOk"
   else
     return "idle", "DiagnosticWarn"
   end

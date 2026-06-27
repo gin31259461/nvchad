@@ -11,6 +11,15 @@ local category_handlers = {
   formatter = require("service.category.formatter"),
 }
 
+local function with_install_state(status_text, installed)
+  if installed == true then
+    return status_text .. " · installed"
+  elseif installed == nil then
+    return status_text .. " · external"
+  end
+  return status_text
+end
+
 ---@param category ServiceCategory
 ---@param name string
 ---@param meta Service.Meta
@@ -58,7 +67,8 @@ function M.entry_status(category, name, meta)
         installed = installed,
       })
       if refined_text then
-        status_text, highlight_group = refined_text, refined_hl
+        status_text = with_install_state(refined_text, installed)
+        highlight_group = refined_hl
       end
     end
   end

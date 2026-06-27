@@ -195,13 +195,19 @@ describe("service.data", function()
       assert.is_true(type(status) == "string")
     end)
 
-    it("reports non-mason services as external", function()
+    it("combines runtime health with external install state", function()
+      package.loaded.conform =
+        { formatters_by_ft = { prisma = { "prisma_fmt" } } }
+
       local status, _ = data.entry_status(
         "formatter",
         "prisma_fmt",
         services.formatter.prisma_fmt
       )
-      assert.equals("external", status)
+
+      package.loaded.conform = nil
+
+      assert.equals("wired · external", status)
     end)
   end)
 end)

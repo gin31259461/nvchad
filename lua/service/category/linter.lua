@@ -4,6 +4,37 @@ local state_mod = require("service.state")
 local logger = require("utils.logger")
 local order = require("service.order")
 
+local function is_configured_for_ft(lint, ft, name)
+  return vim.tbl_contains(lint.linters_by_ft[ft] or {}, name)
+end
+
+local function wiring_status(name, meta)
+  local lint_ok, lint = pcall(require, "lint")
+  if not lint_ok then
+    return nil, nil
+  end
+
+  local total = #(meta.ft or {})
+  if total == 0 then
+    return "no ft", "DiagnosticWarn"
+  end
+
+  local configured = 0
+  for _, ft in ipairs(meta.ft or {}) do
+    if is_configured_for_ft(lint, ft, name) then
+      configured = configured + 1
+    end
+  end
+
+  if configured == 0 then
+    return "not wired", "DiagnosticWarn"
+  elseif configured < total then
+    return string.format("partly wired %d/%d", configured, total),
+      "DiagnosticWarn"
+  end
+  return nil, nil
+end
+
 ---@class Service.LinterDiagnosticMessage
 ---@field file string
 ---@field lnum integer
@@ -108,34 +139,40 @@ end
 ---@param opts Service.EntryStatusOpts
 ---@return string, string
 function M.entry_status(opts)
-  local name = opts.name
+  local name, meta = opts.name, opts.meta
   if not state_mod.is_enabled("linter", name) then
     return "disabled", "Comment"
   end
+
+  local wire_text, wire_hl = wiring_status(name, meta)
+  if wire_text then
+    return wire_text, wire_hl
+  end
+
   local run_errors = logger.get_entries("linter", name)
   if #run_errors > 0 then
     local latest_error = run_errors[#run_errors]
     local status_text
     if latest_error.tags and latest_error.tags.kind == "binary_not_found" then
-      status_text = "global no binary"
+      status_text = "no binary"
     elseif
       latest_error.tags
       and latest_error.tags.kind == "definition_not_found"
     then
-      status_text = "global missing"
+      status_text = "missing definition"
     else
-      status_text = "global error"
+      status_text = "error"
     end
     return status_text, "DiagnosticError"
   end
   local summary = M.get_linter_diagnostics(name)
   if summary.error_count > 0 then
-    return "global " .. summary.error_count .. "E " .. summary.warn_count .. "W",
+    return summary.error_count .. "E " .. summary.warn_count .. "W",
       "DiagnosticError"
   elseif summary.warn_count > 0 then
-    return "global " .. summary.warn_count .. "W", "DiagnosticWarn"
+    return summary.warn_count .. "W", "DiagnosticWarn"
   else
-    return "global ok", "DiagnosticOk"
+    return "ok", "DiagnosticOk"
   end
 end
 
