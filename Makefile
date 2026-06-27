@@ -4,6 +4,8 @@ else
     LUACHECK := luacheck
 endif
 
+all: fmt lint test
+
 fmt:
 	echo "===> Formatting"
 	stylua lua/ --config-path=.stylua.toml
@@ -17,4 +19,3 @@ test:
 	nvim --headless --noplugin -u scripts/tests/minimal.vim \
         -c "PlenaryBustedDirectory lua/test/spec/ {minimal_init = 'scripts/tests/minimal.vim'}"
 
-ready: fmt lint test
