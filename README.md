@@ -8,11 +8,11 @@ management, Python/.NET debugging, and AI-assisted workflows.
 
 - NvChad UI with Base46 themes, Snacks dashboard/picker/notifier, Noice,
   Trouble, nvim-tree, which-key, and custom borders
-- LSP setup for Python, TypeScript/JavaScript, C#/.NET, Lua, HTML, CSS,
-  Tailwind, Go, C/C++, Bash, PowerShell, Prisma, Docker, JSON, Markdown, XML,
-  and TOML
+- LSP setup for Python, C#/.NET, Lua, HTML, CSS, Tailwind, Go, C/C++, Bash,
+  PowerShell, Prisma, Docker, JSON, Markdown, XML, and TOML
 - Formatter and linter orchestration through Conform, nvim-lint, Mason, and a
-  custom Service Manager
+  custom Service Manager, including Python, TypeScript/JavaScript, Markdown,
+  SQL, Prisma, TOML, shell, C#, Lua, and Docker tooling
 - Debug adapters for Python through `debugpy` and C#/.NET through `netcoredbg`
 - Treesitter, completion, snippets, autopairs, autotag, matchup, markdown
   preview, Git signs, lazygit, Harpoon, Copilot
@@ -20,21 +20,23 @@ management, Python/.NET debugging, and AI-assisted workflows.
 
 ## Requirements
 
+Core tools:
+
 | Tool | Used for |
 | --- | --- |
 | [Neovim 0.11+](https://github.com/neovim/neovim/releases/tag/stable) | Editor runtime with `vim.lsp.config` and `vim.lsp.enable` |
 | [Git](https://git-scm.com/) | Cloning this config and bootstrapping lazy.nvim |
 | [Nerd Font](https://www.nerdfonts.com/) non-Mono variant | Icons and UI glyphs |
 | [ripgrep](https://github.com/BurntSushi/ripgrep) | Project grep in pickers |
-| [tree-sitter-cli](https://github.com/tree-sitter/tree-sitter) | Treesitter parser builds |
-| [pnpm](https://pnpm.io/) | `markdown-preview.nvim` build dependency |
-| GCC, or MinGW on Windows | Native plugin compilation |
 
-Optional tools:
+Optional tools and build extras:
 
 - `lazygit` for `<leader>gg`
 - `dotnet` for Roslyn, .NET project helpers, and .NET debugging
 - `debugpy` installed in the active Python virtual environment for Python DAP
+- `tree-sitter-cli` for parser builds
+- `pnpm` for the `markdown-preview.nvim` build
+- GCC, or MinGW on Windows, for native plugin compilation
 
 ## Installation
 
@@ -191,11 +193,14 @@ scripts/tests/           test bootstrap files
 ## Development
 
 ```bash
-make fmt    # format Lua with stylua
-make lint   # lint Lua with luacheck
-make test   # run headless Plenary tests
-make ready  # fmt + lint + test
+make all   # format Lua, lint Lua, and run headless Plenary tests
+make fmt   # format Lua with stylua
+make lint  # lint Lua with luacheck
+make test  # run headless Plenary tests
 ```
+
+`make all` requires `stylua`, `luacheck`, `nvim`, and synced plugins. The test
+bootstrap loads `plenary.nvim` from Neovim's lazy data directory.
 
 ## Troubleshooting
 
