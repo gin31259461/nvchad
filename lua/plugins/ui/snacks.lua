@@ -11,16 +11,36 @@ return {
 
     ---@type snacks.Config
     opts = {
-      explorer = { enabled = false },
+      -- current not used
+      -- snacks.git
+      -- snacks.keymap
+      -- snacks.toggle
+      -- snacks.scratch
+      -- snacks.util
+      -- snacks.win
+      dim = {},
+      gh = {},
+      gitbrowse = {},
+      zen = {},
 
+      -- current in use
+      -- snacks.notify
+      -- snacks.rename
+      animate = {},
       bigfile = { enabled = true },
+      explorer = { enabled = false },
+      image = { enabled = true },
       indent = { enabled = true },
+      input = {
+        enabled = true,
+        icon = " ",
+      },
+      lazygit = {},
       quickfile = { enabled = true },
       scope = { enabled = true },
       scroll = { enabled = true },
-      statuscolumn = { enabled = true },
+      statuscomn = { enabled = true },
       words = { enabled = true },
-      lazygit = {},
 
       -- reference: https://github.com/folke/snacks.nvim/discussions/111#discussioncomment-11986334
       dashboard = {
@@ -195,11 +215,6 @@ return {
             },
           },
         },
-      },
-
-      input = {
-        enabled = true,
-        icon = " ",
       },
 
       ---@type table<string, snacks.win.Config>
