@@ -85,14 +85,18 @@ Lazy to finish installing plugins, then run:
 
 ```vim
 :MasonInstallAll
+
+:TSInstallAll
 ```
 
-Restart Neovim after Mason finishes.
+Restart Neovim after Mason and Treesitter finishes.
 
 `:MasonInstallAll` installs Mason-managed tools derived from
 `lua/config/services.lua` and `lua/config/packages.lua`. It does not install
 project-local dependencies such as Python `debugpy` or Prisma packages in
 `node_modules`.
+
+`:TSInstallAll` installs all default treesitter parsers.
 
 Recommended follow-up setup:
 

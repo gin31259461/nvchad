@@ -17,7 +17,7 @@ return {
     branch = "main",
     event = { "BufReadPost", "BufNewFile" },
     cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
-    build = { ":TSUpdate | TSInstallAll" },
+    build = { ":TSUpdate" },
 
     ---@module "nvim-treesitter"
     ---@type TSConfig
