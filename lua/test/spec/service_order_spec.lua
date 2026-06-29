@@ -1,33 +1,22 @@
 describe("service.order", function()
   local order
   local state
-  local services = require("config.services")
+  local previous_lua_order
+  local previous_stylua_enabled
 
   before_each(function()
     package.loaded["service.order"] = nil
     package.loaded["service.state"] = nil
     state = require("service.state")
     order = require("service.order")
+    previous_lua_order = vim.deepcopy(state.get().formatter_order.lua)
+    previous_stylua_enabled = state.is_enabled("formatter", "stylua")
   end)
 
   after_each(function()
-    state.get().formatter_order["_test_ft_order_"] = nil
-    if services.formatter_defaults.python then
-      state.set_order(
-        "formatter",
-        "python",
-        vim.deepcopy(services.formatter_defaults.python)
-      )
-    end
-    for _, name in ipairs({
-      "ruff_fix",
-      "ruff_organize_imports",
-      "ruff_format",
-    }) do
-      if services.formatter[name] then
-        state.set_enabled("formatter", name, true)
-      end
-    end
+    state.set_order("formatter", "_test_ft_order_", nil)
+    state.set_order("formatter", "lua", previous_lua_order)
+    state.set_enabled("formatter", "stylua", previous_stylua_enabled)
   end)
 
   it("applies saved order to an existing runtime list", function()
@@ -42,15 +31,15 @@ describe("service.order", function()
   it(
     "filters disabled managed services but preserves unknown runtime entries",
     function()
-      state.set_order("formatter", "python", { "ruff_fix", "ruff_format" })
-      state.set_enabled("formatter", "ruff_format", false)
+      state.set_order("formatter", "lua", { "stylua" })
+      state.set_enabled("formatter", "stylua", false)
 
       assert.same(
-        { "ruff_fix", "external_formatter" },
+        { "external_formatter" },
         order.enabled_names_for_ft(
           "formatter",
-          "python",
-          { "ruff_format", "external_formatter", "ruff_fix" }
+          "lua",
+          { "stylua", "external_formatter" }
         )
       )
     end

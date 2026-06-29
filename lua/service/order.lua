@@ -1,12 +1,8 @@
 local M = {}
 
+local core = require("service.core")
 local services = require("config.services")
 local state_mod = require("service.state")
-
-local ordered_kinds = {
-  formatter = true,
-  linter = true,
-}
 
 ---@param names string[]
 ---@return table<string, boolean>
@@ -48,7 +44,7 @@ end
 ---@param ft string
 ---@return string[]?
 local function configured_order(category, ft)
-  if not ordered_kinds[category] then
+  if not core.is_ordered_category(category) then
     return nil
   end
   return state_mod.get_order(category --[[@as "formatter"|"linter"]], ft)

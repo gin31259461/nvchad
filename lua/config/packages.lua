@@ -39,6 +39,12 @@ M.mason_ensure_installed = {
   "typescript-language-server", -- for tsserver executable
 }
 
+local function sorted_keys(tbl)
+  local keys = vim.tbl_keys(tbl or {})
+  table.sort(keys)
+  return keys
+end
+
 local seen = {}
 local function add_mason(pkg)
   if pkg and not seen[pkg] then
@@ -47,18 +53,31 @@ local function add_mason(pkg)
   end
 end
 
-for name, meta in pairs(services.lsp) do
+local derived_mason_packages = {}
+local function collect_mason(pkg)
+  if pkg then
+    derived_mason_packages[pkg] = true
+  end
+end
+
+for _, name in ipairs(sorted_keys(services.lsp)) do
+  local meta = services.lsp[name]
   table.insert(M.lsp_servers, name)
-  add_mason(meta.mason)
+  collect_mason(meta.mason)
 end
 
 for _, cat in ipairs({ "dap", "linter", "formatter" }) do
-  for _, meta in pairs(services[cat]) do
-    add_mason(meta.mason)
+  for _, name in ipairs(sorted_keys(services[cat])) do
+    local meta = services[cat][name]
+    collect_mason(meta.mason)
   end
 end
 
 for _, pkg in ipairs(mason_extras) do
+  collect_mason(pkg)
+end
+
+for _, pkg in ipairs(sorted_keys(derived_mason_packages)) do
   add_mason(pkg)
 end
 

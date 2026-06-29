@@ -1,34 +1,14 @@
 local M = {}
 
 local cfg = require("service.config")
+local core = require("service.core")
 local data = require("service.data")
+local mason = require("service.mason")
 local state_mod = require("service.state")
 local borders = require("config.borders")
 local ui_utils = require("utils.ui")
 local logger = require("utils.logger")
-
-local category_handlers = {
-  lsp = require("service.category.lsp"),
-  dap = require("service.category.dap"),
-  linter = require("service.category.linter"),
-  formatter = require("service.category.formatter"),
-}
-
----@param pkg_name string
----@return table? pkg, string? err
-local function get_mason_package(pkg_name)
-  local reg_ok, reg = pcall(require, "mason-registry")
-  if not reg_ok then
-    return nil, "mason registry is unavailable"
-  end
-
-  local pkg_ok, pkg = pcall(reg.get_package, pkg_name)
-  if not pkg_ok or not pkg then
-    return nil, "mason package not found: " .. pkg_name
-  end
-
-  return pkg, nil
-end
+local category_handlers = require("service.category")
 
 ---@class Service.Actions.State
 ---@field ui Service.UI?
@@ -54,56 +34,6 @@ local function current_entry()
   return _state.ui.line_map[vim.api.nvim_win_get_cursor(_state.ui.win)[1]]
 end
 
-local function expand_key(category, name)
-  return category .. ":" .. name
-end
-
-local function ft_key(category, ft)
-  return category .. ":ft:" .. ft
-end
-
-local function is_ordered_category(category)
-  return category == "formatter" or category == "linter"
-end
-
----@param pkg_name string?
----@param on_done (fun())?
-local function install_pkg(pkg_name, on_done)
-  if not pkg_name then
-    return false
-  end
-  local pkg, err = get_mason_package(pkg_name)
-  if not pkg then
-    vim.notify("ServiceManager: " .. err, vim.log.levels.WARN)
-    return false
-  end
-
-  if pkg:is_installed() then
-    vim.notify(pkg_name .. " is already installed", vim.log.levels.INFO)
-    if on_done then
-      on_done()
-    end
-    return true
-  end
-
-  vim.notify("Installing " .. pkg_name .. "…", vim.log.levels.INFO)
-  pkg:install():once("closed", function()
-    if pkg:is_installed() then
-      vim.schedule(function()
-        vim.notify(pkg_name .. " installed", vim.log.levels.INFO)
-        if on_done then
-          on_done()
-        end
-      end)
-    else
-      vim.schedule(function()
-        vim.notify("Failed to install " .. pkg_name, vim.log.levels.ERROR)
-      end)
-    end
-  end)
-  return true
-end
-
 ---@return nil
 function M.show_tooltip_at_cursor()
   if _state.tooltip_win and vim.api.nvim_win_is_valid(_state.tooltip_win) then
@@ -122,12 +52,8 @@ function M.show_tooltip_at_cursor()
 
   local install_status = ""
   if entry.meta.mason then
-    local reg_ok, reg = pcall(require, "mason-registry")
-    if reg_ok then
-      local pkg_ok, pkg = pcall(reg.get_package, entry.meta.mason)
-      install_status = (pkg_ok and pkg and pkg:is_installed()) and " ✓"
-        or " ✗"
-    end
+    local installed = mason.package_status(entry.meta.mason)
+    install_status = installed and " ✓" or " ✗"
   end
 
   local is_entry_enabled = state_mod.is_enabled(category, entry.name)
@@ -336,7 +262,7 @@ function M.do_toggle()
   local is_now_enabled = not state_mod.is_enabled(category, entry.name)
 
   if is_now_enabled and entry.meta.mason then
-    local pkg, err = get_mason_package(entry.meta.mason)
+    local pkg, err = mason.get_package(entry.meta.mason)
     if pkg and not pkg:is_installed() then
       if cfg.missing_package_policy == "manual" then
         vim.notify(
@@ -347,7 +273,7 @@ function M.do_toggle()
       end
 
       if cfg.missing_package_policy == "auto" then
-        install_pkg(entry.meta.mason, function()
+        mason.install(entry.meta.mason, function()
           state_mod.set_enabled(category, entry.name, true)
           category_handlers[category].apply_runtime({
             name = entry.name,
@@ -387,7 +313,7 @@ function M.do_install()
     )
     return
   end
-  install_pkg(entry.meta.mason, _state.render)
+  mason.install(entry.meta.mason, _state.render)
 end
 
 ---@param dir integer -1 for up, 1 for down
@@ -456,11 +382,11 @@ function M.toggle_expand()
   local category = cfg.service_categories[_state.ui.category_idx]
 
   local key
-  if is_ordered_category(category) and entry.ft then
-    key = ft_key(category, entry.ft)
+  if core.is_ordered_category(category) and entry.ft then
+    key = core.ft_key(category, entry.ft)
     _state.ui.expanded[key] = _state.ui.expanded[key] == false
   elseif entry.name then
-    key = expand_key(category, entry.name)
+    key = core.service_key(category, entry.name)
     _state.ui.expanded[key] = not _state.ui.expanded[key]
   else
     return

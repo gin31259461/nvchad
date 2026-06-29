@@ -32,6 +32,12 @@ describe("config.packages", function()
     it("contains pyright", function()
       assert.is_true(vim.tbl_contains(packages.lsp_servers, "pyright"))
     end)
+
+    it("is sorted for deterministic startup output", function()
+      local sorted = vim.deepcopy(packages.lsp_servers)
+      table.sort(sorted)
+      assert.same(sorted, packages.lsp_servers)
+    end)
   end)
 
   describe("mason_ensure_installed", function()
@@ -115,6 +121,22 @@ describe("config.packages", function()
         vim.tbl_contains(packages.mason_ensure_installed, "stylua")
       )
     end)
+
+    it(
+      "keeps fixed extras first and service-derived packages sorted",
+      function()
+        assert.equals(
+          "typescript-language-server",
+          packages.mason_ensure_installed[1]
+        )
+
+        local service_packages =
+          vim.list_slice(packages.mason_ensure_installed, 2)
+        local sorted = vim.deepcopy(service_packages)
+        table.sort(sorted)
+        assert.same(sorted, service_packages)
+      end
+    )
   end)
 
   describe("treesitter_ensure_installed", function()

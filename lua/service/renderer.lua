@@ -1,6 +1,7 @@
 local M = {}
 
 local cfg = require("service.config")
+local core = require("service.core")
 local data = require("service.data")
 local services = require("config.services")
 local borders = require("config.borders")
@@ -22,24 +23,12 @@ function M.init(opts)
   _state.ns = opts.ns
 end
 
-local function service_key(category, name)
-  return category .. ":" .. name
-end
-
-local function ft_key(category, ft)
-  return category .. ":ft:" .. ft
-end
-
-local function is_ordered_category(category)
-  return category == "formatter" or category == "linter"
-end
-
 local function is_ft_expanded(category, ft)
-  return _state.ui.expanded[ft_key(category, ft)] ~= false
+  return _state.ui.expanded[core.ft_key(category, ft)] ~= false
 end
 
 local function content_lines(category)
-  if is_ordered_category(category) then
+  if core.is_ordered_category(category) then
     local count = 0
     for _, group in ipairs(data.build_ft_groups(category)) do
       count = count + 1
@@ -52,7 +41,7 @@ local function content_lines(category)
 
   local count = vim.tbl_count(services[category])
   for name, meta in pairs(services[category]) do
-    if _state.ui.expanded[service_key(category, name)] then
+    if _state.ui.expanded[core.service_key(category, name)] then
       count = count + #(meta.ft or {})
     end
   end
@@ -115,7 +104,7 @@ end
 local function build_col_header(category, icon_disp_w)
   local name_w = (category == "lsp" or category == "dap") and cfg.col_name
     or cfg.col_tool
-  local name_label = is_ordered_category(category) and "Filetype / Service"
+  local name_label = core.is_ordered_category(category) and "Filetype / Service"
     or "Service"
   return string.rep(" ", cfg.pad_flat + 2 + icon_disp_w + 2)
     .. ui_utils.rpad(name_label, name_w)
@@ -278,7 +267,7 @@ function M.render()
   }
   _state.ui.line_map = {}
 
-  if is_ordered_category(category) then
+  if core.is_ordered_category(category) then
     render_ordered_category(lines, category, win_width, icon_disp_w)
   else
     for _, service_entry in ipairs(service_entries(category)) do
@@ -286,7 +275,7 @@ function M.render()
       local meta = service_entry.meta
       local is_enabled = state_mod.is_enabled(category, name)
       local icon = is_enabled and cfg.icons.enabled or cfg.icons.disabled
-      local is_expanded = _state.ui.expanded[service_key(category, name)]
+      local is_expanded = _state.ui.expanded[core.service_key(category, name)]
         == true
       local expand_icon = is_expanded and cfg.icons.expanded
         or cfg.icons.collapsed

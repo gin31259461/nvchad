@@ -2,14 +2,9 @@ local M = {}
 
 local services = require("config.services")
 local order = require("service.order")
+local mason = require("service.mason")
 local state_mod = require("service.state")
-
-local category_handlers = {
-  lsp = require("service.category.lsp"),
-  dap = require("service.category.dap"),
-  linter = require("service.category.linter"),
-  formatter = require("service.category.formatter"),
-}
+local category_handlers = require("service.category")
 
 local function with_install_state(status_text, installed)
   if installed == true then
@@ -32,22 +27,17 @@ function M.entry_status(category, name, meta)
   local installed
   local install_error
   if meta.mason then
-    local reg_ok, reg = pcall(require, "mason-registry")
-    if reg_ok then
-      local pkg_ok, pkg = pcall(reg.get_package, meta.mason)
-      if pkg_ok and pkg then
-        installed = pkg:is_installed()
-      else
-        install_error = "package missing"
-      end
-    else
-      install_error = "mason unavailable"
-    end
+    installed, install_error = mason.package_status(meta.mason)
   end
 
   local status_text, highlight_group
   if install_error then
-    status_text, highlight_group = install_error, "DiagnosticWarn"
+    if install_error:match("registry") then
+      status_text = "mason unavailable"
+    else
+      status_text = "package missing"
+    end
+    highlight_group = "DiagnosticWarn"
   elseif not meta.mason then
     status_text, highlight_group = "external", "DiagnosticInfo"
   elseif installed == nil then

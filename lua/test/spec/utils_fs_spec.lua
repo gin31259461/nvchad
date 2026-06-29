@@ -186,5 +186,22 @@ describe("utils.fs", function()
       assert.is_true(#names >= 2)
       vim.fn.delete(tmpdir, "rf")
     end)
+
+    it("returns names sorted alphabetically", function()
+      local tmpdir = vim.fn.tempname()
+      vim.fn.mkdir(tmpdir, "p")
+      for _, name in ipairs({ "z.lua", "a.lua", "m.lua" }) do
+        local f = io.open(tmpdir .. "/" .. name, "w")
+        if f then
+          f:write("x")
+          f:close()
+        end
+      end
+
+      local names = fs.scandir(tmpdir, "file")
+
+      assert.same({ "a.lua", "m.lua", "z.lua" }, names)
+      vim.fn.delete(tmpdir, "rf")
+    end)
   end)
 end)

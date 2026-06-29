@@ -38,6 +38,12 @@ describe("service.data", function()
   end)
 
   describe("build_ft_groups for formatter", function()
+    after_each(function()
+      services.formatter._test_default_a = nil
+      services.formatter._test_default_b = nil
+      services.formatter_defaults._test_default_order = nil
+    end)
+
     it("returns a table", function()
       assert.is_true(type(data.build_ft_groups("formatter")) == "table")
     end)
@@ -90,18 +96,31 @@ describe("service.data", function()
     )
 
     it(
-      "python group respects the canonical default order (ruff_fix first)",
+      "groups respect canonical defaults when no saved order exists",
       function()
+        services.formatter._test_default_a = {
+          mason = nil,
+          ft = { "_test_default_order" },
+        }
+        services.formatter._test_default_b = {
+          mason = nil,
+          ft = { "_test_default_order" },
+        }
+        services.formatter_defaults._test_default_order = {
+          "_test_default_b",
+          "_test_default_a",
+        }
+
         local groups = data.build_ft_groups("formatter")
         local by_ft = {}
         for _, g in ipairs(groups) do
           by_ft[g.ft] = g.names
         end
-        if by_ft.python then
-          assert.equals("ruff_fix", by_ft.python[1])
-          assert.equals("ruff_organize_imports", by_ft.python[2])
-          assert.equals("ruff_format", by_ft.python[3])
-        end
+
+        assert.same(
+          { "_test_default_b", "_test_default_a" },
+          by_ft._test_default_order
+        )
       end
     )
   end)

@@ -255,6 +255,7 @@ M.scandir = function(path, mode)
     end
   end
 
+  table.sort(names)
   return names
 end
 

@@ -1,5 +1,7 @@
 local M = {}
 
+local core = require("service.core")
+
 local _state = nil
 local STATE_PATH = vim.fn.stdpath("data") .. "/service.json"
 
@@ -105,12 +107,12 @@ end
 
 ---@param kind "formatter"|"linter"
 function M.get_order(kind, ft)
-  return M.get()[kind .. "_order"][ft]
+  return M.get()[core.order_key(kind)][ft]
 end
 
 ---@param kind "formatter"|"linter"
 function M.set_order(kind, ft, order)
-  M.get()[kind .. "_order"][ft] = order
+  M.get()[core.order_key(kind)][ft] = order
   M.save()
 end
 
