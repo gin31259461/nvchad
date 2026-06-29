@@ -28,10 +28,11 @@ Markdown, SQL, Docker, TOML, JSON, XML, and Prisma projects.
 
 Required for normal use:
 
-- Neovim 0.11 or newer
+- Neovim 0.12+
 - Git
 - A Nerd Font, preferably a non-Mono variant
 - `ripgrep` for picker search
+- `tree-sitter-cli` for nvim-treesitter
 
 Optional tools enable specific features:
 
@@ -40,7 +41,6 @@ Optional tools enable specific features:
 - `pnpm` for `markdown-preview.nvim`
 - `dotnet` for Roslyn, .NET helpers, and .NET debugging
 - `debugpy` inside the active Python virtual environment for Python debugging
-- `tree-sitter-cli` and a C compiler for parser or native plugin builds
 - `stylua`, `luacheck`, and synced Neovim plugins for repository validation
 
 ## Installation
