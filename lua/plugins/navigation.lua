@@ -135,7 +135,7 @@ return {
           },
         },
 
-        extensions = { "themes", "terms", "noice" },
+        extensions = { "terms", "noice" },
       }
     end,
     config = function(_, opts)

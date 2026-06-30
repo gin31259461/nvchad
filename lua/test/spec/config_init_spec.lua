@@ -16,8 +16,11 @@ describe("config", function()
       assert.is_not_nil(nvui.base46.hl_override)
     end)
 
-    it("keeps chadrc as a compatibility shim", function()
-      assert.equals(nvui, require("chadrc"))
+    it("exposes nvconfig directly for nv-ui and nv-base46", function()
+      local nvconfig = require("nvconfig")
+      assert.equals(nvui.base46.theme, nvconfig.base46.theme)
+      assert.is_not_nil(nvconfig.base46.integrations)
+      assert.is_not_nil(nvconfig.colorify)
     end)
   end)
 

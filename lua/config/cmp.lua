@@ -26,12 +26,14 @@ local options = {
       border = borders.default,
       scrollbar = true,
       col_offset = -1,
+      winhighlight = "Normal:CmpPmenu,CursorLine:CmpSel,Search:None,FloatBorder:CmpBorder",
     },
     documentation = {
       border = borders.default,
       scrollbar = true,
       max_width = select(1, ui.get_doc_window_size()),
       max_height = select(2, ui.get_doc_window_size()),
+      winhighlight = "Normal:CmpDoc,FloatBorder:CmpDocBorder",
     },
   },
   completion = {
@@ -147,4 +149,4 @@ local options = {
   },
 }
 
-return vim.tbl_deep_extend("force", require("nvchad.cmp"), options)
+return options

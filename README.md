@@ -1,7 +1,7 @@
 # Neovim Configuration
 
 Personal Neovim configuration built directly on `lazy.nvim`. It keeps the
-NvChad UI/theme pieces that are still used through the `Orbit-Lua/nv-ui` and
+Nv UI/base46 pieces that are still used through the `Orbit-Lua/nv-ui` and
 `Orbit-Lua/nv-base46` forks, then adds an LSP-first workflow, a custom Service
 Manager, formatter and linter orchestration, Python and .NET debugging, Git
 tools, project navigation, and Copilot-assisted editing.
@@ -175,9 +175,10 @@ Inside the UI:
 
 ```text
 init.lua                 lazy.nvim bootstrap and top-level startup
-lua/chadrc.lua           compatibility shim for nv-ui/nv-base46
+lua/nvconfig.lua         local nv-ui/nv-base46 config entrypoint
 lua/config/nvui.lua      Nv UI, base46, Mason, statusline, tabline, and
                          terminal settings
+lua/config/theme.lua     local base46 theme picker and persistence
 lua/config/              options, keymaps, services, packages, LSP,
                          formatter, linter, filetype, and UI config
 lua/plugins/             lazy.nvim plugin specs grouped by feature area

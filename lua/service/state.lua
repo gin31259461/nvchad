@@ -3,7 +3,10 @@ local M = {}
 local core = require("service.core")
 
 local _state = nil
-local STATE_PATH = vim.fn.stdpath("data") .. "/service.json"
+
+local function state_path()
+  return vim.g.service_state_path or (vim.fn.stdpath("data") .. "/service.json")
+end
 
 local function build_defaults()
   local services = require("config.services")
@@ -36,7 +39,7 @@ local function is_string_list(value)
 end
 
 function M.load()
-  local file = io.open(STATE_PATH, "r")
+  local file = io.open(state_path(), "r")
   if not file then
     return build_defaults()
   end
@@ -76,12 +79,10 @@ function M.get()
 end
 
 function M.save()
-  local file = io.open(STATE_PATH, "w")
+  local path = state_path()
+  local file = io.open(path, "w")
   if not file then
-    vim.notify(
-      "ServiceManager: cannot write " .. STATE_PATH,
-      vim.log.levels.WARN
-    )
+    vim.notify("ServiceManager: cannot write " .. path, vim.log.levels.WARN)
     return
   end
   file:write(vim.json.encode(M.get()))

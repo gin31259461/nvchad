@@ -67,7 +67,7 @@ return {
             {
               path = "nv-ui/nvchad_types",
               mods = { "ui" },
-              words = { "nvchad" },
+              words = { "nvchad", "nvui" },
             },
             { path = "snacks.nvim", words = { "snacks", "snacks.nvim" } },
             { path = "noice.nvim", words = { "noice", "noice.nvim" } },

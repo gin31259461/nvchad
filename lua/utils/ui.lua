@@ -186,11 +186,11 @@ M.buf_hl = function(buf, ns_id, hl_group, row, start_col, end_col)
   })
 end
 
----@return boolean true when toggling an nvterm terminal is safe
-M.check_toggle_nvterm = function()
+---@return boolean true when toggling a managed terminal is safe
+M.check_toggle_term = function()
   local current_ft = vim.bo.filetype
 
-  if current_ft:match("NvTerm_") or not M.win_is_floating() then
+  if current_ft:match("Term_") or not M.win_is_floating() then
     return true
   end
 

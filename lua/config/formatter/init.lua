@@ -44,7 +44,7 @@ return {
         return { "format", "--config", config_path, "-" }
       end,
       stdin = true,
-      -- cwd = util.root_file(NvChad.fs.sqlfluff_pattern),
+      -- cwd = util.root_file(fs.sqlfluff_pattern),
       cwd = function(_, ctx)
         return fs.get_root(ctx.dirname)
       end,

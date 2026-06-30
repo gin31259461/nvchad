@@ -11,9 +11,11 @@ Use this file as the operating contract for AI-assisted changes.
 
 - `init.lua` bootstraps `lazy.nvim`, imports local plugin specs, and runs
   `require("utils").setup()`
-- `lua/chadrc.lua` is a compatibility shim for `nv-ui` and `nv-base46`
+- `lua/nvconfig.lua` is the local config entrypoint for `nv-ui` and
+  `nv-base46`
 - `lua/config/nvui.lua` contains Nv UI/base46 theme, Mason, statusline,
   tabline, and terminal settings
+- `lua/config/theme.lua` contains the local base46 theme picker and persistence
 - `lua/config/services.lua` is the canonical registry for managed LSP, DAP,
   formatter, and linter tools
 - `lua/config/packages.lua` derives Mason packages and LSP server lists from

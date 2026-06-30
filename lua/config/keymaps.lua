@@ -27,16 +27,15 @@ map("n", "<leader>fu", function()
   vim.cmd("w")
 end, { desc = "reload file as unix format (from dos)" })
 map("n", "<leader>x", function()
-  -- require("nvchad.tabufline").close_buffer()
   require("snacks").bufdelete()
 end, { desc = "buffer close" })
 map("n", "<leader>bb", "<cmd>enew<CR>", { desc = "buffer new" })
 map("n", "<leader>bc", "<cmd>%bd|e#<cr>", { desc = "buffer close" })
 map("n", "<tab>", function()
-  require("nvchad.tabufline").next()
+  require("utils.buffer").next()
 end, { desc = "buffer goto next" })
 map("n", "<S-tab>", function()
-  require("nvchad.tabufline").prev()
+  require("utils.buffer").prev()
 end, { desc = "buffer goto prev" })
 
 -------------------- navigation  --------------------
@@ -51,24 +50,24 @@ end, { desc = "navigate to roof of current buffer" })
 -------------------- terminal --------------------
 map("t", "<C-x>", "<C-\\><C-N>", { desc = "terminal escape terminal mode" })
 map("n", "<leader>h", function()
-  require("nvchad.term").new({ pos = "sp" })
+  require("utils.term").new({ pos = "sp" })
 end, { desc = "terminal new horizontal term" })
 map("n", "<leader>v", function()
-  require("nvchad.term").new({ pos = "vsp" })
+  require("utils.term").new({ pos = "vsp" })
 end, { desc = "terminal new vertical term" })
 map({ "n", "t" }, "<M-v>", function()
-  if ui.check_toggle_nvterm() then
-    require("nvchad.term").toggle({ pos = "vsp", id = "vtoggleTerm" })
+  if ui.check_toggle_term() then
+    require("utils.term").toggle({ pos = "vsp", id = "vtoggleTerm" })
   end
 end, { desc = "terminal toggleable vertical term" })
 map({ "n", "t" }, "<M-h>", function()
-  if ui.check_toggle_nvterm() then
-    require("nvchad.term").toggle({ pos = "sp", id = "htoggleTerm" })
+  if ui.check_toggle_term() then
+    require("utils.term").toggle({ pos = "sp", id = "htoggleTerm" })
   end
 end, { desc = "terminal toggleable horizontal term" })
 map({ "n", "t" }, "<M-i>", function()
-  if ui.check_toggle_nvterm() then
-    require("nvchad.term").toggle({ pos = "float", id = "floatTerm" })
+  if ui.check_toggle_term() then
+    require("utils.term").toggle({ pos = "float", id = "floatTerm" })
   end
 end, { desc = "terminal toggle floating term" })
 
@@ -102,10 +101,10 @@ map("n", "<leader>fd", function()
   vim.diagnostic.open_float()
 end, { desc = "floating diagnostic" })
 
--------------------- nvchad --------------------
+-------------------- theme --------------------
 map("n", "<leader>th", function()
-  require("nvchad.themes").open()
-end, { desc = "telescope nvchad themes" })
+  require("config.theme").open()
+end, { desc = "theme picker" })
 
 -------------------- ui --------------------
 map(

@@ -68,7 +68,6 @@ autocmd("BufWritePost", {
   ),
   callback = function()
     package.loaded["config.nvui"] = nil
-    package.loaded.chadrc = nil
     package.loaded.nvconfig = nil
     package.loaded.base46 = nil
 

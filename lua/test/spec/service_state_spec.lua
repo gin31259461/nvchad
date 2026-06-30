@@ -1,10 +1,21 @@
 describe("service.state", function()
   local state
+  local state_path
   local services = require("config.services")
 
   before_each(function()
+    state_path = vim.fn.tempname()
+    vim.g.service_state_path = state_path
     package.loaded["service.state"] = nil
     state = require("service.state")
+  end)
+
+  after_each(function()
+    if state_path then
+      pcall(vim.fn.delete, state_path)
+    end
+    vim.g.service_state_path = nil
+    package.loaded["service.state"] = nil
   end)
 
   describe("load", function()
