@@ -37,7 +37,7 @@ M.unpack = table.unpack or unpack
 for _, level in ipairs({ "info", "warn", "error" }) do
   M[level] = function(msg, opts)
     opts = opts or {}
-    opts.title = opts.title or "NvChad"
+    opts.title = opts.title or "Neovim"
     return LazyUtil[level](msg, opts)
   end
 end
@@ -47,7 +47,7 @@ M.setup = function()
   M.ui.close_lazy_view()
   M.ui.load_options()
 
-  require("nvchad.autocmds")
+  require("config.events")
   require("config.autocmds")
   require("config.filetypes")
 

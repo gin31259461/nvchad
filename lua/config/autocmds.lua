@@ -60,3 +60,24 @@ autocmd("VimEnter", {
   end,
   desc = "cd into directory when `nvim <dir>` is used",
 })
+
+autocmd("BufWritePost", {
+  group = augroup("ReloadNvUiConfig", { clear = true }),
+  pattern = vim.fs.normalize(
+    vim.fn.stdpath("config") .. "/lua/config/nvui.lua"
+  ),
+  callback = function()
+    package.loaded["config.nvui"] = nil
+    package.loaded.chadrc = nil
+    package.loaded.nvconfig = nil
+    package.loaded.base46 = nil
+
+    local ok, err = pcall(function()
+      require("base46").load_all_highlights()
+    end)
+    if not ok then
+      vim.notify("[theme] " .. tostring(err), vim.log.levels.WARN)
+    end
+  end,
+  desc = "Reload Nv UI/base46 settings when config.nvui changes",
+})

@@ -26,7 +26,7 @@ return {
           local ls = require("luasnip")
           ls.filetype_extend("jsx", { "javascript", "javascriptreact" })
 
-          require("nvchad.configs.luasnip")
+          require("config.snippets")
         end,
       },
 

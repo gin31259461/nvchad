@@ -1,9 +1,13 @@
-local ok, err = pcall(function()
-  dofile(vim.g.base46_cache .. "telescope")
-end)
-if not ok then
-  vim.notify("[theme] " .. tostring(err), vim.log.levels.WARN)
+local function load_base46_cache(name)
+  local ok, err = pcall(function()
+    dofile(vim.g.base46_cache .. name)
+  end)
+  if not ok then
+    vim.notify("[theme] " .. tostring(err), vim.log.levels.WARN)
+  end
 end
+
+load_base46_cache("telescope")
 
 local fs = require("utils.fs")
 local ui = require("utils.ui")
@@ -79,6 +83,8 @@ return {
     },
     config = function(_, opts)
       require("nvim-tree").setup(opts)
+      load_base46_cache("nvimtree")
+
       local api = require("nvim-tree.api")
       local Event = api.events.Event
 

@@ -7,6 +7,20 @@ describe("config", function()
     end)
   end)
 
+  describe("nvui", function()
+    local nvui = require("config.nvui")
+
+    it("keeps base46 theme settings in local config", function()
+      assert.equals("tokyonight", nvui.base46.theme)
+      assert.is_not_nil(nvui.base46.hl_add)
+      assert.is_not_nil(nvui.base46.hl_override)
+    end)
+
+    it("keeps chadrc as a compatibility shim", function()
+      assert.equals(nvui, require("chadrc"))
+    end)
+  end)
+
   describe("icons.mason", function()
     it("has package_installed icon", function()
       assert.is_not_nil(config.icons.mason.package_installed)

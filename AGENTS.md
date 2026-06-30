@@ -1,16 +1,18 @@
 # AGENTS Instructions
 
-This repository is a personal Neovim configuration built on
-[NvChad v2.5](https://github.com/NvChad/NvChad). `init.lua` is the startup
+This repository is a personal Neovim configuration built directly on
+`lazy.nvim`. It keeps the used Nv UI/base46 behavior through the
+`Orbit-Lua/nv-ui` and `Orbit-Lua/nv-base46` forks. `init.lua` is the startup
 entrypoint. Most local behavior lives under `lua/`.
 
 Use this file as the operating contract for AI-assisted changes.
 
 ## Project Map
 
-- `init.lua` bootstraps `lazy.nvim`, loads NvChad, imports local plugin specs,
-  and runs `require("utils").setup()`
-- `lua/chadrc.lua` contains NvChad-facing theme, UI, Mason, statusline,
+- `init.lua` bootstraps `lazy.nvim`, imports local plugin specs, and runs
+  `require("utils").setup()`
+- `lua/chadrc.lua` is a compatibility shim for `nv-ui` and `nv-base46`
+- `lua/config/nvui.lua` contains Nv UI/base46 theme, Mason, statusline,
   tabline, and terminal settings
 - `lua/config/services.lua` is the canonical registry for managed LSP, DAP,
   formatter, and linter tools

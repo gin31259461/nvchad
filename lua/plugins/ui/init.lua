@@ -2,7 +2,7 @@
 local specs = {}
 
 for _, mod_name in ipairs({
-  "plugins.ui.nvchad",
+  "plugins.ui.nvui",
   "plugins.ui.snacks",
   "plugins.ui.noice",
   "plugins.ui.trouble",

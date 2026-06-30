@@ -236,10 +236,10 @@ M.get_editor_win = function()
 end
 
 M.loader = function()
-  local nv_options_ok, _ = pcall(require, "nvchad.options")
+  local defaults_ok, _ = pcall(require, "config.defaults")
   local config_options_ok, _ = pcall(require, "config.options")
 
-  if not nv_options_ok or not config_options_ok then
+  if not defaults_ok or not config_options_ok then
     vim.notify(
       "Failed to load options. Please check your configuration.",
       vim.log.levels.ERROR
