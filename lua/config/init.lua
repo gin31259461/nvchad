@@ -47,6 +47,9 @@ M.icons = {
       symlink = "",
     },
   },
+
+  -- refer to:
+  -- https://github.com/hrsh7th/nvim-cmp/wiki/Menu-Appearance
   kinds = {
     Array = " ",
     Boolean = "󰨙 ",
@@ -89,6 +92,7 @@ M.icons = {
     Value = " ",
     Variable = "󰀫 ",
   },
+
   separators = {
     default = { left = "", right = "" },
     round = { left = "", right = "" },

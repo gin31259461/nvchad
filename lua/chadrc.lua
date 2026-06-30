@@ -24,6 +24,8 @@ M.base46 = {
 
     TreesitterContext = { link = "CursorLine" },
     LspInlayHint = { fg = "#808080", bg = "one_bg", italic = true },
+    IblChar = { fg = "grey" },
+    IblScopeChar = { fg = "purple" },
 
     -- Telescope
     TelescopeMatching = {

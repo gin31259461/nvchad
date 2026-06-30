@@ -119,7 +119,7 @@ return {
   {
     "iamcco/markdown-preview.nvim",
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-    build = { "pnpm install && cd app && pnpm install" },
+    build = { "npm install && cd app && npm install" },
     init = function()
       vim.g.mkdp_filetypes = { "markdown" }
     end,
