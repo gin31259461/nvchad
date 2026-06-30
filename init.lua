@@ -18,4 +18,4 @@ require("lazy").setup({
   { import = "plugins" },
 }, require("config.lazy"))
 
-require("utils").setup()
+require("config.starter").setup()

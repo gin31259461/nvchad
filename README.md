@@ -1,28 +1,24 @@
-# Neovim Configuration
+# OrbitVim
 
-Personal Neovim configuration built directly on `lazy.nvim`. It keeps the
-Nv UI/base46 pieces that are still used through the `Orbit-Lua/nv-ui` and
-`Orbit-Lua/nv-base46` forks, then adds an LSP-first workflow, a custom Service
-Manager, formatter and linter orchestration, Python and .NET debugging, Git
-tools, project navigation, and Copilot-assisted editing.
+OrbitVim is a personal Neovim configuration based on [NvChad](https://github.com/NvChad/NvChad).
+It keeps the Nv UI and base46 pieces that are still useful through the
+`Orbit-Lua/nv-ui` and `Orbit-Lua/nv-base46` forks, then layers a practical
+LSP-first workflow, managed formatter and linter tooling, Python and .NET
+debugging, Git navigation, project search, and Copilot-assisted editing.
 
-Use this configuration if you want a ready-to-run Neovim setup for daily
-development across Lua, Python, TypeScript, JavaScript, C#, Go, shell,
-Markdown, SQL, Docker, TOML, JSON, XML, and Prisma projects.
+It is designed for daily development across Lua, Python, TypeScript,
+JavaScript, C#, Go, shell, Markdown, SQL, Docker, TOML, JSON, XML, and Prisma
+projects.
 
-## Core Value
+## Features
 
-- Independent `lazy.nvim` editor config with local UI, keymap, option, and
-  startup behavior
-- Lazy-loaded plugin specs grouped by feature area under `lua/plugins/`
-- Managed LSP, formatter, linter, and DAP registry in `lua/config/services.lua`
+- Nv UI/base46 theming kept as explicit local dependencies
+- One service registry for LSP servers, DAP adapters, formatters, and linters
 - Service Manager UI for enabling tools, installing Mason packages, and
   reordering formatter or linter priority by filetype
 - Manual formatting by default, so saves do not unexpectedly rewrite buffers
-- Python debugging through project virtual environments and .NET debugging
-  through `netcoredbg`
-- Copilot inline suggestions with optional cmp integration
-- Headless Plenary test suite for local utility and Service Manager logic
+- Cross-platform behavior with Windows-specific fixes where needed
+- Headless Plenary tests for shared utilities and Service Manager logic
 
 ## Requirements
 
@@ -31,26 +27,26 @@ Required for normal use:
 - Neovim 0.12+
 - Git
 - A Nerd Font, preferably a non-Mono variant
-- `ripgrep` for picker search
-- `tree-sitter-cli` for nvim-treesitter
+- `ripgrep` for project search
+- `tree-sitter-cli` for Treesitter parser management
 
 Optional tools enable specific features:
 
 - `lazygit` for `<leader>gg`
-- Node.js and npm for Node-based tooling and some plugin builds
+- Node.js and npm for Node-based tools and plugin builds
 - `pnpm` for `markdown-preview.nvim`
 - `dotnet` for Roslyn, .NET helpers, and .NET debugging
 - `debugpy` inside the active Python virtual environment for Python debugging
-- `stylua`, `luacheck`, and synced Neovim plugins for repository validation
+- `stylua`, `luacheck`, and synced plugins for repository validation
 
-## Installation
+## Install
 
 Back up any existing Neovim configuration first.
 
 Linux and macOS:
 
 ```bash
-git clone https://github.com/gin31259461/nvchad.git ~/.config/nvim
+git clone https://github.com/gin31259461/orbitvim.git ~/.config/nvim
 nvim
 ```
 
@@ -60,7 +56,7 @@ Windows:
 winget install --id=Neovim.Neovim -e
 winget install --id=JesseDuffield.lazygit -e
 npm install -g pnpm
-git clone https://github.com/gin31259461/nvchad.git $env:LOCALAPPDATA\nvim
+git clone https://github.com/gin31259461/orbitvim.git $env:LOCALAPPDATA\nvim
 nvim
 ```
 
@@ -85,18 +81,15 @@ Lazy to finish installing plugins, then run:
 
 ```vim
 :MasonInstallAll
-
 :TSInstallAll
 ```
 
-Restart Neovim after Mason and Treesitter finishes.
+Restart Neovim after Mason and Treesitter finish.
 
 `:MasonInstallAll` installs Mason-managed tools derived from
 `lua/config/services.lua` and `lua/config/packages.lua`. It does not install
 project-local dependencies such as Python `debugpy` or Prisma packages in
 `node_modules`.
-
-`:TSInstallAll` installs all default treesitter parsers.
 
 Recommended follow-up setup:
 
@@ -106,50 +99,53 @@ Recommended follow-up setup:
 - Run `:Lazy sync` if plugin state is missing or tests cannot load
   `plenary.nvim`
 
-## Daily Usage
+## Core Features
 
-Leader is `<Space>`. Use `<leader>wK` or `<leader>sk` inside Neovim to inspect
-the full keymap list.
+Editing and navigation:
 
-Common mappings:
+- Snacks dashboard, picker, notifications, quickfile, bigfile, scroll, and
+  image support
+- `nvim-tree` file explorer with Git and diagnostic highlights
+- Telescope for command-driven pickers
+- Harpoon for fast project file jumps
+- Local terminal manager for horizontal, vertical, and floating terminals
 
-- `<C-s>` saves the current file
-- `<leader>fm` formats the current file or selection
-- `<leader>ff` finds files
-- `<leader>fg` finds Git files
-- `<leader>sg` greps the project
-- `<leader>sw` greps the word or visual selection
-- `<leader>fb` lists buffers
-- `<leader>gg` opens lazygit
-- `<leader>sm` opens the Service Manager
-- `<leader>dp` opens the .NET manager
-- `<leader>D` opens the dashboard
-- `<leader>n` opens notification history
-- `<leader>th` switches theme
-- `<C-n>` toggles nvim-tree
-- `<leader>e` focuses nvim-tree
-- `<C-e>` opens the Harpoon menu
-- `<leader>ba` adds the current file to Harpoon
-- `<M-S-p>` and `<M-S-n>` move through Harpoon items
-- `<leader>h` and `<leader>v` open horizontal or vertical terminals
-- `<M-h>`, `<M-v>`, and `<M-i>` toggle terminal windows
+Language tooling:
 
-Common LSP mappings include `gd` for definition, `gR` for references, `gI` for
-implementation, `gy` for type definition, `K` for hover, `gK` for signature
-help, `<leader>ca` for code actions, `<leader>cr` for rename, and
-`<leader>ci` for inlay hints.
+- LSP setup through Neovim LSP, `nvim-lspconfig`, Mason, Roslyn, and
+  TypeScript Tools
+- Completion through `nvim-cmp`, LuaSnip, autopairs, and lazydev
+- Treesitter parser install command through `:TSInstallAll`
+- Diagnostics, inlay hints, code actions, rename, hover, and signature help
 
-DAP mappings use the `<leader>d` prefix. Common commands include `<leader>dt`
-for toggle breakpoint, `<leader>dc` for continue, `<leader>dn` for step over,
-`<leader>di` for step into, `<leader>do` for step out, `<leader>du` for the
-DAP UI, and `<leader>dR` for the REPL.
+Formatting and linting:
+
+- `conform.nvim` for manual formatting through `<leader>fm`
+- `nvim-lint` for linting on read, write, and new-file events
+- Service-aware formatter and linter filtering
+- Per-filetype formatter and linter priority managed through Service Manager
+
+Debugging:
+
+- Python debugging through `debugpy` from the active virtual environment
+- .NET debugging through `netcoredbg`
+- DAP UI, REPL, watches, breakpoints, stepping, and restart mappings
+
+UI and theme:
+
+- `Orbit-Lua/nv-ui` and `Orbit-Lua/nv-base46` for statusline, tabline,
+  dashboard, theme highlights, and base46 integrations
+- Local theme picker through `<leader>th`
+- Theme persistence by updating `lua/config/nvui.lua`
+- Local highlight overrides through `hl_override` and `hl_add`
 
 ## Service Manager
 
-Open the Service Manager with `<leader>sm` or `:ServiceManager` after plugins
-finish loading.
+Open Service Manager with `<leader>sm` or `:ServiceManager` after Lazy has
+finished loading. The command is registered on `User LazyDone`, so it is not
+available during early startup.
 
-The Service Manager reads from `lua/config/services.lua` and can:
+Service Manager reads `lua/config/services.lua` and can:
 
 - Enable or disable registered LSP servers, formatters, linters, and DAP
   adapters
@@ -157,8 +153,10 @@ The Service Manager reads from `lua/config/services.lua` and can:
 - Reorder formatter and linter priority per filetype
 - Inspect service details, install state, diagnostics, and runtime errors
 
-Service state is persisted in Neovim's data directory as `service.json`, so a
-user's enabled tools and ordering can differ from repository defaults.
+State is stored outside this repository in Neovim's data directory as
+`service.json`, so each machine can have different enabled tools and ordering.
+Enabling a missing Mason-backed service can auto-install its package because
+the missing package policy is `auto`.
 
 Inside the UI:
 
@@ -171,68 +169,68 @@ Inside the UI:
 - `g?` toggles help
 - `q` closes the window
 
-## Project Structure
+## Daily Workflow
+
+Leader is `<Space>`. Use `<leader>wK` or `<leader>sk` to inspect all keymaps.
+
+Common mappings:
+
+- `<C-s>` saves the current file
+- `<leader>fm` formats the current file or selection
+- `<leader>ff`, `<leader>fg`, `<leader>sg`, and `<leader>sw` search files,
+  Git files, project text, and the current word or visual selection
+- `<leader>fb` lists buffers
+- `<leader>gg` opens lazygit
+- `<leader>sm` opens Service Manager
+- `<leader>dp` opens the .NET manager
+- `<leader>th` opens the theme picker
+- `<C-n>` toggles nvim-tree and `<leader>e` focuses it
+- `<C-e>` opens Harpoon, `<leader>ba` adds a file, and `<M-S-p>` /
+  `<M-S-n>` move through Harpoon entries
+- `<leader>h`, `<leader>v`, `<M-h>`, `<M-v>`, and `<M-i>` create or toggle
+  terminals
+
+## Project Layout
 
 ```text
-init.lua                 lazy.nvim bootstrap and top-level startup
+init.lua                 lazy.nvim bootstrap and starter entrypoint
+lua/config/starter.lua   startup orchestration after lazy.nvim setup
 lua/nvconfig.lua         local nv-ui/nv-base46 config entrypoint
-lua/config/nvui.lua      Nv UI, base46, Mason, statusline, tabline, and
-                         terminal settings
+lua/config/nvui.lua      Nv UI, base46, Mason, statusline, tabline, theme,
+                         highlight, and terminal settings
 lua/config/theme.lua     local base46 theme picker and persistence
-lua/config/              options, keymaps, services, packages, LSP,
-                         formatter, linter, filetype, and UI config
+lua/config/services.lua  canonical managed-tool registry
+lua/config/packages.lua  Mason and LSP package derivation from services
 lua/plugins/             lazy.nvim plugin specs grouped by feature area
-lua/service/             Service Manager state, actions, renderer, and order
-lua/cmds/                custom user commands loaded at startup
+lua/service/             Service Manager UI, actions, renderer, state, order
+lua/cmds/                custom commands loaded during startup
 lua/utils/               shared Lua helpers
 lua/test/spec/           Plenary test suite
-scripts/tests/           test bootstrap files
+scripts/tests/           headless test bootstrap
 ```
+
+`lua/plugins/init.lua` is intentionally empty. Lazy imports the `plugins`
+namespace and discovers the feature-specific spec files directly.
 
 ## Managed Tooling
 
-`lua/config/services.lua` is the canonical registry for managed services.
-`lua/config/packages.lua` derives Mason install lists and LSP server names from
-that registry.
+`lua/config/services.lua` is the source of truth for managed services.
+`lua/config/packages.lua` derives Mason packages and LSP server names from that
+registry.
 
-Registered LSP servers:
+Use the service registry when adding or removing managed:
 
-```text
-pyright, ruff, roslyn, html, cssls, tailwindcss, dockerls,
-docker_compose_language_service, clangd, bashls, marksman, prismals,
-tombi, jsonls, lua_ls, gopls, powershell_es, lemminx
-```
+- LSP servers
+- DAP adapters
+- formatters
+- linters
+- default formatter or linter order
 
-Registered formatters:
-
-```text
-stylua, ruff_fix, ruff_organize_imports, ruff_format, shfmt, deno_fmt,
-eslint_d, csharpier, markdownlint-cli2, markdown-toc, sql-formatter,
-sqlfluff, prisma_fmt, tombi
-```
-
-Registered linters:
-
-```text
-eslint_d, hadolint, markdownlint-cli2, luacheck, sqlfluff
-```
-
-Registered DAP adapters:
-
-```text
-python, coreclr
-```
+Mason does not cover every runtime dependency. Python DAP needs `debugpy` in
+the active environment, .NET support needs `dotnet`, and Prisma formatting
+expects project-local Node dependencies.
 
 ## Development
-
-Install the development tools first:
-
-```bash
-# examples only; use your system package manager where possible
-stylua --version
-luacheck --version
-nvim --version
-```
 
 Validation commands:
 
@@ -244,95 +242,36 @@ make test  # run headless Plenary tests
 ```
 
 `make test` uses `scripts/tests/minimal.vim` and loads `plenary.nvim` from
-Neovim's lazy data directory. If you change `init.lua` or other bootstrap code,
+Neovim's lazy data directory. If tests cannot load plugins, run `:Lazy sync`
+inside Neovim and retry.
+
+For changes to `init.lua`, `lua/config/starter.lua`, or other startup paths,
 also run:
 
 ```bash
 nvim --headless "+qall"
 ```
 
-## Contributing
-
-Keep changes small and tied to one behavior. Before opening a pull request:
-
-1. Explain the user-facing behavior or maintenance problem
-2. Update or add tests under `lua/test/spec/` when changing shared utilities,
-   Service Manager logic, config derivation, or ordering behavior
-3. Run `make all`
-4. Run `nvim --headless "+qall"` for startup or bootstrap changes
-5. Mention any skipped checks and why they could not run
-
-Bug reports should include:
-
-- Operating system and Neovim version
-- What command or keymap triggered the issue
-- Relevant `:messages`, `:checkhealth`, or plugin error output
-- Whether plugins were synced with `:Lazy sync`
-- Whether Mason tools were reconciled with `:MasonInstallAll`
-
-Pull requests should include:
-
-- A short summary of the change
-- The affected modules or feature area
-- Validation output for `make all`
-- Screenshots only when UI layout or highlight behavior changes
-
-## FAQ
-
-### Why does `make test` fail with a missing Plenary module?
-
-The test bootstrap does not install plugins. Run `:Lazy sync` in Neovim and
-retry after `plenary.nvim` exists in the lazy data directory.
-
-### Why is `:ServiceManager` unavailable right after startup begins?
-
-The command is registered after Lazy emits `User LazyDone`. Wait for plugin
-loading to finish, then run `:ServiceManager` or press `<leader>sm`.
-
-### Why does Python debugging fail?
-
-Python DAP uses `debugpy` from the active virtual environment. Activate the
-project environment and install `debugpy` there.
-
-### Why does Prisma formatting fail even after Mason installs tools?
-
-`prisma_fmt` is external to Mason and expects Prisma to be available from the
-project's `node_modules`.
-
-### Why does .NET support not load?
-
-Roslyn and .NET helpers are optional and depend on the `dotnet` executable.
-
-### Does this configuration format on save?
-
-No. Formatting is intentionally manual. Use `<leader>fm`.
-
-### Where are Service Manager choices stored?
-
-They are stored in Neovim's data directory as `service.json`, outside this
-repository.
-
 ## Troubleshooting
 
-- Run `:Lazy sync` if plugin specs or lockfile state drift
-- Run `:MasonInstallAll` after changing `lua/config/services.lua`
-- Run `:checkhealth` for provider, compiler, and dependency diagnostics
-- On Windows, use `:ClearShada` to remove temporary ShaDa files while keeping
-  `main.shada`
-- If markdown preview fails to build, verify Node.js, npm, and pnpm are
-  available
+- `:ServiceManager` is unavailable right after launch: wait for Lazy to finish
+  loading, then retry `<leader>sm` or `:ServiceManager`.
+- `make test` cannot load Plenary: run `:Lazy sync` and retry after
+  `plenary.nvim` exists in the lazy data directory.
+- Python debugging fails: activate the project virtual environment and install
+  `debugpy` there.
+- Prisma formatting fails: install the project's Node dependencies so Prisma
+  exists in `node_modules`.
+- .NET support does not load: verify `dotnet` is available on `PATH`.
+- Markdown preview fails to build: verify Node.js, npm, and pnpm are available.
+- Windows ShaDa temp files get stuck: use `:ClearShada`, which keeps
+  `main.shada` and removes temporary ShaDa files.
 
-## Uninstall
+## Runtime Notes
 
-Linux and macOS:
-
-```bash
-rm -rf ~/.config/nvim ~/.local/state/nvim ~/.local/share/nvim
-```
-
-Windows:
-
-```powershell
-Remove-Item -Recurse -Force ~\AppData\Local\nvim
-Remove-Item -Recurse -Force ~\AppData\Local\nvim-data
-```
+- Formatting is manual; format-on-save is disabled.
+- Service Manager state lives outside the repo as `service.json`.
+- The base46 cache lives under Neovim's data directory at `nvchad/base46`.
+- Obsidian integration only loads when `~/OneDrive/Knowledge_Base` exists.
+- `nvim <dir>` changes cwd to that directory and removes the initial empty
+  buffer.
